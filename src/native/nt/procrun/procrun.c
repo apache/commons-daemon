@@ -61,6 +61,7 @@ JNI_GETCREATEDJAVAVMS jni_JNI_GetCreatedJavaVMs = NULL;
 
 int report_service_status(DWORD, DWORD, DWORD, process_t *); 
 int procrun_redirect(char *program, char **envp, procrun_t *env, int starting);
+static char *procrun_find_java(process_t *proc, char *jhome);
 
 static int g_proc_stderr_file = 0;
 int g_proc_mode = 0;
@@ -685,6 +686,103 @@ static int procrun_readenv(process_t *proc, char **envp)
     return rv;
 }
 
+/* Locate the default JAVA_HOME from the registry only.
+ */
+static char *procrun_guess_reg_jhome(process_t *proc)
+{
+    HKEY hkjs;
+    char jbin[MAX_PATH+1];
+    char reg[MAX_PATH+1];
+    char *cver;
+    unsigned long err, klen = MAX_PATH;
+    strcpy(reg, JAVASOFT_REGKEY);
+    cver = &reg[sizeof(JAVASOFT_REGKEY)-1];
+
+    if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
+                            0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
+      /* No JRE key, so try the JDK */
+      strcpy(reg, JAVAHOME_REGKEY);
+      cver = &reg[STRN_SIZE(JAVAHOME_REGKEY)];
+      if((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
+                            0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
+        DBPRINTF0("procrun_guess_reg_jhome() failed to open Registry key\n");
+        return NULL;
+      }
+    }
+    if ((err = RegQueryValueEx(hkjs, "CurrentVersion", NULL, NULL, 
+                               (unsigned char *)cver,
+                               &klen)) != ERROR_SUCCESS) {
+      DBPRINTF0("procrun_guess_jvm() failed obtaining Current Java Version\n");
+      RegCloseKey(hkjs);
+      return NULL;
+    }
+    RegCloseKey(hkjs);
+    
+    if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
+                            0, KEY_READ, &hkjs) ) != ERROR_SUCCESS) {
+      DBPRINTF1("procrun_guess_jvm() failed to open Registry key %s\n", reg);
+      return NULL;
+    }
+    klen = MAX_PATH;
+    if ((err = RegQueryValueEx(hkjs, "JavaHome", NULL, NULL, 
+                               (unsigned char *)jbin, 
+                               &klen)) != ERROR_SUCCESS) {
+      DBPRINTF0("procrun_guess_jvm() failed obtaining Java path\n");
+      RegCloseKey(hkjs);
+      return NULL;
+    }
+    RegCloseKey(hkjs);
+    return pool_strdup(proc->pool, jbin);
+}
+
+/* Find the value for JAVA_HOME.
+ */
+static char *procrun_guess_javahome(process_t *proc, int *inenv)
+{
+    char *cver = NULL;
+
+    if(proc->service.environment != NULL) {
+        char *env = proc->service.environment;
+        while(*env) {
+           if(STRNI_COMPARE(env, "JAVA_HOME=")) {
+             cver = pool_strdup(proc->pool,env + STRN_SIZE("JAVA_HOME="));
+             if(inenv != NULL)
+               *inenv = 1;
+             break;
+           }
+           env += strlen(env)+1;
+        }
+    }
+    if(cver == NULL) {
+        cver = getenv("JAVA_HOME");
+        if(cver != NULL) {
+          cver = pool_strdup(proc->pool, cver);
+          if(inenv != NULL)
+            *inenv = 1;
+        }
+    }
+    if(cver == NULL) {
+        cver = procrun_guess_reg_jhome(proc);
+        if(inenv != NULL)
+          *inenv = 0;
+    }
+    return  cver;
+}
+
+/* Find the default jvm.dll
+ * This function is the fall-back to try well-known locations if
+ * the registry search fails to find it.
+ */
+static char *procrun_guess_jvm2(process_t *proc) 
+{
+    char *jhome = procrun_guess_javahome(proc, NULL);
+    
+    if(jhome == NULL) 
+        return NULL;
+    return procrun_find_java(proc, jhome);
+}
+
+
 /* Find the default jvm.dll
  * The function scans through registry and finds
  * default JRE jvm.dll.
@@ -703,21 +801,21 @@ static char* procrun_guess_jvm(process_t *proc)
     if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
                             0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
        DBPRINTF0("procrun_guess_jvm() failed to open Registry key\n");
-       return NULL;
+       return procrun_guess_jvm2(proc);
     }
     if ((err = RegQueryValueEx(hkjs, "CurrentVersion", NULL, NULL, 
                                (unsigned char *)cver,
                                &klen)) != ERROR_SUCCESS) {
         DBPRINTF0("procrun_guess_jvm() failed obtaining Current Java Version\n");
         RegCloseKey(hkjs);
-        return NULL;
+        return procrun_guess_jvm2(proc);
     }
     RegCloseKey(hkjs);
     
     if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
                             0, KEY_READ, &hkjs) ) != ERROR_SUCCESS) {
         DBPRINTF1("procrun_guess_jvm() failed to open Registry key %s\n", reg);
-        return NULL;
+        return procrun_guess_jvm2(proc);
     }
     klen = MAX_PATH;
     if ((err = RegQueryValueEx(hkjs, "RuntimeLib", NULL, NULL, 
@@ -725,7 +823,7 @@ static char* procrun_guess_jvm(process_t *proc)
                                &klen)) != ERROR_SUCCESS) {
         DBPRINTF0("procrun_guess_jvm() failed obtaining Runtime Library\n");
         RegCloseKey(hkjs);
-        return NULL;
+        return procrun_guess_jvm2(proc);
     }
     RegCloseKey(hkjs);
 
@@ -739,47 +837,10 @@ static char* procrun_guess_jvm(process_t *proc)
 
 static char* procrun_guess_java(process_t *proc, const char *image)
 {
-    HKEY hkjs;
     char jbin[MAX_PATH+1];
-    char reg[MAX_PATH+1];
-    char *cver;
-    unsigned long err, klen = MAX_PATH;
+    char *cver = procrun_guess_javahome(proc, NULL);
     
-    if((cver = getenv("JAVA_HOME")) != NULL) {
-        strcpy(jbin,cver);
-    } else {
-        strcpy(reg, JAVASOFT_REGKEY);
-        cver = &reg[sizeof(JAVASOFT_REGKEY)-1];
-
-        if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
-                            0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
-           DBPRINTF0("procrun_guess_jvm() failed to open Registry key\n");
-           return NULL;
-        }
-        if ((err = RegQueryValueEx(hkjs, "CurrentVersion", NULL, NULL, 
-                               (unsigned char *)cver,
-                               &klen)) != ERROR_SUCCESS) {
-            DBPRINTF0("procrun_guess_jvm() failed obtaining Current Java Version\n");
-            RegCloseKey(hkjs);
-            return NULL;
-        }
-        RegCloseKey(hkjs);
-    
-        if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
-                            0, KEY_READ, &hkjs) ) != ERROR_SUCCESS) {
-            DBPRINTF1("procrun_guess_jvm() failed to open Registry key %s\n", reg);
-            return NULL;
-        }
-        klen = MAX_PATH;
-        if ((err = RegQueryValueEx(hkjs, "JavaHome", NULL, NULL, 
-                               (unsigned char *)jbin, 
-                               &klen)) != ERROR_SUCCESS) {
-            DBPRINTF0("procrun_guess_jvm() failed obtaining Java path\n");
-            RegCloseKey(hkjs);
-            return NULL;
-        }
-        RegCloseKey(hkjs);
-    }
+    strcpy(jbin, cver);
     strcat(jbin, "\\bin\\");
     strcat(jbin, image);
     strcat(jbin, ".exe");
@@ -792,49 +853,14 @@ static char* procrun_guess_java(process_t *proc, const char *image)
  */
 static char* procrun_guess_java_home(process_t *proc)
 {
-    HKEY hkjs;
     char jbin[MAX_PATH+1];
-    char reg[MAX_PATH+1];
-    char *cver;
-    unsigned long err, klen = MAX_PATH;
+    int inenv = 1;
+    char *cver= procrun_guess_javahome(proc, &inenv);
     
-    if ((cver = getenv("JAVA_HOME")) != NULL) {
-        strcpy(jbin, cver);
-        strcat(jbin, "\\bin");
-        return pool_strdup(proc->pool, jbin);
+    strcpy(jbin, cver);
+    if( !inenv ) {
+      procrun_addenv("JAVA_HOME", jbin, 0, proc);
     }
-    strcpy(reg, JAVAHOME_REGKEY);
-    cver = &reg[sizeof(JAVAHOME_REGKEY)-1];
-
-    if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
-                            0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
-       DBPRINTF0("procrun_guess_jvm() failed to open Registry key\n");
-       return NULL;
-    }
-    if ((err = RegQueryValueEx(hkjs, "CurrentVersion", NULL, NULL, 
-                               (unsigned char *)cver,
-                               &klen)) != ERROR_SUCCESS) {
-        DBPRINTF0("procrun_guess_jvm() failed obtaining Current Java SDK Version\n");
-        RegCloseKey(hkjs);
-        return NULL;
-    }
-    RegCloseKey(hkjs);
-    
-    if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
-                            0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
-        DBPRINTF1("procrun_guess_jvm() failed to open Registry key %s\n", reg);
-        return NULL;
-    }
-    klen = MAX_PATH;
-    if ((err = RegQueryValueEx(hkjs, "JavaHome", NULL, NULL, 
-                               (unsigned char *)jbin, 
-                               &klen)) != ERROR_SUCCESS) {
-        DBPRINTF0("procrun_guess_jvm() failed obtaining Java Home\n");
-        RegCloseKey(hkjs);
-        return NULL;
-    }
-    RegCloseKey(hkjs);
-    procrun_addenv("JAVA_HOME", jbin, 0, proc);
     strcat(jbin, "\\bin");
     return pool_strdup(proc->pool, jbin);
 } 
@@ -1269,7 +1295,7 @@ static int procrun_destroy_jvm(process_t *proc, HANDLE jh)
 
         strclass = (*env)->FindClass(env, "java/lang/String");
         if (proc->java.stop_param) {
-            char opts[64];
+            char *opts[64];
             int nopts = make_array(proc->java.stop_param, opts, 60, proc);
             int i;
             jargs = (*env)->NewObjectArray(env, nopts, strclass, NULL);
