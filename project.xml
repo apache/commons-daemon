@@ -4,6 +4,7 @@
   <extend>../project.xml</extend>
   <name>Daemon</name>
   <id>commons-daemon</id>
+  <logo>/images/logo.gif</logo>
   <currentVersion>1.0-Alpha</currentVersion>
   <inceptionYear>2003</inceptionYear>
   <gumpRepositoryId>jakarta</gumpRepositoryId>
