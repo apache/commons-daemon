@@ -10,18 +10,18 @@
 #               enableLookups="true" redirectPort="8443"
 #               acceptCount="10" debug="0" connectionTimeout="60000"/>
 #
-# This is for of Tomcat-4.1.x (Apache Tomcat/4.1)
+# That is for Tomcat-5.0.x (Apache Tomcat/5.0)
 #
 # Adapt the following lines to your configuration
-JAVA_HOME=/usr/java/jdk1.3.1
-CATALINA_HOME=/home1/jakarta/jakarta-tomcat-4.1/build
-DAEMON_HOME=/home1/jakarta/jakarta-commons-sandbox/daemon
-TOMCAT_USER=jakarta
+JAVA_HOME=/usr/java/j2sdk1.4.2_03
+CATALINA_HOME=/home/tomcat5/jakarta-tomcat-5/build
+DAEMON_HOME=/home/tomcat5/jakarta-commons/daemon
+TOMCAT_USER=tomcat5
 TMP_DIR=/var/tmp
 CATALINA_OPTS=
 CLASSPATH=\
 $JAVA_HOME/lib/tools.jar:\
-$DAEMON_HOME/dist/commons-daemon.jar:\
+$CATALINA_HOME/bin/commons-daemon.jar:\
 $CATALINA_HOME/bin/bootstrap.jar
 
 case "$1" in
@@ -29,7 +29,7 @@ case "$1" in
     #
     # Start Tomcat
     #
-    $DAEMON_HOME/dist/jsvc \
+    $DAEMON_HOME/src/native/unix/jsvc \
     -user $TOMCAT_USER \
     -home $JAVA_HOME \
     -Dcatalina.home=$CATALINA_HOME \
@@ -38,7 +38,7 @@ case "$1" in
     -errfile '&1' \
     $CATALINA_OPTS \
     -cp $CLASSPATH \
-    org.apache.catalina.startup.BootstrapService
+    org.apache.catalina.startup.Bootstrap
     #
     # To get a verbose JVM
     #-verbose \
