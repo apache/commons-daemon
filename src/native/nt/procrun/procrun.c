@@ -1326,7 +1326,9 @@ static int procrun_init_jvm(process_t *proc)
         DBPRINTF1("Found: %X expecting 1.2 Java Version\n", jvm_version);
         return -1;
     }
-    
+    if(proc->service.path != NULL) {
+      SetCurrentDirectory(proc->service.path);
+    }
     optn = make_array(proc->java.opts, opts, 30, proc);
     for (i = 0; i < optn; i++)
         options[i].optionString = remove_quotes(opts[i]);
