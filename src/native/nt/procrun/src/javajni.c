@@ -302,11 +302,7 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
     jint rv;
     CHAR sBuf[1024+16];
     rv = wvsprintfA(sBuf, format, args);
-#ifdef _DEBUG_JNI
-    SetLastError(ERROR_SUCCESS);
-    apxDisplayError(TRUE, NULL, 0, sBuf);
-#endif
-    apxLogWrite(APXLOG_MARK_INFO "JNI %s", sBuf);
+    apxLogWrite(APXLOG_MARK_INFO "%s", sBuf);
     return rv;
 }
  
@@ -315,13 +311,13 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
 BOOL
 apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                   LPCVOID lpOptions, DWORD dwMs, DWORD dwMx,
-                  DWORD dwSs)
+                  DWORD dwSs, BOOL bReduceSignals)
 {
     LPAPXJAVAVM     lpJava;
     JDK1_1InitArgs  vmArgs11;
     JavaVMInitArgs  vmArgs; 
     JavaVMOption    *lpJvmOptions;
-    DWORD           i, nOptions, sOptions = 3;
+    DWORD           i, nOptions, sOptions = 2;
     BOOL            rv = FALSE;
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         return FALSE;
@@ -373,16 +369,20 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (dwSs)
             ++sOptions;
+        if (bReduceSignals)
+            ++sOptions;
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
         szCp = apxPoolAlloc(hJava->hPool, sizeof(JAVA_CLASSPATH) + lstrlenA(szClassPath));
         lstrcpyA(szCp, JAVA_CLASSPATH);
         lstrcatA(szCp, szClassPath);
-        /* reduce signals by default to skip registering console
-         * control handler
-         */
-        lpJvmOptions[nOptions - sOptions].optionString = "-Xrs";
-        --sOptions;
+        if (bReduceSignals) {
+            /* reduce signals to skip registering console
+             * control handler
+             */
+            lpJvmOptions[nOptions - sOptions].optionString = "-Xrs";
+            --sOptions;
+        }
         lpJvmOptions[nOptions - sOptions].optionString = szCp;
         --sOptions;
         /* default JNI error printer */

@@ -740,7 +740,7 @@ static DWORD serviceStop()
             return 1;
         }
         if (!apxJavaInitialize(hWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
+                               SO_JVMMS, SO_JVMMX, SO_JVMSS, TRUE)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
@@ -887,7 +887,7 @@ static DWORD serviceStart()
             return 1;
         }
         if (!apxJavaInitialize(gWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
+                               SO_JVMMS, SO_JVMMX, SO_JVMSS, _service_mode)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
@@ -996,8 +996,12 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
     switch (dwCtrlType) {
         case CTRL_BREAK_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console CTRL+BREAK event signaled");
-            serviceStop();
-            return TRUE;
+            if (_service_mode) {
+                serviceStop();
+                return TRUE;
+            }
+            else
+                return FALSE;
         case CTRL_C_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console CTRL+C event signaled");
             serviceStop();
@@ -1104,6 +1108,9 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         DWORD rv;
         reportServiceStatus(SERVICE_RUNNING, NO_ERROR, 0);
         apxLogWrite(APXLOG_MARK_DEBUG "Waitning worker to finish...");
+        /* Set console handler to capture CTRL events */
+        SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
+
         rv = apxHandleWait(gWorker, INFINITE, FALSE);
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
@@ -1180,8 +1187,6 @@ void __cdecl main(int argc, char **argv)
         rv = 2;
         goto cleanup;
     }
-    /* Set console handler to capture CTRL events */
-    SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
 
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
