@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Daemon : Java Service</title>
+  <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
+ </properties>
+
+<body>
+<section name="Introduction">
+<p>
+      Actualy only the UNIX like platforms are supported.
+      The sources are located in the src/native/unix subdirectory of the
+      project sources.
+      For win32 platfroms the cygwin emulation layer is used. See
+      <a href="http://www.cygwin.com/"> cygwin</a> for more informations.
+</p>
+<p>
+      In the futur <a href="http://apr.apache.org/"> APR </a> may be used
+      to provide more convinient platform support.
+</p>
+</section>
+
+<section name="Building from cvs">
+<p>
+To build under an UNIX operating system you will need:
+<ul>
+  <li>GNU AutoConf (at least version 2.53)</li>
+  <li>An ANSI-C compliant compiler (GCC is good)</li>
+  <li>GNU Make</li>
+  <li>A Java Platform 2 compliant SDK</li>
+</ul>
+
+
+You need to build the "configure" program with:
+
+   sh support/buildconf.sh
+(Note it is possible to replace sh by any compatible shell like bash, ksh).
+
+The result should be something like:
+<source>
+support/buildconf.sh
+support/buildconf.sh: configure script generated successfully
+</source>
+Once the configure script is generated, follow the next section.
+</p>
+</section>
+
+<section name="Building for a release tarball">
+<p>
+To build the binary under an UNIX operating system you will need:
+<ul>
+  <li>An ANSI-C compliant compiler (GCC is good)</li>
+  <li>GNU Make</li>
+  <li>A Java Platform 2 compliant SDK</li>
+</ul>
+
+You have to specify the JAVA_HOME of the SDK
+either the --with-java=&lt;dir&gt; parameter or set the JAVA_HOME environment
+to point to your SDK installation. For example:
+<source>
+  ./configure --with-java=/usr/java
+</source>
+or
+<source>
+  export JAVA_HOME
+  ./configure
+</source>
+
+If your operating system is supported, configure will go thru cleanly,
+otherwise it will report an error (please send us the details of your
+OS/JDK, or a patch against the sources). To build the binaries and
+libraries simply do:
+<source>
+  make
+</source>
+This will generate the executable file jsvc.
+</p>
+</section>
+
+<section name="Starting jsvc">
+<p>
+To check the allowed parameters for the jsvc binary simply do:
+<source>
+./jsvc -help
+Usage: jsvc [-options] class [args...]
+
+Where options include:
+
+    -jvm &lt;JVM name&gt;
+        use a specific Java Virtual Machine. Available JVMs:
+            '(null)'
+    -cp / -classpath &lt;directories and zip/jar files&gt;
+        set search path for service classes and resouces
+    -home &lt;directory&gt;
+        set the path of your JDK or JRE installation (or set
+        the JAVA_HOME environment variable)
+    -version
+        show the current Java environment version (to check
+        correctness of -home and -jvm. Implies -nodetach)
+    -help / -?
+        show this help page (implies -nodetach)
+    -nodetach
+        don't detach from parent process and become a daemon
+    -debug
+        verbosely print debugging information
+    -check
+        only check service (implies -nodetach)
+    -user
+        user used to run the daemon (defaults to current user)
+    -verbose[:class|gc|jni]
+        enable verbose output
+    -outfile &lt;/full/path/to/file&gt;
+        Location for output from stdout (defaults to /dev/null)
+        Use the value '&amp;2' to simulate '1&gt;&amp;2'
+    -errfile &lt;/full/path/to/file&gt;
+        Location for output from stderr (defaults to /dev/null)
+        Use the value '&amp;1' to simulate '2&gt;&amp;1'
+    -pidfile &lt;/full/path/to/file&gt;
+        Location for output from the file containing the pid of jsvc
+        (defaults to /var/run/jsvc.pid)
+    -D&lt;name&gt;=&lt;value&gt;
+        set a Java system property
+    -X&lt;option&gt;
+        set Virtual Machine specific option
+
+</source>
+</p>
+
+</section>
+<section name="Using jsvc">
+<p>
+There two ways to use jsvc: via a Class that implements the Daemon interface or
+via  calling a Class that have the required methods.
+For example Tomcat-4.1.x uses the Daemon interface
+and Tomcat-5.0.x provide a Class whose methods are called by jsvc directly.
+</p>
+<subsection name="Via Daemon interface">
+<p>
+You have to do the following.
+<ul>
+  <li>Write a Class that implements the Daemon interface (MyClass).</li>
+  <li>Put it in the jarfile (my.jar).</li>
+  <li>Call jsvc like:
+  <source>
+    jsvc -cp commons-daemon.jar:my.jar MyClass
+  </source>
+  </li>
+</ul>
+</p>
+</subsection>
+<subsection name="Directly">
+<p>
+You have to write a Class (MyClass) that implements the following methods:
+<ul>
+  <li>void init(String[] arguments): Here open the configuration files, create the trace file, create
+      the ServerSockets, the Threads</li>
+  <li>void start(): Start the Thread, accept incomming connections</li>
+  <li>void stop(): Inform the Thread to live the run(), close the ServerSockets</li>
+  <li>void destroy(): Destroy any object created in init()</li>
+</ul>
+Store it in a jarfile and use as above:
+<source>
+  jsvc -cp commons-daemon.jar:my.jar MyClass
+</source>
+</p>
+</subsection>
+</section>
+
+</body>
+</document>

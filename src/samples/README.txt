@@ -30,4 +30,8 @@ router1=/home/Standard/router/router pop3 pop3.example.net
 router2=/home/Standard/router/smtp smtp.example.net
 socks5=/usr/local/bin/socks5 -f
 
-To run it adapt the ServiceDaemon.sh file. 
+To run it adapt the ServiceDaemon.sh file.
+
+AloneService:
+
+AloneService is like ServiceDaemon except it does not use the Daemon interface.

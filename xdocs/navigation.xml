@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE project [
+<!ENTITY commons-nav SYSTEM "../../incl_nav.xml">
+]>
+
+<project name="Daemon">
+
+  <title>Daemon</title>
+  <organizationLogo href="/images/jakarta-logo-blue.gif">
+   Jakarta
+  </organizationLogo>
+
+  <body>
+    <menu name="Commons Daemon">
+      <item name="Overview"
+            href="/index.html"/>
+      <item name="Procrun"
+            href="/procrun.html"/>
+      <item name="Jsvc"
+            href="/jsvc.html"/>
+      <item name="Native binaries"
+            href="/binaries.html"/>
+      <item name="FAQ"
+            href="/faq.html"/>
+          
+    </menu>
+    
+    &commons-nav;
+
+  </body>
+</project>
