@@ -26,7 +26,7 @@
 <p>
 To build under an UNIX operating system you will need:
 <ul>
-  <li>GNU AutoConf</li>
+  <li>GNU AutoConf (at least version 2.53)</li>
   <li>An ANSI-C compliant compiler (GCC is good)</li>
   <li>GNU Make</li>
   <li>A Java Platform 2 compliant SDK</li>
