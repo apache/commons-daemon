@@ -6,6 +6,7 @@
   <author email="mturk@apache.org">Mladen Turk</author>
  </properties>
 
+<body>
 <section name="Introduction">
 <p>
     Procrun is a set of libraries and applications for making Java
@@ -332,4 +333,5 @@ testservice.exe and this command mode will be executed by default.
 </p>
 </section>
 
+</body>
 </document> 
