@@ -230,9 +230,17 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
         /* Allways move to the end of file */
         SetFilePointer(lpWrapper->hStdOutFile, 0, NULL, FILE_END);
     }
-    else
-        return FALSE;
-    
+    else {
+        lpWrapper->hStdOutFile = CreateFileW(L"CONOUT$",
+                                             GENERIC_READ | GENERIC_WRITE, 
+                                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                             NULL,
+                                             OPEN_EXISTING,
+                                             0,
+                                             NULL); 
+        if (IS_INVALID_HANDLE(lpWrapper->hStdOutFile))
+            return FALSE;
+    }
     if (lpWrapper->szStdErrFilename) {
         if (*lpWrapper->szStdErrFilename == L'+') {
             ++lpWrapper->szStdErrFilename;
@@ -257,8 +265,7 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
         lpWrapper->hStdErrFile = lpWrapper->hStdOutFile;
     }
     else {
-        CloseHandle(lpWrapper->hStdOutFile);
-        return FALSE;
+        lpWrapper->hStdErrFile = lpWrapper->hStdOutFile;
     }
     /* Open the stream buffers 
      * This will redirect all printf to go to the redirected files.
@@ -284,14 +291,14 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 static void cleanupStdStreams(APX_STDWRAP *lpWrapper)
 {
     /* Close the redirectied streams */
-    if (lpWrapper->fpStdOutFile)
+    if (lpWrapper->fpStdOutFile) {
         fclose(lpWrapper->fpStdOutFile);
-    if (lpWrapper->fpStdErrFile)
+        *stdout = lpWrapper->fpStdOutSave;
+    }
+    if (lpWrapper->fpStdErrFile) {
         fclose(lpWrapper->fpStdErrFile);
-
-    /* restore the original streams */
-    *stdout = lpWrapper->fpStdOutSave;
-    *stderr = lpWrapper->fpStdErrSave;
+        *stderr = lpWrapper->fpStdErrSave;
+    }
 }
 
 /* Debuging functions */
@@ -1171,7 +1178,13 @@ void __cdecl main(int argc, char **argv)
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
 
     gStdwrap.szStdErrFilename = SO_STDERROR;
-    gStdwrap.szStdOutFilename = SO_STDOUTPUT;
+    if (lpCmdline->dwCmdIndex == 1) {
+        /* In debug mode allways use console */
+        gStdwrap.szStdOutFilename = NULL;
+    }
+    else
+        gStdwrap.szStdOutFilename = SO_STDOUTPUT;
+
     redirectStdStreams(&gStdwrap);
     switch (lpCmdline->dwCmdIndex) {
         case 1: /* Run Service as console application */
