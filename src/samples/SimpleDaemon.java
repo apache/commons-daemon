@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleDaemon.java,v 1.3 2004/11/05 12:08:10 jfclere Exp $ */
+/* @version $Id: SimpleDaemon.java,v 1.4 2004/11/05 16:03:22 jfclere Exp $ */
 
 import java.io.*;
 import java.net.*;
@@ -199,7 +199,7 @@ public class SimpleDaemon implements Daemon, Runnable {
             return(this.directory);
         }
 
-        public void log(String name)
+        public void createFile(String name)
         throws IOException {
             OutputStream file=new FileOutputStream(name,true);
             PrintStream out=new PrintStream(file);
@@ -208,6 +208,15 @@ public class SimpleDaemon implements Daemon, Runnable {
             out.println(fmt.format(new Date()));
             out.close();
             file.close();
+        }
+
+        public void createDir(String name)
+        throws IOException {
+            File file = new File(name);
+            boolean ok = file.mkdirs();
+            if(! ok)
+                throw new IOException("mkdirs for "+name+" failed");
+            createFile(name);
         }
 
         public void handle(InputStream in, OutputStream os) {
@@ -225,6 +234,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                         out.println("    3) Create a file");
                         out.println("    4) Disconnect");
                         out.println("    5) Cause a core of the JVM");
+                        out.println("    6) Create a directory");
                         out.print("Your choiche: ");
                     }
 
@@ -260,14 +270,14 @@ public class SimpleDaemon implements Daemon, Runnable {
                             }
                             break;
 
-                        /* Disconnect */
+                        /* Create a file */
                         case '3':
                             String name=this.getDirectoryName()+
                                         "/SimpleDaemon."+
                                         this.getConnectionNumber()+
                                         ".tmp";
                             try {
-                                this.log(name);
+                                this.createFile(name);
                                 out.println("File '"+name+"' created");
                             } catch (IOException e) {
                                 e.printStackTrace(out);
@@ -278,11 +288,28 @@ public class SimpleDaemon implements Daemon, Runnable {
                         case '4':
                             out.println("Disconnecting...");
                             return;
-                        /* Need a so file ;-) */
+
+                        /* Crash JVM in a native call: It need an so file ;-) */
                         case '5':
                             System.load("/home/jakarta/X509/Native.so");
                             toto();
                             break;
+
+                        /* Create a directory (PR 30177 with 1.4.x and 1.5.0 */
+                        case '6':
+                            String name1=this.getDirectoryName()+
+                                        "/a/b/c/d/e"+
+                                        "/SimpleDaemon."+
+                                        this.getConnectionNumber()+
+                                        ".tmp";
+                            try {
+                                this.createDir(name1);
+                                out.println("File '"+name1+"' created");
+                            } catch (IOException e) {
+                                e.printStackTrace(out);
+                            }
+                            break;
+
 
                         /* Discard any carriage return / newline characters */
                         case '\r':
