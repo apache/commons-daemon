@@ -5,6 +5,8 @@
  <properties>
   <title>Daemon : Procrun</title>
   <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
+  <author email="william.barker@wilshire.com">Bill Barker</author>
+  <author email="mladen.turk@gisdata.hr">Mladen Turk</author>
  </properties>
 
 <body>
@@ -23,7 +25,7 @@
       open the corresponding build project file.
       <ul>
        <li>For MSVC 6.x, use <code>procrun.dsw</code></li>
-       <li>For MSVC.NET, use <code>procrun.vcproj</code></li>
+       <li>For MSVC.NET, use <code>procrun.sln</code></li>
       </ul>
       At this point, you need to select from the build menu which version you
       want to build (select either the release or debug build, depending on 
@@ -31,11 +33,12 @@
       <ul>
        <li><code>procrun</code> if you want the GUI interface</li>
        <li><code>procrun CONSOLE</code> if you don't want the GUI interface</li>
-       <li><code>procrun DLL</code> if you want to launch via <code>rundll</code></li>
+       <li><code>procrun DLL</code> if you want the Control Panel application</code></li>
       </ul>
 </p>
 </section>
 <section name="Using procrun">
+<subsection name="Installing the service">
 <p>
      The first thing that you must do is to install your service.  As a 
      special case, if you haved installed Tomcat 5 via the installer, then it 
@@ -43,15 +46,16 @@
 </p>
 <p>
      To install the service, you need to use the <code>//IS//</code> parameter.
-     For example:
-     <pre>
-           procrun //IS//Tomcat5 --DisplayName "Tomcat 5.0.11" \
-            --Description "Tomcat 5.0.11 JDK 1.4 http://jakarta.apache.org" \
+     Use <code>tomcatw.exe</code> if you want to run the Graphical version, 
+     or <code>tomcat.exe</code> for the non-Graphical version.  For example:
+     <source>
+           tomcat //IS//Tomcat5 --DisplayName "Tomcat 5.0.12" \
+            --Description "Tomcat 5.0.12 JDK 1.4 http://jakarta.apache.org" \
             --ImagePath "c:\devtools\tomcat\5.0\bin\bootstrap.jar" \
             --StartupClass org.apache.catalina.startup.Bootstrap;main;start \
             --ShutdownClass org.apache.catalina.startup.Bootstrap;main;stop \
             --Java auto
-    </pre>
+    </source>
     <table>
     <caption>The options available for installation are</caption>
     <tr><th>--DisplayName</th>
@@ -124,6 +128,59 @@
                 service from installation program using procrunw.</td></tr>
   </table>
 </p>
+</subsection>
+<subsection name="Running the service">
+<p>
+    You can use the Windows Service Manager to stop and start the 
+    service, as you would for any other service.  This is the recommended way
+    to manage the service.</p>
+<p>
+    To test the service, or to simply run the process manually, use the //GT//
+    option for the Graphical version.  For example:
+    <source>
+       tomcatw //GT//Tomcat5
+    </source>
+    To test the non-Graphical version, use the //TS// option.  For example:
+    <source>
+      tomcat //TS//Tomcat5
+    </source>
+    Either of these will start your service as a normal program running under
+    the identity of the currently logged in user.  It is 
+    <strong>Important</strong> that the Service is stopped before testing, or
+    these commands will fail.</p>
+</subsection>
+<subsection name="Changing the Service Parameters from the GUI">
+<p>
+    To change the Service settings using the GUI interface, use the //ES// option with
+    <code>tomcatw.exe</code>.  You can then change the settings by entering
+    the new values in the correct boxes.  For example:
+    <source>
+      tomcatw //ES//Tomcat5
+    </source>
+</p>
+</subsection>
+<subsection name="Changing the Service Parameters from the Command Line">
+<p>
+   To change the Service settings from the command line, use the //US// option.
+   The parameters are the same as for <a href="#Installing%20the%20service">
+   Installing the service</a>.  For example:
+   <source>
+      tomcat //US//Tomcat5 --Java c:\jsdk1.4.1_02\jre\bin\client\jvm.dll \
+             --StdOutputFile c:\Tomcat5\logs\stdout.txt \
+             --StdErrorFile c:\Tomcat5\logs\stderr.txt
+   </source>
+</p>
+</subsection>
+<subsection name="Removing the Service">
+<p>
+   To remove the service, use the //DS// option.  For example:
+   <source>
+     tomcat //DS//Tomcat5
+   </source>
+   This command will remove the service from the Windows Service Manager, but
+   it will still allow you to run it via the //GT// or //TS// options.
+</p>
+</subsection>
 </section>
 
 </body>
