@@ -30,6 +30,9 @@ $DAEMON_HOME/src/native/unix/jsvc \
     -home $JAVA_HOME \
     -cp $CLASSPATH \
     -pidfile ./pidfile \
+    -verbose \
+    -outfile toto.txt \
+    -errfile '&1' \
     SimpleDaemon \
 #
 # To get a verbose JVM

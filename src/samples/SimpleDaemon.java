@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleDaemon.java,v 1.2 2004/02/27 07:57:51 jfclere Exp $ */
+/* @version $Id: SimpleDaemon.java,v 1.3 2004/11/05 12:08:10 jfclere Exp $ */
 
 import java.io.*;
 import java.net.*;
@@ -34,6 +34,8 @@ public class SimpleDaemon implements Daemon, Runnable {
     private boolean stopping=false;
     private String directory=null;
     private Vector handlers=null;
+
+    public static native void toto();
 
     public SimpleDaemon() {
         super();
@@ -222,6 +224,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                         out.println("    2) Reload");
                         out.println("    3) Create a file");
                         out.println("    4) Disconnect");
+                        out.println("    5) Cause a core of the JVM");
                         out.print("Your choiche: ");
                     }
 
@@ -275,6 +278,11 @@ public class SimpleDaemon implements Daemon, Runnable {
                         case '4':
                             out.println("Disconnecting...");
                             return;
+                        /* Need a so file ;-) */
+                        case '5':
+                            System.load("/home/jakarta/X509/Native.so");
+                            toto();
+                            break;
 
                         /* Discard any carriage return / newline characters */
                         case '\r':
