@@ -68,10 +68,10 @@ package org.apache.commons.daemon;
  * with no arguments so that instances can be created in an automated
  * fashion.
  * </p>
- * @author <a href="mailto:pier.fumagalli@sun.com">Pier Fumagalli</a>
+ * @author Pier Fumagalli
  * @author Copyright &copy; 2000-2001 <a href="http://www.apache.org/">The
  *         Apache Software Foundation</a>. All rights reserved.
- * @version 1.0 <i>(CVS $Revision: 1.2 $)</i>
+ * @version 1.0 <i>(CVS $Revision: 1.3 $)</i>
  */
 public interface Daemon {
 
