@@ -82,7 +82,9 @@
                     located and executed with
                     -Djava.class.path=ImagePath</li>
              <li>If neither java or auto are specified then this
-                parameter is treated as full path to the jvm.dll</li>
+                parameter is treated as either the full path to the 
+                <code>jvm.dll</code>, or as the path to the Java 
+                installation.</li>
             </ul></td></tr>
     <tr><th>--JavaOptions</th>
         <td>               This is the list of options to be passed to the JVM
