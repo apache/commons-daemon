@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+ 
+<document>
+ 
+ <properties>
+  <title>Daemon : binaries</title>
+  <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
+ </properties>
+
+<body>
+<section name="What to download">
+<p>
+In the directory
+<a href="http://www.apache.org/dist/jakarta/commons/daemon/binaries/">binaries</a>
+you found subdirectories containing executables
+corresponding to your operating system. If your machine is not in the list
+mail us we will try to make it available or try to build it on your own.
+The files are compressed tar files. They are named jvm_name-os_name.
+For example: In the directory freebsd we have jdk1.4.1-FreeBSD_4.9.tar.gz
+That a file build on FreeBSD 4.9 using the FreeBSD JVM 1.4.1.
+</p>
+</section>
+
+<section name="What to do to get the excutable">
+<subsection name="jsvc">
+<p>
+You have to do the following:
+<ul>
+  <li>Find the nearest tar file corresponding to our configuration.</li>
+  <li>Download it.</li>
+  <li>Uncompress the tar file and extract it (better with a gnu tar).</li>
+  <li>Copy the executable in the location where you want to run it.</li>
+  <li>Write a rc shell
+     (see in src/samples and src/native/unix/native/Tomcat.sh)
+     to get your java application started as a daemon.
+  </li>
+</ul>
+</p>
+</subsection>
+<subsection name="procrun">
+<p>
+The procrun.exe has to be installed as a service.
+(See  <a href="procrun.html">procrun</a> for more information.
+</p>
+</subsection>
+</section>
+
+</body>
+</document>
