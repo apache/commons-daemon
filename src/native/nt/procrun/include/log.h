@@ -49,6 +49,12 @@ __APXBEGIN_DECLS
 #define APXLOG_MARK_RAW     NULL, APXLOG_LEVEL_INFO,  FALSE, NULL, 0,
 #define APXLOG_MARK_SYSERR  NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, NULL
 
+LPWSTR apxLogFile(
+    APXHANDLE hPool,
+    LPCWSTR szPath,
+    LPCWSTR szPrefix,
+    LPCWSTR szName
+);
 
 HANDLE apxLogOpen(
     APXHANDLE hPool,

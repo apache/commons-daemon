@@ -39,6 +39,55 @@ typedef struct apx_logfile_st {
 static apx_logfile_st *_st_sys_loghandle = NULL;
 
 static apx_logfile_st  _st_sys_errhandle = { NULL, APXLOG_LEVEL_WARN, FALSE};
+
+
+LPWSTR apxLogFile(
+    APXHANDLE hPool,
+    LPCWSTR szPath,
+    LPCWSTR szPrefix,
+    LPCWSTR szName)
+{
+    LPWSTR sRet;
+    WCHAR sPath[MAX_PATH+1];
+    WCHAR sName[MAX_PATH+1];
+    SYSTEMTIME sysTime;
+
+    GetLocalTime(&sysTime);
+    if (!szPath) {
+        if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
+            return INVALID_HANDLE_VALUE;
+        lstrcatW(sPath, L"\\LogFiles\\");
+        if (!szPrefix)
+            lstrcatW(sPath, L"Apache");
+        else
+            lstrcatW(sPath, szPrefix);
+        wsprintfW(sName, L"\\%s%04d%02d%02d.log",
+                  szName,
+                  sysTime.wYear,
+                  sysTime.wMonth,
+                  sysTime.wDay);
+    }
+    else {
+        lstrcpyW(sPath, szPath);
+        if (szPrefix)
+            wsprintfW(sName, L"\\%s", szPrefix);
+        else
+            wsprintfW(sName, L"\\%s%04d%02d%02d.log",
+                      szName,
+                      sysTime.wYear,
+                      sysTime.wMonth,
+                      sysTime.wDay);
+    }
+    sRet = apxPoolAlloc(hPool, (MAX_PATH + 1) * sizeof(WCHAR));
+    /* Set default level to info */
+    CreateDirectoryW(sPath, NULL);
+    
+    lstrcpyW(sRet, sPath);
+    lstrcatW(sRet, sName);
+
+    return sRet;
+}
+
 /* Open the log file 
  * TODO: format like standard apache error.log
  * Add the EventLogger

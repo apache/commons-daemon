@@ -36,7 +36,7 @@
 #define STDERR_FILENO 2
 
 typedef struct APX_STDWRAP {
-    BOOL    bAppend;
+    LPCWSTR szLogPath;
     LPCWSTR szStdOutFilename;
     LPCWSTR szStdErrFilename;
     HANDLE  hStdOutFile;
@@ -197,8 +197,13 @@ static HANDLE gShutdownEvent = NULL;
  * If stderrfile is not specified it will
  * go to stdoutfile.
  */
+
+
+
 static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 {
+    BOOL aErr = FALSE;
+    BOOL aOut = FALSE;
 
     /* Clear up the handles */    
     lpWrapper->fpStdErrFile = NULL;
@@ -210,14 +215,17 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
-        if (*lpWrapper->szStdOutFilename == L'+') {
-            ++lpWrapper->szStdOutFilename;
-            lpWrapper->bAppend = TRUE;
+        if (lstrcmpiW(lpWrapper->szStdOutFilename, PRSRV_AUTO) == 0) {
+            aOut = TRUE;
+            lpWrapper->szStdOutFilename = apxLogFile(gPool,
+                                                     lpWrapper->szLogPath,
+                                                     NULL,
+                                                     L"stdout_");
         }
         /* Delete the file if not in append mode
          * XXX: See if we can use the params instead of that.
          */
-        if (!lpWrapper->bAppend)
+        if (!aOut)
             DeleteFileW(lpWrapper->szStdOutFilename);
         lpWrapper->hStdOutFile = CreateFileW(lpWrapper->szStdOutFilename,
                                              GENERIC_WRITE | GENERIC_READ,
@@ -243,12 +251,15 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
             return FALSE;
     }
     if (lpWrapper->szStdErrFilename) {
-        if (*lpWrapper->szStdErrFilename == L'+') {
-            ++lpWrapper->szStdErrFilename;
-            lpWrapper->bAppend = TRUE;
+        if (lstrcmpiW(lpWrapper->szStdErrFilename, PRSRV_AUTO) == 0) {
+            aErr = TRUE;
+            lpWrapper->szStdErrFilename = apxLogFile(gPool,
+                                                     lpWrapper->szLogPath,
+                                                     NULL,
+                                                     L"stderr_");
         }
-        if (!lpWrapper->bAppend)
-            DeleteFileW(lpWrapper->szStdOutFilename);
+        if (!aErr)
+            DeleteFileW(lpWrapper->szStdErrFilename);
         lpWrapper->hStdErrFile = CreateFileW(lpWrapper->szStdErrFilename,
                                              GENERIC_WRITE | GENERIC_READ,
                                              FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -1193,15 +1204,13 @@ void __cdecl main(int argc, char **argv)
     apxLogWrite(APXLOG_MARK_DEBUG "Procrun log initialized");
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
-
-    gStdwrap.szStdErrFilename = SO_STDERROR;
-    if (lpCmdline->dwCmdIndex == 1) {
-        /* In debug mode allways use console */
-        gStdwrap.szStdOutFilename = NULL;
-    }
-    else
+    
+    gStdwrap.szLogPath = SO_LOGPATH;
+    /* In debug mode allways use console */
+    if (lpCmdline->dwCmdIndex != 1) {
         gStdwrap.szStdOutFilename = SO_STDOUTPUT;
-
+        gStdwrap.szStdErrFilename = SO_STDERROR;
+    }
     redirectStdStreams(&gStdwrap);
     switch (lpCmdline->dwCmdIndex) {
         case 1: /* Run Service as console application */
