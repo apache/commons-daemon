@@ -33,7 +33,7 @@
       <ul>
        <li><code>procrun</code> if you want the GUI interface</li>
        <li><code>procrun CONSOLE</code> if you don't want the GUI interface</li>
-       <li><code>procrun DLL</code> if you want the Control Panel application</code></li>
+       <li><code>procrun DLL</code> if you want the Control Panel application</li>
       </ul>
 </p>
 </section>
