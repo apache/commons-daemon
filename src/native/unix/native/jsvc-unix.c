@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: jsvc-unix.c,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.7 2003/09/27 16:49:13 jfclere Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -302,7 +302,11 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     }
 
     /* create a new process group to prevent kill 0 killing the monitor process */
+#if defined(OS_FREEBSD) || defined(OS_DARWIN)
+    setpgid(0,0);
+#else
     setpgrp();
+#endif
 
 #ifdef OS_LINUX
     /* setuid()/setgid() only apply the current thread so we must do it now */
@@ -352,16 +356,36 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     while (!stopping) sleep(60); /* pause() not threadsafe */
     log_debug("Shutdown or reload requested: exiting");
 
-    /* Start the service */
+    /* Stop the service */
     if (java_stop()!=true) return(6);
 
     if (doreload==true) ret=123;
     else ret=0;
 
+    /* Destroy the service */
+    java_destroy();
+
     /* Destroy the Java VM */
-    if (java_destroy(ret)!=true) return(7);
+    if (JVM_destroy(ret)!=true) return(7);
 
     return(ret);
+}
+
+/*
+ * freopen close the file first and then open the new file
+ * that is not very good if we are try to trace the output
+ * note the code assumes that the errors are configuration errors.
+ */
+static FILE *loc_freopen(char *outfile, char *mode, FILE *stream)
+{
+    FILE *ftest;
+    ftest = fopen(outfile,mode);
+    if (ftest == NULL) {
+      fprintf(stderr,"Unable to redirect to %s\n", outfile);
+      return(stream);
+    }
+    fclose(ftest);
+    return(freopen(outfile,mode,stream));
 }
 
 /**
@@ -369,17 +393,22 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
  */
 static void set_output(char *outfile, char *errfile) {
     freopen("/dev/null", "r", stdin); 
+    log_debug("redirecting stdout to %s and stderr to %s",outfile,errfile);
+
+    /* make sure the debug goes out */
+    if (log_debug_flag==true && strcmp(errfile,"/dev/null") == 0)
+      return;
 
     /* Handle malicious case here */
     if(strcmp(outfile, "&2") == 0 && strcmp(errfile,"&1") == 0) {
       outfile="/dev/null";
     }
     if(strcmp(outfile, "&2") != 0) {
-      freopen(outfile, "w", stdout);
+      loc_freopen(outfile, "a", stdout);
     }
 
     if(strcmp(errfile,"&1") != 0) {
-      freopen(errfile, "w", stderr);
+      loc_freopen(errfile, "a", stderr);
     } else {
       close(2);
       dup(1);
