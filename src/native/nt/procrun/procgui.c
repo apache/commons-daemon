@@ -57,7 +57,7 @@
  */
 
 /* ====================================================================
- * procrun.
+ * procrun (Tomcat Service Manager)
  *
  * Contributed by Mladen Turk <mturk@apache.org>
  *
@@ -271,7 +271,7 @@ void ac_add_list_string(const char *str, int len)
         /* set the status to 'green' when received Jk running 
          * and close the spash window if present
          */
-        if (!strncmp(str, "INFO: Jk running", 16)) {
+        if (STRN_COMPARE(str, "INFO: Jk running")) {
             ac_show_try_icon(ac_main_hwnd, NIM_MODIFY, ac_cmdname, 0);
             /* kill the splash window if present */
             if (ac_splash_hwnd)
@@ -670,9 +670,9 @@ int ac_browse_for_dialog(HWND hwnd, char *str, size_t len, int files)
     memset(&bi, 0, sizeof(BROWSEINFO));
     SHGetSpecialFolderLocation(hwnd, CSIDL_DRIVES, &il);
     if (files)
-        bi.lpszTitle  = "Apache Process Runner :\nSelect Folder!";
+        bi.lpszTitle  = "Tomcat Service Manager :\nSelect Folder!";
     else
-        bi.lpszTitle  = "Apache Process Runner :\nSelect File!";
+        bi.lpszTitle  = "Tomcat Service Manager :\nSelect File!";
     bi.pszDisplayName = str;
     bi.hwndOwner =      hwnd;
     bi.ulFlags =        BIF_EDITBOX;
