@@ -57,7 +57,7 @@ dnl =========================================================================
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apsupport.m4,v 1.2 2003/09/12 09:08:51 jfclere Exp $
+dnl Version $Id: apsupport.m4,v 1.3 2003/09/25 13:38:27 jfclere Exp $
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[
@@ -88,7 +88,6 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   darwin*)
     CFLAGS="$CFLAGS -DOS_DARWIN -DDSO_DYLD"
     supported_os="darwin"
-    LDFLAGS="$LDFLAGS -ldl"
     ;;
   solaris*)
     CFLAGS="$CFLAGS -DOS_SOLARIS -DDSO_DLFCN"
