@@ -57,7 +57,7 @@ dnl =========================================================================
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apjava.m4,v 1.1 2003/09/04 23:28:20 yoavs Exp $
+dnl Version $Id: apjava.m4,v 1.2 2003/09/25 11:13:02 jfclere Exp $
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN([AP_PROG_JAVAC_WORKS],[
@@ -76,8 +76,19 @@ AC_DEFUN([AP_PROG_JAVAC_WORKS],[
   ])
 ])
 
+dnl AC_PATH_PROG does not work (it checks first PATH then our parameter).
+dnl so we do 2 checks.
 AC_DEFUN([AP_PROG_JAVAC],[
-  AC_PATH_PROG(JAVAC,javac,AC_MSG_ERROR([javac not found]),$JAVA_HOME/bin:$PATH)
+  AC_PATH_PROG(JAVAC,javac,NONE,$JAVA_HOME/bin)
+  if test "$JAVAC" = "NONE"
+  then
+    AC_PATH_PROG(JAVAC_PATH,javac,NONE,$PATH)
+    JAVAC=$JAVAC_PATH
+  fi
+  if test "$JAVAC" = "NONE"
+  then
+    AC_MSG_ERROR([javac not found])
+  fi
   AP_PROG_JAVAC_WORKS()
   AC_PROVIDE([$0])
   AC_SUBST(JAVAC)
@@ -85,7 +96,16 @@ AC_DEFUN([AP_PROG_JAVAC],[
 ])
 
 AC_DEFUN([AP_PROG_JAR],[
-  AC_PATH_PROG(JAR,jar,AC_MSG_ERROR([jar not found]),$JAVA_HOME/bin:$PATH)
+  AC_PATH_PROG(JAR,jar,NONE,$JAVA_HOME/bin)
+  if test "$JAR" = "NONE"
+  then
+    AC_PATH_PROG(JAR_PATH,jar,NONE,$PATH)
+    JAR=$JAR_PATH
+  fi
+  if test "$JAR" = "NONE"
+  then
+    AC_MSG_ERROR([jar not found])
+  fi
   AC_PROVIDE([$0])
   AC_SUBST(JAR)
 ])

@@ -3,7 +3,7 @@
 
 <!--
         "Daemon" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.1 2003/09/04 23:28:20 yoavs Exp $
+        $Id: build.xml,v 1.2 2003/09/29 09:59:11 remm Exp $
 -->
 
 
@@ -210,11 +210,6 @@
               todir="${dist.home}"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
-    <copy     todir="${dist.home}/bin">
-      <fileset dir="src/native/nt/procrun/bin">
-         <include name="*.exe" />
-      </fileset>
-    </copy>
     <copy todir="${dist.home}/bin/unix/jsvc-src">
       <fileset dir="src/native/unix" />
     </copy>

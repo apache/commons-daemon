@@ -1,0 +1,43 @@
+This file contains the PGP&GPG keys of various Apache developers.
+Please don't use them for email unless you have to. Their main
+purpose is code signing.
+ 
+Apache users: pgp < KEYS
+Apache developers:
+        (pgpk -ll <your name> && pgpk -xa <your name>) >> this file.
+      or
+        (gpg --fingerprint --list-sigs <your name>
+             && gpg --armor --export <your name>) >> this file.
+ 
+Apache developers: please ensure that your key is also available via the
+PGP keyservers (such as pgpkeys.mit.edu).
+
+Type Bits/KeyID    Date       User ID
+pub  1024D/86867BA6 2001-11-22 Jean-Frederic Clere (jfclere) <JFrederic.Clere@fujitsu-siemens.com>
+ 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.0.5 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+ 
+mQGiBDv9Gx8RBADclmKwDLcibNVipQnhYW+bFIpuQjQnRrqRwn3gXM+/luzzJYJ4
+bbWpw13zjX0EkrAJ8qH2A/d0EIU1eZ0zHrLgRvMUfLGFUX7FFFw18JKFLTVGhG4/
+8sSl3ydHSA2Kd1PF6xjBP7iM7sg5dJfEkyMzvK5H4F0ZpTqy3087wsg1wwCgitRy
+Zg4x3lWZSkOwBj472qaO9GkD/2q6kyWfAK6XFe3GuB5AAs3poMfN1eqW+duM4TA8
+zUiWK0Wxx4JXJbL7n0i4d+JdXJsrjSjF++KKfelcxsrSxoUIBegez25MUSvHe09D
+R3nqkY8CVO+viEtzRBqkSgCMbUjAtfkQ+vp2jDnWSmmkNfY0OYAzt+KRyJKcjUSJ
+gvOOA/45+DN9wuTELoFTvsXh1JgOL/QvW1fmQ2HrcQk94BkzIsfVGWClCiig5gNw
+LCxTbfgA5htpI8U7vPR9/5gH7U8Wy3HR6xQUZxcbttMeYit2VbDEJzF5r5S0pJvD
+vyk3n1kiKU7r49sjhxGgE8J/VvDpO6YcIsDs8LoULwuJTg0DTrRDSmVhbi1GcmVk
+ZXJpYyBDbGVyZSAoamZjbGVyZSkgPEpGcmVkZXJpYy5DbGVyZUBmdWppdHN1LXNp
+ZW1lbnMuY29tPohXBBMRAgAXBQI7/RsfBQsHCgMEAxUDAgMWAgECF4AACgkQ0+/m
+toaGe6amGQCeJU5VZ8QCi8+PY0QJHPA63e5uPyoAmgOWIwFm8A/xmW8qjEvVAWtb
+TjZxuQENBDv9GyMQBACCbFlSF+udW/Qz2oknDen8Hoql4Q1Q7CUQTbPjoQAcYgZg
+LrsR6hc9aCIf3Kt4qZBgQ1Oe9M/AemOFhU04UNp3dgHk91EYRvx80Rua992p/8V7
+QOhwIBVb2XE8as5nL2j8w6Jz7eSs/bivxm9yD0AH/I5H01RAJivRbOTsUgSkDwAD
+BQP5ARlW2Nqc0U17asQsmMYvT1UMiOiyBwUD/DIEG2Xy1hlEvdljg8WU26jcjpGq
+MrT69T4Z+eZ2oVyiRQTW4qMUBKc0Nbz89hL0qv9K41ExxxH+JgE1csRVvmwAT8Iy
+lnhof7TJLRBtvan3+p21Kxl1uQ7MbmLT875u+vc+J098fIiIRgQYEQIABgUCO/0b
+IwAKCRDT7+a2hoZ7pn9UAJ9f0TK0QQOtjQBvxAissopYhDKHGACePZg0k9sj69yw
+nVWrBS9fvFC9jcA=
+=BTiM
+-----END PGP PUBLIC KEY BLOCK-----

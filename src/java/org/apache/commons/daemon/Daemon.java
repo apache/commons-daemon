@@ -58,11 +58,20 @@
 package org.apache.commons.daemon;
 
 /**
- *
- * @author <a href="mailto:pier.fumagalli@sun.com">Pier Fumagalli</a>
+ * This interface provides support for native daemon invocation. Using
+ * a platform dependant helper program classes that implement the
+ * <code>Daemon</code> interface can be initialized, started and
+ * stopped according to the convensions of the underlying operating
+ * system.
+ * <p>
+ * Implementors of this interface must also provide a public constructor
+ * with no arguments so that instances can be created in an automated
+ * fashion.
+ * </p>
+ * @author Pier Fumagalli
  * @author Copyright &copy; 2000-2001 <a href="http://www.apache.org/">The
  *         Apache Software Foundation</a>. All rights reserved.
- * @version 1.0 <i>(CVS $Revision: 1.1 $)</i>
+ * @version 1.0 <i>(CVS $Revision: 1.3 $)</i>
  */
 public interface Daemon {
 
@@ -93,8 +102,9 @@ public interface Daemon {
      *   method.
      * </p>
      *
-     * @param context The <code>DaemonContext</code> instance associated with
-     *                daemon <code>Daemon</code> instance.
+     * @param context A <code>DaemonContext</code> object used to
+     * communicate with the container.
+     * 
      * @exception Exception Any exception preventing a successful
      *                      initialization.
      */
@@ -102,20 +112,33 @@ public interface Daemon {
     throws Exception;
 
     /**
-     *
+     * Start the operation of this <code>Daemon</code> instance. This
+     * method is to be invoked by the environment after the init()
+     * method has been successfully invoked and possibly the security
+     * level of the JVM has been dropped.  <code>Implementors of this
+     * method are free to start any number of threads, but need to
+     * return control avfter having done that to enable invocation of
+     * the stop()-method.
      */
     public void start()
     throws Exception;
 
     /**
-     *
+     * Stop the operation of this <code>Daemon</code> instance. Note
+     * that the proper place to free any allocated resources such as
+     * sockets or file descriptors is in the destroy method, as the
+     * container may restart the Daemon by calling start() after
+     * stop().
      */
     public void stop()
     throws Exception;
 
     /**
-     * 
+     * Free any resources allocated by this daemon such as file
+     * descriptors or sockets. This method gets called by the container
+     * after stop() has been called, before the JVM exits. The Daemon
+     * can not be restarted after this method has been called without a
+     * new call to the init() method.
      */
     public void destroy();
-
 }

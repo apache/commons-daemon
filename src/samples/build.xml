@@ -6,9 +6,9 @@
   <property name="dist.home"   value="../../dist"/>
   <property name="build.home"  value="./build"/>
   <property name="source.home" value="."/>
-  <property name="commons-collections.jar" value="../../../../commons-collections-1.0/commons-collections.jar"/>
+  <property name="commons-collections.jar" value="${user.home}/commons-collections-2.1/commons-collections.jar"/>
 
-  <target name="jars" depends="SimpleDaemon,ServiceDaemon"/>
+  <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService"/>
 
   <target name="SimpleDaemon" depends="compile"
    description="Create SimpleDaemon.jar">
@@ -36,6 +36,19 @@
     </jar>
   </target>
 
+  <target name="AloneService" depends="compile"
+   description="Create aloneservice.jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../../../LICENSE"
+               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <jar    jarfile="${dist.home}/aloneservice.jar">
+      <fileset dir="${build.home}/classes">
+        <include name="AloneService*.class" />
+        <include name="ServiceDaemonReadThread*.class" />
+      </fileset>
+    </jar>
+  </target>
 
   <target name="compile" depends="prepare"
    description="Create class files">

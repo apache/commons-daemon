@@ -57,7 +57,7 @@ dnl =========================================================================
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apsupport.m4,v 1.1 2003/09/04 23:28:20 yoavs Exp $
+dnl Version $Id: apsupport.m4,v 1.3 2003/09/25 13:38:27 jfclere Exp $
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[
@@ -92,10 +92,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   solaris*)
     CFLAGS="$CFLAGS -DOS_SOLARIS -DDSO_DLFCN"
     supported_os="solaris"
+    LDFLAGS="$LDFLAGS -ldl -lthread"
     ;;
   linux*)
     CFLAGS="$CFLAGS -DOS_LINUX -DDSO_DLFCN"
     supported_os="linux"
+    LDFLAGS="$LDFLAGS -ldl"
     ;;
   cygwin)
     CFLAGS="$CFLAGS -DOS_CYGWIN -DDSO_DLFCN -DNO_SETSID"
@@ -103,10 +105,16 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     ;;
   sysv)
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN"
+    LDFLAGS="$LDFLAGS -ldl"
     ;;
   sysv4)
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN -Kthread"
-    LDFLAGS="-Kthread $LDFLAGS"
+    LDFLAGS="-Kthread $LDFLAGS -ldl"
+    ;;
+  freebsd4.?)
+    CFLAGS="$CFLAGS -DOS_FREEBSD -DDSO_DLFCN -D_THREAD_SAFE -pthread"
+    LDFLAGS="-pthread $LDFLAGS"
+    supported_os="freebsd"
     ;;
   *)
     AC_MSG_RESULT([failed])

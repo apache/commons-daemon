@@ -57,7 +57,7 @@ dnl =========================================================================
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: configure.in,v 1.1 2003/09/04 23:28:20 yoavs Exp $
+dnl Version $Id: configure.in,v 1.2 2003/09/12 09:08:51 jfclere Exp $
 dnl -------------------------------------------------------------------------
 
 dnl -------------------------------------------------------------------------
@@ -108,14 +108,6 @@ then
   unset _prevdir
 else
   CFLAGS="$CFLAGS -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
-  if test "$supported_os" != "win32"
-  then
-    LDFLAGS="$LDFLAGS -ldl"
-  fi
-fi
-if test "$supported_os" = "solaris"
-then
-  LDFLAGS="$LDFLAGS -lthread"
 fi
 
 dnl -------------------------------------------------------------------------
