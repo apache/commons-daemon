@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: home.c,v 1.5 2004/01/19 02:21:19 billbarker Exp $ */
+/* @version $Id: home.c,v 1.6 2004/02/09 15:14:04 jfclere Exp $ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */
@@ -84,7 +84,10 @@ static bool parse(home_data *data) {
     char *ret=NULL, *sp;
     char buf[1024];
 
-    if (cfgf==NULL) return(false);
+    if (cfgf==NULL) {
+      log_debug("Can't open %s\n",data->cfgf);
+      return(false);
+    }
 
     data->jvms=(home_jvm **)malloc(256*sizeof(home_jvm *));
 

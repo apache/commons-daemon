@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: help.c,v 1.2 2003/09/16 11:50:16 jfclere Exp $ */
+/* @version $Id: help.c,v 1.3 2004/02/09 15:14:04 jfclere Exp $ */
 #include "jsvc.h"
 
 void help(home_data *data) {
@@ -69,7 +69,9 @@ void help(home_data *data) {
     printf("    -jvm <JVM name>\n");
     printf("        use a specific Java Virtual Machine. Available JVMs:\n");
     printf("           ");
-    for (x=0; x<data->jnum; x++) printf(" '%s'",data->jvms[x]->name);
+    for (x=0; x<data->jnum; x++) {
+      printf(" '%s'",PRINT_NULL(data->jvms[x]->name));
+    }
     printf("\n");
 
     printf("    -cp / -classpath <directories and zip/jar files>\n");
