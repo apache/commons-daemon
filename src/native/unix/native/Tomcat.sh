@@ -15,7 +15,7 @@
 # Adapt the following lines to your configuration
 JAVA_HOME=/usr/java/jdk1.3.1
 CATALINA_HOME=/home1/jakarta/jakarta-tomcat-4.1/build
-DAEMON_HOME=/home1/jakarta/jakarta-commons-sandbox/daemon
+DAEMON_HOME=/home1/jakarta/jakarta-commons/daemon
 TOMCAT_USER=jakarta
 TMP_DIR=/var/tmp
 CATALINA_OPTS=
@@ -29,7 +29,7 @@ case "$1" in
     #
     # Start Tomcat
     #
-    $DAEMON_HOME/dist/jsvc \
+    $DAEMON_HOME/src/native/unix/jsvc \
     -user $TOMCAT_USER \
     -home $JAVA_HOME \
     -Dcatalina.home=$CATALINA_HOME \
