@@ -1,0 +1,53 @@
+To build the service libraries and binary under an UNIX operating
+system you will need:
+
+  An ANSI-C compliant compiler (GCC is good)
+  GNU AutoConf
+  A Java Platform 2 compliant SDK
+
+First of all you need to build the "configure" program with:
+
+   sh support/buildconf.sh
+(Note it is possible to replace sh by any compatible shell like bash, ksh).
+
+Once the configure script is generated, run it (remember to specify
+either the --with-java=<dir> parameter or set the JAVA_HOME environment
+to point to your JDK installation. For example:
+
+  ./configure --with-java=/usr/java
+
+or
+
+  JAVA_HOME=/usr/java
+  export JAVA_HOME
+  ./configure
+
+If your operating system is supported, configure will go thru cleanly,
+otherwise it will report an error (please send us the details of your
+OS/JDK, or a patch against the sources). To build the binaries and
+libraries simply do:
+
+  make
+
+This will generate two files: ./java/service.jar and ./native/jsvc.
+It should be straightforward from here on. To check the allowed parameters
+for the jsvc binary simply do
+
+  ./native/jsvc -help
+
+and then, to check a simple service do
+
+  ./native/jsvc -cp ./java/service.jar org.apache.service.support.SimpleService
+
+and telnet to localhost on port 1200. For a less simple example login as root
+and add the "-user nobody" after the classpath, and "100" after the class name.
+This will start the same daemon but running as user "nobody" and bound to your
+protected port 100 (again, try telnet to localhost but to port 100 this time).
+
+For other information, the source code is quite readable, and I'm working on
+some documentation.
+
+Have fun...
+
+  Pier <pier.fumagalli AT sun.com>
+

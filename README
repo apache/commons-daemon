@@ -1,0 +1,12 @@
+To build the JAVA part:
+ant dist
+
+To build the native part:
+cd src/native/unix; configure; make
+You need a gnu make.
+The jsvc executable could be found in dist.
+
+On windoze the additional step is needed:
+cd src/native/nt; make
+There is a README in src/native/nt please have a look to it.
+The exe files are created in dist.

@@ -1,0 +1,25 @@
+$Id: RELEASE-NOTES.txt,v 1.1 2003/09/04 23:28:20 yoavs Exp $
+
+			Commons Daemon Package
+			   Version 1.0-dev
+			    Release Notes
+
+
+INTRODUCTION:
+
+This document contains the release notes for this version of the Commons
+Daemon package, and highlights changes since the previous version.  The
+current release adds new features and bug fixes, and is being done now to
+follow the release early/release often mentality.
+
+
+NEW FEATURES:
+
+* Initial import to Commons, including the daemon Java API, and jsvc 
+  for Unix and Windows NT/2K/XP, which allows running a Java program 
+  as a native operating system daemon
+
+
+BUG FIXES:
+
+

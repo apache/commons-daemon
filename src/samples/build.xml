@@ -1,0 +1,62 @@
+<project name="daemons samples" default="jars" basedir=".">
+
+<!-- ========== Initialize Properties ===================================== -->
+  <property file="build.properties"/>
+  <property name="commons-daemon.jar"   value="../../dist/commons-daemon.jar"/>
+  <property name="dist.home"   value="../../dist"/>
+  <property name="build.home"  value="./build"/>
+  <property name="source.home" value="."/>
+  <property name="commons-collections.jar" value="../../../../commons-collections-1.0/commons-collections.jar"/>
+
+  <target name="jars" depends="SimpleDaemon,ServiceDaemon"/>
+
+  <target name="SimpleDaemon" depends="compile"
+   description="Create SimpleDaemon.jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../../../LICENSE"
+               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <jar    jarfile="${dist.home}/SimpleDaemon.jar">
+      <fileset dir="${build.home}/classes">
+        <include name="SimpleDaemon*.class" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="ServiceDaemon" depends="compile"
+   description="Create ServiceDaemon.jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../../../LICENSE"
+               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <jar    jarfile="${dist.home}/service.jar">
+      <fileset dir="${build.home}/classes">
+        <include name="ServiceDaemon*.class" />
+      </fileset>
+    </jar>
+  </target>
+
+
+  <target name="compile" depends="prepare"
+   description="Create class files">
+       <javac  srcdir="${source.home}"
+           destdir="${build.home}/classes"
+             debug="${compile.debug}"
+       deprecation="${compile.deprecation}"
+          optimize="${compile.optimize}">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="${build.home}"/>
+    <mkdir dir="${build.home}/classes"/>
+  </target>
+
+  <!-- Construct compile classpath -->
+  <path id="compile.classpath">
+    <pathelement location="${commons-daemon.jar}"/>
+    <pathelement location="${commons-collections.jar}"/>
+  </path>
+
+</project>
