@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: java.c,v 1.3 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id: java.c,v 1.4 2004/08/02 16:07:55 jfclere Exp $ */
 #include "jsvc.h"
 
 #ifdef OS_CYGWIN
@@ -43,6 +43,11 @@ static void shutdown(JNIEnv *env, jobject source, jboolean reload) {
     log_debug("Shutdown requested (reload is %d)",reload);
     if (reload==TRUE) main_reload();
     else main_shutdown();
+}
+/* Automaticly restart when the JVM crashes */
+static void java_abort123()
+{
+    exit(123);
 }
 
 char *java_library(arg_data *args, home_data *data) {
@@ -149,17 +154,16 @@ bool java_init(arg_data *args, home_data *data) {
     arg.version=JNI_VERSION_1_2;
     arg.ignoreUnrecognized=FALSE;
     arg.nOptions=args->onum;
-    if (arg.nOptions==0) {
-        arg.options=NULL;
-    } else {
-        opt=(JavaVMOption *)malloc(arg.nOptions*sizeof(JavaVMOption));
-        for (x=0; x<args->onum; x++) {
-            opt[x].optionString=strdup(args->opts[x]);
-            jsvc_xlate_to_ascii(opt[x].optionString);
-            opt[x].extraInfo=NULL;
-        }
-        arg.options=opt;
+    arg.nOptions++; /* Add abort code */
+    opt=(JavaVMOption *)malloc(arg.nOptions*sizeof(JavaVMOption));
+    for (x=0; x<args->onum; x++) {
+        opt[x].optionString=strdup(args->opts[x]);
+        jsvc_xlate_to_ascii(opt[x].optionString);
+        opt[x].extraInfo=NULL;
     }
+    opt[x].optionString="abort";
+    opt[x].extraInfo=java_abort123;
+    arg.options=opt;
 
     /* Do some debugging */
     if (log_debug_flag==true) {
