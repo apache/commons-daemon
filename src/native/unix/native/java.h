@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: java.h,v 1.3 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id$ */
 
 #define LOADER "org/apache/commons/daemon/support/DaemonLoader"
 

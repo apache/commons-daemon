@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: jsvc-unix.c,v 1.11 2005/01/03 11:51:23 jfclere Exp $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 #include <signal.h>

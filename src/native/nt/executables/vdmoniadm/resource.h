@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: resource.h,v 1.2 2004/02/27 08:21:08 jfclere Exp $ */
+/* @version $Id$ */
 /* Used by vdmoniadm.rc */
 #define NO_ACCESS                       1
 #define NO_ACCESS_MONI                  2

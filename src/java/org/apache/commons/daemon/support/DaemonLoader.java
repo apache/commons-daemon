@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: DaemonLoader.java,v 1.5 2004/08/19 05:44:58 billbarker Exp $ */
+/* @version $Id$ */
 
 package org.apache.commons.daemon.support;
 

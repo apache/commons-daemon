@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleDaemon.java,v 1.2 2004/02/27 07:57:51 jfclere Exp $ */
+/* @version $Id$ */
 
 package org.apache.commons.daemon;
 

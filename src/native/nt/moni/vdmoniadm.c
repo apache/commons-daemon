@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: vdmoniadm.c,v 1.2 2004/02/27 08:21:08 jfclere Exp $ */
+/* @version $Id$ */
 
 #include <windows.h>       /* required for all Windows applications */
 #include <stdio.h>         /* for sprintf                           */

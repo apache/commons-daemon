@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: arguments.c,v 1.5 2004/11/05 11:42:17 jfclere Exp $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 /* Return the argument of a command line option */

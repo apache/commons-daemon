@@ -30,7 +30,7 @@ package org.apache.commons.daemon;
  * @author Pier Fumagalli
  * @author Copyright &copy; 2000-2001 <a href="http://www.apache.org/">The
  *         Apache Software Foundation</a>. All rights reserved.
- * @version 1.0 <i>(CVS $Revision: 1.4 $)</i>
+ * @version 1.0 <i>(CVS $Revision$)</i>
  */
 public interface Daemon {
 

@@ -84,7 +84,7 @@ import java.util.StringTokenizer;
  * @author Pier Fumagalli
  * @author Copyright &copy; 2000-2001 <a href="http://www.apache.org/">The
  *         Apache Software Foundation</a>. All rights reserved.
- * @version 1.0 <i>(CVS $Revision: 1.3 $)</i>
+ * @version 1.0 <i>(CVS $Revision$)</i>
  */
 public final class DaemonPermission extends Permission {
 

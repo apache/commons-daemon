@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: debug.h,v 1.3 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id$ */
 #ifndef __JSVC_DEBUG_H__
 #define __JSVC_DEBUG_H__
 

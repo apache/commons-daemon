@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: vdenv.c,v 1.2 2004/02/27 08:21:08 jfclere Exp $ */
+/* @version $Id$ */
 
 /* Read the Win-NT register and set the jsvc environment variable. */
 /* XXX We should use a property file instead  registry */

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: ServiceDaemon.java,v 1.2 2004/02/27 07:57:51 jfclere Exp $ */
+/* @version $Id$ */
 
 import java.io.*;
 import java.net.*;

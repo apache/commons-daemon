@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: home.c,v 1.7 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */

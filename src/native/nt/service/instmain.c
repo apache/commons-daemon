@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: instmain.c,v 1.2 2004/02/27 08:21:08 jfclere Exp $ */
+/* @version $Id$ */
 
 /*
  * jsvc.exe install program, create the service JavaService

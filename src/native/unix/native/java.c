@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: java.c,v 1.5 2005/01/04 15:59:59 jfclere Exp $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 #ifdef OS_CYGWIN

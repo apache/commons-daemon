@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: location.c,v 1.6 2005/01/03 10:58:05 jfclere Exp $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleDaemon.java,v 1.4 2004/11/05 16:03:22 jfclere Exp $ */
+/* @version $Id$ */
 
 import java.io.*;
 import java.net.*;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: kills.c,v 1.2 2004/02/27 08:21:08 jfclere Exp $ */
+/* @version $Id$ */
 
 /*
  * as Windows does not support signal, jsvc uses events to emulate them.
