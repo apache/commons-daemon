@@ -100,7 +100,6 @@
 #define CONWRAP_ENOARGS        1
 #define CONWRAP_EARG           2
 #define CONWRAP_EFATAL         3
-#define TIMEOUT_TIME           20000    /* startup timeout (ms) */
 
 #ifndef PSH_NOCONTEXTHELP
 #define PSH_NOCONTEXTHELP       0x02000000
@@ -116,32 +115,41 @@ int                    ac_use_try = 0;
 int                    ac_use_dlg = 0;
 int                    ac_use_show = 0;
 int                    ac_use_props = 0;
-int                    ac_use_lview = 0;
-
+int                    ac_use_lview = 1;
+/* default splash timeout 5 seconds */
+int                    ac_splash_timeout = 5000;
+int                    ac_lview_current = 0;
 HINSTANCE              ac_instance;
-static procrun_t       *ac_env = NULL;
-static HICON           ac_main_icon;
-static HICON           ac_try_icon;
-static HICON           ac_try_stop;
-static UINT            ac_taskbar_created;
 HWND                   ac_main_hwnd;
 HWND                   ac_list_hwnd;
-static HWND            ac_console_hwnd = NULL;
-static char            *ac_stdout_lines[MAX_LISTCOUNT + 1];
 char                   *ac_cmdline;
 char                   *ac_cmdname;
 char                   *ac_splash_msg = NULL;
 
 RECT                   ac_winpos = {-1, 0, 640, 480};
+
+static procrun_t       *ac_env = NULL;
+static HICON           ac_main_icon;
+static HICON           ac_try_icon;
+static HICON           ac_try_stop;
+static UINT            ac_taskbar_created;
+static HWND            ac_console_hwnd = NULL;
+static char            *ac_stdout_lines[MAX_LISTCOUNT + 1];
 static HWND            ac_splash_hwnd = NULL;
 static HWND            ac_splist_hwnd;
+static int             ac_lv_iicon = 0;
 
-int                    ac_lview_current = 0;
 
-prcrun_lview_t lv_columns[] = {
-    {   "Status",   60      },
-    {   "Message",  552     },
+static prcrun_lview_t lv_columns[] = {
+    {   "Type",     80      },
+    {   "Message",  532     },
     {   NULL,       0       },
+};
+
+static char *lv_infos[] = {
+    "Info",
+    "Warning",
+    "Error"
 };
 
 prcrun_lview_t *ac_columns = &lv_columns[0];
@@ -156,7 +164,7 @@ static void lv_create_view(HWND hdlg, LPRECT pr, LPRECT pw)
     HICON hicon;
     prcrun_lview_t *col = ac_columns;
 
-    imlist = ImageList_Create(16, 16, ILC_COLORDDB | ILC_MASK, 3, 0);
+    imlist = ImageList_Create(16, 16, ILC_COLORDDB | ILC_MASK, 4, 0);
     hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOI),
                       IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     ImageList_AddIcon(imlist, hicon);
@@ -165,6 +173,7 @@ static void lv_create_view(HWND hdlg, LPRECT pr, LPRECT pw)
     ImageList_AddIcon(imlist, hicon);
     hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOS),
                       IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    ImageList_AddIcon(imlist, hicon);
     ImageList_AddIcon(imlist, hicon);
     
     ac_list_hwnd = CreateWindowEx(0L, WC_LISTVIEW, "", 
@@ -194,35 +203,57 @@ static void lv_create_view(HWND hdlg, LPRECT pr, LPRECT pw)
     
 }
 
-static int  ac_lv_iicon = 0;
+/*
+ * Find the first occurrence of find in s.
+ */
+static char *
+stristr(register const char *s, register const char *find)
+{
+    register char c, sc;
+    register size_t len;
 
+    if ((c = *find++) != 0) {
+        len = strlen(find);
+        do {
+            do {
+                if ((sc = *s++) == 0)
+                    return (NULL);
+            } while (sc != toupper(c));
+        } while (strnicmp(s, find, len) != 0);
+        s--;
+    }
+    return ((char *)s);
+} 
 
-void parse_list_string(const char *str)
+void parse_list_string(const char *str, int from)
 {
     int row = 0x7FFFFFFF;
     LV_ITEM lvi;
 
-    if (str) {
-        if (STRN_COMPARE(str, "INFO:")) {
+    if (!from) {
+        /* some general messages 
+         * chnage to suit the particular app.
+         */
+        if (stristr(str, "INFO"))
             ac_lv_iicon = 0;
-        }
-        else if (STRN_COMPARE(str, "WARNING:")) {
+        else if (stristr(str, "WARNING"))
             ac_lv_iicon = 1;
-        }
-        else if (STRN_COMPARE(str, "ERROR:")) {
+        else if (stristr(str, "WARN "))
+            ac_lv_iicon = 1;
+        else if (stristr(str, "ERROR"))
             ac_lv_iicon = 2;
-        }
-        else if (STRN_COMPARE(str, "SEVERE:")) {
-            ac_lv_iicon = 2;
-        }
+        else if (stristr(str, "SEVERE"))
+            ac_lv_iicon = 2;       
     }
+    else /* if this is from stderr set the error icon */
+        ac_lv_iicon = 2;
 
     memset(&lvi, 0, sizeof(LV_ITEM));
     lvi.mask        = LVIF_IMAGE | LVIF_TEXT;
     lvi.iItem       = ac_lview_current;
     lvi.iImage      = ac_lv_iicon;
-    lvi.pszText     = "";
-    lvi.cchTextMax  = 0;
+    lvi.pszText     = lv_infos[ac_lv_iicon];
+    lvi.cchTextMax  = 8;
     row = ListView_InsertItem(ac_list_hwnd, &lvi);
     if (row == -1)
         return;
@@ -263,7 +294,7 @@ void ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop)
     Shell_NotifyIcon(message, &nid);
 }
 
-void ac_add_list_string(const char *str, int len)
+void ac_add_list_string(const char *str, int len, int from)
 {
     static int nqueue = 0;
     static int nlen = 0, olen = 0;
@@ -296,7 +327,7 @@ void ac_add_list_string(const char *str, int len)
         return;
     if (ac_use_lview) {
         for (i = 0; i < nqueue; i++) {
-            (*lv_parser)(ac_stdout_lines[i]);
+            (*lv_parser)(ac_stdout_lines[i], from);
             if (litems++ > MAX_LIST_ITEMS)
                 ListView_DeleteItem(ac_list_hwnd, 0);
         }
@@ -553,7 +584,10 @@ LRESULT CALLBACK ac_console_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPA
            else
                lv_create_view(hdlg, &m, &r);
 
-           ac_add_list_string(NULL, 0);
+           ac_add_list_string(NULL, 0, 0);
+           SetForegroundWindow(ac_console_hwnd);
+           SetActiveWindow(ac_console_hwnd);
+
            break;
         case WM_SIZE:
             switch (LOWORD(wparam)) { 
@@ -1073,7 +1107,7 @@ LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
             /* add the 20 s timer for startup to avoid zombie spash 
              * if something goes wrong.
              */
-            SetTimer(hwnd, WM_TIMER_TIMEOUT, TIMEOUT_TIME, NULL);
+            SetTimer(hwnd, WM_TIMER_TIMEOUT, ac_splash_timeout, NULL);
             if (ac_use_try) {
                 DialogBox(ac_instance, MAKEINTRESOURCE(IDD_DLGSPLASH),
                     hwnd, (DLGPROC)ac_splash_dlg_proc);
@@ -1108,7 +1142,9 @@ LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
                    }
                    else
                        DialogBox(ac_instance, MAKEINTRESOURCE(IDD_DLGCONSOLE),
-                                 hwnd, (DLGPROC)ac_console_dlg_proc);                   
+                                 hwnd, (DLGPROC)ac_console_dlg_proc); 
+                   SetForegroundWindow(ac_console_hwnd);
+                   SetActiveWindow(ac_console_hwnd);
                 break;
                 case WM_RBUTTONUP:
                     ac_show_try_menu(hwnd);
