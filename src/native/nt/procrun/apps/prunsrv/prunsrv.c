@@ -481,7 +481,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     }
     /* Check the startup mode */
     if ((ST_STARTUP & APXCMDOPT_FOUND) &&
-        lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
+        lstrcmpiW(SO_STARTUP, PRSRV_AUTO) == 0)
         dwStart = SERVICE_AUTO_START;
     /* Check if --Install is provided */
     if (!SO_INSTALL) {
