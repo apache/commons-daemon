@@ -3,7 +3,7 @@
 
 <!--
         "Daemon" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.3 2004/01/13 15:07:07 yoavs Exp $
+        $Id: build.xml,v 1.4 2004/02/27 09:34:04 jfclere Exp $
 -->
 
 
@@ -208,6 +208,8 @@
     <mkdir      dir="${dist.home}/logs"/>
     <copy      file="LICENSE"
               todir="${dist.home}"/>
+    <copy      file="NOTICE.txt"
+              todir="${dist.home}"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
     <copy todir="${dist.home}/bin/unix/jsvc-src">
@@ -228,6 +230,8 @@
     <mkdir      dir="${build.home}/classes/META-INF"/>
     <copy      file="LICENSE"
              tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <copy      file="NOTICE.txt"
+             tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
     <jar    jarfile="${dist.home}/commons-${component.name}.jar"
             basedir="${build.home}/classes"
            manifest="${build.home}/conf/MANIFEST.MF"
