@@ -29,7 +29,7 @@ libraries simply do:
 
   make
 
-This will generate two files: ./java/service.jar and ./native/jsvc.
+This will generate the file:  ./native/jsvc.
 It should be straightforward from here on. To check the allowed parameters
 for the jsvc binary simply do
 
