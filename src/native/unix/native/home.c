@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: home.c,v 1.3 2003/12/31 04:58:31 billbarker Exp $ */
+/* @version $Id: home.c,v 1.4 2004/01/19 01:26:43 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */
@@ -107,7 +107,7 @@ static bool parse(home_data *data) {
         /* Format changed for 1.4 JVMs */
         sp = strchr(ret, ' ');
         if(sp != NULL)
-            *sp = '\0'
+            *sp = '\0';
 
         /* Did we find something significant? */
         if (strlen(ret)>0) {
