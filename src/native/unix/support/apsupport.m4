@@ -16,7 +16,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apsupport.m4,v 1.6 2004/11/05 16:53:10 jfclere Exp $
+dnl Version $Id: apsupport.m4,v 1.7 2005/01/03 10:17:24 jfclere Exp $
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[
@@ -28,6 +28,8 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
   i?86)
     CFLAGS="$CFLAGS -DCPU=\\\"i386\\\"" ;;
+  x86_64)
+    CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\"" ;;
   bs2000)
     CFLAGS="$CFLAGS -DCPU=\\\"osd\\\" -DCHARSET_EBCDIC -DOSD_POSIX"
     supported_os="osd"
