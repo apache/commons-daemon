@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: arguments.c,v 1.4 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id: arguments.c,v 1.5 2004/11/05 11:42:17 jfclere Exp $ */
 #include "jsvc.h"
 
 /* Return the argument of a command line option */
@@ -167,6 +167,9 @@ static arg_data *parse(int argc, char *argv[]) {
             args->opts[args->onum++]=strdup(argv[x]);
 
         } else if (strstr(argv[x],"-X")==argv[x]) {
+            args->opts[args->onum++]=strdup(argv[x]);
+
+        } else if (strstr(argv[x],"-ea")==argv[x]) {
             args->opts[args->onum++]=strdup(argv[x]);
 
         } else if (strstr(argv[x],"-")==argv[x]) {
