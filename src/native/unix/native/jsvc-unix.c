@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: jsvc-unix.c,v 1.2 2003/09/12 09:08:51 jfclere Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.3 2003/09/25 13:35:44 jfclere Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -302,7 +302,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     }
 
     /* create a new process group to prevent kill 0 killing the monitor process */
-#ifdef OS_FREEBSD
+#if defined(OS_FREEBSD) || defined(OS_DARWIN)
     setpgid(0,0);
 #else
     setpgrp();
