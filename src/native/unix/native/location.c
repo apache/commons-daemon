@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: location.c,v 1.5 2004/06/10 05:21:24 billbarker Exp $ */
+/* @version $Id: location.c,v 1.6 2005/01/03 10:58:05 jfclere Exp $ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since
@@ -107,7 +107,7 @@ char *location_jvm_configured[] = {
     "$JAVA_HOME/../Libraries/lib$VM_NAME.dylib",
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/$VM_NAME/jvm.dll",          /* Sun JDK 1.3 */
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD) || defined(OS_TRU64)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",/* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JRE 1.3 */
 #elif defined(OS_SYSV)
