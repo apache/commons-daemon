@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: arguments.c,v 1.2 2003/12/31 04:58:31 billbarker Exp $ */
+/* @version $Id: arguments.c,v 1.3 2004/01/19 02:28:34 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Return the argument of a command line option */
@@ -200,8 +200,7 @@ static arg_data *parse(int argc, char *argv[]) {
         } else if (strstr(argv[x],"-D")==argv[x]) {
             temp=strchr(argv[x],'=');
             if (temp==NULL) {
-                log_error("Parameter -D must contain one '=' character");
-                return(NULL);
+                log_debug("Parameter -D must contain one '=' character");
             }
             if (temp==argv[x]+2) {
                 log_error("A property name must be specified before '='");
