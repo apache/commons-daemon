@@ -213,6 +213,7 @@ extern "C" {
 #define PROCRUN_PARAMS_WINPOS       "WindowPosition"
 #define PROCRUN_PARAMS_WINCLR       "WindowColor"
 #define PROCRUN_PARAMS_WINBACK      "WindowBackground"
+#define PROCRUN_PARAMS_USELVIEW     "WindowListView"
 
 
 #define PROCRUN_DEFAULT_CLASS       "Main"
@@ -359,13 +360,14 @@ extern "C" {
 
 extern DWORD WINAPI gui_thread(LPVOID param);
 
-extern void ac_add_list_string(const char *str, int len);
+extern void ac_add_list_string(const char *str, int len, int from);
 extern int  ac_use_try;
 extern int  ac_use_dlg;
 extern int  ac_use_show;
 extern int  ac_use_props;
 extern int  ac_use_lview;
 extern int  ac_lview_current;
+extern int  ac_splash_timeout;
 
 extern  RECT            ac_winpos;
 extern  HINSTANCE       ac_instance;
@@ -378,13 +380,12 @@ extern  prcrun_lview_t  *ac_columns;
 void    ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop);
 void    ac_center_window(HWND hwnd);
 
-typedef void (*lv_parse_cb_t)(const char *data);
+typedef void (*lv_parse_cb_t)(const char *data, int from);
 
 extern lv_parse_cb_t    lv_parser;
 
 #if defined(PROCRUN_EXTENDED)
 
-void acx_parse_list_string(const char *str);
 void acx_init_extended();
 
 

@@ -998,7 +998,15 @@ static int procrun_service_params(process_t *proc)
             sscanf(kval, "%d %d %d %d", &ac_winpos.left, &ac_winpos.right,
                                         &ac_winpos.top, &ac_winpos.bottom);
         }
+
+        klen = MAX_PATH;
+        if ((err = RegQueryValueEx(key, PROCRUN_PARAMS_USELVIEW, NULL, NULL, 
+                                   (unsigned char *)kval,
+                                   &klen)) == ERROR_SUCCESS) {
+            ac_use_lview = atoi(kval);
+        }
 #endif
+        klen = MAX_PATH;
         if ((err = RegQueryValueEx(key, PROCRUN_PARAMS_ENVIRONMENT, NULL, NULL, 
                                    NULL,
                                    &klen)) == ERROR_SUCCESS) {
@@ -1395,7 +1403,7 @@ DWORD WINAPI stdout_thread(LPVOID param)
                 if (ch == '\n' || n >= MAX_PATH) {
                     buff[n] = '\0';
                     DBPRINTF1("RD %s", buff);
-                    ac_add_list_string(buff, n);
+                    ac_add_list_string(buff, n, 0);
                     n  = 0;
                 } 
                 else if (ch == '\t' && n < (MAX_PATH - 4)) {
@@ -1440,7 +1448,7 @@ DWORD WINAPI stderr_thread(LPVOID param)
                 if (ch == '\n' || n >= MAX_PATH) {
                     buff[n] = '\0';
                     DBPRINTF1("RD %s", buff);
-                    ac_add_list_string(buff, n);
+                    ac_add_list_string(buff, n, 1);
                     n  = 0;
                 } 
                 else if (ch == '\t' && n < (MAX_PATH - 4)) {
