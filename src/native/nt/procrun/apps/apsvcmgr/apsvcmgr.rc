@@ -1,0 +1,310 @@
+/* Copyright 2000-2004 The Apache Software Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+#include "apxwin.h"
+#include "apsvcmgr.h"
+
+#define RSTR_ASM        "Apache Service Manager"
+#define RSTR_SCMATS     "Service Manager is attempting to "
+
+IDI_MAINICON         ICON                   "../../resources/apsvcmgr.ico" 
+IDB_TOOLBAR          BITMAP  DISCARDABLE    "../../resources/toolbar.bmp"
+IDB_SSTATUS          BITMAP  DISCARDABLE    "../../resources/sstatus.bmp"
+IDB_SUSERS           BITMAP  DISCARDABLE    "../../resources/susers.bmp"
+IDR_LICENSE          RTF                    "../../resources/license.rtf"
+BMP_JAKARTA          BITMAP                 "../../resources/jakarta.bmp"
+ 
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "apsvcmgr.manifest"
+
+IDC_APPLICATION MENU 
+BEGIN
+    POPUP "&Action"
+    BEGIN
+        MENUITEM "&Minimize to try",            IDAM_TRY
+        MENUITEM SEPARATOR
+        MENUITEM "&New",                        IDAM_NEW
+        MENUITEM "&Delete",                     IDAM_DELETE, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Save                       CRTL+S", IDAM_SAVE
+        MENUITEM "Save &As...              CTRL+A", IDAM_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       IDAM_EXIT
+    END
+    POPUP "&Service"
+    BEGIN
+        MENUITEM "P&ropeties ...",               IDMS_PROPERTIES, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Start",                       IDMS_START, GRAYED
+        MENUITEM "S&top",                        IDMS_STOP, GRAYED
+        MENUITEM "&Pause",                       IDMS_PAUSE, GRAYED
+        MENUITEM "Res&tart",                     IDMS_RESTART, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Re&fresh",                     IDMS_REFRESH
+        MENUITEM SEPARATOR
+        MENUITEM "&Help",                        IDMS_HELP
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "Re&fresh Now      F5",         IDMS_REFRESH
+        POPUP "Update speed"
+        BEGIN
+            MENUITEM "10 Seconds",              IDMV_UFAST
+            MENUITEM "1    Minute",             IDMV_USLOW
+            MENUITEM "Paused",                  IDMV_UPAUSED
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Select Columns ...",          IDMV_SELECTCOLUMNS
+        MENUITEM "Filter Services ...",         IDMV_FILTER
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Help ...",                   IDMH_HELP
+        MENUITEM "&About",                      IDMH_ABOUT
+    END
+END
+
+IDM_POPUPMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "Popup Menu"
+    BEGIN
+        MENUITEM "Propeties ...",              IDMS_PROPERTIES, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Start",                      IDMS_START, GRAYED
+        MENUITEM "Stop",                       IDMS_STOP, GRAYED
+        MENUITEM "Pause",                      IDMS_PAUSE, GRAYED
+        MENUITEM "Restart",                    IDMS_RESTART, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Refresh",                    IDMS_REFRESH
+        MENUITEM SEPARATOR
+        MENUITEM "Help",                       IDMS_HELP, HELP
+    END
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 337, 187
+STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
+CAPTION "Apache Service Manager"
+FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&OK",IDOK,285,150,50,14
+    CONTROL         "",IDC_LICENSE,"RichEdit20A",ES_MULTILINE | 
+                    ES_READONLY | WS_BORDER | WS_VSCROLL,0,31,335,115
+    CONTROL         "BMP_JAKARTA",IDC_STATIC,"Static",SS_BITMAP,0,0,337,30
+    LTEXT           " ",IDC_ABOUTAPP,2,150,270,12
+    LTEXT           "Copyright © 2000-2003 The Apache Software Foundation.",IDC_STATIC,2,160,270,12
+    LTEXT           "http://www.jakarta.org",IDC_STATIC,2,170,270,12 
+    PUSHBUTTON      "&System Info",IAB_SYSINF,285,170,50,14
+END
+
+IDD_PROGRESS DIALOGEX 0, 0, 322, 92
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST
+CAPTION "Apache Service Manager"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Cl&ose",IDOK,261,73,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,202,73,50,14
+    LTEXT           " ",
+                    IDDP_HEAD,40,4,250,8
+    LTEXT           " ",IDDP_TEXT,40,15,250,44
+    CONTROL         "",IDDP_PROGRESS,"msctls_progress32",WS_BORDER,10,50,302,
+                    14
+    ICON            IDI_MAINICON,IDC_STATIC,10,4,20,20,0,WS_EX_TRANSPARENT
+END
+
+IDD_PROPPAGE_SGENERAL DIALOGEX 0, 0, 260, 186
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Service Name: ",IDC_STATIC,10,8,52,8
+    LTEXT           "  ",IDC_PPSGNAME,70,8,240,8
+    LTEXT           "Display &name: ",IDC_STATIC,10,23,50,8
+    EDITTEXT        IDC_PPSGDISP,70,22,180,14,ES_AUTOHSCROLL
+    LTEXT           "&Description: ",IDC_STATIC,10,41,43,8
+    EDITTEXT        IDC_PPSGDESC,70,40,180,14,ES_AUTOHSCROLL
+    LTEXT           "Pat&h to executable:",IDC_STATIC,10,63,66,8
+    EDITTEXT        IDC_PPSGDEXE,10,75,240,14,ES_AUTOHSCROLL | WS_DISABLED
+    LTEXT           "Startup typ&e:",IDC_STATIC,10,94,46,8
+    COMBOBOX        IDC_PPSGCMBST,70,93,180,80,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,128,240,1                    
+    LTEXT           "Service Status:",IDC_STATIC,10,138,52,8
+    LTEXT           "  ",IDC_PPSGSTATUS,70,138,240,8
+    PUSHBUTTON      "&Start",IDC_PPSGSTART,10,160,55,14,WS_DISABLED
+    PUSHBUTTON      "S&top",IDC_PPSGSTOP,71,160,55,14,WS_DISABLED
+    PUSHBUTTON      "&Pause",IDC_PPSGPAUSE,132,160,55,14,WS_DISABLED
+    PUSHBUTTON      "&Restart",IDC_PPSGRESTART,193,160,55,14,WS_DISABLED
+END
+
+IDD_PROPPAGE_LOGON DIALOGEX 0, 0, 260, 186
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Log on as:",IDC_STATIC,10,8,51,8
+    CONTROL         "&Local System account",IDC_PPSLLS,"Button",
+                    BS_AUTORADIOBUTTON,10,23,85,10
+    CONTROL         "Allo&w service to interact with desktop",IDC_PPSLID,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,37,135,10
+    CONTROL         "&This account:",IDC_PPSLUA,"Button",BS_AUTORADIOBUTTON,
+                    10,59,61,10
+    EDITTEXT        IDC_PPSLUSER,86,58,114,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse...",IDC_PPSLBROWSE,205,58,50,14
+    LTEXT           "&Password:",IDL_PPSLPASS,21,76,36,8
+    EDITTEXT        IDC_PPSLPASS,86,75,114,14,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "&Confirm Password:",IDL_PPSLCPASS,20,93,63,8
+    EDITTEXT        IDC_PPSLCPASS,86,92,114,14,ES_PASSWORD | ES_AUTOHSCROLL
+END
+
+IDD_FILTER DIALOGEX 0, 0, 296, 199
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Service display filters"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Enter multiple filter match strings separated by the ';' character. '*' is a wildcard.",
+                    IDC_STATIC,10,7,278,8
+    DEFPUSHBUTTON   "&OK",IDOK,232,175,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,176,175,50,14
+    GROUPBOX        " Service name filters ",IDC_STATIC,10,28,275,62
+    LTEXT           "Include:",IDC_STATIC,18,48,27,8
+    EDITTEXT        IDC_FINAME,63,46,211,14,ES_AUTOHSCROLL
+    LTEXT           "Exclude:",IDC_STATIC,18,66,28,8
+    EDITTEXT        IDC_FXNAME,63,64,211,14,ES_AUTOHSCROLL
+    GROUPBOX        "Service image path filters",IDC_STATIC,10,102,275,62
+    LTEXT           "Include:",IDC_STATIC,17,120,27,8
+    EDITTEXT        IDC_FISIMG,63,118,211,14,ES_AUTOHSCROLL
+    LTEXT           "Exclude:",IDC_STATIC,17,138,28,8
+    EDITTEXT        IDC_FXSIMG,63,136,211,14,ES_AUTOHSCROLL
+END
+
+IDD_SELCOL DIALOGEX 0, 0, 220, 130
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Select Columns"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,156,105,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,96,105,50,14
+    LTEXT           "Select the columns that will apear on the Service view of the Service Manager",
+                    IDC_STATIC,16,2,194,16
+    CONTROL         "Name",IDC_CCOL1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    16,26,83,10
+    CONTROL         "Description",IDC_CCOL2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,16,39,83,10
+    CONTROL         "Startup Type",IDC_CCOL3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,16,52,83,10
+    CONTROL         "Log On As",IDC_CCOL4,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,16,65,83,10
+    CONTROL         "Process Id",IDC_CCOL5,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,16,78,83,10
+END
+
+IDD_SELUSER DIALOGEX 0, 0, 410, 201
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU |
+    WS_THICKFRAME
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Select User"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Name:",IDSU_SELNAME,10,183,22,8
+    EDITTEXT        IDSU_SELECTED,48,200,213,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,292,180,50,14,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,348,180,50,14
+    LTEXT           "Look In:",IDC_STATIC,10,9,27,8
+    CONTROL         "",IDSU_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | 
+                    LVS_SORTASCENDING | LVS_SHAREIMAGELISTS | LVS_ALIGNLEFT | WS_BORDER | 
+                    WS_TABSTOP,0,26,410,149,WS_EX_CLIENTEDGE
+    CONTROL         "",IDSU_COMBO,"ComboBoxEx32",CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP,47,6,260,80
+END
+
+IDC_APPLICATION ACCELERATORS 
+BEGIN
+    "/",            IDMH_ABOUT,              ASCII,  ALT, NOINVERT
+    "?",            IDMH_ABOUT,              ASCII,  ALT, NOINVERT
+    VK_F1,          IDMH_HELP,               VIRTKEY, NOINVERT
+    "S",            IDAM_SAVE,               VIRTKEY, CONTROL, NOINVERT
+    "A",            IDAM_SAVEAS,             VIRTKEY, CONTROL, NOINVERT    
+    "F",            IDMV_FILTER,             VIRTKEY, CONTROL, NOINVERT    
+    VK_F5,          IDMS_REFRESH,            VIRTKEY, NOINVERT
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_APPLICATION     RSTR_ASM
+    IDS_APPVERSION      "Version 1.0.0"
+    IDS_APPFULLNAME     RSTR_ASM " Version " PRG_VERSION
+    IDS_APPCOPYRIGHT    "Copyright © 2000-2003 The Apache Software Foundation"
+    IDS_APPDESCRIPTION  "Apache NT Service Management Tool"
+    IDS_HSSTART         RSTR_SCMATS "start the following service ..."
+    IDS_HSSTOP          RSTR_SCMATS "stop the following service ..."
+    IDS_HSRESTART       RSTR_SCMATS "to restart the following service ..."
+    IDS_HSPAUSE         RSTR_SCMATS "to pause the following service ..."
+    
+    IDAM_NEW            "New Service"
+    IDAM_DELETE         "Delete Service"
+    IDAM_SAVE           "Export List"
+    IDMS_REFRESH        "Refresh"
+    IDMV_FILTER         "Filter Services"
+    IDMS_PROPERTIES     "Properties"
+    IDMS_START          "Start Service"
+    IDMS_STOP           "Stop Service"
+    IDMS_PAUSE          "Pause Service"
+    IDMS_RESTART        "Restart Service"
+    IDMH_HELP           "Help"    
+    
+    IDS_DELSERVICEC     "Confirm Delete Service"
+    IDS_DELSERVICET     "You cannot undo the effects of this dialog box!\r\n\r\nYou are about to delete '%s' service.\r\nDeleting services may cause your system unusable.\r\n\r\nDo you want to proceed?"
+    IDS_VALIDPASS       "Please enter a valid password"    
+    IDS_PPGENERAL       "General"
+    IDS_PPLOGON         "Log On"
+    IDS_NOTIMPLEMENTED  "Sorry, but this feature is not implemented yet"
+END
+ 
+
+1 VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+#if defined(_DEBUG)
+ FILEFLAGS 0x03L
+#else
+ FILEFLAGS 0x02L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904b0"
+    BEGIN
+      VALUE "Comments", "NT Service Management Tool\0"
+      VALUE "CompanyName", "Apache Software Foundation\0"
+      VALUE "FileDescription", RSTR_ASM "\0"
+      VALUE "FileVersion", PRG_VERSION
+      VALUE "InternalName", RSTR_ASM "\0"
+      VALUE "LegalCopyright", "Copyright © 2000-2003 The Apache Software Foundation.\0"
+      VALUE "OriginalFilename", "apsvcmgr.exe\0"
+      VALUE "ProductName", RSTR_ASM "\0"
+      VALUE "ProductVersion", PRG_VERSION
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END 
