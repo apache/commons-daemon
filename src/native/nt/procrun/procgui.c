@@ -57,7 +57,7 @@
  */
 
 /* ====================================================================
- * procrun (Tomcat Service Manager)
+ * procrun
  *
  * Contributed by Mladen Turk <mturk@apache.org>
  *

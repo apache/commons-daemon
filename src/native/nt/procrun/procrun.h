@@ -57,7 +57,7 @@
  */
 
 /* ====================================================================
- * procrun (Tomcat Service Manager)
+ * procrun
  *
  * Contributed by Mladen Turk <mturk@apache.org>
  *
@@ -173,7 +173,7 @@ extern "C" {
 #define PROC_ARG_EDIT_SERVICE       "//ES//"
 
 #define PROCRUN_VERSION_STR         "1.1"
-#define PROCRUN_REGKEY_ROOT         "SOFTWARE\\Apache Software Foundation\\Tomcat Service Manager"
+#define PROCRUN_REGKEY_ROOT         "SOFTWARE\\Apache Software Foundation\\Process Runner " PROCRUN_VERSION_STR
 #define PROCRUN_REGKEY_SERVICES     "System\\CurrentControlSet\\Services\\%s"
 #define PROCRUN_REGKEY_PARAMS       "System\\CurrentControlSet\\Services\\%s\\Parameters"
 #define PROCRUN_REGKEY_RSERVICES    PROCRUN_REGKEY_ROOT "\\%s"
