@@ -5,7 +5,7 @@
   <name>Daemon</name>
   <id>commons-daemon</id>
   <logo>/images/logo.gif</logo>
-  <currentVersion>1.0-Alpha</currentVersion>
+  <currentVersion>1.0</currentVersion>
 
   <organization>
     <name>Apache Software Foundation</name>
