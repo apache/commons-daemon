@@ -1991,7 +1991,7 @@ static int process_args(process_t *proc, int argc, char **argv,
 {
     int arglen = 0;
     char *argp;
-    int i,n;
+    int i,n, sp;
 
     /* parse command line */
     *java = NULL;
@@ -2001,7 +2001,14 @@ static int process_args(process_t *proc, int argc, char **argv,
         return -1;
     } 
     strcat(path, " " PROC_ARG_RUN_SERVICE);
+    sp = strchr(proc->service.name, ' ') != NULL;
+    if(sp) {
+        strcat(path,"\"");
+    }
     strcat(path, proc->service.name); 
+    if(sp) {
+        strcat(path,"\"");
+    }
     for (i = 2; i < argc; i++) {
         DBPRINTF2("Parsing %d [%s]\n", i, argv[i]);
         if (strlen(argv[i]) > 2 && argv[i][0] == '-' && argv[i][1] == '-') {
@@ -2044,7 +2051,13 @@ static int process_args(process_t *proc, int argc, char **argv,
             else if (STRNI_COMPARE(argp, PROCRUN_PARAMS_INSTALL)) {
                 strcpy(path, argv[++i]); 
                 strcat(path, " " PROC_ARG_RUN_SERVICE);
+                if(sp) {
+                    strcat(path,"\"");
+                }
                 strcat(path, proc->service.name);
+                if(sp) {
+                    strcat(path, "\"");
+                }
             }
             else if (STRNI_COMPARE(argp, PROCRUN_PARAMS_ENVIRONMENT)) {
               proc->service.environment = pool_strdup(proc->pool, argv[++i]);
@@ -2332,7 +2345,7 @@ int procrun_update_service(process_t *proc, int argc, char **argv)
     char *argp;
     char path[MAX_PATH+1];
     char *java = NULL;
-    int arglen = 0;
+    int arglen = 0, sp;
 
     int i, n;
     if (!proc->service.name) {
@@ -2343,8 +2356,15 @@ int procrun_update_service(process_t *proc, int argc, char **argv)
         DBPRINTF0(NULL);
         return -1;
     }
+    sp = strchr(proc->service.name, ' ') != NULL;
     strcat(path, " " PROC_ARG_RUN_SERVICE);
+    if(sp) {
+        strcat(path,"\"");
+    }
     strcat(path, proc->service.name);
+    if(sp) {
+        strcat(path, "\"");
+    }
     DBPRINTF1("Updating service %s\n", path);
 
     manager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
