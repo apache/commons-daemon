@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: DaemonLoader.java,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: DaemonLoader.java,v 1.2 2003/09/26 21:09:20 jfclere Exp $ */
 
 package org.apache.commons.daemon.support;
 
@@ -161,7 +161,12 @@ public final class DaemonLoader {
             }
             /* Check methods */
             Class[] myclass = new Class[1];
-            myclass[0] = ar.getClass();
+            if (isdaemon) {
+              myclass[0] = DaemonContext.class;
+            } else {
+              myclass[0] = ar.getClass();
+            }
+
             init = c.getMethod("init",myclass);
 
             myclass = null;
