@@ -59,6 +59,7 @@
 #include "procrun.h"
 #include "windows.h"
 
+#ifndef PROCRUN_CONSOLE
 #if !defined(EXT_ICOCONWRAP)
 IDI_ICOCONWRAP         ICON                    "proctry.ico"
 #endif
@@ -71,18 +72,15 @@ IDI_ICOCONTRYSTOP      ICON                    "proctry.ico"
 
 IDR_RTFLIC             RTF                     "License.rtf"
 
-#ifdef _MSC_VER
 #if !defined(EXT_BMPSPLASH)
-IDB_BMPSPLASH          BITMAP   DISCARDABLE    "splash.bmp"
-#endif
+BMPSPLASH              BITMAP                  "splash.bmp"
 #endif
 
 IDI_ICOI               ICON                    "icoi.ico"
 IDI_ICOS               ICON                    "icos.ico"
 IDI_ICOW               ICON                    "icow.ico"
 
-#ifdef _MSC_VER
-IDB_BMPJAKARTA         BITMAP   DISCARDABLE    "jakarta-banner.bmp"
+BMPJAKARTA             BITMAP                  "jakarta-banner.bmp"
 IDR_CMENU MENUEX DISCARDABLE 
 BEGIN
     POPUP "&Process",65535,MFT_STRING,MFS_ENABLED
@@ -98,23 +96,6 @@ BEGIN
         MENUITEM "&About",                      IDM_MENU_ABOUT
     END
 END
-#else
-IDR_CMENU MENU DISCARDABLE 
-BEGIN
-    POPUP "&Process"
-    BEGIN
-        MENUITEM "&Shutdown",                   IDM_MENU_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Copy",                       IDM_MENU_EDIT
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About",                      IDM_MENU_ABOUT
-    END
-END
-#endif
 
 IDD_DLGCONSOLE DIALOGEX 0, 0, 480, 240
 STYLE DS_3DLOOK | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | 
@@ -129,7 +110,6 @@ BEGIN
                     WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
 END
 
-#ifdef _MSC_VER
 IDD_ABOUTBOX DIALOGEX 0, 0, 337, 167
 STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "About Apache Process Runner"
@@ -138,21 +118,9 @@ BEGIN
     DEFPUSHBUTTON   "&OK",IDOK,285,150,50,14
     CONTROL         "",IDC_RICHEDIT21,"RichEdit20A",ES_MULTILINE | 
                     ES_READONLY | WS_BORDER | WS_VSCROLL,0,31,335,115
-    CONTROL         117,IDC_STATIC,"Static",SS_BITMAP,0,0,337,30
+    CONTROL         "BMPJAKARTA",IDC_STATIC,"Static",SS_BITMAP,0,0,337,30
     LTEXT           "Apache Process Runner ver. 1.1.0",IDC_STATIC,2,150,270,12
 END
-#else
-IDD_ABOUTBOX DIALOGEX 0, 0, 337, 167
-STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
-CAPTION "About Apache Process Runner"
-FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "&OK",IDOK,285,150,50,14
-    CONTROL         "",IDC_RICHEDIT21,"RichEdit20A",ES_MULTILINE | 
-                    ES_READONLY | WS_BORDER | WS_VSCROLL,0,0,335,145
-    LTEXT           "Apache Process Runner 1.1.0",IDC_STATIC,8,150,270,12
-END
-#endif
 
 RC_DLG_SRVOPT DIALOGEX 0, 0, 337, 186
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_BORDER
@@ -223,11 +191,11 @@ FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
     LISTBOX         IDL_INFO,7,126,217,9, LBS_NOINTEGRALHEIGHT | 
                     LBS_NOSEL | NOT WS_BORDER | NOT LBS_USETABSTOPS
-#ifdef _MSC_VER                    
-    CONTROL         IDB_BMPSPLASH,IDC_STATIC,"Static",SS_BITMAP |
+    CONTROL         "BMPSPLASH",IDC_STATIC,"Static",SS_BITMAP |
                     SS_CENTERIMAGE,0,0,322,151
-#endif
 END 
+
+#endif
 
 1 VERSIONINFO
  FILEVERSION 2,1,1,0
