@@ -18,10 +18,112 @@
       It is possible to use cygwin to build procrun.
       <a href="http://www.cygwin.com/"> cygwin</a> for more informations.
 </p>
-<todo/>
+<p>
+      If you have access to MSVC (version 6.0 or higher), then simply 
+      open the corresponding build project file.
+      <ul>
+       <li>For MSVC 6.x, use <code>procrun.dsw</code></li>
+       <li>For MSVC.NET, use <code>procrun.vcproj</code></li>
+      </ul>
+      At this point, you need to select from the build menu which version you
+      want to build (select either the release or debug build, depending on 
+      your preferences).  The selections are:
+      <ul>
+       <li><code>procrun</code> if you want the GUI interface</li>
+       <li><code>procrun CONSOLE</code> if you don't want the GUI interface</li>
+       <li><code>procrun DLL</code> if you want to launch via <code>rundll</code></li>
+      </ul>
+</p>
 </section>
 <section name="Using procrun">
-<todo/>
+<p>
+     The first thing that you must do is to install your service.  As a 
+     special case, if you haved installed Tomcat 5 via the installer, then it 
+     will do this for you, and you can skip this step.
+</p>
+<p>
+     To install the service, you need to use the <code>//IS//</code> parameter.
+     For example:
+     <pre>
+           procrun //IS//Tomcat5 --DisplayName "Tomcat 5.0.11" \
+            --Description "Tomcat 5.0.11 JDK 1.4 http://jakarta.apache.org" \
+            --ImagePath "c:\devtools\tomcat\5.0\bin\bootstrap.jar" \
+            --StartupClass org.apache.catalina.startup.Bootstrap;main;start \
+            --ShutdownClass org.apache.catalina.startup.Bootstrap;main;stop \
+            --Java auto
+    </pre>
+    <table>
+    <caption>The options available for installation are</caption>
+    <tr><th>--DisplayName</th>
+        <td>This is the name shown in the Windows Services manager.</td></tr>
+    <tr><th>--Description</th></tr>
+        <td>This is the service description shown in the windows Services manager.</td></tr>
+    <tr><th>--ImagePath</th>
+        <td>Full path to the executable to be run as service,
+            or name of the Java Class Path. In cases when the
+            service runs JVM or Java binary this is the
+            parameter passed to -Djava.class.path option.</td></tr>
+    <tr><th>--Arguments</th>
+        <td>Arguments are enclosed inside double quotation
+            marks and passed to the service image.</td></tr>
+    <tr><th>--WorkingPath</th>
+        <td>Sets the working path to the desired value.</td></tr>
+    <tr><th>--Java</th>
+        <td><ul>
+             <li>auto:
+                    Auto will cause to load the default JVM read
+                    read from registry.</li>
+             <li>java[w]:
+                    The default java.exe or javaw.exe will be
+                    located and executed with
+                    -Djava.class.path=ImagePath</li>
+             <li>If neither java or auto are specified then this
+                parameter is treated as full path to the jvm.dll</li>
+            </ul></td></tr>
+    <tr><th>--JavaOptions</th>
+        <td>               This is the list of options to be passed to the JVM
+                The options are separated using hash (#) simbol.
+                For Example:
+                -Xmx=100M#-Djava.compiler=NONE</td></tr>
+    <tr><th>--StartupClass</th>
+        <td>Class name that will be called if started from JVM
+                when the applications starts.
+                The method name is separated by semicolon after the
+                class name.
+                The parameters passed to the class method are semicolon
+                separated values after the method name.
+                For example:
+                org/apache/jk/apr/TomcatStarter;Main;start</td></tr>
+    <tr><th>--ShutdownClass</th>
+        <td>Class name that will be called if started from JVM
+                when the applications stops. The class has to have
+                the method Main.
+                The method name is separated by semicolon after the
+                class name.
+                The parameters passed to the class method are semicolon
+                separated values after the method name.
+                For example:
+                org/apache/jk/apr/TomcatStarter;Main;stop;some;dummy;params</td></tr>
+   <tr><th>--StdInputFile</th>
+       <td>The file that will be read an passed as standard
+                input stream to the redirected application</td></tr>
+   <tr><th>--StdOutputFile</th>
+       <td>Path to the redirected stdout.</td></tr>
+   <tr><th>--StdErrorFile</th>
+       <td>Path to the redirected stderr.</td></tr>
+   <tr><th>--Startup</th>
+       <td>The services startup mode Automatic or Manual.
+                Default value is auto.</td></tr>
+   <tr><th>--User</th>
+       <td>The User account used for launching redirected process.</td></tr>
+   <tr><th>--Password</th>
+       <td>The password of User account used for launching
+                redirected process.</td></tr>
+   <tr><th>--Install</th>
+       <td>Used as Service manager ImagePath when installing
+                service from installation program using procrunw.</td></tr>
+  </table>
+</p>
 </section>
 
 </body>
