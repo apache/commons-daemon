@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: location.c,v 1.3 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id: location.c,v 1.4 2004/03/18 17:28:33 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since
@@ -49,6 +49,8 @@ char *location_home[] = {
 char *location_jvm_cfg[] = {
     "$JAVA_HOME/jre/lib/jvm.cfg", /* JDK */
     "$JAVA_HOME/lib/jvm.cfg",     /* JRE */
+    "$JAVA_HOME/jre/lib/" CPU "/jvm.cfg", /* JDK */
+    "$JAVA_HOME/lib/" CPU "/jvm.cfg",     /* JRE */
     NULL,
 };
 
