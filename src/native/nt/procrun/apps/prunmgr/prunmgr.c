@@ -488,7 +488,7 @@ BOOL __generalStopSave(HWND hDlg)
     s = apxCRLFToMszW(hPool, p, &l);
     apxFree(p);
     apxRegistrySetMzStrW(hRegserv, APXREG_PARAMSOFTWARE,
-                         _s_start, L"Params", s, l);
+                         _s_stop, L"Params", s, l);
     apxFree(s);
 
     if (!(TST_BIT_FLAG(_propertyChanged, 1)))
