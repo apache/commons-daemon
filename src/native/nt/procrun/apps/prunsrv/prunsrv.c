@@ -143,7 +143,7 @@ static APXCMDLINEOPT _options[] = {
 #define SO_STOPPARAMS       GET_OPT_V(18)
 #define SO_STOPMETHOD       GET_OPT_V(19)
 #define SO_STOPMODE         GET_OPT_V(20)
-#define SO_STOPTIMEOUT      GET_OPT_V(21)
+#define SO_STOPTIMEOUT      GET_OPT_I(21)
 
 #define SO_STARTIMAGE       GET_OPT_V(22)
 #define SO_STARTPATH        GET_OPT_V(23)
@@ -692,8 +692,10 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
 /* Executed when the service receives stop event */
 static DWORD serviceStop()
 {
-    APXHANDLE hJava = NULL;
+    APXHANDLE hWorker = NULL;
     DWORD  rv = 0;
+    BOOL   wait_to_die = FALSE;
+    DWORD  timeout     = SO_STOPTIMEOUT * 1000;
 
     apxLogWrite(APXLOG_MARK_INFO "Stopping service...");
 
@@ -702,56 +704,64 @@ static DWORD serviceStop()
         return TRUE;    /* Nothing to do */
     }
     if (_jni_shutdown) {
-        hJava = apxCreateJava(gPool, _jni_jvmpath);
-        if (IS_INVALID_HANDLE(hJava)) {
+        if (!SO_STARTPATH && SO_STOPPATH) {
+            /* If the Working path is specified change the current directory 
+             * but only if the start path wasn't specified already.
+             */
+            SetCurrentDirectoryW(SO_STARTPATH);
+        }
+        hWorker = apxCreateJava(gPool, _jni_jvmpath);
+        if (IS_INVALID_HANDLE(hWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
             return 1;
         }
-        if (!apxJavaInitialize(hJava, _jni_classpath, _jni_jvmoptions,
+        if (!apxJavaInitialize(hWorker, _jni_classpath, _jni_jvmoptions,
                                SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
         }
-        if (!apxJavaLoadMainClass(hJava, _jni_sclass, _jni_smethod, _jni_sparam)) {
+        if (!apxJavaLoadMainClass(hWorker, _jni_sclass, _jni_smethod, _jni_sparam)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed loading main %s class %s",
                         _jni_rclass, _jni_classpath);
             goto cleanup;
         }
-        if (!apxJavaStart(hJava)) {
+        if (!apxJavaStart(hWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
             rv = 3;
         }
         else {
-            apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java stop worker to finish...");
-            apxJavaWait(hJava, INFINITE, FALSE);        
-            apxLogWrite(APXLOG_MARK_DEBUG "Java stop worker finished.");
+            apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java jni stop worker to finish...");
+            apxJavaWait(hWorker, INFINITE, FALSE);        
+            apxLogWrite(APXLOG_MARK_DEBUG "Java jni stop worker finished.");
         }
-    } else {
+        wait_to_die = TRUE;
+    } 
+    else if (SO_STOPMODE) { /* Only in case we have a stop mode */
         DWORD nArgs;
         LPWSTR *pArgs;
         /* Redirect process */
-        hJava = apxCreateProcessW(gPool, 
+        hWorker = apxCreateProcessW(gPool, 
                                     0,
                                     child_callback,
                                     SO_USER,
                                     SO_PASSWORD,
                                     FALSE);
-        if (IS_INVALID_HANDLE(hJava)) {
+        if (IS_INVALID_HANDLE(hWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating process");
             return 1;
         }
-        if (!apxProcessSetExecutableW(hJava, SO_STARTIMAGE)) {
+        if (!apxProcessSetExecutableW(hWorker, SO_STOPIMAGE)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
                         SO_STARTIMAGE);
             rv = 2;
             goto cleanup;
         }
         /* Assemble the command line */
-        nArgs = apxMultiSzToArrayW(gPool, SO_STARTPARAMS, &pArgs);
+        nArgs = apxMultiSzToArrayW(gPool, SO_STOPPARAMS, &pArgs);
         /* Pass the argv to child process */
-        if (!apxProcessSetCommandArgsW(hJava, SO_STARTIMAGE,
+        if (!apxProcessSetCommandArgsW(hWorker, SO_STOPIMAGE,
                                        nArgs, pArgs)) {
             rv = 3;
             apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d)",
@@ -759,43 +769,65 @@ static DWORD serviceStop()
             goto cleanup;
         }
         /* Set the working path */
-        if (!apxProcessSetWorkingPathW(hJava, SO_STARTPATH)) {
+        if (!apxProcessSetWorkingPathW(hWorker, SO_STOPPATH)) {
             rv = 4;
             apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to %S",
-                        SO_STARTPATH);
+                        SO_STOPPATH);
             goto cleanup;
         }
         /* Finally execute the child process 
          */
-        if (!apxProcessExecute(hJava)) {
+        if (!apxProcessExecute(hWorker)) {
             rv = 5;
             apxLogWrite(APXLOG_MARK_ERROR "Failed executing process");
             goto cleanup;
         } else {
-            apxLogWrite(APXLOG_MARK_DEBUG "Waiting java stop worker to finish...");
-            apxHandleWait(hJava, INFINITE, FALSE);        
-            apxLogWrite(APXLOG_MARK_DEBUG "Java stop worker finished.");
+            apxLogWrite(APXLOG_MARK_DEBUG "Waiting stop worker to finish...");
+            apxHandleWait(hWorker, INFINITE, FALSE);        
+            apxLogWrite(APXLOG_MARK_DEBUG "Stop worker finished.");
         }
-
+        wait_to_die = TRUE;
     }
 cleanup:
-    /* Close Java JNI handle
+    /* Close Java JNI handle or stop worker
      * If this is the single JVM instance it will unload
      * the JVM dll too.
      * The worker will be closed on service exit.
      */
-    if (!IS_INVALID_HANDLE(hJava))
-        apxCloseHandle(hJava);
-    if(rv) {
-      /* Simply send the WM_CLOSE to the worker */
-      apxLogWrite(APXLOG_MARK_DEBUG "Sending WM_CLOSE to worker");
-      apxHandleSendMessage(gWorker, WM_CLOSE, 0, 0);
-    } else {
-      /* Wait to give it a chance to die naturally, then kill it. */
-      apxHandleWait(gWorker, 600000, TRUE);
-    }
-    apxLogWrite(APXLOG_MARK_INFO "Service stopped.");
+    if (!IS_INVALID_HANDLE(hWorker))
+        apxCloseHandle(hWorker);
+    if (timeout > 0x7FFFFFFF)
+        timeout = INFINITE;     /* If the timeout was '-1' wait forewer */ 
+    if (wait_to_die && !timeout)
+        timeout = 300 * 1000;   /* Use the 5 minute default shutdown */
 
+    if (timeout) {  
+        FILETIME fts, fte;
+        ULARGE_INTEGER s, e;
+        DWORD    nms;
+        /* Wait to give it a chance to die naturally, then kill it. */
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for worker to die naturally...");
+        GetSystemTimeAsFileTime(&fts);
+        rv = apxHandleWait(gWorker, timeout, TRUE);
+        GetSystemTimeAsFileTime(&fte);
+        s.LowPart  = fts.dwLowDateTime;
+        s.HighPart = fts.dwHighDateTime;
+        e.LowPart  = fte.dwLowDateTime;
+        e.HighPart = fte.dwHighDateTime;
+        nms = (DWORD)((e.QuadPart - s.QuadPart) / 10000);
+        if (rv == WAIT_OBJECT_0) {
+            rv = 0;
+            apxLogWrite(APXLOG_MARK_DEBUG "Worker finished gracefully in %d ms.", nms);
+        }
+        else
+            apxLogWrite(APXLOG_MARK_DEBUG "Worker was killed in %d ms.", nms);
+    }
+    else {
+        apxLogWrite(APXLOG_MARK_DEBUG "Sending WM_CLOSE to worker");
+        apxHandleSendMessage(gWorker, WM_CLOSE, 0, 0);
+    }
+
+    apxLogWrite(APXLOG_MARK_INFO "Service stopped.");
     return rv;
 }
 
@@ -805,6 +837,7 @@ static DWORD serviceStart()
     DWORD  rv = 0;
     DWORD  nArgs;
     LPWSTR *pArgs;
+    FILETIME fts;
 
     apxLogWrite(APXLOG_MARK_INFO "Starting service...");
 
@@ -812,7 +845,12 @@ static DWORD serviceStart()
         apxLogWrite(APXLOG_MARK_INFO "Worker is not defined");
         return TRUE;    /* Nothing to do */
     }
+    GetSystemTimeAsFileTime(&fts);
     if (_jni_startup) {
+        if (SO_STARTPATH) {
+            /* If the Working path is specified change the current directory */
+            SetCurrentDirectoryW(SO_STARTPATH);
+        }
         gWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(gWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
@@ -882,7 +920,16 @@ static DWORD serviceStart()
         }
     }
     if (rv == 0) {
-        apxLogWrite(APXLOG_MARK_INFO "Service started.");
+        FILETIME fte;
+        ULARGE_INTEGER s, e;
+        DWORD    nms;
+        GetSystemTimeAsFileTime(&fte);
+        s.LowPart  = fts.dwLowDateTime;
+        s.HighPart = fts.dwHighDateTime;
+        e.LowPart  = fte.dwLowDateTime;
+        e.HighPart = fte.dwHighDateTime;
+        nms = (DWORD)((e.QuadPart - s.QuadPart) / 10000);
+        apxLogWrite(APXLOG_MARK_INFO "Service started in %d ms.", nms);
     }
     return rv;
 cleanup:
