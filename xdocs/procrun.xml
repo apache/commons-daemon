@@ -56,7 +56,7 @@
     <caption>The options available for installation are</caption>
     <tr><th>--DisplayName</th>
         <td>This is the name shown in the Windows Services manager.</td></tr>
-    <tr><th>--Description</th></tr>
+    <tr><th>--Description</th>
         <td>This is the service description shown in the windows Services manager.</td></tr>
     <tr><th>--ImagePath</th>
         <td>Full path to the executable to be run as service,
