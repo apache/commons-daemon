@@ -76,6 +76,8 @@ static LPCWSTR  _s_stop         = L"Stop";
 static LPCWSTR _commands[] = {
     L"ES",      /* 1 Manage Service (default)*/
     L"MS",      /* 2 Monitor Service */
+    L"MR",      /* 3 Monitor Service and start if not runing */
+    L"MQ",      /* 4 Quit all running Monitor applications */
     NULL
 };
 
@@ -1554,6 +1556,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     MSG    msg;
     LPAPXCMDLINE lpCmdline;
     HANDLE mutex = NULL;
+    BOOL quiet = FALSE;
 
     apxHandleManagerInitialize();
     hPool     = apxPoolCreate(NULL, 0);
@@ -1573,11 +1576,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
                         lpCmdLine);
         goto cleanup;
     }
-    else if (lpCmdline->dwCmdIndex == 2)
+    else if (lpCmdline->dwCmdIndex == 4)
+        quiet = TRUE;
+    else if (lpCmdline->dwCmdIndex >= 2)
         bEnableTry = TRUE;
     hService = apxCreateService(hPool, GENERIC_ALL, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        apxDisplayError(TRUE, NULL, 0, "Unable to open the Service Manager");
+        if (!quiet)
+            apxDisplayError(TRUE, NULL, 0, "Unable to open the Service Manager");
         goto cleanup;
     }
     /* Open the main service handle */
@@ -1586,15 +1592,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
         if (*w == L'w')
             *w = L'\0';
         if (!apxServiceOpen(hService, lpCmdline->szApplication)) {
-            apxDisplayError(TRUE, NULL, 0, "Unable to open the service '%S'",
-                            lpCmdline->szApplication);
+            if (!quiet)
+                apxDisplayError(TRUE, NULL, 0, "Unable to open the service '%S'",
+                                lpCmdline->szApplication);
             goto cleanup;
         }
     }
     /* Obtain service parameters and status */
     if (!(_currentEntry = apxServiceEntry(hService, TRUE))) {
-        apxDisplayError(TRUE, NULL, 0, "Unable to query the service '%S' status",
-                        lpCmdline->szApplication);
+        if (!quiet)
+            apxDisplayError(TRUE, NULL, 0, "Unable to query the service '%S' status",
+                            lpCmdline->szApplication);
         goto cleanup;
     }
 #ifdef _UNICODE
@@ -1607,21 +1615,31 @@ int WINAPI WinMain(HINSTANCE hInstance,
     }
 #endif
     if (!_gui_store) {
-        apxDisplayError(TRUE, NULL, 0, "Unable to initialize GUI manager");
+        if (!quiet)
+            apxDisplayError(TRUE, NULL, 0, "Unable to initialize GUI manager");
         goto cleanup;
     }
     hIcoRun  = LoadImage(_gui_store->hInstance, MAKEINTRESOURCE(IDI_ICONRUN),
                          IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);  
     hIcoStop = LoadImage(_gui_store->hInstance, MAKEINTRESOURCE(IDI_ICONSTOP),
                          IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);  
+    
+    /* Handle //MQ// option */
+    if (lpCmdline->dwCmdIndex == 4) {
+        HANDLE hOther = FindWindow(_gui_store->szWndClass, NULL);
+        if (hOther)
+            SendMessage(hOther, WM_CLOSE, 0, 0);
+        goto cleanup;
+    }
 
     if (!_options[0].dwValue) {
         mutex = CreateMutex(NULL, FALSE, _gui_store->szWndMutex);
         if ((mutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS)) { 
             /* Skip sytem error message */
             SetLastError(ERROR_SUCCESS);
-            apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ALREAY_RUNING, 0),
-                            lpCmdline->szApplication);
+            if (!quiet)
+                apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ALREAY_RUNING, 0),
+                                lpCmdline->szApplication);
             goto cleanup;
         }
     }
@@ -1634,7 +1652,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
                                   APXREG_SOFTWARE | APXREG_SERVICE);
 
     if (IS_INVALID_HANDLE(hRegserv)) {
-        apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ERRSREG, 0));
+        if (!quiet)
+            apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ERRSREG, 0));
         return FALSE;
     }
     /* Create main invisible window */
@@ -1648,6 +1667,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
     if (!_gui_store->hMainWnd) {
         goto cleanup;
     }
+    if (lpCmdline->dwCmdIndex == 3)
+        PostMessage(_gui_store->hMainWnd, WM_COMMAND, IDM_TM_START, 0);
 
     while (GetMessage(&msg, NULL, 0, 0))  {
         if(!TranslateAccelerator(_gui_store->hMainWnd,
