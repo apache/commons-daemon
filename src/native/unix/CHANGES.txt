@@ -1,0 +1,5 @@
+JAKARTA COMMONS DAEMON (UNIX) CHANGELOG:
+Last modified at [$Date: 2004/11/05 11:53:43 $]
+
+Changes with 1.1
+  * Allow enableassertions -ea (PR 304310.
