@@ -349,9 +349,9 @@ BOOL __generalLoggingSave(HWND hDlg)
 {
     WCHAR szB[SIZ_DESLEN];
 
-    if (!(TST_BIT_FLAG(_propertyChanged, 4)))
+    if (!(TST_BIT_FLAG(_propertyChanged, 3)))
         return TRUE;
-    CLR_BIT_FLAG(_propertyChanged, 4);
+    CLR_BIT_FLAG(_propertyChanged, 3);
 
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
@@ -377,9 +377,9 @@ BOOL __generalJvmSave(HWND hDlg)
     WCHAR szB[SIZ_DESLEN];
     LPWSTR p, s;
     DWORD  l;
-    if (!(TST_BIT_FLAG(_propertyChanged, 8)))
+    if (!(TST_BIT_FLAG(_propertyChanged, 4)))
         return TRUE;
-    CLR_BIT_FLAG(_propertyChanged, 8);
+    CLR_BIT_FLAG(_propertyChanged, 4);
 
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
@@ -401,13 +401,11 @@ BOOL __generalJvmSave(HWND hDlg)
                          _s_java, L"Options", s, l);
     if (!GetDlgItemTextW(hDlg, IDC_PPJMS,  szB, SIZ_DESMAX))
         szB[0] = L'\0';
-    OutputDebugStringW(szB);
 
     apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"JvmMs",
                        apxAtoulW(szB));
     if (!GetDlgItemTextW(hDlg, IDC_PPJMX,  szB, SIZ_DESMAX))
         szB[0] = L'\0';
-    OutputDebugStringW(szB);
     apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"JvmMx",
                        apxAtoulW(szB));
     if (!GetDlgItemTextW(hDlg, IDC_PPJSS,  szB, SIZ_DESMAX))
@@ -426,9 +424,9 @@ BOOL __generalStartSave(HWND hDlg)
     LPWSTR p, s;
     DWORD  l;
 
-    if (!(TST_BIT_FLAG(_propertyChanged, 16)))
+    if (!(TST_BIT_FLAG(_propertyChanged, 5)))
         return TRUE;
-    CLR_BIT_FLAG(_propertyChanged, 16);
+    CLR_BIT_FLAG(_propertyChanged, 5);
 
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
@@ -441,8 +439,6 @@ BOOL __generalStartSave(HWND hDlg)
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"WorkingPath", szB); 
     GetDlgItemTextW(hDlg, IDC_PPRMETHOD,  szB, SIZ_DESMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Method", szB); 
-    GetDlgItemTextW(hDlg, IDC_PPRTIMEOUT,  szB, SIZ_DESMAX);
-    apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Timeout", apxAtoulW(szB)); 
     GetDlgItemTextW(hDlg, IDC_PPRMODE,  szB, SIZ_DESMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Mode", szB); 
     
@@ -466,9 +462,9 @@ BOOL __generalStopSave(HWND hDlg)
     LPWSTR p, s;
     DWORD  l;
 
-    if (!(TST_BIT_FLAG(_propertyChanged, 32)))
+    if (!(TST_BIT_FLAG(_propertyChanged, 6)))
         return TRUE;
-    CLR_BIT_FLAG(_propertyChanged, 32);
+    CLR_BIT_FLAG(_propertyChanged, 6);
 
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
@@ -873,31 +869,31 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                 case IDC_PPLGLEVEL:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 4);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGPATH:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 4);                    
+                        SET_BIT_FLAG(_propertyChanged, 3);                    
                     }
                 break;
                 case IDC_PPLGPREFIX:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 4);                    
+                        SET_BIT_FLAG(_propertyChanged, 3);                    
                     }
                 break;
                 case IDC_PPLGSTDERR:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 4);                    
+                        SET_BIT_FLAG(_propertyChanged, 3);                    
                     }
                 break;
                 case IDC_PPLGSTDOUT:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 4);                    
+                        SET_BIT_FLAG(_propertyChanged, 3);                    
                     }
                 break;
                 case IDC_PPLGBPATH:
@@ -907,7 +903,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPLGPATH, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 4);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGBSTDOUT:
@@ -918,7 +914,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 4);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGBSTDERR:
@@ -929,7 +925,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPLGSTDERR, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 4);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
             }
@@ -941,7 +937,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     if (__generalLoggingSave(hDlg))
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
-                        SET_BIT_FLAG(_propertyChanged, 4);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                         SetWindowLong(hDlg, DWL_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
@@ -1034,12 +1030,12 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPJJVM, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 8);
+                        SET_BIT_FLAG(_propertyChanged, 4);
                     }
                 break;
                 case IDC_PPJAUTO:
                     PropSheet_Changed(GetParent(hDlg), hDlg); 
-                    SET_BIT_FLAG(_propertyChanged, 8);
+                    SET_BIT_FLAG(_propertyChanged, 4);
                     if (IsDlgButtonChecked(hDlg, IDC_PPJAUTO)) {
                         EnableWindow(GetDlgItem(hDlg, IDC_PPJJVM), FALSE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPJBJVM), FALSE);
@@ -1062,7 +1058,7 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                 case IDC_PPJSS:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 8);
+                        SET_BIT_FLAG(_propertyChanged, 4);
                     }
                 break;
             }
@@ -1074,7 +1070,7 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                     if (__generalJvmSave(hDlg))
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
-                        SET_BIT_FLAG(_propertyChanged, 8);
+                        SET_BIT_FLAG(_propertyChanged, 4);
                         SetWindowLong(hDlg, DWL_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
@@ -1097,7 +1093,6 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
 {
     LPPSHNOTIFY lpShn;
     LPWSTR      lpBuf, b;
-    DWORD       v;
 
     switch (uMessage) { 
         case WM_INITDIALOG: 
@@ -1138,13 +1133,6 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                     apxFree(lpBuf);
                     apxFree(b);
                 }
-                v = apxRegistryGetNumberW(hRegserv, APXREG_PARAMSOFTWARE,
-                                          _s_start, L"Timeout");
-                if (v && v != 0xFFFFFFFF) {
-                    CHAR bn[32];
-                    wsprintfA(bn, "%d", v);
-                    SetDlgItemTextA(hDlg, IDC_PPRTIMEOUT, bn);
-                }
                 if ((lpBuf = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                    _s_start, L"Mode")) != NULL) {
                     if (!lstrcmpiW(lpBuf, L"jvm")) {
@@ -1158,8 +1146,6 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPRMODE), 0);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), TRUE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), TRUE);
-                        EnableWindow(GetDlgItem(hDlg, IDC_PPRWPATH), TRUE);
-                        EnableWindow(GetDlgItem(hDlg, IDC_PPRBWPATH), TRUE);
                     }
                     apxFree(lpBuf);
                 }
@@ -1174,7 +1160,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPRWPATH, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 16);
+                        SET_BIT_FLAG(_propertyChanged, 5);
                     }
                 break;
                 case IDC_PPRBIMAGE:
@@ -1185,35 +1171,30 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPRIMAGE, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 16);
+                        SET_BIT_FLAG(_propertyChanged, 5);
                     }
                 break;
                 case IDC_PPRCLASS:
                 case IDC_PPRMETHOD:
-                case IDC_PPRTIMEOUT:
                 case IDC_PPRARGS:
                 case IDC_PPRIMAGE:
                 case IDC_PPRWPATH:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 16);
+                        SET_BIT_FLAG(_propertyChanged, 5);
                     }
                 break;
                 case IDC_PPRMODE:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 1);
+                        SET_BIT_FLAG(_propertyChanged, 5);
                         if (ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPRMODE))) {
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), FALSE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), FALSE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPRWPATH), FALSE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPRBWPATH), FALSE);
                         }
                         else {
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), TRUE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), TRUE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPRWPATH), TRUE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPRBWPATH), TRUE);
                         }
                     }
                 break;
@@ -1227,7 +1208,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                     if (__generalStartSave(hDlg))
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
-                        SET_BIT_FLAG(_propertyChanged, 16);
+                        SET_BIT_FLAG(_propertyChanged, 5);
                         SetWindowLong(hDlg, DWL_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
@@ -1293,7 +1274,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                 }
                 v = apxRegistryGetNumberW(hRegserv, APXREG_PARAMSOFTWARE,
                                           _s_stop, L"Timeout");
-                if (v && v != 0xFFFFFFFF) {
+                {
                     CHAR bn[32];
                     wsprintfA(bn, "%d", v);
                     SetDlgItemTextA(hDlg, IDC_PPSTIMEOUT, bn);
@@ -1311,8 +1292,6 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSMODE), 0);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), TRUE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), TRUE);
-                        EnableWindow(GetDlgItem(hDlg, IDC_PPSWPATH), TRUE);
-                        EnableWindow(GetDlgItem(hDlg, IDC_PPSBWPATH), TRUE);
                     }
                     apxFree(lpBuf);
                 }
@@ -1327,7 +1306,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPSWPATH, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 32);
+                        SET_BIT_FLAG(_propertyChanged, 6);
                     }
                 break;
                 case IDC_PPSBIMAGE:
@@ -1338,7 +1317,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                         SetDlgItemTextW(hDlg, IDC_PPSIMAGE, lpBuf);                    
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 32);
+                        SET_BIT_FLAG(_propertyChanged, 6);
                     }
                 break;
                 case IDC_PPSCLASS:
@@ -1349,24 +1328,20 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                 case IDC_PPSWPATH:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 32);
+                        SET_BIT_FLAG(_propertyChanged, 6);
                     }
                 break;
                 case IDC_PPSMODE:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 32);
+                        SET_BIT_FLAG(_propertyChanged, 6);
                         if (ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPSMODE))) {
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), FALSE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), FALSE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPSWPATH), FALSE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPSBWPATH), FALSE);
                         }
                         else {
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), TRUE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), TRUE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPSWPATH), TRUE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPSBWPATH), TRUE);
                         }
                     }
                 break;
@@ -1380,7 +1355,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                     if (__generalStopSave(hDlg))
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
-                        SET_BIT_FLAG(_propertyChanged, 32);
+                        SET_BIT_FLAG(_propertyChanged, 6);
                         SetWindowLong(hDlg, DWL_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
