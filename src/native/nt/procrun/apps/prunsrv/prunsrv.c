@@ -529,8 +529,17 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
         return FALSE;
     }
     /* Delete service will stop the service if running */
-    if (apxServiceOpen(hService, lpCmdline->szApplication))
+    if (apxServiceOpen(hService, lpCmdline->szApplication)) {
+        WCHAR szWndManagerClass[SIZ_RESLEN];
+        HANDLE hWndManager = NULL;
+        lstrcpyW(szWndManagerClass, lpCmdline->szApplication);
+        lstrcatW(szWndManagerClass, L"_CLASS");
+        /* Close the monitor application if running */
+        if ((hWndManager = FindWindowW(szWndManagerClass, NULL)) != NULL) {
+            SendMessage(hWndManager, WM_CLOSE, 0, 0);
+        }
         rv = apxServiceDelete(hService);
+    }
     if (rv) {
         /* Delete all service registry settings */
         apxDeleteRegistryW(PRG_REGROOT, lpCmdline->szApplication, TRUE);
