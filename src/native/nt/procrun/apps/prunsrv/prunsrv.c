@@ -695,7 +695,7 @@ static DWORD serviceStop()
     APXHANDLE hJava = NULL;
     DWORD  rv = 0;
 
-    apxLogWrite(APXLOG_MARK_INFO "Stopoping service...");
+    apxLogWrite(APXLOG_MARK_INFO "Stopping service...");
 
     if (IS_INVALID_HANDLE(gWorker)) {
         apxLogWrite(APXLOG_MARK_INFO "Worker is not defined");
@@ -724,10 +724,59 @@ static DWORD serviceStop()
             rv = 3;
         }
         else {
-            apxLogWrite(APXLOG_MARK_DEBUG "Waitning java stop worker to finish...");
+            apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java stop worker to finish...");
             apxJavaWait(hJava, INFINITE, FALSE);        
             apxLogWrite(APXLOG_MARK_DEBUG "Java stop worker finished.");
         }
+    } else {
+        DWORD nArgs;
+        LPWSTR *pArgs;
+        /* Redirect process */
+        hJava = apxCreateProcessW(gPool, 
+                                    0,
+                                    child_callback,
+                                    SO_USER,
+                                    SO_PASSWORD,
+                                    FALSE);
+        if (IS_INVALID_HANDLE(hJava)) {
+            apxLogWrite(APXLOG_MARK_ERROR "Failed creating process");
+            return 1;
+        }
+        if (!apxProcessSetExecutableW(hJava, SO_STARTIMAGE)) {
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
+                        SO_STARTIMAGE);
+            rv = 2;
+            goto cleanup;
+        }
+        /* Assemble the command line */
+        nArgs = apxMultiSzToArrayW(gPool, SO_STARTPARAMS, &pArgs);
+        /* Pass the argv to child process */
+        if (!apxProcessSetCommandArgsW(hJava, SO_STARTIMAGE,
+                                       nArgs, pArgs)) {
+            rv = 3;
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d)",
+                        nArgs);
+            goto cleanup;
+        }
+        /* Set the working path */
+        if (!apxProcessSetWorkingPathW(hJava, SO_STARTPATH)) {
+            rv = 4;
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to %S",
+                        SO_STARTPATH);
+            goto cleanup;
+        }
+        /* Finally execute the child process 
+         */
+        if (!apxProcessExecute(hJava)) {
+            rv = 5;
+            apxLogWrite(APXLOG_MARK_ERROR "Failed executing process");
+            goto cleanup;
+        } else {
+            apxLogWrite(APXLOG_MARK_DEBUG "Waiting java stop worker to finish...");
+            apxHandleWait(hJava, INFINITE, FALSE);        
+            apxLogWrite(APXLOG_MARK_DEBUG "Java stop worker finished.");
+        }
+
     }
 cleanup:
     /* Close Java JNI handle
@@ -737,9 +786,14 @@ cleanup:
      */
     if (!IS_INVALID_HANDLE(hJava))
         apxCloseHandle(hJava);
-    /* Simply send the WM_CLOSE to the worker */
-    apxLogWrite(APXLOG_MARK_DEBUG "Sending WM_CLOSE to worker");
-    apxHandleSendMessage(gWorker, WM_CLOSE, 0, 0);
+    if(rv) {
+      /* Simply send the WM_CLOSE to the worker */
+      apxLogWrite(APXLOG_MARK_DEBUG "Sending WM_CLOSE to worker");
+      apxHandleSendMessage(gWorker, WM_CLOSE, 0, 0);
+    } else {
+      /* Wait to give it a chance to die naturally, then kill it. */
+      apxHandleWait(gWorker, 600000, TRUE);
+    }
     apxLogWrite(APXLOG_MARK_INFO "Service stopped.");
 
     return rv;
@@ -797,7 +851,7 @@ static DWORD serviceStart()
             return 1;
         }
         if (!apxProcessSetExecutableW(gWorker, SO_STARTIMAGE)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed seting process executable %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
                         SO_STARTIMAGE);
             rv = 2;
             goto cleanup;
@@ -808,14 +862,14 @@ static DWORD serviceStart()
         if (!apxProcessSetCommandArgsW(gWorker, SO_STARTIMAGE,
                                        nArgs, pArgs)) {
             rv = 3;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed seting process arguments (argc=%d)",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d)",
                         nArgs);
             goto cleanup;
         }
         /* Set the working path */
         if (!apxProcessSetWorkingPathW(gWorker, SO_STARTPATH)) {
             rv = 4;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed seting process working path to %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to %S",
                         SO_STARTPATH);
             goto cleanup;
         }
