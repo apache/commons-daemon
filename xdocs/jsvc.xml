@@ -144,7 +144,7 @@ You have to do the following.
   <li>Put it in the jarfile (my.jar).</li>
   <li>Call jsvc like:
   <source>
-    jsvc -cp commons-daemon.jar:my.jar MyClass
+    ./jsvc -cp commons-daemon.jar:my.jar MyClass
   </source>
   </li>
 </ul>
@@ -162,7 +162,7 @@ You have to write a Class (MyClass) that implements the following methods:
 </ul>
 Store it in a jarfile and use as above:
 <source>
-  jsvc -cp commons-daemon.jar:my.jar MyClass
+  ./jsvc -cp commons-daemon.jar:my.jar MyClass
 </source>
 </p>
 </subsection>
