@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: home.c,v 1.2 2003/12/31 04:52:30 billbarker Exp $ */
+/* @version $Id: home.c,v 1.3 2003/12/31 04:58:31 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */
@@ -267,8 +267,8 @@ home_data *home(char *path) {
 
     if (log_debug_flag==true) {
         log_debug("+-- DUMPING JAVA HOME STRUCTURE ------------------------");
-        log_debug("| Java Home:       \"%s\"",data->path);
-        log_debug("| Java VM Config.: \"%s\"",data->cfgf);
+        log_debug("| Java Home:       \"%s\"",PRINT_NULL(data->path));
+        log_debug("| Java VM Config.: \"%s\"",PRINT_NULL(data->cfgf));
         log_debug("| Found JVMs:      %d",data->jnum);
         for (x=0; x<data->jnum; x++) {
             home_jvm *jvm=data->jvms[x];

@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: arguments.c,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: arguments.c,v 1.2 2003/12/31 04:58:31 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Return the argument of a command line option */
@@ -286,15 +286,15 @@ arg_data *arguments(int argc, char *argv[]) {
 
         log_debug("| Remove service:  %s",IsYesNo(args->remove));
 
-        log_debug("| JVM Name:        \"%s\"",args->name);
-        log_debug("| Java Home:       \"%s\"",args->home);
-        log_debug("| PID File:        \"%s\"",args->pidf);
-        log_debug("| User Name:       \"%s\"",args->user);
+        log_debug("| JVM Name:        \"%s\"",PRINT_NULL(args->name));
+        log_debug("| Java Home:       \"%s\"",PRINT_NULL(args->home));
+        log_debug("| PID File:        \"%s\"",PRINT_NULL(args->pidf));
+        log_debug("| User Name:       \"%s\"",PRINT_NULL(args->user));
 
         log_debug("| Extra Options:   %d",args->onum);
         for (x=0; x<args->onum; x++) log_debug("|   \"%s\"",args->opts[x]);
 
-        log_debug("| Class Invoked:   \"%s\"",args->clas);
+        log_debug("| Class Invoked:   \"%s\"",PRINT_NULL(args->clas));
 
         log_debug("| Class Arguments: %d",args->anum);
         for (x=0; x<args->anum; x++)log_debug("|   \"%s\"",args->args[x]);

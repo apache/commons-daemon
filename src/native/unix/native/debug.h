@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: debug.h,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: debug.h,v 1.2 2003/12/31 04:58:31 billbarker Exp $ */
 #ifndef __JSVC_DEBUG_H__
 #define __JSVC_DEBUG_H__
 
@@ -71,6 +71,11 @@ extern bool log_debug_flag;
  * The name of the jsvc binary.
  */
 extern char *log_prog;
+
+/**
+ * Helper macro to avoid NPEs in printf.
+ */
+#define PRINT_NULL(x) ((x) == NULL ? "null" : (x))
 
 /**
  * Dump a debug message.
