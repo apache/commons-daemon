@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: jsvc-unix.c,v 1.5 2003/09/26 19:03:10 jfclere Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.6 2003/09/26 20:52:12 jfclere Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -368,11 +368,29 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     return(ret);
 }
 
+/*
+ * freopen close the file first and then open the new file
+ * that is not very good if we are try to trace the output
+ * note the code assumes that the errors are configuration errors.
+ */
+static FILE *loc_freopen(char *outfile, char *mode, FILE *stream)
+{
+    FILE *ftest;
+    ftest = fopen(outfile,mode);
+    if (ftest == NULL) {
+      fprintf(stderr,"Unable to redirect to %s\n", outfile);
+      return(stream);
+    }
+    fclose(ftest);
+    return(freopen(outfile,mode,stream));
+}
+
 /**
  *  Redirect stdin, stdout, stderr.
  */
 static void set_output(char *outfile, char *errfile) {
     freopen("/dev/null", "r", stdin); 
+    log_debug("redirecting stdout to %s and stderr to %s",outfile,errfile);
 
     /* make sure the debug goes out */
     if (log_debug_flag==true && strcmp(errfile,"/dev/null") == 0)
@@ -383,11 +401,11 @@ static void set_output(char *outfile, char *errfile) {
       outfile="/dev/null";
     }
     if(strcmp(outfile, "&2") != 0) {
-      freopen(outfile, "a", stdout);
+      loc_freopen(outfile, "a", stdout);
     }
 
     if(strcmp(errfile,"&1") != 0) {
-      freopen(errfile, "a", stderr);
+      loc_freopen(errfile, "a", stderr);
     } else {
       close(2);
       dup(1);
