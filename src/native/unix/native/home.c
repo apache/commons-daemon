@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: home.c,v 1.4 2004/01/19 01:26:43 billbarker Exp $ */
+/* @version $Id: home.c,v 1.5 2004/01/19 02:21:19 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */
@@ -272,8 +272,8 @@ home_data *home(char *path) {
         log_debug("| Found JVMs:      %d",data->jnum);
         for (x=0; x<data->jnum; x++) {
             home_jvm *jvm=data->jvms[x];
-            log_debug("| JVM Name:        \"%s\"",jvm->name);
-            log_debug("|                  \"%s\"",jvm->libr);
+            log_debug("| JVM Name:        \"%s\"",PRINT_NULL(jvm->name));
+            log_debug("|                  \"%s\"",PRINT_NULL(jvm->libr));
         }
         log_debug("+-------------------------------------------------------");
     }
