@@ -57,7 +57,7 @@
  */
 
 /* ====================================================================
- * procrun.
+ * procrun (Tomcat Service Manager)
  *
  * Contributed by Mladen Turk <mturk@apache.org>
  *
@@ -2987,106 +2987,26 @@ void __cdecl main(int argc, char **argv)
     free_environment(env);
 }
 #elif defined(PROCRUN_WINDLL)
-#pragma message("Compiling DLL Application mode")
+#pragma message("Compiling Control Panel Application mode")
 
-
-BOOL WINAPI DllMain(HINSTANCE hInst,
-                    ULONG ulReason,
-                    LPVOID lpReserved)
-{ 
-
-    switch (ulReason) {
-        case DLL_PROCESS_ATTACH:
-            g_env = NULL;
-        break;
-        case DLL_PROCESS_DETACH:
-            free_environment(g_env);
-        break;
-        default:
-        break;
-    } 
-    return TRUE;     
-}
-
-__declspec(dllexport) void InstallService(const char *service_name,
-                                          const char *install,
-                                          const char *image_path,
-                                          const char *display_name,
-                                          const char *description)
+/* XXX: Work in progress */
+/* 
+ * Allows that all the installed TC services
+ * can be managed from Windows Control Panel
+ */
+ 
+LONG APIENTRY CPlApplet(HWND hwndCPL,
+                        UINT uMsg,
+                        LONG lParam1,
+                        LONG lParam2)
 {
-    int argc = 0;
-    char *argv[12];
-    char b[MAX_PATH];
 
-    procrun_t *env = alloc_environment();
-    g_proc_mode = PROCRUN_MODE_WINDLL;
-    g_env = env;
-    
-    argv[argc++] = "PROCRUN.DLL";
-    strcpy(b, PROC_ARG_INSTALL_SERVICE);
-    strcat(b, service_name);
-    argv[argc++] = b;
-    argv[argc++] = "--" PROCRUN_PARAMS_IMAGE;
-    argv[argc++] = (char *)image_path;
-    argv[argc++] = "--" PROCRUN_PARAMS_INSTALL;
-    argv[argc++] = (char *)install;
-    argv[argc++] = "--" PROCRUN_PARAMS_DISPLAY;
-    argv[argc++] = (char *)display_name;
-    argv[argc++] = "--" PROCRUN_PARAMS_DESCRIPTION;
-    argv[argc++] = (char *)description;
-    
-    procrun_main(argc, argv, _environ, env);
 
-    free_environment(env);
-    g_env = NULL;
+
+
+    return 1;
 }
 
-__declspec(dllexport) void UpdateService(const char *service_name,
-                                         const char *param,
-                                         const char *value)
-{
-    int argc = 0;
-    char *argv[4];
-    char b[MAX_PATH], p[MAX_PATH];
-
-    procrun_t *env = alloc_environment();
-    g_proc_mode = PROCRUN_MODE_WINDLL;
-    g_env = env;
-    
-    argv[argc++] = "PROCRUN.DLL";
-    strcpy(b, PROC_ARG_UPDATE_SERVICE);
-    strcat(b, service_name);
-    strcpy(p, "--");
-    strcat(p, param);
-    argv[argc++] = b;
-    argv[argc++] = p;
-    argv[argc++] = (char *)value;
-    
-    procrun_main(argc, argv, _environ, env);
-
-    free_environment(env);
-    g_env = NULL;
-}
-
-__declspec(dllexport) void RemoveService(const char *service_name)
-{
-    int argc = 0;
-    char *argv[4];
-    char b[MAX_PATH];
-
-    procrun_t *env = alloc_environment();
-    g_proc_mode = PROCRUN_MODE_WINDLL;
-    g_env = env;
-    
-    argv[argc++] = "PROCRUN.DLL";
-    strcpy(b, PROC_ARG_DELETE_SERVICE);
-    strcat(b, service_name);
-    argv[argc++] = b;
-    procrun_main(argc, argv, _environ, env);
-
-    free_environment(env);
-    g_env = NULL;
-}
 #else
 #error Unknown application mode
 #endif
