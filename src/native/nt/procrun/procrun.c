@@ -334,7 +334,8 @@ static void inject_exitprocess(PROCESS_INFORMATION *child)
     GenerateConsoleCtrlEvent(CTRL_C_EVENT, child->dwProcessId);
     GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, child->dwProcessId);
 #if 1
-    Sleep(2000);
+    /* Wait for a child to capture CTRL_ events. */
+    WaitForSingleObject(child->hThread, 2000);
 #endif
     if (!GetExitCodeProcess(child->hProcess, &stat) || 
         (stat != STILL_ACTIVE)) {
@@ -1467,8 +1468,9 @@ cleanup:
 DWORD WINAPI wait_thread(LPVOID param)
 {
     procrun_t *env = (procrun_t *)param;
-    
-    Sleep(1000);
+
+    /* Wait util a process has finished its initialization. */
+    WaitForInputIdle(env->c->pinfo.hProcess, INFINITE);
     WaitForSingleObject(env->c->pinfo.hThread, INFINITE);
     pool_close_handle(env->c->pool, env->c->pinfo.hThread);
     env->c->pinfo.hThread = NULL;
