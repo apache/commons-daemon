@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: jsvc-unix.c,v 1.10 2004/03/18 03:59:41 billbarker Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.11 2005/01/03 11:51:23 jfclere Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -473,6 +473,9 @@ int main(int argc, char *argv[]) {
         /* The child must have exited cleanly */
         if (WIFEXITED(status)) {
             status=WEXITSTATUS(status);
+
+            /* Delete the pid file */
+            unlink(args->pidf);
 
             /* If the child got out with 123 he wants to be restarted */
             if (status==123) {
