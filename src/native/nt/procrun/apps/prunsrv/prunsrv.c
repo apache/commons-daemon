@@ -191,6 +191,7 @@ static LPSTR  _jni_smethod              = NULL;    /* Shutdown arguments */
 static CHAR   _jni_rclass[SIZ_RESLEN]   = {'\0'};  /* Startup  class */
 static CHAR   _jni_sclass[SIZ_RESLEN]   = {'\0'};  /* Shutdown class */
 
+static HANDLE gShutdownEvent = NULL;
 /* redirect console stdout/stderr to files 
  * so that java messages can get logged
  * If stderrfile is not specified it will
@@ -750,6 +751,8 @@ static DWORD serviceStop()
                         _jni_rclass, _jni_classpath);
             goto cleanup;
         }
+        /* Create sutdown event */
+        gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(hWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
             rv = 3;
@@ -819,6 +822,7 @@ cleanup:
      */
     if (!IS_INVALID_HANDLE(hWorker))
         apxCloseHandle(hWorker);
+    SetEvent(gShutdownEvent);
     if (timeout > 0x7FFFFFFF)
         timeout = INFINITE;     /* If the timeout was '-1' wait forewer */ 
     if (wait_to_die && !timeout)
@@ -1109,7 +1113,15 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d", rc);
         goto cleanup;
     }
+    if (gShutdownEvent) {
+        /* Ensure that shutdown thread exits before us */
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
+        WaitForSingleObject(gShutdownEvent, 60 * 1000);
+        apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
+        CloseHandle(gShutdownEvent);
+    }
     reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+
     return;
 cleanup:
     /* Cleanup */
@@ -1223,6 +1235,9 @@ cleanup:
     apxLogWrite(APXLOG_MARK_INFO "Procrun finished.");
     if (lpCmdline)
         apxCmdlineFree(lpCmdline);
+    if (_service_status_handle)
+        CloseHandle(_service_status_handle);
+    _service_status_handle = NULL;
     apxLogClose(NULL);
     apxHandleManagerDestroy();
     cleanupStdStreams(&gStdwrap);
