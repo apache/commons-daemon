@@ -79,7 +79,7 @@ This will generate the executable file jsvc.
 </p>
 </section>
 
-<section name="Using jsvc">
+<section name="Starting jsvc">
 <p>
 To check the allowed parameters for the jsvc binary simply do:
 <source>
@@ -127,6 +127,45 @@ Where options include:
 
 </source>
 </p>
+
+</section>
+<section name="Using jsvc">
+<p>
+There two ways to use jsvc: via a Class that implements the Daemon interface or
+via  calling a Class that have the required methods.
+For example Tomcat-4.1.x uses the Daemon interface
+and Tomcat-5.0.x provide a Class whose methods are called by jsvc directly.
+</p>
+<subsection name="Via Daemon interface">
+<p>
+You have to do the following.
+<ul>
+  <li>Write a Class that implements the Daemon interface (MyClass).</li>
+  <li>Put it in the jarfile (my.jar).</li>
+  <li>Call jsvc like:
+  <source>
+    jsvc -cp commons-daemon.jar:my.jar MyClass
+  </source>
+  </li>
+</ul>
+</p>
+</subsection>
+<subsection name="Directly">
+<p>
+You have to write a Class (MyClass) that implements the following methods:
+<ul>
+  <li>void init(String[] arguments): Here open the configuration files, create the trace file, create
+      the ServerSockets, the Threads</li>
+  <li>void start(): Start the Thread, accept incomming connections</li>
+  <li>void stop(): Inform the Thread to live the run(), close the ServerSockets</li>
+  <li>void destroy(): Destroy any object created in init()</li>
+</ul>
+Store it in a jarfile and use as above:
+<source>
+  jsvc -cp commons-daemon.jar:my.jar MyClass
+</source>
+</p>
+</subsection>
 </section>
 
 </body>
