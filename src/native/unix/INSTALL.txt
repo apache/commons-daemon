@@ -34,20 +34,3 @@ It should be straightforward from here on. To check the allowed parameters
 for the jsvc binary simply do
 
   ./native/jsvc -help
-
-and then, to check a simple service do
-
-  ./native/jsvc -cp ./java/service.jar org.apache.service.support.SimpleService
-
-and telnet to localhost on port 1200. For a less simple example login as root
-and add the "-user nobody" after the classpath, and "100" after the class name.
-This will start the same daemon but running as user "nobody" and bound to your
-protected port 100 (again, try telnet to localhost but to port 100 this time).
-
-For other information, the source code is quite readable, and I'm working on
-some documentation.
-
-Have fun...
-
-  Pier <pier.fumagalli AT sun.com>
-
