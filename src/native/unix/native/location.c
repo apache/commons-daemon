@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: location.c,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: location.c,v 1.2 2003/09/12 09:08:51 jfclere Exp $ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since
@@ -102,7 +102,7 @@ char *location_jvm_default[] = {
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/classic/jvm.dll",           /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/bin/client/jvm.dll",            /* Sun JDK 1.4 */
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD)
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so", /* Sun JDK 1.2 */
     "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",  /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/lib/" CPU "/libjvm.so",         /* Sun JDK */
@@ -140,7 +140,7 @@ char *location_jvm_configured[] = {
     "$JAVA_HOME/../Libraries/lib$VM_NAME.dylib",
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/$VM_NAME/jvm.dll",          /* Sun JDK 1.3 */
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",/* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JRE 1.3 */
 #elif defined(OS_SYSV)
