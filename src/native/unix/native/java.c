@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: java.c,v 1.4 2004/08/02 16:07:55 jfclere Exp $ */
+/* @version $Id: java.c,v 1.5 2005/01/04 15:59:59 jfclere Exp $ */
 #include "jsvc.h"
 
 #ifdef OS_CYGWIN
@@ -86,6 +86,7 @@ bool java_init(arg_data *args, home_data *data) {
 #ifdef OS_DARWIN
     dso_handle apph=NULL;
     char appf[1024];
+    struct stat sb;
 #endif /* ifdef OS_DARWIN */
     jint (*symb)(JavaVM **, JNIEnv **, JavaVMInitArgs *);
     JNINativeMethod nativemethod;
@@ -122,12 +123,23 @@ bool java_init(arg_data *args, home_data *data) {
     log_debug("JVM library %s loaded",libf);
 
 #ifdef OS_DARWIN
-    /* MacOS/X actually has two libraries, one with the REAL vm, and one for
-       the VM startup. The first one (libappshell.dyld) contains CreateVM */
+    /*
+       MacOS/X actually has two libraries, one with the REAL vm, and one for
+       the VM startup.
+       before JVM 1.4.1 The first one (libappshell.dyld) contains CreateVM
+       after JVM 1.4.1 The library name is libjvm_compat.dylib.
+    */
     if (replace(appf,1024,"$JAVA_HOME/../Libraries/libappshell.dylib",
                  "$JAVA_HOME",data->path)!=0) {
         log_error("Cannot replace values in loader library");
         return(false);
+    }
+    if (stat(appf, &sb)) {
+        if (replace(appf,1024,"$JAVA_HOME/../Libraries/libjvm_compat.dylib",
+                    "$JAVA_HOME",data->path)!=0) {
+            log_error("Cannot replace values in loader library");
+            return(false);
+        }
     }
     apph=dso_link(appf);
     if (apph==NULL) {
