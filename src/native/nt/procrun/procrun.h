@@ -72,6 +72,10 @@
 extern "C" {
 #endif
 
+#if defined(PROCRUN_EXTENDED)
+#include "extend.h"
+#endif
+
 #define IDD_DLGCONSOLE        101
 #define IDS_CONWRAPTITLE      102
 #define IDS_CONWRAPCLASS      103
@@ -94,17 +98,10 @@ extern "C" {
 #define IDM_ABOUT             120
 #define IDI_ICOCONTRYSTOP     121
 
-#define IDD_DLGSPLASH         122
-#define IDB_BMPSPLASH         123
-#define IDL_INFO              124
-
-#define IDM_OPTIONS           125
+#define IDM_OPTIONS           122
 #define RC_DLG_SRVOPT         130
 #define RC_LBL_VER            131
 #define RC_LISTVIEW           132
-#define IDI_ICOI              133
-#define IDI_ICOS              134
-#define IDI_ICOW              135
 
 #define RC_TAB_SRVOPT        1000
 #define RC_GRP_MSP           1001
@@ -173,7 +170,15 @@ extern "C" {
 #define PROC_ARG_EDIT_SERVICE       "//ES//"
 
 #define PROCRUN_VERSION_STR         "1.1"
+
+#ifndef PROCRUN_REGKEY_ROOT
 #define PROCRUN_REGKEY_ROOT         "SOFTWARE\\Apache Software Foundation\\Process Runner " PROCRUN_VERSION_STR
+#endif
+
+#ifndef PROCRUN_GUI_DISPLAY
+#define PROCRUN_GUI_DISPLAY         "Apache Process Runner"
+#endif
+
 #define PROCRUN_REGKEY_SERVICES     "System\\CurrentControlSet\\Services\\%s"
 #define PROCRUN_REGKEY_PARAMS       "System\\CurrentControlSet\\Services\\%s\\Parameters"
 #define PROCRUN_REGKEY_RSERVICES    PROCRUN_REGKEY_ROOT "\\%s"
@@ -339,7 +344,39 @@ extern "C" {
     pool_t *pool_create();
     int pool_destroy(pool_t *pool);
 
+#if !defined(PROCRUN_CONSOLE)
 
+extern DWORD WINAPI gui_thread(LPVOID param);
+
+extern void ac_add_list_string(const char *str, int len);
+extern int  ac_use_try;
+extern int  ac_use_dlg;
+extern int  ac_use_show;
+extern int  ac_use_props;
+extern int  ac_use_lview;
+
+extern  RECT        ac_winpos;
+extern  HINSTANCE   ac_instance;
+extern  HWND        ac_main_hwnd;
+extern  HWND        ac_list_hwnd;
+extern  char        *ac_cmdname;
+
+void    ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop);
+void    ac_center_window(HWND hwnd);
+
+#if defined(PROCRUN_EXTENDED)
+
+void acx_process_splash(const char *str);
+void acx_create_view(HWND hdlg, LPRECT pr, LPRECT pw);
+void acx_parse_list_string(const char *str);
+void acx_create_spash(HWND hwnd);
+void acx_close_spash();
+void acx_init_extended();
+
+
+#endif
+
+#endif
 
 #ifdef __cplusplus
 }

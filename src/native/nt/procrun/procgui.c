@@ -115,9 +115,8 @@ extern procrun_t *g_env;
 int                    ac_use_try = 0;
 int                    ac_use_dlg = 0;
 int                    ac_use_show = 0;
-int                    ac_use_splash = 0;
 int                    ac_use_props = 0;
-int                    ac_use_lview = 1;
+int                    ac_use_lview = 0;
 
 HINSTANCE              ac_instance;
 static procrun_t       *ac_env = NULL;
@@ -126,25 +125,12 @@ static HICON           ac_try_icon;
 static HICON           ac_try_stop;
 static UINT            ac_taskbar_created;
 HWND                   ac_main_hwnd;
-static HWND            ac_list_hwnd;
-static HWND            ac_splist_hwnd;
+HWND                   ac_list_hwnd;
 static HWND            ac_console_hwnd = NULL;
 static char            *ac_stdout_lines[MAX_LISTCOUNT + 1];
 char                   *ac_cmdline;
 char                   *ac_cmdname;
 RECT                   ac_winpos = {-1, 0, 640, 480};
-/* splash window handle */
-static HWND            ac_splash_hwnd = NULL;
-
-int                    ac_lview_current = 0;
-static struct {
-    char *  label;
-    DWORD   width;
-} ac_columns[] = {
-    {   "Status",   140     },
-    {   "Class",    172     },
-    {   "Message",  300     },
-};
 
 
 INT_PTR ac_show_properties(HWND owner);
@@ -177,88 +163,6 @@ void ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop)
     Shell_NotifyIcon(message, &nid);
 }
 
-static char *ac_lv_stat = NULL;
-static char ac_lv_clbuf[1024] = {0};
-static char *ac_lv_class = NULL;
-static char *ac_lv_clmsg = NULL;
-static int  ac_lv_iicon = 0;
-
-#define STR_NOT_NULL(s) { if((s) == NULL) (s) = ""; }
-
-static void ac_parse_list_string(const char *str)
-{
-    int row = 0x7FFFFFFF;
-    LV_ITEM lvi;
-    int off = 0;
-
-    if (isdigit(*str)) {
-        char *p;
-                
-        strncpy(ac_lv_clbuf, str, 1023);
-        ac_lv_stat = p = &ac_lv_clbuf[0];
-
-        while (*p && !isspace(*p))
-            ++p;
-        ++p;
-        while (*p && !isspace(*p))
-            ++p;
-        *(p++) = 0;
-        while (*p && isspace(*p))
-            ++p;
-        ac_lv_class = p;
-
-        while (*p && !isspace(*p))
-            ++p;
-        *(p++) = 0;
-        ac_lv_clmsg = p;
-        
-    }
-    else {
-        if (STRN_COMPARE(str, "INFO:")) {
-            ac_lv_iicon = 0;
-            off = STRN_SIZE("INFO:") + 1;
-        }
-        else if (STRN_COMPARE(str, "WARNING:")) {
-            ac_lv_iicon = 1;
-            off = STRN_SIZE("WARNING:") + 1;
-        }
-        else if (STRN_COMPARE(str, "ERROR:")) {
-            ac_lv_iicon = 2;
-            off = STRN_SIZE("ERROR:") + 1;
-        }
-        else if (STRN_COMPARE(str, "SEVERE:")) {
-            ac_lv_iicon = 2;
-            off = STRN_SIZE("SEVERE:") + 1;
-        }
-        ac_lv_clmsg = (char *)str + off;
-
-        /* skip leading spaces */
-        while (*ac_lv_clmsg && isspace(*ac_lv_clmsg))
-            ++ac_lv_clmsg;
-    }
-
-    STR_NOT_NULL(ac_lv_class);
-    STR_NOT_NULL(ac_lv_clmsg);
-    STR_NOT_NULL(ac_lv_stat);
-
-    memset(&lvi, 0, sizeof(LV_ITEM));
-    lvi.mask        = LVIF_IMAGE | LVIF_TEXT;
-    lvi.iItem       = ac_lview_current;
-    lvi.iImage      = ac_lv_iicon;
-    lvi.pszText     = ac_lv_stat;
-    lvi.cchTextMax  = strlen(ac_lv_stat) + 1;
-    row = ListView_InsertItem(ac_list_hwnd, &lvi);
-    if (row == -1)
-        return;
-    ListView_SetItemText(ac_list_hwnd, row, 1, ac_lv_class); 
-    ListView_SetItemText(ac_list_hwnd, row, 2, ac_lv_clmsg);
-    ListView_EnsureVisible(ac_list_hwnd,
-                               ListView_GetItemCount(ac_list_hwnd) - 1,
-                               FALSE); 
-
-    ac_lview_current++;
-}
-
 void ac_add_list_string(const char *str, int len)
 {
     static int nqueue = 0;
@@ -268,19 +172,9 @@ void ac_add_list_string(const char *str, int len)
 
     if (str) {
 
-        /* set the status to 'green' when received Jk running 
-         * and close the spash window if present
-         */
-        if (STRN_COMPARE(str, "INFO: Jk running")) {
-            ac_show_try_icon(ac_main_hwnd, NIM_MODIFY, ac_cmdname, 0);
-            /* kill the splash window if present */
-            if (ac_splash_hwnd)
-                EndDialog(ac_splash_hwnd, TRUE);
-            ac_splash_hwnd = NULL;
-        }
-        else if (ac_splash_hwnd) {
-            SendMessage(ac_splist_hwnd, LB_INSERTSTRING, 0, (LPARAM)str);
-        }
+#if defined(PRCRUN_EXTENDED)
+        acx_process_splash(str);
+#endif
         if (nqueue > MAX_LISTCOUNT - 1) {
             free(ac_stdout_lines[0]);
             /* TODO: improve performance */
@@ -293,18 +187,23 @@ void ac_add_list_string(const char *str, int len)
     }
     if (!ac_list_hwnd || !nqueue)
         return;
-
+#if defined(PROCRUN_EXTENDED)
     if (ac_use_lview) {
         for (i = 0; i < nqueue; i++) {
-            ac_parse_list_string(ac_stdout_lines[i]);
+            acx_parse_list_string(ac_stdout_lines[i]);
             if (litems++ > MAX_LIST_ITEMS)
                 ListView_DeleteItem(ac_list_hwnd, 0);
         }
     }
-    else {
-        for (i = 0; i < nqueue; i++)
+    else 
+#endif
+    {
+        for (i = 0; i < nqueue; i++) {
             ListBox_AddString(ac_list_hwnd, ac_stdout_lines[i]);
+            if (litems++ > MAX_LIST_ITEMS)
+                ListBox_DeleteString(ac_list_hwnd, 0);
         
+        }
         if (olen < nlen) {
             olen = nlen;
             SendMessage(ac_list_hwnd, LB_SETHORIZONTALEXTENT,
@@ -434,7 +333,7 @@ static int ac_copy_to_clipboard()
     return 0;
 }
 
-static void ac_center_window(HWND hwnd)
+void ac_center_window(HWND hwnd)
 {
    RECT    rc, rw;
    int     cw, ch;
@@ -544,47 +443,14 @@ LRESULT CALLBACK ac_console_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPA
                         
            GetWindowRect(status_bar, &r);
            GetClientRect(hdlg, &m);
+#if defined(PROCRUN_EXTENDED)
            if (!ac_use_lview)
                MoveWindow(ac_list_hwnd, 0, 0, m.right - m.left, m.bottom - abs((r.top - r.bottom)), TRUE);
-           else {
-               LV_COLUMN lvc;
-               int i;
-               HIMAGELIST  imlist;
-               HICON hicon; 
-               imlist = ImageList_Create(16, 16, ILC_COLORDDB | ILC_MASK, 3, 0);
-               hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOI),
-                                 IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
-               ImageList_AddIcon(imlist, hicon);
-               hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOW),
-                                 IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
-               ImageList_AddIcon(imlist, hicon);
-               hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOS),
-                                 IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
-               ImageList_AddIcon(imlist, hicon);
-
-               ac_list_hwnd = CreateWindowEx(0L, WC_LISTVIEW, "", 
-                                             WS_VISIBLE | WS_CHILD |
-                                             LVS_REPORT | WS_EX_CLIENTEDGE,
-                                             0, 0, m.right - m.left,
-                                             m.bottom - abs((r.top - r.bottom)),
-                                             hdlg, NULL, ac_instance, NULL);
-               lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-               lvc.fmt  = LVCFMT_LEFT;
-
-               ListView_SetImageList(ac_list_hwnd,imlist, LVSIL_SMALL);
-
-               for (i = 0; i < sizeof(ac_columns) / sizeof(ac_columns[0]); ++i)  {
-                    lvc.iSubItem    = i;
-                    lvc.cx          = ac_columns[i].width;
-                    lvc.pszText     = ac_columns[i].label;
-                    ListView_InsertColumn(ac_list_hwnd, i, &lvc );
-               }
-#ifdef LVS_EX_FULLROWSELECT
-               ListView_SetExtendedListViewStyleEx(ac_list_hwnd, 0,
-                                                   LVS_EX_FULLROWSELECT |
-                                                   LVS_EX_INFOTIP);
+           else
+               acx_create_view(hdlg, &m, &r);
+#else
+           MoveWindow(ac_list_hwnd, 0, 0, m.right - m.left, m.bottom - abs((r.top - r.bottom)), TRUE);
 #endif
-           }
            ac_add_list_string(NULL, 0);
            break;
         case WM_SIZE:
@@ -645,20 +511,6 @@ LRESULT CALLBACK ac_console_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPA
     return FALSE;
 }
 
-LRESULT CALLBACK ac_splash_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPARAM lparam)
-{
-
-    switch (message) {
-        case WM_INITDIALOG:
-           ac_splash_hwnd = hdlg;
-           ac_center_window(hdlg);
-           ac_splist_hwnd = GetDlgItem(hdlg, IDL_INFO); 
-           break;
-    }
-
-    return FALSE;
-}
-
 int ac_browse_for_dialog(HWND hwnd, char *str, size_t len, int files)
 {
     int rv = 0;
@@ -670,9 +522,9 @@ int ac_browse_for_dialog(HWND hwnd, char *str, size_t len, int files)
     memset(&bi, 0, sizeof(BROWSEINFO));
     SHGetSpecialFolderLocation(hwnd, CSIDL_DRIVES, &il);
     if (files)
-        bi.lpszTitle  = "Tomcat Service Manager :\nSelect Folder!";
+        bi.lpszTitle  = PROCRUN_GUI_DISPLAY " :\nSelect Folder!";
     else
-        bi.lpszTitle  = "Tomcat Service Manager :\nSelect File!";
+        bi.lpszTitle  = PROCRUN_GUI_DISPLAY " :\nSelect File!";
     bi.pszDisplayName = str;
     bi.hwndOwner =      hwnd;
     bi.ulFlags =        BIF_EDITBOX;
@@ -1106,11 +958,10 @@ LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
              * if something goes wrong.
              */
             SetTimer(hwnd, WM_TIMER_TIMEOUT, TIMEOUT_TIME, NULL);
-            if (ac_use_splash) {
-                DialogBox(ac_instance, MAKEINTRESOURCE(IDD_DLGSPLASH),
-                          hwnd, (DLGPROC)ac_splash_dlg_proc);
-            }
 
+#if defined(PROCRUN_EXTENDED)
+            acx_create_spash(hwnd);
+#endif
             if (ac_use_show) {
                 DialogBox(ac_instance, MAKEINTRESOURCE(IDD_DLGCONSOLE),
                           hwnd, (DLGPROC)ac_console_dlg_proc);
@@ -1121,8 +972,9 @@ LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
                 case WM_TIMER_TIMEOUT:
                     if (ac_use_try)
                         ac_show_try_icon(hwnd, NIM_MODIFY, ac_cmdname, 0);
-                    if (ac_use_splash && ac_splash_hwnd)
-                        EndDialog(ac_splash_hwnd, TRUE);
+#if defined(PROCRUN_EXTENDED)
+                    acx_close_spash();
+#endif
                 break;
             }
             break;
@@ -1256,9 +1108,9 @@ DWORD WINAPI gui_thread(LPVOID param)
         return 0;
     }
 
-    /* TODO: make that customizable */
-    if (ac_use_try)
-        ac_use_splash = 1;
+#if defined(PROCRUN_EXTENDED)
+    acx_init_extended();
+#endif
     ac_main_hwnd = ac_create_main_window(ac_instance, cname, 
                                          env->m->service.name);
 

@@ -112,20 +112,6 @@ static int g_is_windows_nt = 0;
 
 #ifdef PROCRUN_WINAPP
 
-extern DWORD WINAPI gui_thread(LPVOID param);
-
-extern void ac_add_list_string(const char *str, int len);
-extern int  ac_use_try;
-extern int  ac_use_dlg;
-extern int  ac_use_show;
-extern int  ac_use_props;
-extern int  ac_use_lview;
-
-extern RECT ac_winpos;
-extern HINSTANCE ac_instance;
-extern HWND ac_main_hwnd;
-void ac_show_try_icon(HWND hwnd, DWORD message, const char *tip);
-
 #endif
 
 #ifdef _DEBUG
@@ -2922,7 +2908,7 @@ cleanup:
 
 #ifdef PROCRUN_WINAPP
     if (ac_main_hwnd)
-        ac_show_try_icon(ac_main_hwnd, NIM_DELETE, NULL);
+        ac_show_try_icon(ac_main_hwnd, NIM_DELETE, NULL, 0);
 #endif
     procrun_destroy_jvm(env->m, NULL);
     inject_exitprocess(&env->c->pinfo);

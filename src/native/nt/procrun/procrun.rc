@@ -59,18 +59,16 @@
 #include "procrun.h"
 #include "windows.h"
 
-IDI_ICOCONWRAP         ICON                    "tomcatp.ico"
-IDI_ICOCONTRY          ICON                    "tomcatr.ico"
-IDI_ICOCONTRYSTOP      ICON                    "tomcats.ico"
-IDR_RTFLIC             RTF                     "License.rtf"
+#if !defined(PROCRUN_EXTENDED)
+IDI_ICOCONWRAP         ICON                    "proctry.ico"
+IDI_ICOCONTRY          ICON                    "proctry.ico"
+IDI_ICOCONTRYSTOP      ICON                    "proctry.ico"
+#endif
 
-IDI_ICOI               ICON                    "icoi.ico"
-IDI_ICOS               ICON                    "icos.ico"
-IDI_ICOW               ICON                    "icow.ico"
+IDR_RTFLIC             RTF                     "License.rtf"
 
 #ifdef _MSC_VER
 IDB_BMPJAKARTA         BITMAP   DISCARDABLE    "jakarta-banner.bmp"
-IDB_BMPSPLASH          BITMAP   DISCARDABLE    "splash.bmp"
 IDR_CMENU MENUEX DISCARDABLE 
 BEGIN
     POPUP "&Process",65535,MFT_STRING,MFS_ENABLED
@@ -141,18 +139,6 @@ BEGIN
     LTEXT           "Apache Process Runner 1.0.1",IDC_STATIC,8,150,270,12
 END
 #endif
-
-IDD_DLGSPLASH DIALOGEX 0, 0, 322, 151
-STYLE DS_SYSMODAL | DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
-    WS_BORDER
-EXSTYLE WS_EX_TOPMOST
-FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
-BEGIN
-    LISTBOX         IDL_INFO,7,126,217,9, LBS_NOINTEGRALHEIGHT | 
-                    LBS_NOSEL | NOT WS_BORDER | NOT LBS_USETABSTOPS
-    CONTROL         IDB_BMPSPLASH,IDC_STATIC,"Static",SS_BITMAP |
-                    SS_CENTERIMAGE,0,0,322,151
-END
 
 RC_DLG_SRVOPT DIALOGEX 0, 0, 337, 186
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_BORDER
@@ -235,12 +221,12 @@ BEGIN
     BEGIN
       VALUE "Comments", "All rights reserved.  The license is available at <http://www.apache.org/LICENSE.txt>.  The Apache HTTP Server project pages are at <http://httpd.apache.org/>.\0"
       VALUE "CompanyName", "Apache Software Foundation\0"
-      VALUE "FileDescription", "Tomcat Service Manager\0"
+      VALUE "FileDescription", "Apache Process Runner\0"
       VALUE "FileVersion", PROC_VERSION
-      VALUE "InternalName", "tomcatw.exe\0"
+      VALUE "InternalName", "procrunw.exe\0"
       VALUE "LegalCopyright", "Copyright © 2000-2003 The Apache Software Foundation.\0"
-      VALUE "OriginalFilename", "tomcatw.exe\0"
-      VALUE "ProductName", "Tomcat Service Manager\0"
+      VALUE "OriginalFilename", "procrunw.exe\0"
+      VALUE "ProductName", "Apache Process Runner\0"
       VALUE "ProductVersion", PROC_VERSION
     END
   END
