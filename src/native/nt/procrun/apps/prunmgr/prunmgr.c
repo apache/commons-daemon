@@ -528,10 +528,10 @@ void __generalPropertyRefresh(HWND hDlg)
         case SERVICE_STOPPED:
             if (_currentEntry->lpConfig->dwStartType != SERVICE_DISABLED) {
                 Button_Enable(GetDlgItem(hDlg, IDC_PPSGSTART), TRUE);
-                SetDlgItemText(hDlg, IDC_PPSGSTATUS, STAT_DISABLED);
+                SetDlgItemText(hDlg, IDC_PPSGSTATUS, STAT_STOPPED);
             }
             else
-                SetDlgItemText(hDlg, IDC_PPSGSTATUS, STAT_STOPPED);
+                SetDlgItemText(hDlg, IDC_PPSGSTATUS, STAT_DISABLED);
         break;
         default:
         break;
@@ -1043,6 +1043,11 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                     if (IsDlgButtonChecked(hDlg, IDC_PPJAUTO)) {
                         EnableWindow(GetDlgItem(hDlg, IDC_PPJJVM), FALSE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPJBJVM), FALSE);
+                        lpBuf = apxGetJavaSoftRuntimeLib(hPool);
+                        if (lpBuf) {
+                            SetDlgItemTextW(hDlg, IDC_PPJJVM, lpBuf);
+                            apxFree(lpBuf);
+                        }
                     }
                     else {
                         EnableWindow(GetDlgItem(hDlg, IDC_PPJJVM), TRUE);
