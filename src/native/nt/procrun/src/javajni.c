@@ -212,10 +212,13 @@ static BOOL __apxJavaJniCallback(APXHANDLE hObject, UINT uMsg,
                 JVM_DELETE_CLAZZ(lpJava, clString);
                 __apxJvmDetach(lpJava);
                 /* Check if this is the jvm loader */
-                if (!lpJava->iVmCount) {
+                if (!lpJava->iVmCount && _st_sys_jvmDllHandle) {
+#if 0
                     /* Do not destroy if we terminated the worker thread */
                     if (dwJvmRet != STILL_ACTIVE)
                         (*(lpJava->lpJvm))->DestroyJavaVM(lpJava->lpJvm); 
+#endif
+                    /* Unload JVM dll */
                     FreeLibrary(_st_sys_jvmDllHandle);
                     _st_sys_jvmDllHandle = NULL;
                 }
