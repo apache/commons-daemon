@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: jsvc-unix.c,v 1.9 2004/02/09 15:55:21 jfclere Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.10 2004/03/18 03:59:41 billbarker Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -46,7 +46,6 @@ static void handler(int sig) {
             } else {
                 stopping=true;
             }
-            if (handler_trm!=NULL) (*handler_trm)(sig);
             break;
         }
 
@@ -57,7 +56,6 @@ static void handler(int sig) {
             } else {
                 stopping=true;
             }
-            if (handler_int!=NULL) (*handler_int)(sig);
             break;
         }
 
@@ -69,7 +67,6 @@ static void handler(int sig) {
                 stopping=true;
                 doreload=true;
             }
-            if (handler_hup!=NULL) (*handler_hup)(sig);
             break;
         }
 
