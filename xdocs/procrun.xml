@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Daemon : Procrun</title>
+  <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
+ </properties>
+
+<body>
+<section name="Introduction">
+<p>
+      Actualy only the win32 platforms are supported.
+</p>
+</section>
+<section name="Building">
+<p>
+      It is possible to use cygwin to build procrun.
+      <a href="http://www.cygwin.com/"> cygwin</a> for more informations.
+</p>
+<todo/>
+</section>
+<section name="Using procrun">
+<todo/>
+</section>
+
+</body>
+</document>
