@@ -16,7 +16,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apsupport.m4,v 1.4 2004/02/27 08:40:46 jfclere Exp $
+dnl Version $Id: apsupport.m4,v 1.5 2004/06/10 05:21:24 billbarker Exp $
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[
@@ -37,6 +37,10 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   mips)
     CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
     supported_os="mips"
+    ;;
+  alpha*)
+    CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
+    supported_os="alpha"
     ;;
   *)
     AC_MSG_RESULT([failed])
@@ -74,6 +78,10 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DOS_FREEBSD -DDSO_DLFCN -D_THREAD_SAFE -pthread"
     LDFLAGS="-pthread $LDFLAGS"
     supported_os="freebsd"
+    ;;
+  osf5*)
+    CFLAGS="$CFLAGS -pthread -DOS_TRU64 -DDSO_DLFCN -D_XOPEN_SOURCE_EXTENDED"
+    LDFLAGS="$LDFLAGS -pthread"
     ;;
   *)
     AC_MSG_RESULT([failed])

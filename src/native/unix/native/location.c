@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: location.c,v 1.4 2004/03/18 17:28:33 billbarker Exp $ */
+/* @version $Id: location.c,v 1.5 2004/06/10 05:21:24 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since
@@ -37,6 +37,9 @@ char *location_home[] = {
 #elif defined(OS_SYSV)
     "/opt/java",
     "/opt/java/jdk13",
+#elif defined(OS_TRU64)
+    "/usr/opt/java142",
+    "/usr/opt/java13",
 #endif
     NULL,
 };
@@ -62,7 +65,7 @@ char *location_jvm_default[] = {
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/classic/jvm.dll",           /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/bin/client/jvm.dll",            /* Sun JDK 1.4 */
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD) || defined(OS_TRU64)
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so", /* Sun JDK 1.2 */
     "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",  /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/lib/" CPU "/libjvm.so",         /* Sun JDK */
@@ -88,6 +91,10 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/bin/classic/libjvm.so",
     "$JAVA_HOME/bin/client/libjvm.so",
     "$JAVA_HOME/bin/libjvm.so",
+    "$JAVA_HOME/jre/lib/" CPU "/fast64/libjvm.so",
+    "$JAVA_HOME/jre/lib/" CPU "/fast32/libjvm.so",
+    "$JAVA_HOME/lib/" CPU "/fast64/libjvm.so",
+    "$JAVA_HOME/lib/" CPU "/fast32/libjvm.so",
 #endif
     NULL,
 };
