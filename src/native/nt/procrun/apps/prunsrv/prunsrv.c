@@ -1140,6 +1140,8 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
 
 void __cdecl main(int argc, char **argv)
 {
+    UINT rv = 0;
+
     LPAPXCMDLINE lpCmdline;
 
     apxHandleManagerInitialize();
@@ -1149,12 +1151,14 @@ void __cdecl main(int argc, char **argv)
     /* Parse the command line */
     if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands)) == NULL) {
         apxLogWrite(APXLOG_MARK_ERROR "Invalid command line arguments");
+        rv = 1;
         goto cleanup;
     }
     apxCmdlineLoadEnvVars(lpCmdline);
     if (lpCmdline->dwCmdIndex < 5 &&
         !loadConfiguration(lpCmdline)) {
         apxLogWrite(APXLOG_MARK_ERROR "Load configuration failed");
+        rv = 2;
         goto cleanup;
     }
     /* Set console handler to capture CTRL events */
@@ -1171,27 +1175,34 @@ void __cdecl main(int argc, char **argv)
     redirectStdStreams(&gStdwrap);
     switch (lpCmdline->dwCmdIndex) {
         case 1: /* Run Service as console application */
-            docmdDebugService(lpCmdline);
+            if (!docmdDebugService(lpCmdline))
+                rv = 3;
         break;
         case 2: /* Run Service */
-            docmdRunService(lpCmdline);
+            if (!docmdRunService(lpCmdline))
+                rv = 4;
         break;
         case 3: /* Stop Service */
-            docmdStopService(lpCmdline);
+            if (!docmdStopService(lpCmdline))
+                rv = 5;
         break;
         case 4: /* Update Service parameters */
-            docmdUpdateService(lpCmdline);
+            if (!docmdUpdateService(lpCmdline))
+                rv = 6;
         break;
         case 5: /* Install Service */
-            docmdInstallService(lpCmdline);
+            if (!docmdInstallService(lpCmdline))
+                rv = 7;
         break;
         case 6: /* Delete Service */
-            docmdDeleteService(lpCmdline);
+            if (!docmdDeleteService(lpCmdline))
+                rv = 8;
         break;
         default:
             /* Unknow command option */
             apxLogWrite(APXLOG_MARK_ERROR "Unknown command line option");
             printUsage(lpCmdline);
+            rv = 99;
         break;
     }
 
@@ -1202,5 +1213,5 @@ cleanup:
     apxLogClose(NULL);
     apxHandleManagerDestroy();
     cleanupStdStreams(&gStdwrap);
-    ExitProcess(0);
+    ExitProcess(rv);
 }
