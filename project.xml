@@ -35,6 +35,13 @@
       <email>yoavs@apache.org</email>
       <organization>Apache</organization>
     </developer>
+
+    <developer>
+      <name>Bill Barker</name>
+      <id>billbarker</id>
+      <email>billbarker@apache.org</email>
+      <organization>Apache</organization>
+    </developer>
   </developers>
 
 </project>
