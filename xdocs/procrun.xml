@@ -31,7 +31,7 @@
             provided but the executable is renamed to <b>servicenameW.exe</b></td>
     </tr>
     <tr><th>//MS//</th>
-        <td>Moditor service</td>
+        <td>Monitor service</td>
         <td>Put the icon in the system try</td>
     </tr>
     </table>
@@ -79,7 +79,7 @@
     If the command line is prefixed with <b>++</b> then it's value will
     be appended to the existing option.
     If the environment variable with the same name as command line parameter but
-    prefixed with <code>PR_</code> exists it will take precedance.
+    prefixed with <code>PR_</code> exists it will take precedence.
     For example:
 <source>set PR_CLASSPATH=xx.jar</source>
 </p>    
@@ -117,7 +117,7 @@
     <tr>
     <td>--DependsOn</td>
     <td></td>
-    <td>List of services that this service depend on. Dependend services
+    <td>List of services that this service depend on. Dependent services
         are separated using either <b>#</b> or <b>;</b> characters</td>
     </tr>
     <tr>
@@ -129,13 +129,15 @@
     </tr>
     <tr>
     <td>--User</td>
-    <td>LocalSystem</td>
-    <td>User account used for running service</td>
+    <td></td>
+    <td>User account used for running executable. It is used only for
+    	StartMode <b>java</b> or <b>exe</b> and enables running applications
+    	as service under account without LogonAsService privilege.</td>
     </tr>
     <tr>
     <td>--Password</td>
     <td></td>
-    <td>Password for user account if different then LocalSystem</td>
+    <td>Password for user account set by --User parameter</td>
     </tr>
     <tr>
     <td>--JavaHome</td>
@@ -185,7 +187,7 @@
     <tr>
     <td>--StartPath</td>
     <td></td>
-    <td>Executable working path for the start image executable.</td>
+    <td>Working path for the start image executable.</td>
     </tr>
     <tr>
     <td>--StartClass</td>
@@ -202,7 +204,7 @@
     <tr>
     <td>--StartMethod</td>
     <td>Main</td>
-    <td>Method name if differs the Main</td>
+    <td>Method name if differs then main</td>
     </tr>
     <tr>
     <td>--StartMode</td>
@@ -216,12 +218,12 @@
     <tr>
     <td>--StopPath</td>
     <td></td>
-    <td>Executable working path for the stop image executable.</td>
+    <td>Working path for the stop image executable.</td>
     </tr>
     <tr>
     <td>--StopClass</td>
     <td></td>
-    <td>Executable that will be used on Stop service signal.</td>
+    <td>Class that will be used on Stop service signal.</td>
     </tr>
     <tr>
     <td>--StopParams</td>
@@ -233,7 +235,7 @@
     <tr>
     <td>--StopMethod</td>
     <td>Main</td>
-    <td>Method name if differs the Main</td>
+    <td>Method name if differs then main</td>
     </tr>
     <tr>
     <td>--StopMode</td>
@@ -243,7 +245,8 @@
     <tr>
     <td>--StopTimeout</td>
     <td>No Timeout</td>
-    <td>Defines the timeout for stopping service</td>
+    <td>Defines the timeout in seconds that procrun waits for service to
+        exit gracefully.</td>
     </tr>
     <tr>
     <td>--LogPath</td>
