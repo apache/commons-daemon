@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: jsvc-unix.c,v 1.7 2003/09/27 16:49:13 jfclere Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.8 2003/12/31 05:03:25 billbarker Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -271,10 +271,10 @@ static void controller(int sig) {
 /*
  * Return the address of the current signal handler and set the new one.
  */
-static void * signal_set(int sig, void * handler) {
+static void * signal_set(int sig, void * newHandler) {
     void *hand;
 
-    hand=signal(sig,handler);
+    hand=signal(sig,newHandler);
 #ifdef SIG_ERR
     if (hand==SIG_ERR)
         hand=NULL;
@@ -350,7 +350,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     /* Install signal handlers */
     handler_hup=signal_set(SIGHUP,handler);
     handler_trm=signal_set(SIGTERM,handler);
-    handler_trm=signal_set(SIGINT,handler);
+    handler_int=signal_set(SIGINT,handler);
     controlled = getpid();
     log_debug("Waiting for a signal to be delivered");
     while (!stopping) sleep(60); /* pause() not threadsafe */
