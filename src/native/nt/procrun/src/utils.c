@@ -595,11 +595,16 @@ ULONG apxAtoulW(LPCWSTR szNum)
 {
     ULONG rv = 0;
     DWORD sh = 1;
+    int   s  = 1;
     LPCWSTR p = szNum;
 
     /* go to the last digit */
     if (!p || !*p)
         return 0;
+    if (*p == L'-') {
+        s = -1;
+        ++p;
+    }
     while (*(p + 1)) p++;
     
     /* go back */
@@ -617,13 +622,13 @@ ULONG apxAtoulW(LPCWSTR szNum)
             case L'8': v = 8UL; break;
             case L'9': v = 9UL; break;
             default: 
-                return rv; 
+                return rv * s; 
             break;
         }
         rv = rv + (v * sh);
         sh = sh * 10;
     }
-    return rv;
+    return rv * s;
 }
 
 /* Make the unique system resource name from prefix and process id 
