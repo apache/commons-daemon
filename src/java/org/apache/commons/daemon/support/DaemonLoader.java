@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: DaemonLoader.java,v 1.4 2004/02/27 07:57:51 jfclere Exp $ */
+/* @version $Id: DaemonLoader.java,v 1.5 2004/08/19 05:44:58 billbarker Exp $ */
 
 package org.apache.commons.daemon.support;
 
@@ -110,14 +110,14 @@ public final class DaemonLoader {
             if (c==null) throw new ClassNotFoundException(cn);
 
             /* Check interface */
-            Class[] interf = c.getInterfaces();
             boolean isdaemon = false;
-            if ( interf != null ) {
-              for(int i=0;i<interf.length;i++) {
-                if (interf[i].getName().equals("org.apache.commons.daemon.Daemon"))
-                  isdaemon = true;
-              }
+            try {
+              Class dclass = cl.loadClass("org.apache.commons.daemon.Daemon");
+              isdaemon = dclass.isAssignableFrom(c);
+            } catch(Exception cnfex) {
+              // Swallow if Daemon not found.
             }
+
             /* Check methods */
             Class[] myclass = new Class[1];
             if (isdaemon) {
