@@ -183,6 +183,8 @@ static char *ac_lv_class = NULL;
 static char *ac_lv_clmsg = NULL;
 static int  ac_lv_iicon = 0;
 
+#define STR_NOT_NULL(s) { if((s) == NULL) (s) = ""; }
+
 static void ac_parse_list_string(const char *str)
 {
     int row = 0x7FFFFFFF;
@@ -234,6 +236,11 @@ static void ac_parse_list_string(const char *str)
         while (*ac_lv_clmsg && isspace(*ac_lv_clmsg))
             ++ac_lv_clmsg;
     }
+
+    STR_NOT_NULL(ac_lv_class);
+    STR_NOT_NULL(ac_lv_clmsg);
+    STR_NOT_NULL(ac_lv_stat);
+
     memset(&lvi, 0, sizeof(LV_ITEM));
     lvi.mask        = LVIF_IMAGE | LVIF_TEXT;
     lvi.iItem       = ac_lview_current;
