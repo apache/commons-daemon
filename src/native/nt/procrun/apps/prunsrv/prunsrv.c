@@ -333,6 +333,22 @@ static void dumpCmdline()
     }
 }
 
+static void setInprocEnvironment()
+{
+    LPWSTR p, e;
+
+    if (!SO_ENVIRONMENT)
+        return;    /* Nothing to do */
+    
+    for (p = SO_ENVIRONMENT; *p; p++) {
+        e = apxExpandStrW(gPool, p);
+        _wputenv(e);
+        apxFree(e);
+        while (*p)
+            p++;
+    }
+}
+
 /* Load the configuration from Registry
  * loads only nonspecified items
  */
@@ -851,6 +867,9 @@ static DWORD serviceStart()
             /* If the Working path is specified change the current directory */
             SetCurrentDirectoryW(SO_STARTPATH);
         }
+        /* Set the environment using putenv, so JVM can use it */
+        setInprocEnvironment();
+        /* Create the JVM glbal worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(gWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
