@@ -217,8 +217,8 @@ END
 
 
 1 VERSIONINFO
- FILEVERSION 2,1,0,1
- PRODUCTVERSION 2,1,0,1
+ FILEVERSION 2,1,1,0
+ PRODUCTVERSION 2,1,1,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
@@ -235,12 +235,12 @@ BEGIN
     BEGIN
       VALUE "Comments", "All rights reserved.  The license is available at <http://www.apache.org/LICENSE.txt>.  The Apache HTTP Server project pages are at <http://httpd.apache.org/>.\0"
       VALUE "CompanyName", "Apache Software Foundation\0"
-      VALUE "FileDescription", "Apache Process Runner\0"
+      VALUE "FileDescription", "Tomcat Service Manager\0"
       VALUE "FileVersion", PROC_VERSION
-      VALUE "InternalName", "procrun.exe\0"
+      VALUE "InternalName", "tomcatw.exe\0"
       VALUE "LegalCopyright", "Copyright © 2000-2003 The Apache Software Foundation.\0"
-      VALUE "OriginalFilename", "procrun.exe\0"
-      VALUE "ProductName", "Apache Process Runner\0"
+      VALUE "OriginalFilename", "tomcatw.exe\0"
+      VALUE "ProductName", "Tomcat Service Manager\0"
       VALUE "ProductVersion", PROC_VERSION
     END
   END
