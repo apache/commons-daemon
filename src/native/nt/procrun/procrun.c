@@ -923,7 +923,11 @@ static int procrun_service_params(process_t *proc)
                 if (p) {
                     *p = '\0';
                     ++p;
-                    proc->java.start_param = pool_strdup(proc->pool, p);
+                    proc->java.start_param = pool_calloc(proc->pool, strlen(p)+2);
+                    p = strcpy(proc->java.start_param, p);
+                    while((p = strchr(p, ';')) != NULL) {
+                      *p++ = '\0';
+                    }
                 }
             }
         }
@@ -942,7 +946,11 @@ static int procrun_service_params(process_t *proc)
                 if (p) {
                     *p = '\0';
                     ++p;
-                    proc->java.stop_param = pool_strdup(proc->pool, p);
+                    proc->java.stop_param = pool_calloc(proc->pool, strlen(p)+2);
+                    p = strcpy(proc->java.stop_param, p);
+                    while((p = strchr(p, ';')) != NULL) {
+                      *p++ = '\0';
+                    }
                 }
             }
         }
@@ -1261,9 +1269,14 @@ static int procrun_destroy_jvm(process_t *proc, HANDLE jh)
 
         strclass = (*env)->FindClass(env, "java/lang/String");
         if (proc->java.stop_param) {
-            jstring arg = (*env)->NewStringUTF(env, proc->java.stop_param);
-            jargs = (*env)->NewObjectArray(env, 1, strclass, NULL);
-            (*env)->SetObjectArrayElement(env, jargs, 0, arg);
+            char opts[64];
+            int nopts = make_array(proc->java.stop_param, opts, 60, proc);
+            int i;
+            jargs = (*env)->NewObjectArray(env, nopts, strclass, NULL);
+            for(i=0; i < nopts; i++) {
+              jstring arg = (*env)->NewStringUTF(env, opts[i]);
+              (*env)->SetObjectArrayElement(env, jargs, i, arg);
+            }
         }
         (*env)->CallStaticVoidMethod(env,
                                      proc->java.stop_bridge,
@@ -1310,7 +1323,7 @@ static int procrun_init_jvm(process_t *proc)
     jclass strclass;
     jarray jargs = NULL;
     char *cp;
-    char *opts[32];
+    char *opts[64];
     int optn, i, err;
 
     vm_args11.version = JNI_VERSION_1_2;
@@ -1329,7 +1342,7 @@ static int procrun_init_jvm(process_t *proc)
     if(proc->service.path != NULL) {
       SetCurrentDirectory(proc->service.path);
     }
-    optn = make_array(proc->java.opts, opts, 30, proc);
+    optn = make_array(proc->java.opts, opts, 60, proc);
     for (i = 0; i < optn; i++)
         options[i].optionString = remove_quotes(opts[i]);
     cp = (char *)pool_alloc(proc->pool, strlen("-Djava.class.path=") +
@@ -1404,9 +1417,12 @@ static int procrun_init_jvm(process_t *proc)
     } 
     strclass = (*env)->FindClass(env, "java/lang/String");
     if (proc->java.start_param) {
-        jstring arg = (*env)->NewStringUTF(env, proc->java.start_param);
-        jargs = (*env)->NewObjectArray(env, 1, strclass, NULL);
-        (*env)->SetObjectArrayElement(env, jargs, 0, arg);
+        optn = make_array(proc->java.start_param, opts, 60, proc);
+        jargs = (*env)->NewObjectArray(env, optn, strclass, NULL);
+        for(i=0; i < optn; i++) {
+          jstring arg = (*env)->NewStringUTF(env, opts[i]);
+          (*env)->SetObjectArrayElement(env, jargs, i, arg);
+        }
     }
     (*env)->CallStaticVoidMethod(env,
                                  proc->java.start_bridge,
@@ -1701,8 +1717,11 @@ static char * set_command_line(procrun_t *env, char *program, int starting){
         strcat(nargw, " ");
         strcat(nargw, javaClass);
         if (javaParam) {
-            strcat(nargw, " ");
-            strcat(nargw, javaParam);
+            j = make_array(javaParam, opts, 60, env->m);
+            for(i=0; i < j; i++) {
+              strcat(nargw, " ");
+              strcat(nargw, opts[i]);
+            }
         }
         env->m->argw = nargw;
         program = env->m->java.jbin;
