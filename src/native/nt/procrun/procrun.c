@@ -170,6 +170,11 @@ void dbprintf(char *format, ...)
 #define DBPRINTF2(v1, v2, v3)
 #endif
 
+/* Create the memory pool.
+ * Memory pool is fixed size (PROC_POOL_SIZE -> 128 by default)
+ * It ensures that all the memory and HANDELS gets freed
+ * when the procrun exits
+ */
 pool_t *pool_create()
 {
     pool_t *pool = malloc(sizeof(pool_t));
@@ -182,6 +187,11 @@ pool_t *pool_create()
     return pool;
 }
 
+/* Destroy the memory pool
+ * each pool slot can have allocated memory block
+ * and/or associated windows HANDLE that can be
+ * release with CloseHandle.
+ */
 int pool_destroy(pool_t *pool)
 {
     int i = 0;
@@ -198,6 +208,9 @@ int pool_destroy(pool_t *pool)
     return i;
 }
 
+/*  Allocation functions
+ *  They doesn't check for overflow
+ */
 static void *pool_alloc(pool_t *pool, size_t size)
 {
     void *m = malloc(size);
@@ -228,6 +241,10 @@ static char *pool_strdup(pool_t *pool, const char *src)
     return s;
 }
 
+/* Attach the Handle to the pool
+ * The handle will be released on pool_destroy
+ * using CloseHandle API call
+ */
 static void *pool_handle(pool_t *pool, HANDLE h)
 {
     EnterCriticalSection(&pool->lock);
@@ -249,6 +266,13 @@ static BOOL pool_close_handle(pool_t *pool, HANDLE h)
     return CloseHandle(h);
 }
 
+/* Very simple encryption for hiding password
+ * they can be easily decrypted cause the key
+ * is hadcoded (100) in the code.
+ * It can be easily cracked if someone finds that needed.
+ * XXX: The solution is to either use the CryproAPI
+ * or our own account management.
+ */
 static void simple_encrypt(int seed, const char *str, unsigned char bytes[256])
 {
     int i;
@@ -274,15 +298,19 @@ static void simple_decrypt(int seed, char *str, unsigned char bytes[256])
     strcpy(str, sc);
 }
 
-static void test_enc() 
-{
-    unsigned char b[256];
-    char op[32];
-    simple_encrypt(100, "test encryption", b);
-    simple_decrypt(100, op, b);
-    DBPRINTF1("ENC %s", op);
-}
-
+/* Injects the 'ExitProcess' to the child
+ * The function tries to kill the child process
+ * without using 'hard' mathods like TerminateChild.
+ * At first it sends the CTRL+C and CTRL+BREAK to the
+ * child process. If that fails (the child doesn't exit)
+ * it creates the remote thread in the address space of
+ * the child process, and calls the ExitProcess function,
+ * inside the child process.
+ * Finaly it calls the TerminateProcess all of the above
+ * fails.
+ * Well designed console clients usually exits on closing
+ * stdin stream, so this function not be called in most cases.
+ */
 static void inject_exitprocess(PROCESS_INFORMATION *child) 
 {
     PFNCREATERTHRD pfn_CreateRemoteThread;
@@ -368,6 +396,10 @@ int __cdecl compare(const void *arg1, const void *arg2)
     return _stricoll(*((char **)arg1),*((char **)arg2));
 }
 
+/* Merge two char arrays and make
+ * zero separated, double-zero terminated
+ * string
+ */
 static char * merge_arrays(char **one, char **two, process_t *proc)
 {
     int len = 0, n, cnt = 0;
@@ -394,6 +426,11 @@ static char * merge_arrays(char **one, char **two, process_t *proc)
     return envp;
 }
 
+/* Make the environment string
+ * for the child process.
+ * The original environment of the calling process
+ * is merged with the current environment.
+ */
 static char * make_environment(char **envarr, char **envorg, process_t *proc)
 {
     int len = 0, n, cnt = 0;
@@ -446,6 +483,12 @@ static char * make_environment(char **envarr, char **envorg, process_t *proc)
     return envp;
 }
 
+/* Make the character string array form
+ * zero separated, double-zero terminated
+ * strings. Those strings comes from some
+ * Windows api calls, like GetEnvironmentStrings
+ * This string format is also used in Registry (REG_MULTI_SZ)
+ */
 static int make_array(const char *str, char **arr, int size, process_t *proc)
 {
     int i = 0;
@@ -464,6 +507,9 @@ static int make_array(const char *str, char **arr, int size, process_t *proc)
     return i;
 }
 
+/* Simple string unqouting
+ * TODO: Handle multiqoutes.
+ */
 static char *remove_quotes(char * string) {
   char *p = string, *q = string;
   while (*p) {
@@ -555,6 +601,9 @@ static int parse_args(int argc, char **argv, process_t *proc)
     return mode;
 }
 
+/* Print some statistics about the current process
+ *
+ */
 static void debug_process(int argc, char **argv, process_t *p)
 {
     DBPRINTF1("DUMPING %s\n", argv[0]);
@@ -579,6 +628,9 @@ static void debug_process(int argc, char **argv, process_t *p)
     DBPRINTF0("DONE...\n");
 }
 
+/* Add the environment variable 'name=value'
+ * to the environment that will be passed to the child process.
+ */
 static int procrun_addenv(char *name, char *value, int val, process_t *proc)
 {
     int i;
@@ -606,6 +658,11 @@ static int procrun_addenv(char *name, char *value, int val, process_t *proc)
         return -1;
 }
 
+/* Read the environment.
+ * This function reads the procrun defined environment
+ * variables passed from the calling process,
+ * if the calling process is a procrun instance.
+ */
 static int procrun_readenv(process_t *proc, char **envp)
 {
     int i, rv = 0;
@@ -669,6 +726,10 @@ static int procrun_readenv(process_t *proc, char **envp)
     return rv;
 }
 
+/* Find the default jvm.dll
+ * The function scans through registry and finds
+ * default JRE jvm.dll.
+ */
 static char* procrun_guess_jvm(process_t *proc)
 {
     HKEY hkjs;
@@ -711,6 +772,11 @@ static char* procrun_guess_jvm(process_t *proc)
 
     return pool_strdup(proc->pool, jvm);
 } 
+
+/* Find the java/javaw (depending on image)
+ * The function locates the JavaHome Registry entry
+ * and merges that path with the requested image
+ */
 
 static char* procrun_guess_java(process_t *proc, const char *image)
 {
@@ -757,6 +823,10 @@ static char* procrun_guess_java(process_t *proc, const char *image)
     return pool_strdup(proc->pool, jbin);
 } 
 
+/* Find the system JavaHome path.
+ * The "JAVA_HOME" environment variable
+ * gets procedance over registry settings
+ */
 static char* procrun_guess_java_home(process_t *proc)
 {
     HKEY hkjs;
@@ -806,6 +876,9 @@ static char* procrun_guess_java_home(process_t *proc)
     return pool_strdup(proc->pool, jbin);
 } 
 
+/* Read the service parameters from the registry
+ *
+ */
 static int procrun_service_params(process_t *proc)
 {
     HKEY key;
@@ -1025,6 +1098,11 @@ static int procrun_service_params(process_t *proc)
         return -1;
 }
 
+/* Decide if we need the java
+ * Check the registry and decide how the java
+ * is going to be loaded.
+ * Using inprocess jvm.dll or as a child process running java.exe
+ */
 static int procrun_load_jvm(process_t *proc, int mode)
 {
     int has_java = 0;
@@ -1145,6 +1223,10 @@ static void jni_abort_hook()
     DBPRINTF0("JVM abort hook called\n");
 }  
 
+/* 'Standard' JNI functions
+ *
+ */
+
 static JNIEnv *jni_attach(process_t *proc)
 {
     JNIEnv *env = NULL;
@@ -1177,6 +1259,10 @@ static int jni_detach(process_t *proc)
     return (*jvm)->DetachCurrentThread(jvm);
 }
 
+/* Destroy the jvm.
+ * This method stops the current jvm calling
+ * configured stop methods and destroys the loaded jvm.
+ */
 static int procrun_destroy_jvm(process_t *proc, HANDLE jh)
 {
     JavaVM *jvm = proc->java.jvm;
@@ -1246,6 +1332,10 @@ cleanup:
     return err;
 }
 
+/* Initialize loaded jvm.dll 
+ * Pass the startup options to the jvm,
+ * and regiter the start/top classes and methods
+ */
 static int procrun_init_jvm(process_t *proc)
 {
     int jvm_version;
@@ -1370,7 +1460,10 @@ cleanup:
     return -1;
 }
 
-
+/* Thread that waits for child process to exit
+ * When the child process exits, it sets the
+ * event so that we can exit
+ */
 DWORD WINAPI wait_thread(LPVOID param)
 {
     procrun_t *env = (procrun_t *)param;
@@ -1385,6 +1478,11 @@ DWORD WINAPI wait_thread(LPVOID param)
     return 0;
 }  
 
+/* Redirected stdout reader thread
+ * It reads char at a time and writes
+ * either to stdout handle (file or pipe)
+ * or calls the gui console printer function.
+ */
 DWORD WINAPI stdout_thread(LPVOID param)
 {
     unsigned char  ch;
@@ -1407,11 +1505,11 @@ DWORD WINAPI stdout_thread(LPVOID param)
                     n  = 0;
                 } 
                 else if (ch == '\t' && n < (MAX_PATH - 4)) {
-                    int i;
+                    int i; /* replace the TAB with four spaces */
                     for (i = 0; i < 4; ++i)
                         buff[n++] = ' ';
                 }
-                else if (ch != '\r')
+                else if (ch != '\r') /* skip the CR and BELL */
                     buff[n++] = ch;
                 else if (ch != '\b')
                     buff[n++] = ' ';
@@ -1426,9 +1524,18 @@ DWORD WINAPI stdout_thread(LPVOID param)
             readed = 0;
         }
     }
+    /* The client has closed it side of a pipe
+     * meaning that he has finished
+     */
     SetEvent(env->m->events[2]);
     return 0;
 }  
+
+/* Redirected stderr reader thread
+ * It reads char at a time and writes
+ * either to stderr handle (file or pipe)
+ * or calls the gui console printer function.
+ */
 
 DWORD WINAPI stderr_thread(LPVOID param)
 {
@@ -1475,6 +1582,9 @@ DWORD WINAPI stderr_thread(LPVOID param)
     return 0;
 }  
 
+/* Created redirection pipes, and close the unused sides.
+ * 
+ */
 static int procrun_create_pipes(procrun_t *env)
 {
     SECURITY_ATTRIBUTES sa;    
@@ -1561,6 +1671,9 @@ static int procrun_create_pipes(procrun_t *env)
     return 0;
 }
 
+/* Write the specified file to the childs stdin.
+ * This function wraps 'child.exe <some_file'
+ */
 static int procrun_write_stdin(procrun_t *env)
 {
     DWORD readed, written; 
@@ -1587,6 +1700,9 @@ static int procrun_write_stdin(procrun_t *env)
     return 0;
 }
 
+/* Make the command line for starting or stopping
+ * java process.
+ */
 static char * set_command_line(procrun_t *env, char *program, int starting){
         int i, j, len = strlen(env->m->argw) + 8192;
         char *opts[64], *nargw;
@@ -1627,6 +1743,13 @@ static char * set_command_line(procrun_t *env, char *program, int starting){
     return program;
 }
 
+/* Main redirection function.
+ * Create the redirection pipes
+ * Make the child's environment
+ * Make the command line
+ * Logon as different user
+ * Create the child process
+ */
 int procrun_redirect(char *program, char **envp, procrun_t *env, int starting)
 {
     STARTUPINFO si;
@@ -1667,6 +1790,7 @@ int procrun_redirect(char *program, char **envp, procrun_t *env, int starting)
     }
     DBPRINTF2("RUN [%s] %s\n", program, env->m->argw);
     if (env->m->service.account && env->m->service.password && starting) {
+        /* Run the child process under a different user account */
         HANDLE user, token;
         DBPRINTF2("RUNASUSER %s@%s\n", env->m->service.account, env->m->service.password);
         if (!LogonUser(env->m->service.account, 
@@ -1728,7 +1852,7 @@ int procrun_redirect(char *program, char **envp, procrun_t *env, int starting)
             return -1;
         }
     }
-    DBPRINTF1("started java thread %08x",env->c->pinfo.hThread);
+    DBPRINTF1("started child thread %08x",env->c->pinfo.hThread);
     if(starting) {
         pool_handle(env->c->pool, env->c->pinfo.hThread);
         pool_handle(env->c->pool, env->c->pinfo.hProcess);
@@ -1752,6 +1876,8 @@ int procrun_redirect(char *program, char **envp, procrun_t *env, int starting)
     return 0;
 }
 
+/* Delete the value from the registry
+ */
 static int del_service_param(process_t *proc, const char *name)
 {
     HKEY key;
@@ -1773,6 +1899,9 @@ static int del_service_param(process_t *proc, const char *name)
 
 }
 
+/* Update or create the value in the registry
+ *
+ */
 static int set_service_param(process_t *proc, const char *name,
                              const char *value, int len, int service)
 {
@@ -1821,7 +1950,7 @@ static int set_service_param(process_t *proc, const char *name,
 }
 
 /*
- * Process the arguments.
+ * Process the arguments and fill the process_t stuct.
  */
 static int process_args(process_t *proc, int argc, char **argv,
                         char **java, char *path)
@@ -2017,6 +2146,9 @@ void save_service_params(process_t *proc, char *java)
                           proc->java.opts, l + 2, 0);
     }
 }
+
+/* Install the service
+ */
 static int procrun_install_service(process_t *proc, int argc, char **argv)
 {
     SC_HANDLE service;
@@ -2146,6 +2278,9 @@ static int procrun_install_service9x(process_t *proc, int argc, char **argv)
     return 0;
 }
 
+/* Update the service parameters
+ * This is the main parser for //US//
+ */
 int procrun_update_service(process_t *proc, int argc, char **argv)
 {
     SC_HANDLE service;
@@ -2291,7 +2426,10 @@ int procrun_update_service(process_t *proc, int argc, char **argv)
     return 0;
 }
 
-
+/* Delete the service
+ * Removes the service form registry and SCM.
+ * Stop the service if running.
+ */
 static int procrun_delete_service(process_t *proc)
 {
     SC_HANDLE service;
@@ -2534,6 +2672,8 @@ BOOL Windows9xServiceCtrlHandler()
     return TRUE;
 }
 
+/* Report the service status to the SCM
+ */
 int report_service_status(DWORD dwCurrentState,
                           DWORD dwWin32ExitCode,
                           DWORD dwWaitHint,
@@ -2567,6 +2707,8 @@ int report_service_status(DWORD dwCurrentState,
    return fResult;
 }
 
+/* Service controll handler
+ */
 void WINAPI service_ctrl(DWORD dwCtrlCode)
 {
     switch (dwCtrlCode) {
@@ -2586,6 +2728,9 @@ void WINAPI service_ctrl(DWORD dwCtrlCode)
                          NO_ERROR, 0, g_env->m);
 }
 
+/* Console controll handler
+ * 
+ */
 BOOL WINAPI console_ctrl(DWORD dwCtrlType)
 {
     switch (dwCtrlType) {
@@ -2611,6 +2756,10 @@ BOOL WINAPI console_ctrl(DWORD dwCtrlType)
    return FALSE;
 }
 
+/* Main JVM thread
+ * Like redirected process, the redirected JVM application
+ * is run in the separate thread.
+ */
 DWORD WINAPI java_thread(LPVOID param)
 {
     DWORD rv;
@@ -2654,11 +2803,13 @@ int service_main(int argc, char **argv)
     if (g_env->m->java.dll) {
         if (g_env->m->java.jbin == NULL) {
             DWORD id;
+            /* Create the main JVM thread so we don't get blocked */
             jh = CreateThread(NULL, 0, java_thread, g_env, 0, &id);
             pool_handle(g_env->m->pool, jh);
             rv = 0;
         }
         else {
+            /* Redirect java or javaw */
             if ((rv = procrun_init_jvm(g_env->m)) == 0) {
                 rv = procrun_redirect(g_env->m->service.image,
                                       g_env->m->envp, g_env, 1);    
@@ -2701,7 +2852,8 @@ cleanup:
     return rv;
 }
 
-
+/* Procrun main function
+ */
 int procrun_main(int argc, char **argv, char **envp, procrun_t *env)
 {
     int i, mode = 0;
@@ -2724,6 +2876,7 @@ int procrun_main(int argc, char **argv, char **envp, procrun_t *env)
     }
     DBPRINTF1("OS Version %d\n", g_is_windows_nt);
 
+    /* Set console handler to capture CTRL events */
     SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_ctrl, TRUE);
     env->m->pool = pool_create();
     env->c->pool = pool_create();
@@ -2792,6 +2945,8 @@ int procrun_main(int argc, char **argv, char **envp, procrun_t *env)
             nenv += strlen(nenv)+1;
         }
     }
+    /* Create the four events that will cause us to exit
+     */
     sprintf(event, "PROC_SHUTDOWN_EVENT%d", GetCurrentProcessId());
     env->m->events[0] = CreateEvent(NULL, TRUE, FALSE, event);
     sprintf(event, "PROC_EXITWAIT_EVENT%d", GetCurrentProcessId());
@@ -2809,12 +2964,18 @@ int procrun_main(int argc, char **argv, char **envp, procrun_t *env)
     DBPRINTF1("Events %p\n", env->m->events[0]);
 
     switch (mode) {
+        /* Standard run modes */
         case PROCRUN_CMD_TEST_SERVICE:
 #ifdef PROCRUN_WINAPP
+        /*
+         * GUIT: Display as Try application
+         * GUOD: Immediately popup console dialog wrapper
+         */
         case PROCRUN_CMD_GUIT_SERVICE:
         case PROCRUN_CMD_GUID_SERVICE:
             {
                 DWORD gi;
+                /* This one if for about box */
                 LoadLibrary("riched32.dll");
                 CreateThread(NULL, 0, gui_thread, g_env, 0, &gi);
             }
@@ -2830,11 +2991,14 @@ int procrun_main(int argc, char **argv, char **envp, procrun_t *env)
             service_main(argc, argv);
             break;
 #ifdef PROCRUN_WINAPP
+        /* Display the service properties dialog
+         */
         case PROCRUN_CMD_EDIT_SERVICE:
             LoadLibrary("riched32.dll");
             gui_thread(g_env);
             break;
 #endif
+        /* Management modes */
         case PROCRUN_CMD_INSTALL_SERVICE:
             if (g_is_windows_nt)
                 rv = procrun_install_service(env->m, argc, argv);
@@ -2881,6 +3045,7 @@ int procrun_main(int argc, char **argv, char **envp, procrun_t *env)
             break;
 #ifdef PROCRUN_WINAPP
         case PROCRUN_CMD_GUID_PROCESS:
+            /* run as WIN32 application */
             {
                 DWORD gi;
                 ac_use_try = 1;
@@ -3002,6 +3167,14 @@ BOOL WINAPI DllMain(HINSTANCE hInst,
     return TRUE;     
 }
 
+/* DLL mode functions
+ * Ment to be used either from other programs
+ * or from installers
+ */
+
+/* Install the service.
+ * This is a wrapper for //IS//
+ */
 __declspec(dllexport) void InstallService(const char *service_name,
                                           const char *install,
                                           const char *image_path,
@@ -3035,6 +3208,11 @@ __declspec(dllexport) void InstallService(const char *service_name,
     g_env = NULL;
 }
 
+/* Update the service.
+ * This is a wrapper for //US//
+ * 
+ */
+
 __declspec(dllexport) void UpdateService(const char *service_name,
                                          const char *param,
                                          const char *value)
@@ -3061,6 +3239,10 @@ __declspec(dllexport) void UpdateService(const char *service_name,
     free_environment(env);
     g_env = NULL;
 }
+
+/* Remove the service.
+ * This is a wrapper for //DS//
+ */
 
 __declspec(dllexport) void RemoveService(const char *service_name)
 {

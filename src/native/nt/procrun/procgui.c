@@ -156,6 +156,10 @@ prcrun_lview_t *ac_columns = &lv_columns[0];
 
 INT_PTR ac_show_properties(HWND owner);
 
+/* Create the list view using ac_columns struct.
+ * You may change the ac_columns to a different layout
+ * (see the tomcat.c for example)
+ */
 static void lv_create_view(HWND hdlg, LPRECT pr, LPRECT pw)
 {
     LV_COLUMN lvc;
@@ -205,6 +209,8 @@ static void lv_create_view(HWND hdlg, LPRECT pr, LPRECT pw)
 
 /*
  * Find the first occurrence of find in s.
+ * This is the case insesitive version of strstr
+ * that the MSVCRT is missing
  */
 static char *
 stristr(register const char *s, register const char *find)
@@ -225,6 +231,10 @@ stristr(register const char *s, register const char *find)
     return ((char *)s);
 } 
 
+/* Parse the stdout messages and try to figure out what it is about.
+ * Display the icon in the list view acording to that message.
+ * If param from is nonzero (from stderr), display the error icon.
+ */ 
 void parse_list_string(const char *str, int from)
 {
     int row = 0x7FFFFFFF;
@@ -267,6 +277,9 @@ void parse_list_string(const char *str, int from)
 
 lv_parse_cb_t  lv_parser = parse_list_string;
 
+/* Try icon helper
+ * Add/Change/Delete icon from the windows try.
+ */
 void ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop)
 {
     
@@ -294,6 +307,10 @@ void ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop)
     Shell_NotifyIcon(message, &nid);
 }
 
+/* Main console dialog print function
+ * The str comes either from redirected child's stdout
+ * or stderr pipe.
+ */
 void ac_add_list_string(const char *str, int len, int from)
 {
     static int nqueue = 0;
@@ -312,7 +329,9 @@ void ac_add_list_string(const char *str, int len, int from)
             else
                 SendMessage(ac_splist_hwnd, LB_INSERTSTRING, 0, (LPARAM)str);
         }
-
+        /* Ensure that we dont have more the MAX_LISTCOUNT
+         * in the queue
+         */
         if (nqueue > MAX_LISTCOUNT - 1) {
             free(ac_stdout_lines[0]);
             /* TODO: improve performance */
@@ -320,13 +339,19 @@ void ac_add_list_string(const char *str, int len, int from)
                 ac_stdout_lines[i - 1] = ac_stdout_lines[i];
             --nqueue;
         }
+        /* add the string to the queue */
         ac_stdout_lines[nqueue++] = strdup(str);
         nlen = max(nlen, len);
     }
+    /* If there is no window or the queue is empty return */
     if (!ac_list_hwnd || !nqueue)
         return;
+    /* Ok. We have the window open and something in the queue.
+     * Flush that to the screen.
+     */
     if (ac_use_lview) {
         for (i = 0; i < nqueue; i++) {
+            /* Call the list view callback parser */
             (*lv_parser)(ac_stdout_lines[i], from);
             if (litems++ > MAX_LIST_ITEMS)
                 ListView_DeleteItem(ac_list_hwnd, 0);
@@ -334,8 +359,12 @@ void ac_add_list_string(const char *str, int len, int from)
     }
     else 
     {
+        /* Flush all the lines from the queue */
         for (i = 0; i < nqueue; i++) {
             ListBox_AddString(ac_list_hwnd, ac_stdout_lines[i]);
+            /* Ensure no more then MAX_LIST_ITEMS are maintained.
+             * This ensures that we dont waste to much system resources.
+             */
             if (litems++ > MAX_LIST_ITEMS)
                 ListBox_DeleteString(ac_list_hwnd, 0);
         
@@ -346,6 +375,7 @@ void ac_add_list_string(const char *str, int len, int from)
                         (WPARAM) 10 * olen, (LPARAM) 0);
         }
     }
+    /* Remove all the lines from the queue */
     for (i = 0; i < nqueue; i++) {
         free(ac_stdout_lines[i]);
         ac_stdout_lines[i] = NULL;
@@ -353,6 +383,8 @@ void ac_add_list_string(const char *str, int len, int from)
     nqueue = 0;
 }
 
+/* Add the item to the Try popup menu
+ */
 static void ac_append_menu_item(HMENU menu, UINT menu_id, char *name, int isdef, int enabled)
 {
     MENUITEMINFO mii;
@@ -374,6 +406,8 @@ static void ac_append_menu_item(HMENU menu, UINT menu_id, char *name, int isdef,
     InsertMenuItem(menu, menu_id, FALSE, &mii);
 }
 
+/* Show the Try popup menu
+ */
 static void ac_show_try_menu(HWND hwnd)
 {
     HMENU menu;
@@ -403,6 +437,9 @@ static void ac_show_try_menu(HWND hwnd)
     }
 }
 
+/* Sopy selected items from the console dialog
+ * to the windows clipboard
+ */
 static int ac_copy_to_clipboard()
 {
     HGLOBAL hglbcopy = NULL; 
@@ -469,6 +506,7 @@ static int ac_copy_to_clipboard()
     return 0;
 }
 
+/* Center the hwnd on the user desktop */
 void ac_center_window(HWND hwnd)
 {
    RECT    rc, rw;
@@ -647,6 +685,10 @@ LRESULT CALLBACK ac_console_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPA
     return FALSE;
 }
 
+/* Browse dialog.
+ * Brose either for file or folder.
+ * TODO: add some file filters.
+ */
 int ac_browse_for_dialog(HWND hwnd, char *str, size_t len, int files)
 {
     int rv = 0;
@@ -685,6 +727,8 @@ int ac_browse_for_dialog(HWND hwnd, char *str, size_t len, int files)
     
 }
 
+/* Service option dialogs
+ */
 void CALLBACK PropSheetCallback(HWND hwndPropSheet, UINT uMsg, LPARAM lParam)
 {
     switch(uMsg) {
@@ -1085,7 +1129,9 @@ LRESULT CALLBACK ac_splash_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPAR
     return FALSE;
 }
 
-
+/* main (invisible) window procedure
+ *
+ */
 LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
                           WPARAM wparam, LPARAM lparam)
 {
@@ -1220,6 +1266,9 @@ static HWND ac_create_main_window(HINSTANCE instance, const char *wclass, const 
 
 }
 
+/* Main GUI application thread
+ * launched from procrun_main.
+ */
 DWORD WINAPI gui_thread(LPVOID param)
 {
     DWORD rv = 0;
@@ -1246,6 +1295,11 @@ DWORD WINAPI gui_thread(LPVOID param)
     else
         ac_cmdname = env->m->service.name;
     
+    /* Ensure that only one instance of a service is running 
+     * TODO: Allow the //ES// and //MS// to run withouth that
+     *       restriction, but reather use that mutex to signal
+     *       the //GT// of a params change.
+     */
     mutex = CreateMutex(NULL, FALSE, cmutex);
     if ((mutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS)) {
         char msg[2048];
@@ -1260,6 +1314,10 @@ DWORD WINAPI gui_thread(LPVOID param)
     }
 
 #if defined(PROCRUN_EXTENDED)
+    /* Init all the extended properties
+     * like splash, listview, etc..
+     *
+     */
     acx_init_extended();
 #endif
     ac_main_hwnd = ac_create_main_window(ac_instance, cname, 
@@ -1269,6 +1327,7 @@ DWORD WINAPI gui_thread(LPVOID param)
     if (ac_main_hwnd) {
         if (ac_use_try)
             ac_taskbar_created = RegisterWindowMessage("TaskbarCreated");
+        /* Main message loop */
         while (GetMessage(&msg, NULL, 0, 0)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -1277,6 +1336,7 @@ DWORD WINAPI gui_thread(LPVOID param)
     if (mutex)
         CloseHandle(mutex);
     ac_main_hwnd = NULL;
+    /* Signal to procrun_main we are done */
     SetEvent(env->m->events[0]);
     return rv;
 }
