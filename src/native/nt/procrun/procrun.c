@@ -2128,7 +2128,7 @@ void save_service_params(process_t *proc, char *java)
                 proc->service.environment[i] = '\0';
         }
         set_service_param(proc, PROCRUN_PARAMS_ENVIRONMENT,
-                        proc->service.environment, 1+2, 0);
+                        proc->service.environment, l+2, 0);
     }
 
 
