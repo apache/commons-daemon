@@ -6,6 +6,14 @@
   <id>commons-daemon</id>
   <logo>/images/logo.gif</logo>
   <currentVersion>1.0-Alpha</currentVersion>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://jakarta.apache.org/</url>
+    <logo>http://jakarta.apache.org/images/jakarta-logo.gif</logo>
+  </organization>
+  <logo>/images/logo.png</logo>
+
   <inceptionYear>2003</inceptionYear>
   <gumpRepositoryId>jakarta</gumpRepositoryId>
   <shortDescription>Commons Daemon</shortDescription>
