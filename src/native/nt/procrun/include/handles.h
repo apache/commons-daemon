@@ -43,7 +43,11 @@ typedef stAPXHANDLE*        APXHANDLE;
 typedef BOOL (*LPAPXFNCALLBACK)(APXHANDLE hObject, UINT uMsg,
                                 WPARAM wParam, LPARAM lParam);
 
+#if _MSC_VER >= 1300
 #define APXHANDLE_INVALID               ((void *)0xdeadbeefLL)
+#else
+#define APXHANDLE_INVALID               ((void *)0xdeadbeefL)
+#endif
 
 #define APXHANDLE_HOOK_FIRST            0
 #define APXHANDLE_HOOK_LAST             1
