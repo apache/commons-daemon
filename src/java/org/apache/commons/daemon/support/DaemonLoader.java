@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: DaemonLoader.java,v 1.2 2003/09/26 21:09:20 jfclere Exp $ */
+/* @version $Id: DaemonLoader.java,v 1.3 2003/09/27 16:49:13 jfclere Exp $ */
 
 package org.apache.commons.daemon.support;
 
@@ -239,6 +239,24 @@ public final class DaemonLoader {
             /* Attempt to stop the daemon */
             Object arg[] = null;
             stop.invoke(daemon,arg);
+
+            /* Run garbage collector */
+            System.gc();
+
+        } catch (Throwable t) {
+            /* In case we encounter ANY error, we dump the stack trace and
+               return false (load, start and stop won't be called). */
+            t.printStackTrace(System.err);
+            return(false);
+        }
+        return(true);
+    }
+
+    public static boolean destroy() {
+        try {
+            /* Attempt to stop the daemon */
+            Object arg[] = null;
+            destroy.invoke(daemon,arg);
 
             /* Run garbage collector */
             daemon=null;

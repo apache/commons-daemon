@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: jsvc-unix.c,v 1.6 2003/09/26 20:52:12 jfclere Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.7 2003/09/27 16:49:13 jfclere Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -356,14 +356,17 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     while (!stopping) sleep(60); /* pause() not threadsafe */
     log_debug("Shutdown or reload requested: exiting");
 
-    /* Start the service */
+    /* Stop the service */
     if (java_stop()!=true) return(6);
 
     if (doreload==true) ret=123;
     else ret=0;
 
+    /* Destroy the service */
+    java_destroy();
+
     /* Destroy the Java VM */
-    if (java_destroy(ret)!=true) return(7);
+    if (JVM_destroy(ret)!=true) return(7);
 
     return(ret);
 }

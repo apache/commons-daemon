@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: java.c,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: java.c,v 1.2 2003/09/27 16:49:13 jfclere Exp $ */
 #include "jsvc.h"
 
 #ifdef OS_CYGWIN
@@ -252,7 +252,7 @@ bool java_init(arg_data *args, home_data *data) {
 }
 
 /* Destroy the Java VM */
-bool java_destroy(int exit) {
+bool JVM_destroy(int exit) {
     jclass system=NULL;
     jmethodID method;
     char System[]="java/lang/System";
@@ -453,3 +453,27 @@ bool java_check(arg_data *args) {
     return(true);
 }
 
+/* Call the destroy method in our daemon loader */
+bool java_destroy(void) {
+    jmethodID method;
+    jboolean ret;
+    char destroy[]="destroy";
+    char destroyparams[]="()Z";
+
+    jsvc_xlate_to_ascii(destroy);
+    jsvc_xlate_to_ascii(destroyparams); 
+    method=(*env)->GetStaticMethodID(env,cls,destroy,destroyparams);
+    if (method==NULL) {
+        log_error("Cannot found Daemon Loader \"destroy\" entry point");
+        return(false);
+    }
+
+    ret=(*env)->CallStaticBooleanMethod(env,cls,method);
+    if (ret==FALSE) {
+        log_error("Cannot destroy daemon");
+        return(false);
+    }
+
+    log_debug("Daemon destroyed successfully");
+    return(true);
+}

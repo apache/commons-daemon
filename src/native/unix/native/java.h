@@ -55,15 +55,16 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: java.h,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: java.h,v 1.2 2003/09/27 16:49:13 jfclere Exp $ */
 
 #define LOADER "org/apache/commons/daemon/support/DaemonLoader"
 
 char *java_library(arg_data *args, home_data *data);
 bool java_init(arg_data *args, home_data *data);
-bool java_destroy(int exit);
+bool java_destroy(void);
 bool java_load(arg_data *args);
 bool java_start(void);
 bool java_stop(void);
 bool java_version(void);
 bool java_check(arg_data *args);
+bool JVM_destroy(int exit);
