@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
- 
+  
 #include "procrun.h"
 #include "windows.h"
 
@@ -85,23 +85,23 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_BORDER
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        " Main Service Parameters ",RC_GRP_MSP,4,16,324,158
-    CONTROL         "Auto Start",RC_CHK_AUTO,"Button",BS_AUTOCHECKBOX | 
-                    BS_LEFTTEXT | WS_TABSTOP,20,153,62,12
     LTEXT           "Name :",RC_LBL_SN,22,48,50,12
     EDITTEXT        RC_TXT_SN,76,48,179,12,ES_AUTOHSCROLL | ES_READONLY | 
                     NOT WS_TABSTOP
     LTEXT           "Description :",RC_LBL_SD,22,66,50,12
-    EDITTEXT        RC_TXT_SD,76,66,219,12,ES_AUTOHSCROLL
-    LTEXT           "Image path :",RC_LBL_IP,21,79,50,12
+    EDITTEXT        RC_TXT_SD,75,66,219,12,ES_AUTOHSCROLL
+    LTEXT           "Image path :",RC_LBL_IP,22,79,50,12
     EDITTEXT        RC_TXT_IP,75,79,219,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",RC_BTN_BIP,297,79,18,12
-    LTEXT           "Work path :",RC_LBL_WP,21,94,50,12
+    LTEXT           "Work path :",RC_LBL_WP,22,92,50,12
     EDITTEXT        RC_TXT_WP,75,92,219,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",RC_BTN_BWP,297,92,18,12
     LTEXT           "Username :",RC_LBL_UN,21,105,50,12
     EDITTEXT        RC_TXT_UN,75,105,108,12,ES_AUTOHSCROLL
-    LTEXT           "Password :",RC_LBL_UP,21,118,50,12
+    LTEXT           "Password :",RC_LBL_UP,22,118,50,12
     EDITTEXT        RC_TXT_UP,75,118,108,12,ES_PASSWORD | ES_AUTOHSCROLL
+    CONTROL         "Auto Start",RC_CHK_AUTO,"Button",BS_AUTOCHECKBOX | 
+                    BS_LEFTTEXT | WS_TABSTOP,22,153,62,12
 END
 
 RC_DLG_JVMOPT DIALOGEX 0, 0, 337, 186
@@ -129,7 +129,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        " Standard I/O Streams ",RC_GRP_STDOPT,4,16,324,158
     CONTROL         "Read on startup",RC_CHK_STDI,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,76,66,55,12
+                    WS_TABSTOP,76,66,65,12
     LTEXT           "Input :",RC_LBL_STDI,22,48,50,12
     EDITTEXT        RC_TXT_STDI,76,48,219,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",RC_BTN_STDI,298,48,18,12
