@@ -67,7 +67,7 @@
 
 <section name="Structure">
 <p>
-      Daemon is made of 2 part. One written in C that makes the interface to
+      Daemon is made of 2 parts. One written in C that makes the interface to
       the operating system and the other in Java that provides the 
       Daemon API.
 </p>
@@ -75,14 +75,9 @@
 
 <section name="Platforms">
 <p>
-      Actualy only the UNIX like platforms are supported.
-      For win32 platfroms the cygwin emulation layer is used. See
-      <a href="http://www.cygwin.com/"> cygwin</a> for more informations.
-</p>
-<p>
-      In the futur <a href="http://apr.apache.org/"> APR </a> will be used
-      to provide more convinient platform support.
-      support
+      Actually win32 and the UNIX like platforms are supported.
+      For win32 platfroms use <a href="procrun.html">procrun</a>.
+      For UNIX like platforms use <a href="jsvc.html">jsvc</a>.
 </p>
 </section>
 <section name="Initial Source of the Package">

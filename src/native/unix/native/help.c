@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: help.c,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: help.c,v 1.2 2003/09/16 11:50:16 jfclere Exp $ */
 #include "jsvc.h"
 
 void help(home_data *data) {
@@ -108,6 +108,10 @@ void help(home_data *data) {
     printf("    -errfile </full/path/to/file>\n");
     printf("        Location for output from stderr (defaults to /dev/null)\n");
     printf("        Use the value '&1' to simulate '2>&1'\n");
+
+    printf("    -pidfile </full/path/to/file>\n");
+    printf("        Location for output from the file containing the pid of jsvc\n");
+    printf("        (defaults to /var/run/jsvc.pid)\n");
 
     printf("    -D<name>=<value>\n");
     printf("        set a Java system property\n");

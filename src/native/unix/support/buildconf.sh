@@ -57,7 +57,10 @@
 # ========================================================================= #
 
 # @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-# @version $Id: buildconf.sh,v 1.1 2003/09/04 23:28:20 yoavs Exp $
+# @version $Id: buildconf.sh,v 1.2 2003/09/12 09:05:57 jfclere Exp $
+
+# The cache of automake always brings problems when changing *.m4 files.
+rm -rf autom4te.cache
 
 if test -f configure.in ; then
   autoconf

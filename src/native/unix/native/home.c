@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: home.c,v 1.1 2003/09/04 23:28:20 yoavs Exp $ */
+/* @version $Id: home.c,v 1.3 2003/12/31 04:58:31 billbarker Exp $ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */
@@ -81,7 +81,7 @@ static bool checkfile(char *path) {
 /* Parse a VM configuration file */
 static bool parse(home_data *data) {
     FILE *cfgf=fopen(data->cfgf,"r");
-    char *ret=NULL;
+    char *ret=NULL, *sp;
     char buf[1024];
 
     if (cfgf==NULL) return(false);
@@ -104,6 +104,10 @@ static bool parse(home_data *data) {
                 ret[pos--]='\0';
             } else break;
         }
+        /* Format changed for 1.4 JVMs */
+        sp = strchr(ret, ' ');
+        if(sp != NULL)
+            *sp = '\0'
 
         /* Did we find something significant? */
         if (strlen(ret)>0) {
@@ -263,8 +267,8 @@ home_data *home(char *path) {
 
     if (log_debug_flag==true) {
         log_debug("+-- DUMPING JAVA HOME STRUCTURE ------------------------");
-        log_debug("| Java Home:       \"%s\"",data->path);
-        log_debug("| Java VM Config.: \"%s\"",data->cfgf);
+        log_debug("| Java Home:       \"%s\"",PRINT_NULL(data->path));
+        log_debug("| Java VM Config.: \"%s\"",PRINT_NULL(data->cfgf));
         log_debug("| Found JVMs:      %d",data->jnum);
         for (x=0; x<data->jnum; x++) {
             home_jvm *jvm=data->jvms[x];

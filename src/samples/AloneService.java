@@ -2,7 +2,7 @@
  *                                                                           *
  *                 The Apache Software License,  Version 1.1                 *
  *                                                                           *
- *          Copyright (c) 1999-2003 The Apache Software Foundation.          *
+ *          Copyright (c) 1999-2001 The Apache Software Foundation.          *
  *                           All rights reserved.                            *
  *                                                                           *
  * ========================================================================= *
@@ -55,16 +55,114 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: java.h,v 1.2 2003/09/27 16:49:13 jfclere Exp $ */
+/* @version $Id: AloneService.java,v 1.1 2003/09/27 15:45:02 jfclere Exp $ */
 
-#define LOADER "org/apache/commons/daemon/support/DaemonLoader"
+import java.io.*;
+import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
 
-char *java_library(arg_data *args, home_data *data);
-bool java_init(arg_data *args, home_data *data);
-bool java_destroy(void);
-bool java_load(arg_data *args);
-bool java_start(void);
-bool java_stop(void);
-bool java_version(void);
-bool java_check(arg_data *args);
-bool JVM_destroy(int exit);
+import org.apache.commons.collections.ExtendedProperties;
+import java.io.IOException;
+import java.util.Iterator;
+
+/*
+ * That is like the ServiceDaemon but it does used the interface.
+ */
+public class AloneService {
+
+    private ExtendedProperties prop = null;
+    private Process proc[] = null;
+    private ServiceDaemonReadThread readout[] = null;
+    private ServiceDaemonReadThread readerr[] = null;
+
+    protected void finalize() {
+        System.err.println("ServiceDaemon: instance "+this.hashCode()+
+                           " garbage collected");
+    }
+
+    /**
+     * init and destroy were added in jakarta-tomcat-daemon.
+     */
+    public void init(String[] arguments)
+    throws Exception {
+        /* Set the err */
+        System.setErr(new PrintStream(new FileOutputStream(new File("/ServiceDaemon.err"),true)));
+        System.err.println("ServiceDaemon: instance "+this.hashCode()+
+                           " init");
+
+        /* read the properties file */
+        prop = new ExtendedProperties("startfile");
+
+        /* create an array to store the processes */
+	int i=0;
+        for (Iterator e = prop.getKeys(); e.hasNext() ;) {
+            e.next();
+            i++;
+        }
+        System.err.println("ServiceDaemon: init for " + i + " processes");
+        proc = new Process[i];
+        readout = new ServiceDaemonReadThread[i];
+        readerr = new ServiceDaemonReadThread[i];
+        for (i=0;i<proc.length;i++) {
+            proc[i] = null;
+            readout[i] = null;
+            readerr[i] = null;
+        }
+
+        System.err.println("ServiceDaemon: init done ");
+
+    }
+
+    public void start() {
+        /* Dump a message */
+        System.err.println("ServiceDaemon: starting");
+
+        /* Start */
+	int i=0;
+        for (Iterator e = prop.getKeys(); e.hasNext() ;) {
+           String name = (String) e.next();
+           System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getString(name));
+           try {
+               proc[i] = Runtime.getRuntime().exec(prop.getString(name));
+           } catch(Exception ex) {
+               System.err.println("Exception: " + ex);
+           }
+           /* Start threads to read from Error and Out streams */
+           readerr[i] =
+               new ServiceDaemonReadThread(proc[i].getErrorStream());
+           readout[i] =
+               new ServiceDaemonReadThread(proc[i].getInputStream());
+           readerr[i].start();
+           readout[i].start();
+           i++;
+        }
+    }
+
+    public void stop()
+    throws IOException, InterruptedException {
+        /* Dump a message */
+        System.err.println("ServiceDaemon: stopping");
+
+        for (int i=0;i<proc.length;i++) {
+            if ( proc[i]==null)
+               continue;
+            proc[i].destroy();
+            try {
+                proc[i].waitFor();
+            } catch(InterruptedException ex) {
+                System.err.println("ServiceDaemon: exception while stopping:" +
+                                    ex);
+            }
+        }
+
+        System.err.println("ServiceDaemon: stopped");
+    }
+
+    public void destroy() {
+        System.err.println("ServiceDaemon: instance "+this.hashCode()+
+                           " destroy");
+    }
+
+}

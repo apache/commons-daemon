@@ -57,7 +57,7 @@
  */
 
 /* ====================================================================
- * procrun.
+ * procrun
  *
  * Contributed by Mladen Turk <mturk@apache.org>
  *
@@ -70,6 +70,10 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#if defined(PROCRUN_EXTENDED)
+#include "extend.h"
 #endif
 
 #define IDD_DLGCONSOLE        101
@@ -93,18 +97,16 @@ extern "C" {
 #define IDC_RICHEDIT21        119
 #define IDM_ABOUT             120
 #define IDI_ICOCONTRYSTOP     121
-
-#define IDD_DLGSPLASH         122
-#define IDB_BMPSPLASH         123
+#define IDB_BMPSPLASH         122
+#define IDD_DLGSPLASH         123
 #define IDL_INFO              124
-
-#define IDM_OPTIONS           125
+#define IDI_ICOI              125
+#define IDI_ICOS              126
+#define IDI_ICOW              127
+#define IDM_OPTIONS           128
 #define RC_DLG_SRVOPT         130
 #define RC_LBL_VER            131
 #define RC_LISTVIEW           132
-#define IDI_ICOI              133
-#define IDI_ICOS              134
-#define IDI_ICOW              135
 
 #define RC_TAB_SRVOPT        1000
 #define RC_GRP_MSP           1001
@@ -156,7 +158,7 @@ extern "C" {
 #define PROC_ARG_COUNT  128
 #define PROC_BUFSIZE    4096 
 #define PROC_POOL_SIZE  128
-#define PROC_VERSION    "1.0.1\0"
+#define PROC_VERSION    "1.1.0\0"
 #define SERVICE_DEPENDENCIES        "Tcpip\0Afd\0\0"
 
 #define PROC_ARG_ENVPREFIX          "//EP//"
@@ -172,8 +174,16 @@ extern "C" {
 #define PROC_ARG_UPDATE_SERVICE     "//US//"
 #define PROC_ARG_EDIT_SERVICE       "//ES//"
 
-#define PROCRUN_VERSION_STR         "1.0"
+#define PROCRUN_VERSION_STR         "1.1"
+
+#ifndef PROCRUN_REGKEY_ROOT
 #define PROCRUN_REGKEY_ROOT         "SOFTWARE\\Apache Software Foundation\\Process Runner " PROCRUN_VERSION_STR
+#endif
+
+#ifndef PROCRUN_GUI_DISPLAY
+#define PROCRUN_GUI_DISPLAY         "Apache Process Runner"
+#endif
+
 #define PROCRUN_REGKEY_SERVICES     "System\\CurrentControlSet\\Services\\%s"
 #define PROCRUN_REGKEY_PARAMS       "System\\CurrentControlSet\\Services\\%s\\Parameters"
 #define PROCRUN_REGKEY_RSERVICES    PROCRUN_REGKEY_ROOT "\\%s"
@@ -203,6 +213,7 @@ extern "C" {
 #define PROCRUN_PARAMS_WINPOS       "WindowPosition"
 #define PROCRUN_PARAMS_WINCLR       "WindowColor"
 #define PROCRUN_PARAMS_WINBACK      "WindowBackground"
+#define PROCRUN_PARAMS_USELVIEW     "WindowListView"
 
 
 #define PROCRUN_DEFAULT_CLASS       "Main"
@@ -217,6 +228,7 @@ extern "C" {
 #define STRN_SIZE(x) (sizeof(x) - 1)
 #define STRN_COMPARE(x, s) (strncmp((x), (s), sizeof((s)) -1) == 0)
 #define STRNI_COMPARE(x, s) (strnicmp((x), (s), sizeof((s)) -1) == 0)
+#define STR_NOT_NULL(s) { if((s) == NULL) (s) = ""; }
 
     enum { 
         PROCRUN_MODE_WINAPP = 1,
@@ -338,8 +350,48 @@ extern "C" {
     void save_service_params(process_t *proc, char *java);
     pool_t *pool_create();
     int pool_destroy(pool_t *pool);
+    
+    typedef struct prcrun_lview_t {
+        char *  label;
+        DWORD   width;
+    } prcrun_lview_t;
+
+#if !defined(PROCRUN_CONSOLE)
+
+extern DWORD WINAPI gui_thread(LPVOID param);
+
+extern void ac_add_list_string(const char *str, int len, int from);
+extern int  ac_use_try;
+extern int  ac_use_dlg;
+extern int  ac_use_show;
+extern int  ac_use_props;
+extern int  ac_use_lview;
+extern int  ac_lview_current;
+extern int  ac_splash_timeout;
+
+extern  RECT            ac_winpos;
+extern  HINSTANCE       ac_instance;
+extern  HWND            ac_main_hwnd;
+extern  HWND            ac_list_hwnd;
+extern  char            *ac_cmdname;
+extern  char            *ac_splash_msg;
+extern  prcrun_lview_t  *ac_columns;
+
+void    ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop);
+void    ac_center_window(HWND hwnd);
+
+typedef void (*lv_parse_cb_t)(const char *data, int from);
+
+extern lv_parse_cb_t    lv_parser;
+
+#if defined(PROCRUN_EXTENDED)
+
+void acx_init_extended();
 
 
+#endif
+
+#endif
 
 #ifdef __cplusplus
 }

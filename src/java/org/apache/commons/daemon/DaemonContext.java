@@ -59,21 +59,28 @@ package org.apache.commons.daemon;
 
 
 /**
+ * Defines a set of methods that a Daemon instance can use to
+ * communicate with the Daemon container.
  *
- * @author <a href="mailto:pier.fumagalli@sun.com">Pier Fumagalli</a>
+ * @author Pier Fumagalli
  * @author Copyright &copy; 2000-2001 <a href="http://www.apache.org/">The
  *         Apache Software Foundation</a>. All rights reserved.
- * @version 1.0 <i>(CVS $Revision: 1.1 $)</i>
+ * @version 1.0 <i>(CVS $Revision: 1.3 $)</i>
  */
 public interface DaemonContext {
 
     /**
-     *
+     * Returns  <code>DaemonController</code> object that can be used
+     * to control the <code>Daemon</code> instance that this
+     * <code>DaemonContext</code> is passed to.
      */
     public DaemonController getController();
 
     /**
-     *
+     * Returns an array of <code>String</code> arguments supplied by
+     * the environment.  corresponding to the array of arguments given
+     * in the <code>public static void main()</code> method used as an
+     * entry point to most other java programs.
      */
     public String[] getArguments();
 
