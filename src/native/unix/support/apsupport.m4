@@ -16,7 +16,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apsupport.m4,v 1.5 2004/06/10 05:21:24 billbarker Exp $
+dnl Version $Id: apsupport.m4,v 1.6 2004/11/05 16:53:10 jfclere Exp $
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[
@@ -60,7 +60,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   linux*)
     CFLAGS="$CFLAGS -DOS_LINUX -DDSO_DLFCN"
     supported_os="linux"
-    LDFLAGS="$LDFLAGS -ldl"
+    LDFLAGS="$LDFLAGS -ldl -lpthread"
     ;;
   cygwin)
     CFLAGS="$CFLAGS -DOS_CYGWIN -DDSO_DLFCN -DNO_SETSID"
