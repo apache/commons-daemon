@@ -182,7 +182,9 @@ static BOOL __apxPoolCallback(APXHANDLE hObject, UINT uMsg,
         __apxPoolCallback(hCur, uMsg, 0, 0);
     }
     /* call the handles callback */        
-    TAILQ_FOREACH(hCur, &lpPool->lHandles, queue) {
+    for(hCur = TAILQ_FIRST(&lpPool->lHandles) ;
+        hCur != NULL ;
+        hCur = TAILQ_FIRST(&lpPool->lHandles)) {
         apxCloseHandle(hCur);
     }
     /* if we are closing this pool destroy the private Heap */

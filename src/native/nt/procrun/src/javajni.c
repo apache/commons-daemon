@@ -522,9 +522,9 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
               lpJava->clWorker.jArgs);
 
     JVM_EXCEPTION_CLEAR(lpJava);
+    __apxJvmDetach(lpJava);
 finished:
     lpJava->dwWorkerStatus = 0;
-    __apxJvmDetach(lpJava);
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished");
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
