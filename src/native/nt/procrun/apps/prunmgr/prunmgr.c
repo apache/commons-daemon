@@ -1414,7 +1414,7 @@ void ShowServiceProperties(HWND hWnd)
 
     psH.dwSize           = sizeof(PROPSHEETHEADER);
     psH.dwFlags          = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_USECALLBACK | PSH_NOCONTEXTHELP;
-    psH.hwndParent       = hWnd;
+    psH.hwndParent       = bEnableTry ? hWnd : NULL;
     psH.hInstance        = _gui_store->hInstance;
     psH.pszIcon          = MAKEINTRESOURCEW(IDI_MAINICON);
     psH.pszCaption       = szT;
