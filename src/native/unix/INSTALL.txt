@@ -5,7 +5,7 @@ system you will need:
   GNU AutoConf
   A Java Platform 2 compliant SDK
 
-First of all you need to build the "configure" program with:
+When building from CVS sources you need to build the "configure" program with:
 
    sh support/buildconf.sh
 (Note it is possible to replace sh by any compatible shell like bash, ksh).
@@ -20,6 +20,11 @@ or
 
   JAVA_HOME=/usr/java
   export JAVA_HOME
+  ./configure
+
+or (when using gcj (use fastjar for jar))
+  JAVAC=gcj; export JAVAC
+  JAVACFLAGS=-c; export JAVACFLAGS
   ./configure
 
 If your operating system is supported, configure will go thru cleanly,
