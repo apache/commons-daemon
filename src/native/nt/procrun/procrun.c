@@ -787,37 +787,41 @@ static char* procrun_guess_java(process_t *proc, const char *image)
     char *cver;
     unsigned long err, klen = MAX_PATH;
     
-    strcpy(reg, JAVASOFT_REGKEY);
-    cver = &reg[sizeof(JAVASOFT_REGKEY)-1];
+    if((cver = getenv("JAVA_HOME")) != NULL) {
+        strcpy(jbin,cver);
+    } else {
+        strcpy(reg, JAVASOFT_REGKEY);
+        cver = &reg[sizeof(JAVASOFT_REGKEY)-1];
 
-    if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
+        if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
                             0, KEY_READ, &hkjs)) != ERROR_SUCCESS) {
-       DBPRINTF0("procrun_guess_jvm() failed to open Registry key\n");
-       return NULL;
-    }
-    if ((err = RegQueryValueEx(hkjs, "CurrentVersion", NULL, NULL, 
+           DBPRINTF0("procrun_guess_jvm() failed to open Registry key\n");
+           return NULL;
+        }
+        if ((err = RegQueryValueEx(hkjs, "CurrentVersion", NULL, NULL, 
                                (unsigned char *)cver,
                                &klen)) != ERROR_SUCCESS) {
-        DBPRINTF0("procrun_guess_jvm() failed obtaining Current Java Version\n");
+            DBPRINTF0("procrun_guess_jvm() failed obtaining Current Java Version\n");
+            RegCloseKey(hkjs);
+            return NULL;
+        }
         RegCloseKey(hkjs);
-        return NULL;
-    }
-    RegCloseKey(hkjs);
     
-    if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
+        if ((err = RegOpenKeyEx(HKEY_LOCAL_MACHINE, reg,
                             0, KEY_READ, &hkjs) ) != ERROR_SUCCESS) {
-        DBPRINTF1("procrun_guess_jvm() failed to open Registry key %s\n", reg);
-        return NULL;
-    }
-    klen = MAX_PATH;
-    if ((err = RegQueryValueEx(hkjs, "JavaHome", NULL, NULL, 
+            DBPRINTF1("procrun_guess_jvm() failed to open Registry key %s\n", reg);
+            return NULL;
+        }
+        klen = MAX_PATH;
+        if ((err = RegQueryValueEx(hkjs, "JavaHome", NULL, NULL, 
                                (unsigned char *)jbin, 
                                &klen)) != ERROR_SUCCESS) {
-        DBPRINTF0("procrun_guess_jvm() failed obtaining Java path\n");
+            DBPRINTF0("procrun_guess_jvm() failed obtaining Java path\n");
+            RegCloseKey(hkjs);
+            return NULL;
+        }
         RegCloseKey(hkjs);
-        return NULL;
     }
-    RegCloseKey(hkjs);
     strcat(jbin, "\\bin\\");
     strcat(jbin, image);
     strcat(jbin, ".exe");
@@ -1950,7 +1954,35 @@ static int set_service_param(process_t *proc, const char *name,
     RegCloseKey(key); 
     return (err != ERROR_SUCCESS);
 }
-
+static const char *location_jvm_default[] = {
+    "\\jre\\bin\\classic\\jvm.dll",           /* Sun JDK 1.3 */
+    "\\bin\\classic\\jvm.dll",                /* Sun JRE 1.3 */
+    "\\jre\\bin\\client\\jvm.dll",            /* Sun JDK 1.4 */
+    "\\bin\\client\\jvm.dll",                 /* Sun JRE 1.4 */
+    NULL,
+};
+  
+/* 
+ * Attempt to locate the jvm from the installation.
+ */
+static char *procrun_find_java(process_t *proc, char *jhome)
+{
+  char path[MAX_PATH+1];
+  int x = 0;
+  HMODULE hm;
+  for(x=0; location_jvm_default[x] != NULL; x++) {
+      strcpy(path,jhome);
+      strcat(path,location_jvm_default[x]);
+      hm = LoadLibraryEx(path, NULL, 0); 
+      if(hm != NULL) {
+          DBPRINTF1("Found library at %s\n",path);
+          FreeLibrary(hm);
+          return pool_strdup(proc->pool, path);
+      }
+  }
+  return NULL;
+}
+   
 /*
  * Process the arguments and fill the process_t stuct.
  */
@@ -2027,9 +2059,19 @@ static int process_args(process_t *proc, int argc, char **argv,
            break; 
         }
     }
-    if (*java && !strnicmp(*java, "java", 4))
+    if (*java && !strnicmp(*java, "java", 4)) {
         arglen = strlen(*java) + 1;
-    else if (proc->service.name)
+    } else if(*java) {
+        int jlen = strlen(*java) +1;
+        if(stricmp(*java+(jlen-5),".dll")) {
+            /* Assume it is the java installation */
+            char *njava = procrun_find_java(proc, *java);
+            DBPRINTF1("Attempting to locate jvm from %s\n",*java);
+            if(njava != NULL) {
+              *java = njava;
+            }
+        }
+    } else if (proc->service.name)
         arglen = strlen(proc->service.name) + 1;
     for (n = i; n < argc; n++) {
         arglen += (strlen(argv[n]) + 1);
@@ -2039,9 +2081,9 @@ static int process_args(process_t *proc, int argc, char **argv,
     if (arglen) {
         ++arglen;
         proc->argw = (char *)pool_calloc(proc->pool, arglen);
-        if (*java && !strnicmp(*java, "java", 4))
+        if (*java && !strnicmp(*java, "java", 4)) 
             strcpy(proc->argw, *java);
-        else
+        else 
             strcpy(proc->argw, proc->service.name);
         for (n = i; n < argc; n++) {
             strcat(proc->argw, " ");
@@ -2378,6 +2420,18 @@ int procrun_update_service(process_t *proc, int argc, char **argv)
             break;
     }
 
+    if (java && strnicmp(java, "java", 4)) {
+        int jlen = strlen(java) + 1;
+        if(stricmp(java+(jlen-5),".dll")) {
+            /* Assume it is the java installation */
+            char *njava = procrun_find_java(proc, java);
+            DBPRINTF1("Attempting to locate jvm from %s\n",java);
+            if(njava != NULL) {
+              java = njava;
+            }
+        }
+    }
+ 
     if (i < argc) {
         if (java && !strnicmp(java, "java", 4))
             arglen = strlen(java) + 1;
