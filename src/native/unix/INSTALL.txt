@@ -27,6 +27,8 @@ or (when using gcj (use fastjar for jar))
   JAVACFLAGS=-c; export JAVACFLAGS
   ./configure
 
+Note: On Mac OS X <dir> is /System/Library/Frameworks/JavaVM.framework/Home.
+
 If your operating system is supported, configure will go thru cleanly,
 otherwise it will report an error (please send us the details of your
 OS/JDK, or a patch against the sources). To build the binaries and
