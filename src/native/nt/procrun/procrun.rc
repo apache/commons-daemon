@@ -59,13 +59,27 @@
 #include "procrun.h"
 #include "windows.h"
 
-#if !defined(PROCRUN_EXTENDED)
+#if !defined(EXT_ICOCONWRAP)
 IDI_ICOCONWRAP         ICON                    "proctry.ico"
+#endif
+#if !defined(EXT_ICOCONTRY)
 IDI_ICOCONTRY          ICON                    "proctry.ico"
+#endif
+#if !defined(EXT_ICOCONTRY)
 IDI_ICOCONTRYSTOP      ICON                    "proctry.ico"
 #endif
 
 IDR_RTFLIC             RTF                     "License.rtf"
+
+#ifdef _MSC_VER
+#if !defined(EXT_BMPSPLASH)
+IDB_BMPSPLASH          BITMAP   DISCARDABLE    "splash.bmp"
+#endif
+#endif
+
+IDI_ICOI               ICON                    "icoi.ico"
+IDI_ICOS               ICON                    "icos.ico"
+IDI_ICOW               ICON                    "icow.ico"
 
 #ifdef _MSC_VER
 IDB_BMPJAKARTA         BITMAP   DISCARDABLE    "jakarta-banner.bmp"
@@ -201,6 +215,19 @@ BEGIN
     PUSHBUTTON      "...",RC_BTN_STDE,298,102,18,12
 END
 
+IDD_DLGSPLASH DIALOGEX 0, 0, 322, 151
+STYLE DS_SYSMODAL | DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
+    WS_BORDER
+EXSTYLE WS_EX_TOPMOST
+FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    LISTBOX         IDL_INFO,7,126,217,9, LBS_NOINTEGRALHEIGHT | 
+                    LBS_NOSEL | NOT WS_BORDER | NOT LBS_USETABSTOPS
+#ifdef _MSC_VER                    
+    CONTROL         IDB_BMPSPLASH,IDC_STATIC,"Static",SS_BITMAP |
+                    SS_CENTERIMAGE,0,0,322,151
+#endif
+END 
 
 1 VERSIONINFO
  FILEVERSION 2,1,1,0

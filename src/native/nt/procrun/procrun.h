@@ -97,8 +97,13 @@ extern "C" {
 #define IDC_RICHEDIT21        119
 #define IDM_ABOUT             120
 #define IDI_ICOCONTRYSTOP     121
-
-#define IDM_OPTIONS           122
+#define IDB_BMPSPLASH         122
+#define IDD_DLGSPLASH         123
+#define IDL_INFO              124
+#define IDI_ICOI              125
+#define IDI_ICOS              126
+#define IDI_ICOW              127
+#define IDM_OPTIONS           128
 #define RC_DLG_SRVOPT         130
 #define RC_LBL_VER            131
 #define RC_LISTVIEW           132
@@ -222,6 +227,7 @@ extern "C" {
 #define STRN_SIZE(x) (sizeof(x) - 1)
 #define STRN_COMPARE(x, s) (strncmp((x), (s), sizeof((s)) -1) == 0)
 #define STRNI_COMPARE(x, s) (strnicmp((x), (s), sizeof((s)) -1) == 0)
+#define STR_NOT_NULL(s) { if((s) == NULL) (s) = ""; }
 
     enum { 
         PROCRUN_MODE_WINAPP = 1,
@@ -343,6 +349,11 @@ extern "C" {
     void save_service_params(process_t *proc, char *java);
     pool_t *pool_create();
     int pool_destroy(pool_t *pool);
+    
+    typedef struct prcrun_lview_t {
+        char *  label;
+        DWORD   width;
+    } prcrun_lview_t;
 
 #if !defined(PROCRUN_CONSOLE)
 
@@ -354,23 +365,26 @@ extern int  ac_use_dlg;
 extern int  ac_use_show;
 extern int  ac_use_props;
 extern int  ac_use_lview;
+extern int  ac_lview_current;
 
-extern  RECT        ac_winpos;
-extern  HINSTANCE   ac_instance;
-extern  HWND        ac_main_hwnd;
-extern  HWND        ac_list_hwnd;
-extern  char        *ac_cmdname;
+extern  RECT            ac_winpos;
+extern  HINSTANCE       ac_instance;
+extern  HWND            ac_main_hwnd;
+extern  HWND            ac_list_hwnd;
+extern  char            *ac_cmdname;
+extern  char            *ac_splash_msg;
+extern  prcrun_lview_t  *ac_columns;
 
 void    ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop);
 void    ac_center_window(HWND hwnd);
 
+typedef void (*lv_parse_cb_t)(const char *data);
+
+extern lv_parse_cb_t    lv_parser;
+
 #if defined(PROCRUN_EXTENDED)
 
-void acx_process_splash(const char *str);
-void acx_create_view(HWND hdlg, LPRECT pr, LPRECT pw);
 void acx_parse_list_string(const char *str);
-void acx_create_spash(HWND hwnd);
-void acx_close_spash();
 void acx_init_extended();
 
 

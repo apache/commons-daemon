@@ -130,11 +130,111 @@ static HWND            ac_console_hwnd = NULL;
 static char            *ac_stdout_lines[MAX_LISTCOUNT + 1];
 char                   *ac_cmdline;
 char                   *ac_cmdname;
-RECT                   ac_winpos = {-1, 0, 640, 480};
+char                   *ac_splash_msg = NULL;
 
+RECT                   ac_winpos = {-1, 0, 640, 480};
+static HWND            ac_splash_hwnd = NULL;
+static HWND            ac_splist_hwnd;
+
+int                    ac_lview_current = 0;
+
+prcrun_lview_t lv_columns[] = {
+    {   "Status",   60      },
+    {   "Message",  552     },
+    {   NULL,       0       },
+};
+
+prcrun_lview_t *ac_columns = &lv_columns[0];
 
 INT_PTR ac_show_properties(HWND owner);
 
+static void lv_create_view(HWND hdlg, LPRECT pr, LPRECT pw)
+{
+    LV_COLUMN lvc;
+    int i = 0;
+    HIMAGELIST  imlist;
+    HICON hicon;
+    prcrun_lview_t *col = ac_columns;
+
+    imlist = ImageList_Create(16, 16, ILC_COLORDDB | ILC_MASK, 3, 0);
+    hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOI),
+                      IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    ImageList_AddIcon(imlist, hicon);
+    hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOW),
+                      IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    ImageList_AddIcon(imlist, hicon);
+    hicon = LoadImage(ac_instance, MAKEINTRESOURCE(IDI_ICOS),
+                      IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    ImageList_AddIcon(imlist, hicon);
+    
+    ac_list_hwnd = CreateWindowEx(0L, WC_LISTVIEW, "", 
+                                  WS_VISIBLE | WS_CHILD |
+                                  LVS_REPORT | WS_EX_CLIENTEDGE,
+                                  0, 0, pr->right - pr->left,
+                                  pr->bottom - abs((pw->top - pw->bottom)),
+                                  hdlg, NULL, ac_instance, NULL);
+    lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+    lvc.fmt  = LVCFMT_LEFT;
+    
+    ListView_SetImageList(ac_list_hwnd,imlist, LVSIL_SMALL);
+    
+    while (col->label)  {
+        lvc.iSubItem    = i;
+        lvc.cx          = col->width;
+        lvc.pszText     = col->label;
+        ListView_InsertColumn(ac_list_hwnd, i, &lvc );
+        ++col;
+        ++i;
+    }
+#ifdef LVS_EX_FULLROWSELECT
+    ListView_SetExtendedListViewStyleEx(ac_list_hwnd, 0,
+        LVS_EX_FULLROWSELECT |
+        LVS_EX_INFOTIP);
+#endif
+    
+}
+
+static int  ac_lv_iicon = 0;
+
+
+void parse_list_string(const char *str)
+{
+    int row = 0x7FFFFFFF;
+    LV_ITEM lvi;
+
+    if (str) {
+        if (STRN_COMPARE(str, "INFO:")) {
+            ac_lv_iicon = 0;
+        }
+        else if (STRN_COMPARE(str, "WARNING:")) {
+            ac_lv_iicon = 1;
+        }
+        else if (STRN_COMPARE(str, "ERROR:")) {
+            ac_lv_iicon = 2;
+        }
+        else if (STRN_COMPARE(str, "SEVERE:")) {
+            ac_lv_iicon = 2;
+        }
+    }
+
+    memset(&lvi, 0, sizeof(LV_ITEM));
+    lvi.mask        = LVIF_IMAGE | LVIF_TEXT;
+    lvi.iItem       = ac_lview_current;
+    lvi.iImage      = ac_lv_iicon;
+    lvi.pszText     = "";
+    lvi.cchTextMax  = 0;
+    row = ListView_InsertItem(ac_list_hwnd, &lvi);
+    if (row == -1)
+        return;
+    ListView_SetItemText(ac_list_hwnd, row, 1, (char *)str);
+    ListView_EnsureVisible(ac_list_hwnd,
+                               ListView_GetItemCount(ac_list_hwnd) - 1,
+                               FALSE); 
+
+    ac_lview_current++;
+}
+
+lv_parse_cb_t  lv_parser = parse_list_string;
 
 void ac_show_try_icon(HWND hwnd, DWORD message, const char *tip, int stop)
 {
@@ -171,10 +271,17 @@ void ac_add_list_string(const char *str, int len)
     int i;
 
     if (str) {
+        if (ac_splash_hwnd) {
+            if (ac_splash_msg && 
+                !strnicmp(str, ac_splash_msg, strlen(ac_splash_msg))) {
+                ac_show_try_icon(ac_main_hwnd, NIM_MODIFY, ac_cmdname, 0);
+                EndDialog(ac_splash_hwnd, TRUE);
+                ac_splash_hwnd = NULL;
+            }
+            else
+                SendMessage(ac_splist_hwnd, LB_INSERTSTRING, 0, (LPARAM)str);
+        }
 
-#if defined(PRCRUN_EXTENDED)
-        acx_process_splash(str);
-#endif
         if (nqueue > MAX_LISTCOUNT - 1) {
             free(ac_stdout_lines[0]);
             /* TODO: improve performance */
@@ -187,16 +294,14 @@ void ac_add_list_string(const char *str, int len)
     }
     if (!ac_list_hwnd || !nqueue)
         return;
-#if defined(PROCRUN_EXTENDED)
     if (ac_use_lview) {
         for (i = 0; i < nqueue; i++) {
-            acx_parse_list_string(ac_stdout_lines[i]);
+            (*lv_parser)(ac_stdout_lines[i]);
             if (litems++ > MAX_LIST_ITEMS)
                 ListView_DeleteItem(ac_list_hwnd, 0);
         }
     }
     else 
-#endif
     {
         for (i = 0; i < nqueue; i++) {
             ListBox_AddString(ac_list_hwnd, ac_stdout_lines[i]);
@@ -443,14 +548,11 @@ LRESULT CALLBACK ac_console_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPA
                         
            GetWindowRect(status_bar, &r);
            GetClientRect(hdlg, &m);
-#if defined(PROCRUN_EXTENDED)
            if (!ac_use_lview)
                MoveWindow(ac_list_hwnd, 0, 0, m.right - m.left, m.bottom - abs((r.top - r.bottom)), TRUE);
            else
-               acx_create_view(hdlg, &m, &r);
-#else
-           MoveWindow(ac_list_hwnd, 0, 0, m.right - m.left, m.bottom - abs((r.top - r.bottom)), TRUE);
-#endif
+               lv_create_view(hdlg, &m, &r);
+
            ac_add_list_string(NULL, 0);
            break;
         case WM_SIZE:
@@ -935,6 +1037,20 @@ INT_PTR ac_show_properties(HWND owner)
 }
 
 
+LRESULT CALLBACK ac_splash_dlg_proc(HWND hdlg, UINT message, WPARAM wparam, LPARAM lparam)
+{
+
+    switch (message) {
+        case WM_INITDIALOG:
+           ac_splash_hwnd = hdlg;
+           ac_center_window(hdlg);
+           ac_splist_hwnd = GetDlgItem(hdlg, IDL_INFO); 
+           break;
+    }
+
+    return FALSE;
+}
+
 
 LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
                           WPARAM wparam, LPARAM lparam)
@@ -958,10 +1074,10 @@ LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
              * if something goes wrong.
              */
             SetTimer(hwnd, WM_TIMER_TIMEOUT, TIMEOUT_TIME, NULL);
-
-#if defined(PROCRUN_EXTENDED)
-            acx_create_spash(hwnd);
-#endif
+            if (ac_use_try) {
+                DialogBox(ac_instance, MAKEINTRESOURCE(IDD_DLGSPLASH),
+                    hwnd, (DLGPROC)ac_splash_dlg_proc);
+            }
             if (ac_use_show) {
                 DialogBox(ac_instance, MAKEINTRESOURCE(IDD_DLGCONSOLE),
                           hwnd, (DLGPROC)ac_console_dlg_proc);
@@ -972,9 +1088,8 @@ LRESULT CALLBACK ac_main_wnd_proc(HWND hwnd, UINT message,
                 case WM_TIMER_TIMEOUT:
                     if (ac_use_try)
                         ac_show_try_icon(hwnd, NIM_MODIFY, ac_cmdname, 0);
-#if defined(PROCRUN_EXTENDED)
-                    acx_close_spash();
-#endif
+                    if (ac_use_try && ac_splash_hwnd)
+                        EndDialog(ac_splash_hwnd, TRUE);
                 break;
             }
             break;
