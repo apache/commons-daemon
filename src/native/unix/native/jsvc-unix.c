@@ -55,7 +55,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/* @version $Id: jsvc-unix.c,v 1.4 2003/09/26 17:06:58 jfclere Exp $ */
+/* @version $Id: jsvc-unix.c,v 1.5 2003/09/26 19:03:10 jfclere Exp $ */
 #include "jsvc.h"
 
 #include <signal.h>
@@ -375,7 +375,7 @@ static void set_output(char *outfile, char *errfile) {
     freopen("/dev/null", "r", stdin); 
 
     /* make sure the debug goes out */
-    if (log_debug_flag==true)
+    if (log_debug_flag==true && strcmp(errfile,"/dev/null") == 0)
       return;
 
     /* Handle malicious case here */
@@ -383,11 +383,11 @@ static void set_output(char *outfile, char *errfile) {
       outfile="/dev/null";
     }
     if(strcmp(outfile, "&2") != 0) {
-      freopen(outfile, "w", stdout);
+      freopen(outfile, "a", stdout);
     }
 
     if(strcmp(errfile,"&1") != 0) {
-      freopen(errfile, "w", stderr);
+      freopen(errfile, "a", stderr);
     } else {
       close(2);
       dup(1);
