@@ -161,7 +161,7 @@ LPAPXCMDLINE apxCmdlineParse(
                 if (lpOptions[l].dwType & APXCMDOPT_STR)
                     lpOptions[l].szValue = val;
                 else if (lpOptions[l].dwType & APXCMDOPT_INT)       
-                    lpOptions[l].dwValue = (DWORD)apxStrToulW(val);
+                    lpOptions[l].dwValue = (DWORD)apxAtoulW(val);
                 else if (lpOptions[l].dwType & APXCMDOPT_MSZ) {
                     DWORD sp = 0;
                     LPWSTR ov = lpOptions[l].szValue;
@@ -179,7 +179,6 @@ LPAPXCMDLINE apxCmdlineParse(
                     apxStrCharReplaceW(lpOptions[l].szValue + sp, L'#', L'\0');
                     apxStrCharReplaceW(lpOptions[l].szValue + sp, L';', L'\0');
                 }
-
                 lpOptions[l].dwType |= APXCMDOPT_FOUND;
                 if (add)
                     lpOptions[l].dwType |= APXCMDOPT_ADD;
