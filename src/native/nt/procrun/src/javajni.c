@@ -397,7 +397,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             --sOptions;
         }
         if (dwSs) {
-            wsprintfA(iB[2], "-Xss%d", dwSs);
+            wsprintfA(iB[2], "-Xss%dk", dwSs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[2];
             --sOptions;
         }
