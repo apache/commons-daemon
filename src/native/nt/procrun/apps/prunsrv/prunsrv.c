@@ -493,7 +493,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     WCHAR szImage[SIZ_HUGLEN];
     
     apxLogWrite(APXLOG_MARK_DEBUG "Installing service...");
-    hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
+    hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
         apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
         return FALSE;
@@ -558,13 +558,13 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
     BOOL  rv = FALSE;
 
     apxLogWrite(APXLOG_MARK_INFO "Deleting service...");
-    hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
+    hService = apxCreateService(gPool, SC_MANAGER_CONNECT, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
         apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
         return FALSE;
     }
     /* Delete service will stop the service if running */
-    if (apxServiceOpen(hService, lpCmdline->szApplication)) {
+    if (apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
         WCHAR szWndManagerClass[SIZ_RESLEN];
         HANDLE hWndManager = NULL;
         lstrcpyW(szWndManagerClass, lpCmdline->szApplication);
@@ -604,7 +604,8 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
 
     SetLastError(ERROR_SUCCESS);
     /* Open the service */
-    if (apxServiceOpen(hService, lpCmdline->szApplication)) {
+    if (apxServiceOpen(hService, lpCmdline->szApplication,
+                       GENERIC_READ | GENERIC_EXECUTE)) {
         rv = apxServiceControl(hService,
                                SERVICE_CONTROL_STOP,
                                0,
@@ -633,14 +634,14 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 
     apxLogWrite(APXLOG_MARK_INFO "Updating service...");
 
-    hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
+    hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
         apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
         return FALSE;
     }
     SetLastError(0);
     /* Open the service */
-    if (apxServiceOpen(hService, lpCmdline->szApplication)) {
+    if (apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
         apxServiceSetNames(hService,
                            NULL,                /* Never update the ImagePath */
                            SO_DISPLAYNAME,

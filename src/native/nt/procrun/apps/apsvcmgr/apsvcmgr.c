@@ -262,14 +262,15 @@ static BOOL __startServiceCallback(APXHANDLE hObject, UINT uMsg,
     switch (uMsg) {
         case WM_USER+1:
             hDlg = (HWND)lParam;
-            hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE);
+            hSrv = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE);
             if (!hSrv) {
                 EndDialog(hDlg, IDOK);
                 PostMessage(_gui_store->hMainWnd, WM_COMMAND,
                             MAKEWPARAM(IDMS_REFRESH, 0), 0);
                 return FALSE;
             }
-            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName,
+                                GENERIC_READ | GENERIC_EXECUTE)) {
                 apxCloseHandle(hSrv);
                 EndDialog(hDlg, IDOK);
                 PostMessage(_gui_store->hMainWnd, WM_COMMAND,
@@ -303,10 +304,11 @@ static BOOL __stopServiceCallback(APXHANDLE hObject, UINT uMsg,
     switch (uMsg) {
         case WM_USER+1:
             hDlg = (HWND)lParam;
-            hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE);
+            hSrv = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE);
             if (!hSrv)
                 return FALSE;
-            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName,
+                                GENERIC_READ | GENERIC_EXECUTE)) {
                 apxCloseHandle(hSrv);
                 return FALSE;
             }
@@ -337,10 +339,11 @@ static BOOL __restartServiceCallback(APXHANDLE hObject, UINT uMsg,
     switch (uMsg) {
         case WM_USER+1:
             hDlg = (HWND)lParam;
-            hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE);
+            hSrv = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE);
             if (!hSrv)
                 return FALSE;
-            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName,
+                                GENERIC_READ | GENERIC_EXECUTE)) {
                 apxCloseHandle(hSrv);
                 return FALSE;
             }
@@ -374,10 +377,11 @@ static BOOL __pauseServiceCallback(APXHANDLE hObject, UINT uMsg,
     switch (uMsg) {
         case WM_USER+1:
             hDlg = (HWND)lParam;
-            hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE);
+            hSrv = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE);
             if (!hSrv)
                 return FALSE;
-            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+            if (!apxServiceOpen(hSrv, _currentEntry->szServiceName,
+                                GENERIC_READ | GENERIC_EXECUTE)) {
                 apxCloseHandle(hSrv);
                 return FALSE;
             }
@@ -648,9 +652,9 @@ BOOL __generalPropertySave(HWND hDlg)
         return TRUE;
     CLR_BIT_FLAG(_propertyChanged, 1);
 
-    if (!(hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE)))
+    if (!(hSrv = apxCreateService(hPool, SC_MANAGER_CREATE_SERVICE, FALSE)))
         return FALSE;
-    if (!apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+    if (!apxServiceOpen(hSrv, _currentEntry->szServiceName, SERVICE_ALL_ACCESS)) {
         apxCloseHandle(hSrv);
         return FALSE;
     }
@@ -685,9 +689,9 @@ BOOL __generalLogonSave(HWND hDlg)
         return TRUE;
     CLR_BIT_FLAG(_propertyChanged, 2);
 
-    if (!(hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE)))
+    if (!(hSrv = apxCreateService(hPool, SC_MANAGER_CREATE_SERVICE, FALSE)))
         return FALSE;
-    if (!apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+    if (!apxServiceOpen(hSrv, _currentEntry->szServiceName, SERVICE_ALL_ACCESS)) {
         apxCloseHandle(hSrv);
         return FALSE;
     }
@@ -1364,8 +1368,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                         if (apxYesNoMessage(apxLoadResource(IDS_DELSERVICEC, 0),
                                             szT, TRUE)) {
                             APXHANDLE hSrv;
-                            if ((hSrv = apxCreateService(hPool, GENERIC_ALL, FALSE))) {
-                                if (apxServiceOpen(hSrv, _currentEntry->szServiceName)) {
+                            if ((hSrv = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE))) {
+                                if (apxServiceOpen(hSrv, _currentEntry->szServiceName,
+                                                   SERVICE_ALL_ACCESS)) {
                                     apxServiceDelete(hSrv);
                                     RefreshServices(1);
                                 }

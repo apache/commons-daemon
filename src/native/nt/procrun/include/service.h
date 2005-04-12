@@ -33,7 +33,7 @@ typedef struct APXSERVENTRY {
 APXHANDLE   apxCreateService(APXHANDLE hPool, DWORD dwOptions,
                              BOOL bManagerMode);
 
-BOOL        apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName);
+BOOL        apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions);
 
 
 BOOL        apxServiceSetNames(APXHANDLE hService, LPCWSTR szImagePath,

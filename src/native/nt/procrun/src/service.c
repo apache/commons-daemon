@@ -28,8 +28,6 @@
                          u,p,d)
 
 typedef struct APXSERVICE {
-    /* Service access options */
-    DWORD           dwOptions;
     /* Are we a service manager or we are the service itself */
     BOOL            bManagerMode;
     /* Handle to the current service */
@@ -90,7 +88,6 @@ apxCreateService(APXHANDLE hPool, DWORD dwOptions, BOOL bManagerMode)
     }
     hService->dwType = APXHANDLE_TYPE_SERVICE;
     lpService = APXHANDLE_DATA(hService);
-    lpService->dwOptions    = dwOptions;
     lpService->hManager     = hManager;
     lpService->bManagerMode = bManagerMode;
 
@@ -98,7 +95,7 @@ apxCreateService(APXHANDLE hPool, DWORD dwOptions, BOOL bManagerMode)
 }
 
 BOOL
-apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName)
+apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
 {
     LPAPXSERVICE lpService;
     DWORD dwNeeded;
@@ -122,7 +119,7 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName)
     /* Open the service */
     lpService->hService = OpenServiceW(lpService->hManager,
                                        szServiceName,
-                                       lpService->dwOptions);
+                                       dwOptions);
 
     if (IS_INVALID_HANDLE(lpService->hService)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
@@ -405,7 +402,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
     lpService->hService = CreateServiceW(lpService->hManager,
                                          szServiceName,
                                          szDisplayName,
-                                         lpService->dwOptions,
+                                         SERVICE_ALL_ACCESS,
                                          dwServiceType,
                                          dwStartType,
                                          SERVICE_ERROR_NORMAL,

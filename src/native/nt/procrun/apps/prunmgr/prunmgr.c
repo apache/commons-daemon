@@ -1580,18 +1580,20 @@ int WINAPI WinMain(HINSTANCE hInstance,
         quiet = TRUE;
     else if (lpCmdline->dwCmdIndex >= 2)
         bEnableTry = TRUE;
-    hService = apxCreateService(hPool, GENERIC_ALL, FALSE);
+    hService = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
         if (!quiet)
             apxDisplayError(TRUE, NULL, 0, "Unable to open the Service Manager");
         goto cleanup;
     }
     /* Open the main service handle */
-    if (!apxServiceOpen(hService, lpCmdline->szApplication)) {
+    if (!apxServiceOpen(hService, lpCmdline->szApplication,
+                        GENERIC_READ | GENERIC_EXECUTE)) {
         LPWSTR w = lpCmdline->szApplication + lstrlenW(lpCmdline->szApplication) - 1;
         if (*w == L'w')
             *w = L'\0';
-        if (!apxServiceOpen(hService, lpCmdline->szApplication)) {
+        if (!apxServiceOpen(hService, lpCmdline->szApplication,
+                            GENERIC_READ | GENERIC_EXECUTE)) {
             if (!quiet)
                 apxDisplayError(TRUE, NULL, 0, "Unable to open the service '%S'",
                                 lpCmdline->szApplication);
