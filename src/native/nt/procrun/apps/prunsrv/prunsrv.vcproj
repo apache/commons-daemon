@@ -38,6 +38,7 @@
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/prunsrv.pdb"
 				SubSystem="1"
+				StackReserveSize="262144"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -85,6 +86,7 @@
 				LinkIncremental="1"
 				GenerateDebugInformation="FALSE"
 				SubSystem="1"
+				StackReserveSize="262144"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"/>
