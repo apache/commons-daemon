@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 
 #include "apxwin.h"
 #include "private.h"
@@ -94,7 +94,7 @@ LPAPXCMDLINE apxCmdlineParse(
                     break;
             }
             cmd[l - 2] = L'\0';
-            while (lpszCommands[i]) {                
+            while (lpszCommands[i]) {
                 if (lstrcmpW(lpszCommands[i++], cmd) == 0) {
                     lpCmdline->dwCmdIndex = i;
                     s = 2;
@@ -160,9 +160,11 @@ LPAPXCMDLINE apxCmdlineParse(
                 }
                 if (lpOptions[l].dwType & APXCMDOPT_STR)
                     lpOptions[l].szValue = val;
-                else if (lpOptions[l].dwType & APXCMDOPT_INT)       
+                else if (lpOptions[l].dwType & APXCMDOPT_INT)
                     lpOptions[l].dwValue = (DWORD)apxAtoulW(val);
                 else if (lpOptions[l].dwType & APXCMDOPT_MSZ) {
+                    LPWSTR pp;
+                    BOOL insquote = FALSE, indquote=FALSE;
                     DWORD sp = 0;
                     LPWSTR ov = lpOptions[l].szValue;
                     if (lpOptions[l].dwValue > 2) {
@@ -175,9 +177,20 @@ LPAPXCMDLINE apxCmdlineParse(
                         AplMoveMemory(lpOptions[l].szValue, ov, sp * sizeof(WCHAR));
                         apxFree(ov);
                     }
-                    lstrcpyW(lpOptions[l].szValue + sp, val);
-                    apxStrCharReplaceW(lpOptions[l].szValue + sp, L'#', L'\0');
-                    apxStrCharReplaceW(lpOptions[l].szValue + sp, L';', L'\0');
+                    pp = val;
+                    while(*pp) {
+                        if (*pp == L'\'')
+                            insquote = !insquote;
+                        else if (*pp == L'"') {
+                            indquote = !indquote;
+                            lpOptions[l].szValue[sp++] = L'"';
+                        }
+                        else if ((*pp == L'#' || *pp == L';') && !insquote && !indquote)
+                            lpOptions[l].szValue[sp++] = L'\0';
+                        else
+                            lpOptions[l].szValue[sp++] = *pp;
+                        pp++;
+                    }
                 }
                 lpOptions[l].dwType |= APXCMDOPT_FOUND;
                 if (add)
@@ -234,20 +247,30 @@ void apxCmdlineLoadEnvVars(
             lpCmdline->lpOptions[i].dwType |= APXCMDOPT_FOUND;
         }
         else if (l && (lpCmdline->lpOptions[i].dwType & APXCMDOPT_MSZ)) {
-            LPWSTR p;
+            LPWSTR pp;
+            BOOL insquote = FALSE, indquote = FALSE;
+            DWORD sp = 0;
             lpCmdline->lpOptions[i].szValue = apxPoolCalloc(lpCmdline->hPool,
                                                             (lstrlenW(szVar) + 2) *
                                                             sizeof(WCHAR));
             lstrcpyW(lpCmdline->lpOptions[i].szValue, szVar);
-            p = lpCmdline->lpOptions[i].szValue;
-            while(*p) {
-                if (*p == L'#' || *p == L';')
-                    *p = L'\0';
-                ++p;
+            pp = szVar;
+            while(*pp) {
+                if (*pp == L'\'')
+                    insquote = !insquote;
+                else if (*pp == L'"') {
+                    indquote = !indquote;
+                    lpCmdline->lpOptions[i].szValue[sp++] = L'"';
+                }
+                else if ((*pp == L'#' || *pp == L';') && !insquote && !indquote)
+                    lpCmdline->lpOptions[i].szValue[sp++] = L'\0';
+                else
+                    lpCmdline->lpOptions[i].szValue[sp++] = *pp;
+                pp++;
             }
             lpCmdline->lpOptions[i].dwType |= APXCMDOPT_FOUND | APXCMDOPT_ADD;
         }
         ++i;
     }
-    
+
 }
