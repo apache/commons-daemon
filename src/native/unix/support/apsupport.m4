@@ -24,7 +24,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   case $host_cpu in
   powerpc)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
-  sparc)
+  sparc*)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
   i?86)
     CFLAGS="$CFLAGS -DCPU=\\\"i386\\\"" ;;
