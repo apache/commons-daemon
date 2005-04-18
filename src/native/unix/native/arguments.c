@@ -54,7 +54,7 @@ static arg_data *parse(int argc, char *argv[]) {
     args->outfile="/dev/null";   /* Swallow by default */
     args->errfile="/dev/null";   /* Swallow by default */
     args->args=(char **)malloc(argc*sizeof(char *));
-
+    args->procname = "jsvc.exec";
     /* Set up the command name */
     cmnd=strrchr(argv[0],'/');
     if (cmnd==NULL) cmnd=argv[0];
@@ -176,6 +176,12 @@ static arg_data *parse(int argc, char *argv[]) {
             log_error("Invalid option %s",argv[x]);
             return(NULL);
 
+        } else if (strcmp(argv[x],"-procname") == 0) {
+            args->procname = optional(argc, argv, x++);
+            if(args->procname == NULL) {
+              log_error("Invalid process name specified");
+              return (NULL);
+            }
         } else {
             args->clas=strdup(argv[x]);
             break;

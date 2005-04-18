@@ -61,6 +61,8 @@ typedef struct {
     char *outfile;
     /** Destination for stderr */
     char *errfile;
+    /** Program name for Linux **/
+    char *procname;
 } arg_data;
 
 /**

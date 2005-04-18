@@ -403,7 +403,7 @@ int main(int argc, char *argv[]) {
     /* On some UNIX operating systems, we need to REPLACE this current
        process image with another one (thru execve) to allow the correct
        loading of VMs (notably this is for Linux). Set, replace, and go. */
-    if (strcmp(argv[0],"jsvc.exec")!=0) {
+    if (strcmp(argv[0],args->procname)!=0) {
         char *oldpath=getenv("LD_LIBRARY_PATH");
         char *libf=java_library(args,data);
         char *old=argv[0];
@@ -428,7 +428,7 @@ int main(int argc, char *argv[]) {
 
         log_debug("Invoking w/ LD_LIBRARY_PATH=%s",getenv("LD_LIBRARY_PATH"));
 
-        argv[0]="jsvc.exec";
+        argv[0]=args->procname;
         execve(old,argv,environ);
         log_error("Cannot execute JSVC executor process");
         return(1);

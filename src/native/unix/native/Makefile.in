@@ -14,7 +14,7 @@
 #   limitations under the License.
 #
 # @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-# @version $Id: Makefile.in,v 1.2 2004/02/09 15:55:21 jfclere Exp $
+# @version $Id$
 
 include ../Makedefs
 
