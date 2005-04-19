@@ -163,7 +163,16 @@ bool java_init(arg_data *args, home_data *data) {
     log_debug("JVM library entry point found (0x%08X)",symb);
 
     /* Prepare the VM initialization arguments */
-    arg.version=JNI_VERSION_1_2;
+    
+    /*
+    	Mac OS X Java will load JVM 1.3.1 instead of 1.4.2 if JNI_VERSION_1_2
+    	is specified. So use JNI_VERSION_1_4 if we can.
+    */
+    #if defined(JNI_VERSION_1_4)
+        arg.version=JNI_VERSION_1_4;
+    #else
+        arg.version=JNI_VERSION_1_2;
+    #endif
     arg.ignoreUnrecognized=FALSE;
     arg.nOptions=args->onum;
     arg.nOptions++; /* Add abort code */
