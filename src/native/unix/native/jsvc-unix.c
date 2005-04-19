@@ -19,7 +19,10 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <stdio.h>
 #include <pwd.h>
 #ifdef OS_LINUX
 #include <sys/prctl.h>
@@ -240,20 +243,65 @@ static void * signal_set(int sig, void * newHandler) {
 }
 
 /*
+ * Check pid and if still running
+ */
+
+static int check_pid(arg_data *args) {
+    int fd;
+    FILE *pidf;
+    char buff[80];
+    pid_t pidn=getpid();
+    int i,pid;
+
+    fd = open(args->pidf,O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+    if (fd<0) {
+        log_error("Cannot open PID file %s, PID is %d",args->pidf,pidn);
+        return(-1);
+    } else {
+        lockf(fd,F_LOCK,0);
+        i = read(fd,buff,sizeof(buff));
+        if (i>0) {
+            buff[i] = '\0';
+            pid = atoi(buff);
+            if (kill(pid, 0)==0) {
+                log_error("Still running according to PID file %s, PID is %d",args->pidf,pidn);
+                lockf(fd,F_ULOCK,0);
+                close(fd);
+                return(122);
+            }
+        }
+
+        /* skip writing the pid file if version or check */
+        if (args->vers!=true && args->chck!=true) {
+            lseek(fd, SEEK_SET, 0);
+            pidf = fdopen(fd,"r+");
+            fprintf(pidf,"%d\n",(int)getpid());
+            fflush(pidf);
+            lockf(fd,F_ULOCK,0);
+            fclose(pidf);
+            close(fd);
+        } else {
+            lockf(fd,F_ULOCK,0);
+            close(fd);
+        }
+    }
+    return(0);
+}
+
+/*
  * son process logic.
  */
 
 static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
-    FILE *pidf=fopen(args->pidf,"w");
-    pid_t pidn=getpid();
     int ret=0;
 
-    /* Write the our pid in the pid file */
-    if (pidf!=NULL) {
-        fprintf(pidf,"%d\n",(int)pidn);
-        fclose(pidf);
-    } else {
-        log_error("Cannot open PID file %s, PID is %d",args->pidf,pidn);
+    /* check the pid file */
+    ret = check_pid(args); 
+    if (args->vers!=true && args->chck!=true) {
+        if (ret==122)
+            return(ret);
+        if (ret<0)
+            return(ret);
     }
 
     /* create a new process group to prevent kill 0 killing the monitor process */
@@ -475,7 +523,8 @@ int main(int argc, char *argv[]) {
             status=WEXITSTATUS(status);
 
             /* Delete the pid file */
-            unlink(args->pidf);
+            if (args->vers!=true && args->chck!=true && status!=122)
+                unlink(args->pidf);
 
             /* If the child got out with 123 he wants to be restarted */
             if (status==123) {
