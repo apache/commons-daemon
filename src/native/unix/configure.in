@@ -16,7 +16,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: configure.in,v 1.4 2005/01/03 11:05:20 jfclere Exp $
+dnl Version $Id$
 dnl -------------------------------------------------------------------------
 
 dnl -------------------------------------------------------------------------
@@ -47,30 +47,38 @@ AC_PROG_CC()
 AC_CHECK_TOOL(RANLIB, ranlib, :)
 
 dnl -------------------------------------------------------------------------
-dnl Check JAVA environment
-dnl -------------------------------------------------------------------------
-AP_MSG_HEADER([Java compilation tools])
-AP_JAVA()
-AP_PROG_JAVAC()
-AP_PROG_JAR()
-
-dnl -------------------------------------------------------------------------
 dnl Check if this host is supported
 dnl -------------------------------------------------------------------------
 AP_MSG_HEADER([Host support])
 AP_SUPPORTED_HOST()
 if test "$supported_os" = "darwin"
 then
+  if test -z "$JAVA_HOME" -a -d /System/Library/Frameworks/JavaVM.framework/Home; then
+  	JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+  fi
+
   _prevdir=`/bin/pwd`
-  cd $JAVA_HOME
-  cd ..
-  cd Headers
+  if test -n "$JAVA_HOME" -a -d "$JAVA_HOME/include"; then
+    cd "$JAVA_HOME/include"
+  elif test -n "$JAVA_HOME" -a -d "$JAVA_HOME/../Headers"; then
+    cd "$JAVA_HOME/../Headers"
+  else
+    cd /System/Library/Frameworks/JavaVM.framework/Headers
+  fi
   CFLAGS="$CFLAGS -I`/bin/pwd -P`"
   cd $_prevdir
   unset _prevdir
 else
   CFLAGS="$CFLAGS -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
 fi
+
+dnl -------------------------------------------------------------------------
+dnl Check JAVA environment
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([Java compilation tools])
+AP_JAVA()
+AP_PROG_JAVAC()
+AP_PROG_JAR()
 
 dnl -------------------------------------------------------------------------
 dnl Add gcc specific CFLAGS.
