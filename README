@@ -18,4 +18,4 @@ To build the native part:
 
 To build the documentation:
 maven site:generate
-(Do not forget to get ../project.xml (jakarta-commons/project.xml)
+(Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/jakarta/commons/proper/commons-build/trunk/ commons-build))
