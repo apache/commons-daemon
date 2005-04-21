@@ -45,6 +45,28 @@ the current directory (if you are not member of group "wheel")
 the group "wheel" cannot be set on the moved files.
 </p>
 </section>
+<section name="Runtime problems">
+<p>
+On linux 2.6.x jsvc does not start and write the following error:
+<source>
+jsvc.exec error: syscall failed in set_caps
+jsvc.exec error: Service exit with a return value of 4
+</source>
+CONFIG_SECURITY_CAPABILITIES in missing in your kernel try the following in the kernel sources:
+<ul>
+<li>
+Configure the kernel with "Default Linux Capabilities" and reboot
+  (by make gconfig or make xconfig under "security options" and "Enable different security models")
+</li>
+<li>
+Insert the module "capability":
+<source>
+modprobe capability
+</source>
+</li>
+</ul>
+</p>
+</section>
 
 </body>
 </document>
