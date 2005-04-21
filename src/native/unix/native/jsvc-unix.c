@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <pwd.h>
+#include <grp.h>
 #ifdef OS_LINUX
 #include <sys/prctl.h>
 #include <sys/syscall.h>
@@ -86,6 +87,10 @@ static int set_user_group(char *user, int uid, int gid)
     if (user!=NULL) {
         if (setgid(gid)!=0) {
             log_error("Cannot set group id for user '%s'",user);
+            return(-1);
+        }
+        if (initgroups(user, gid)!=0) {
+            log_error("Cannot set supplement group list for user '%s'",user);
             return(-1);
         }
         if (setuid(uid)!=0) {
