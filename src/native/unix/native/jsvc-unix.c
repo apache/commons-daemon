@@ -294,6 +294,107 @@ static int check_pid(arg_data *args) {
 }
 
 /*
+ * read the pid from the pidfile
+ */
+static int get_pidf(arg_data *args) {
+    int fd;
+    int i;
+    char buff[80];
+
+    fd = open(args->pidf, O_RDONLY, 0);
+    log_debug("get_pidf: %d in %s", fd, args->pidf);
+    if (fd<0)
+        return(-1); /* something has gone wrong the JVM has stopped */
+    lockf(fd,F_LOCK,0);
+    i = read(fd,buff,sizeof(buff));
+    lockf(fd,F_ULOCK,0);
+    close(fd);
+    if (i>0) {
+        buff[i] = '\0';
+        i = atoi(buff);
+        log_debug("get_pidf: pid %d", i);
+        if (kill(i, 0)==0)
+            return(i);
+    }
+    return(-1);
+}
+
+/*
+ * Check temporatory file created by controller
+ * /tmp/pid.jsvc_up
+ */
+static int check_tmp_file(arg_data *args) {
+    int pid;
+    char buff[80];
+    int fd;
+    pid = get_pidf(args);
+    if (pid<0)
+        return(-1);
+    sprintf(buff,"/tmp/%d.jsvc_up", pid);
+    log_debug("check_tmp_file: %s", buff);
+    fd = open(buff, O_RDONLY);
+    if (fd<0)
+        return(-1);
+    close(fd);
+    return(0);
+}
+static void create_tmp_file(arg_data *args) {
+    char buff[80];
+    int fd;
+    sprintf(buff,"/tmp/%d.jsvc_up", getpid());
+    log_debug("create_tmp_file: %s", buff);
+    fd = open(buff, O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+    if (fd<0)
+        return;
+    close(fd);
+}
+static void remove_tmp_file(arg_data *args) {
+    char buff[80];
+    sprintf(buff,"/tmp/%d.jsvc_up", getpid());
+    log_debug("remove_tmp_file: %s", buff);
+    unlink(buff);
+}
+
+/*
+ * wait until jsvc create the I am ready file
+ * pid is the controller and args->pidf the JVM itself.
+ */
+static int wait_child(arg_data *args, int pid) {
+    int count=10;
+    bool havejvm=false;
+    int fd;
+    char buff[80];
+    int i;
+    log_debug("wait_child %d", pid);
+    while (count>0) {
+        /* check if the controler is still running */
+        if (kill(pid, 0)!=0)
+            return(1);
+        /* check if the pid file process exists */
+        fd = open(args->pidf, O_RDONLY);
+        if (fd<0 && havejvm)
+            return(1); /* something has gone wrong the JVM has stopped */
+        lockf(fd,F_LOCK,0);
+        i = read(fd,buff,sizeof(buff));
+        lockf(fd,F_ULOCK,0);
+        close(fd);
+        if (i>0) {
+            buff[i] = '\0';
+            i = atoi(buff);
+            if (kill(i, 0)==0) {
+                /* the JVM process has started */
+                havejvm=true;
+                if (check_tmp_file(args)==0)
+                    return(0); /* ready JVM started */
+            }
+        }
+        sleep(6);
+        count--;
+    }
+    return(1);
+}
+
+/*
  * son process logic.
  */
 
@@ -361,7 +462,9 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     handler_int=signal_set(SIGINT,handler);
     controlled = getpid();
     log_debug("Waiting for a signal to be delivered");
+    create_tmp_file(args);
     while (!stopping) sleep(60); /* pause() not threadsafe */
+    remove_tmp_file(args);
     log_debug("Shutdown or reload requested: exiting");
 
     /* Stop the service */
@@ -496,8 +599,13 @@ int main(int argc, char *argv[]) {
             log_error("Cannot detach from parent process");
             return(1);
         }
-        /* If we're in the parent process, we siply quit */
-        if (pid!=0) return(0);
+        /* If we're in the parent process */
+        if (pid!=0) {
+            if (args->wait==true)
+                return(wait_child(args,pid));
+            else
+                return(0);
+        }
 #ifndef NO_SETSID
         setsid();
 #endif

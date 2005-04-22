@@ -42,6 +42,8 @@ static arg_data *parse(int argc, char *argv[]) {
     args->vers=false;           /* Don't display version */
     args->help=false;           /* Don't display help */
     args->chck=false;           /* Don't do a check-only startup */
+    args->stop=false;           /* Stop a running jsvc */
+    args->wait=false;           /* Wait until jsvc has started the JVM */
     args->install=false;        /* Don't install as a service */
     args->remove=false;         /* Don't remove the installed service */
     args->service=false;        /* Don't run as a service */
@@ -112,6 +114,12 @@ static arg_data *parse(int argc, char *argv[]) {
 
         } else if (strcmp(argv[x],"-debug")==0) {
             log_debug_flag=true;
+
+        } else if (strcmp(argv[x],"-wait")==0) {
+            args->wait=true;
+
+        } else if (strcmp(argv[x],"-stop")==0) {
+            args->wait=true;
 
         } else if (strcmp(argv[x],"-check")==0) {
             args->chck=true;

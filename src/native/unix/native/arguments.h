@@ -51,6 +51,10 @@ typedef struct {
     bool help;
     /** Only check environment without running the service. */
     bool chck;
+    /** Stop running jsvc */
+    bool stop;
+    /** Wait until service started */
+    bool wait;
     /** Install as a service (win32) */
     bool install;
     /** Remove when installed as a service (win32) */
