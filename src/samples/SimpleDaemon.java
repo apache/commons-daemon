@@ -291,7 +291,7 @@ public class SimpleDaemon implements Daemon, Runnable {
 
                         /* Crash JVM in a native call: It need an so file ;-) */
                         case '5':
-                            System.load("/home/jakarta/X509/Native.so");
+                            System.load(System.getProperty("native.library", "./Native.so"));
                             toto();
                             break;
 
