@@ -6,7 +6,7 @@
   <property name="dist.home"   value="../../dist"/>
   <property name="build.home"  value="./build"/>
   <property name="source.home" value="."/>
-  <property name="commons-collections.jar" value="${user.home}/commons-collections-2.1/commons-collections.jar"/>
+  <property name="commons-collections.jar" value="${user.home}/commons-collections-3.1/commons-collections-3.1.jar"/>
 
   <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService"/>
 
@@ -14,7 +14,7 @@
    description="Create SimpleDaemon.jar">
     <mkdir      dir="${dist.home}"/>
     <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../../../LICENSE"
+    <copy      file="../../LICENSE"
                tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/SimpleDaemon.jar">
       <fileset dir="${build.home}/classes">
@@ -27,7 +27,7 @@
    description="Create ServiceDaemon.jar">
     <mkdir      dir="${dist.home}"/>
     <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../../../LICENSE"
+    <copy      file="../../LICENSE"
                tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/service.jar">
       <fileset dir="${build.home}/classes">
@@ -40,7 +40,7 @@
    description="Create aloneservice.jar">
     <mkdir      dir="${dist.home}"/>
     <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../../../LICENSE"
+    <copy      file="../../LICENSE"
                tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/aloneservice.jar">
       <fileset dir="${build.home}/classes">
