@@ -68,8 +68,6 @@ then
   CFLAGS="$CFLAGS -I`/bin/pwd -P`"
   cd $_prevdir
   unset _prevdir
-else
-  CFLAGS="$CFLAGS -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
 fi
 
 dnl -------------------------------------------------------------------------
@@ -79,6 +77,10 @@ AP_MSG_HEADER([Java compilation tools])
 AP_JAVA()
 AP_PROG_JAVAC()
 AP_PROG_JAR()
+if test "$supported_os" != "darwin"
+then
+  CFLAGS="$CFLAGS -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
+fi
 
 dnl -------------------------------------------------------------------------
 dnl Add gcc specific CFLAGS.
