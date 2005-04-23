@@ -413,6 +413,26 @@ static int wait_child(arg_data *args, int pid) {
 }
 
 /*
+ * stop the running jsvc
+ */
+static int stop_child(arg_data *args) {
+    int pid=get_pidf(args);
+    int count=10;
+    if (pid>0) {
+        /* kill the process and wait until the pidfile has been removed by the controler */
+        kill(pid,SIGTERM);
+        while (count>0) {
+            sleep(6);
+            pid=get_pidf(args);
+            if (pid<=0)
+                return(0); /* JVM has stopped */
+            count--;
+        }
+    }
+    return(-1);
+}
+
+/*
  * son process logic.
  */
 
@@ -559,6 +579,10 @@ int main(int argc, char *argv[]) {
     /* Parse command line arguments */
     args=arguments(argc,argv);
     if (args==NULL) return(1);
+
+    /* Stop running jsvc if required */
+    if (args->stop==true)
+        return(stop_child(args));
 
     /* Let's check if we can switch user/group IDs */
     if (checkuser(args->user, &uid, &gid)==false) return(1);
