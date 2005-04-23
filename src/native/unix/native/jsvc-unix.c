@@ -269,7 +269,7 @@ static int check_pid(arg_data *args) {
             buff[i] = '\0';
             pid = atoi(buff);
             if (kill(pid, 0)==0) {
-                log_error("Still running according to PID file %s, PID is %d",args->pidf,pidn);
+                log_error("Still running according to PID file %s, PID is %d",args->pidf,pid);
                 lockf(fd,F_ULOCK,0);
                 close(fd);
                 return(122);
@@ -322,6 +322,10 @@ static int get_pidf(arg_data *args) {
 /*
  * Check temporatory file created by controller
  * /tmp/pid.jsvc_up
+ * Notes:
+ * we fork several times
+ * 1 - to be a daemon before the setsid(), the son is the controler process.
+ * 2 - to start the JVM in the son process. (whose pid is stored in pidfile).
  */
 static int check_tmp_file(arg_data *args) {
     int pid;
@@ -364,12 +368,18 @@ static int wait_child(arg_data *args, int pid) {
     bool havejvm=false;
     int fd;
     char buff[80];
-    int i;
+    int i, status;
     log_debug("wait_child %d", pid);
     while (count>0) {
+        sleep(1);
         /* check if the controler is still running */
-        if (kill(pid, 0)!=0)
-            return(1);
+        if (waitpid(pid,&status,WNOHANG)==pid) {
+            if (WIFEXITED(status))
+                return(WEXITSTATUS(status));
+            else
+                return(1);
+        }
+
         /* check if the pid file process exists */
         fd = open(args->pidf, O_RDONLY);
         if (fd<0 && havejvm)
@@ -384,14 +394,22 @@ static int wait_child(arg_data *args, int pid) {
             if (kill(i, 0)==0) {
                 /* the JVM process has started */
                 havejvm=true;
-                if (check_tmp_file(args)==0)
+                if (check_tmp_file(args)==0) {
+                    /* the JVM is started */
+                    if (waitpid(pid,&status,WNOHANG)==pid) {
+                        if (WIFEXITED(status))
+                            return(WEXITSTATUS(status));
+                        else
+                            return(1);
+                    }
                     return(0); /* ready JVM started */
+                }
             }
         }
-        sleep(6);
+        sleep(5);
         count--;
     }
-    return(1);
+    return(1); /* It takes more than a minute to start, something must be wrong */
 }
 
 /*
