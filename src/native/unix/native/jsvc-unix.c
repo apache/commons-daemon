@@ -345,7 +345,7 @@ static int check_tmp_file(arg_data *args) {
 static void create_tmp_file(arg_data *args) {
     char buff[80];
     int fd;
-    sprintf(buff,"/tmp/%d.jsvc_up", getpid());
+    sprintf(buff,"/tmp/%d.jsvc_up", (int) getpid());
     log_debug("create_tmp_file: %s", buff);
     fd = open(buff, O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
     if (fd<0)
@@ -354,7 +354,7 @@ static void create_tmp_file(arg_data *args) {
 }
 static void remove_tmp_file(arg_data *args) {
     char buff[80];
-    sprintf(buff,"/tmp/%d.jsvc_up", getpid());
+    sprintf(buff,"/tmp/%d.jsvc_up", (int) getpid());
     log_debug("remove_tmp_file: %s", buff);
     unlink(buff);
 }
