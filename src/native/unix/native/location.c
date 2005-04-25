@@ -79,6 +79,10 @@ char *location_jvm_default[] = {
     /* Those are "weirdos: if we got here, we're probably in troubles and
        we're not going to find anything, but hope never dies... */
     "$JAVA_HOME/jre/lib/" CPU "/classic/green_threads/libjvm.so",
+#if defined(OSD_POSIX)
+    "$JAVA_HOME/jre/lib/sparc/client/green_threads/libjvm.so",
+    "$JAVA_HOME/jre/lib/s390/client/green_threads/libjvm.so",
+#endif
     "$JAVA_HOME/jre/lib/classic/libjvm.so",
     "$JAVA_HOME/jre/lib/client/libjvm.so",
     "$JAVA_HOME/jre/lib/libjvm.so",
