@@ -119,7 +119,7 @@ static arg_data *parse(int argc, char *argv[]) {
             args->wait=true;
 
         } else if (strcmp(argv[x],"-stop")==0) {
-            args->wait=true;
+            args->stop=true;
 
         } else if (strcmp(argv[x],"-check")==0) {
             args->chck=true;
@@ -253,6 +253,10 @@ arg_data *arguments(int argc, char *argv[]) {
         log_debug("| Show Help:       %s",IsYesNo(args->help));
 
         log_debug("| Check Only:      %s",IsEnabledDisabled(args->chck));
+
+        log_debug("| Stop:            %s",IsTrueFalse(args->stop));
+
+        log_debug("| Wait:            %s",IsTrueFalse(args->wait));
 
         log_debug("| Run as service:  %s",IsYesNo(args->service));
 
