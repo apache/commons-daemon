@@ -220,7 +220,12 @@ public class SimpleDaemon implements Daemon, Runnable {
         }
 
         public void handle(InputStream in, OutputStream os) {
-            PrintStream out=new PrintStream(os);
+            PrintStream out=null;
+            try {
+                out=new PrintStream(os, true, "US-ASCII");
+            } catch (UnsupportedEncodingException ex) {
+                out=new PrintStream(os);
+            }
 
             while(true) {
                 try {
