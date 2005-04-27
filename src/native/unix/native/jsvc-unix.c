@@ -501,7 +501,13 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     controlled = getpid();
     log_debug("Waiting for a signal to be delivered");
     create_tmp_file(args);
-    while (!stopping) sleep(60); /* pause() not threadsafe */
+    while (!stopping) {
+#ifdef OSD_POSIX
+        pause();
+#else
+        sleep(60); /* pause() not threadsafe */
+#endif
+    }
     remove_tmp_file(args);
     log_debug("Shutdown or reload requested: exiting");
 

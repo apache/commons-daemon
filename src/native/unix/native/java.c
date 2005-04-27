@@ -114,6 +114,8 @@ bool java_init(arg_data *args, home_data *data) {
     }
 
     /* Load the JVM library */
+#ifdef OSD_POSIX
+#else
     libh=dso_link(libf);
     if (libh==NULL) {
         log_error("Cannot dynamically link to %s",libf);
@@ -121,6 +123,7 @@ bool java_init(arg_data *args, home_data *data) {
         return(false);
     }
     log_debug("JVM library %s loaded",libf);
+#endif
 
 #ifdef OS_DARWIN
     /*
@@ -148,6 +151,8 @@ bool java_init(arg_data *args, home_data *data) {
     }
     log_debug("Shell library %s loaded",appf);
 #endif /* ifdef OS_DARWIN */
+#ifdef OSD_POSIX
+#else
     symb=dso_symbol(libh,"JNI_CreateJavaVM");
     if (symb==NULL) {
 #ifdef OS_DARWIN
@@ -161,6 +166,7 @@ bool java_init(arg_data *args, home_data *data) {
 #endif /* ifdef OS_DARWIN */
     }
     log_debug("JVM library entry point found (0x%08X)",symb);
+#endif
 
     /* Prepare the VM initialization arguments */
     
@@ -173,6 +179,12 @@ bool java_init(arg_data *args, home_data *data) {
     #else
         arg.version=JNI_VERSION_1_2;
     #endif
+#ifdef OSD_POSIX_JFC
+    if (JNI_GetDefaultJavaVMInitArgs(&arg)<0) {
+        log_error("Cannot init default JVM default args");
+        return(false);
+    }
+#endif
     arg.ignoreUnrecognized=FALSE;
     arg.nOptions=args->onum;
     arg.nOptions++; /* Add abort code */
@@ -182,7 +194,8 @@ bool java_init(arg_data *args, home_data *data) {
         jsvc_xlate_to_ascii(opt[x].optionString);
         opt[x].extraInfo=NULL;
     }
-    opt[x].optionString="abort";
+    opt[x].optionString=strdup("abort");
+    jsvc_xlate_to_ascii(opt[x].optionString);
     opt[x].extraInfo=java_abort123;
     arg.options=opt;
 
@@ -204,8 +217,12 @@ bool java_init(arg_data *args, home_data *data) {
     }
 
     /* And finally create the Java VM */
+#ifdef OSD_POSIX
+    ret=JNI_CreateJavaVM(&jvm, &env, &arg);
+#else
     ret=(*symb)(&jvm, &env, &arg);
-    if (ret!=0) {
+#endif
+    if (ret<0) {
         log_error("Cannot create Java VM");
         return(false);
     }
