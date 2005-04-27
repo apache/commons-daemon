@@ -29,12 +29,13 @@
 # That is for Tomcat-5.0.x (Apache Tomcat/5.0)
 #
 # Adapt the following lines to your configuration
-JAVA_HOME=/usr/java/j2sdk1.4.2_03
-CATALINA_HOME=/home/tomcat5/jakarta-tomcat-5/build
-DAEMON_HOME=/home/tomcat5/jakarta-commons/daemon
+JAVA_HOME=/home2/java/j2sdk1.4.2_03
+CATALINA_HOME=/home/tomcat5/tomcat5/jakarta-tomcat-5/build
+DAEMON_HOME=/home/jfclere/daemon
 TOMCAT_USER=tomcat5
 TMP_DIR=/var/tmp
-CATALINA_OPTS=
+
+CATALINA_OPTS="-Djava.library.path=/home/jfclere/jakarta-tomcat-connectors/jni/native/.libs"
 CLASSPATH=\
 $JAVA_HOME/lib/tools.jar:\
 $CATALINA_HOME/bin/commons-daemon.jar:\
@@ -50,6 +51,7 @@ case "$1" in
     -home $JAVA_HOME \
     -Dcatalina.home=$CATALINA_HOME \
     -Djava.io.tmpdir=$TMP_DIR \
+    -wait \
     -outfile $CATALINA_HOME/logs/catalina.out \
     -errfile '&1' \
     $CATALINA_OPTS \
@@ -60,14 +62,17 @@ case "$1" in
     #-verbose \
     # To get a debug of jsvc.
     #-debug \
+    exit $?
     ;;
 
   stop)
     #
     # Stop Tomcat
     #
-    PID=`cat /var/run/jsvc.pid`
-    kill $PID
+    $DAEMON_HOME/src/native/unix/jsvc \
+    -stop \
+    org.apache.catalina.startup.Bootstrap
+    exit $?
     ;;
 
   *)
