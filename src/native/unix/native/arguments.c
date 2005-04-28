@@ -43,7 +43,7 @@ static arg_data *parse(int argc, char *argv[]) {
     args->help=false;           /* Don't display help */
     args->chck=false;           /* Don't do a check-only startup */
     args->stop=false;           /* Stop a running jsvc */
-    args->wait=false;           /* Wait until jsvc has started the JVM */
+    args->wait=0;               /* Wait until jsvc has started the JVM */
     args->install=false;        /* Don't install as a service */
     args->remove=false;         /* Don't remove the installed service */
     args->service=false;        /* Don't run as a service */
@@ -116,7 +116,13 @@ static arg_data *parse(int argc, char *argv[]) {
             log_debug_flag=true;
 
         } else if (strcmp(argv[x],"-wait")==0) {
-            args->wait=true;
+            temp=optional(argc,argv,x++);
+            if (temp!=NULL)
+                args->wait=atoi(temp);
+            if (args->wait<10) {
+                log_error("Invalid wait time specified (min=10)");
+                return(NULL);
+            }
 
         } else if (strcmp(argv[x],"-stop")==0) {
             args->stop=true;
@@ -256,7 +262,7 @@ arg_data *arguments(int argc, char *argv[]) {
 
         log_debug("| Stop:            %s",IsTrueFalse(args->stop));
 
-        log_debug("| Wait:            %s",IsTrueFalse(args->wait));
+        log_debug("| Wait:            %d",args->wait);
 
         log_debug("| Run as service:  %s",IsYesNo(args->service));
 

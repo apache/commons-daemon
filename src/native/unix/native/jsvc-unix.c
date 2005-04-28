@@ -368,8 +368,9 @@ static int wait_child(arg_data *args, int pid) {
     bool havejvm=false;
     int fd;
     char buff[80];
-    int i, status;
+    int i, status, waittime;
     log_debug("wait_child %d", pid);
+    waittime = args->wait/10;
     while (count>0) {
         sleep(1);
         /* check if the controler is still running */
@@ -406,10 +407,10 @@ static int wait_child(arg_data *args, int pid) {
                 }
             }
         }
-        sleep(5);
+        sleep(waittime);
         count--;
     }
-    return(1); /* It takes more than a minute to start, something must be wrong */
+    return(1); /* It takes more than the wait time to start, something must be wrong */
 }
 
 /*
@@ -649,7 +650,7 @@ int main(int argc, char *argv[]) {
         }
         /* If we're in the parent process */
         if (pid!=0) {
-            if (args->wait==true)
+            if (args->wait>=10)
                 return(wait_child(args,pid));
             else
                 return(0);

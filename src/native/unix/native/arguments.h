@@ -53,8 +53,8 @@ typedef struct {
     bool chck;
     /** Stop running jsvc */
     bool stop;
-    /** Wait until service started */
-    bool wait;
+    /** number of seconds to until service started */
+    int wait;
     /** Install as a service (win32) */
     bool install;
     /** Remove when installed as a service (win32) */
