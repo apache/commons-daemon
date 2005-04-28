@@ -21,33 +21,6 @@ dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[
   AC_MSG_CHECKING([C flags dependant on host system type])
-  case $host_cpu in
-  powerpc)
-    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
-  sparc*)
-    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
-  i?86)
-    CFLAGS="$CFLAGS -DCPU=\\\"i386\\\"" ;;
-  x86_64)
-    CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\"" ;;
-  bs2000)
-    CFLAGS="$CFLAGS -DCPU=\\\"osd\\\" -DCHARSET_EBCDIC -DOSD_POSIX"
-    supported_os="osd"
-    LDFLAGS="-Kno_link_stdlibs -B llm4 -l BLSLIB $LDFLAGS"
-    LDCMD="cc"
-    ;;
-  mips)
-    CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
-    supported_os="mips"
-    ;;
-  alpha*)
-    CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
-    supported_os="alpha"
-    ;;
-  *)
-    AC_MSG_RESULT([failed])
-    AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
-  esac
 
   case $host_os in
   darwin*)
@@ -90,6 +63,35 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     AC_MSG_ERROR([Unsupported operating system "$host_os"])
     ;;
   esac
+  case $host_cpu in
+  powerpc)
+    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
+  sparc*)
+    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
+  i?86)
+    CFLAGS="$CFLAGS -DCPU=\\\"i386\\\"" ;;
+  x86_64)
+    CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\"" ;;
+  bs2000)
+    CFLAGS="$CFLAGS -DCPU=\\\"osd\\\" -DCHARSET_EBCDIC -DOSD_POSIX"
+    supported_os="osd"
+    LDFLAGS="-Kno_link_stdlibs -B llm4 -l BLSLIB"
+    LDCMD="/opt/C/bin/cc"
+    ;;
+  mips)
+    CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
+    supported_os="mips"
+    ;;
+  alpha*)
+    CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
+    supported_os="alpha"
+    ;;
+  *)
+    AC_MSG_RESULT([failed])
+    AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
+  esac
+
   AC_MSG_RESULT([ok])
   AC_SUBST(CFLAGS)
+  AC_SUBST(LDFLAGS)
 ])
