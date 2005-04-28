@@ -30,6 +30,8 @@ $DAEMON_HOME/src/native/unix/jsvc \
     -home $JAVA_HOME \
     -cp $CLASSPATH \
     -pidfile ./pidfile \
+    -wait 90 \
+    -debug \
     -outfile toto.txt \
     -errfile '&1' \
     -Dnative.library=${DAEMON_HOME}/src/samples/Native.so \
@@ -39,3 +41,5 @@ $DAEMON_HOME/src/native/unix/jsvc \
 #-verbose \
 # To get a debug of jsvc.
 #-debug \
+
+echo "result: $?"
