@@ -15,6 +15,9 @@
 */
 /* @version $Id$ */
 #include "jsvc.h"
+#include <sys/types.h>
+#include <unistd.h>
+#include <time.h> 
 
 /* Wether debug is enabled or not */
 bool log_debug_flag = false;
@@ -25,12 +28,19 @@ char *log_prog = "jsvc";
 /* Dump a debug message to stderr */
 void log_debug(const char *fmt, ...) {
     va_list ap;
+    time_t now;
+    struct tm *nowtm;
+    char buff[80];
 
     if (log_debug_flag==false) return;
     if (fmt==NULL) return;
 
+    now = time(NULL);
+    nowtm = localtime(&now);
+    strftime(buff, sizeof(buff), "%d/%m/%Y %T", nowtm);
+
     va_start(ap,fmt);
-    fprintf(stderr,"%s debug: ",log_prog);
+    fprintf(stderr,"%s %d %s debug: ", buff,  getpid(), log_prog);
     vfprintf(stderr,fmt,ap);
     fprintf(stderr,"\n");
     fflush(stderr);
@@ -40,11 +50,18 @@ void log_debug(const char *fmt, ...) {
 /* Dump an error message to stderr */
 void log_error(const char *fmt, ...) {
     va_list ap;
+    time_t now;
+    struct tm *nowtm;
+    char buff[80];
 
     if (fmt==NULL) return;
 
+    now = time(NULL);
+    nowtm = localtime(&now);
+    strftime(buff, sizeof(buff), "%d/%m/%Y %T", nowtm);
+
     va_start(ap,fmt);
-    fprintf(stderr,"%s error: ",log_prog);
+    fprintf(stderr,"%s %d %s error: ", buff, getpid(), log_prog);
     vfprintf(stderr,fmt,ap);
     fprintf(stderr,"\n");
     fflush(stderr);
