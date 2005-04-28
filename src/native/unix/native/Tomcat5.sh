@@ -51,7 +51,7 @@ case "$1" in
     -home $JAVA_HOME \
     -Dcatalina.home=$CATALINA_HOME \
     -Djava.io.tmpdir=$TMP_DIR \
-    -wait \
+    -wait 10 \
     -outfile $CATALINA_HOME/logs/catalina.out \
     -errfile '&1' \
     $CATALINA_OPTS \
