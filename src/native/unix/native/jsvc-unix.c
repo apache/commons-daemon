@@ -504,7 +504,8 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     create_tmp_file(args);
     while (!stopping) {
 #ifdef OSD_POSIX
-        pause();
+        java_sleep(60);
+        /* pause(); */
 #else
         sleep(60); /* pause() not threadsafe */
 #endif

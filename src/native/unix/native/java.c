@@ -271,7 +271,7 @@ bool JVM_destroy(int exit) {
     jsvc_xlate_to_ascii(exitparams);
     method=(*env)->GetStaticMethodID(env,system,exitclass,exitparams);
     if (method==NULL) {
-        log_error("Cannot found \"System.exit(int)\" entry point");
+        log_error("Cannot find \"System.exit(int)\" entry point");
         return(false);
     }
 
@@ -335,7 +335,7 @@ bool java_load(arg_data *args) {
     jsvc_xlate_to_ascii(loadparams);
     method=(*env)->GetStaticMethodID(env,cls,load,loadparams);
     if (method==NULL) {
-        log_error("Cannot found Daemon Loader \"load\" entry point");
+        log_error("Cannot find Daemon Loader \"load\" entry point");
         return(false);
     }
 
@@ -360,7 +360,7 @@ bool java_start(void) {
     jsvc_xlate_to_ascii(startparams); 
     method=(*env)->GetStaticMethodID(env,cls,start,startparams);
     if (method==NULL) {
-        log_error("Cannot found Daemon Loader \"start\" entry point");
+        log_error("Cannot find Daemon Loader \"start\" entry point");
         return(false);
     }
 
@@ -372,6 +372,34 @@ bool java_start(void) {
 
     log_debug("Daemon started successfully");
     return(true);
+}
+
+/*
+ * call the java sleep to prevent problems with threads
+ */
+void java_sleep(int wait) {
+    jclass clsThread;
+    jmethodID method;
+    char jsleep[]="sleep";
+    char jsleepparams[]="(J)V";
+    char jthread[]="java/lang/Thread"; 
+ 
+    jsvc_xlate_to_ascii(jsleep);
+    jsvc_xlate_to_ascii(jsleepparams);
+    jsvc_xlate_to_ascii(jthread);
+
+    clsThread = (*env)->FindClass(env,jthread);
+    if (clsThread==NULL) {
+        log_error("Cannot find java/lang/Thread class");
+        return;
+    }
+    method=(*env)->GetStaticMethodID(env,clsThread,jsleep,jsleepparams);
+    if (method==NULL) {
+        log_error("Cannot found the sleep entry point");
+        return;
+    }
+ 
+    (*env)->CallStaticVoidMethod(env,clsThread,method,(jlong)wait*1000);
 }
 
 /* Call the stop method in our daemon loader */
