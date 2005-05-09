@@ -90,8 +90,11 @@ static int set_user_group(char *user, int uid, int gid)
             return(-1);
         }
         if (initgroups(user, gid)!=0) {
-            log_error("Cannot set supplement group list for user '%s'",user);
-            return(-1);
+            if (getuid()!= uid) {
+                log_error("Cannot set supplement group list for user '%s'",user);
+                return(-1);
+            } else
+                log_debug("Cannot set supplement group list for user '%s'",user);
         }
         if (setuid(uid)!=0) {
             log_error("Cannot set user id for user '%s'",user);
