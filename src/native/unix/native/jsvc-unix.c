@@ -374,6 +374,10 @@ static int wait_child(arg_data *args, int pid) {
     int i, status, waittime;
     log_debug("wait_child %d", pid);
     waittime = args->wait/10;
+    if (waittime>10) {
+        count = waittime;
+        waittime = 10;
+    }
     while (count>0) {
         sleep(1);
         /* check if the controler is still running */
