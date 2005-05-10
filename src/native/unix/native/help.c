@@ -79,5 +79,12 @@ void help(home_data *data) {
     printf("    -X<option>\n");
     printf("        set Virtual Machine specific option\n");
 
+    printf("    -wait <waittime>\n");
+    printf("        wait waittime seconds for the service to start\n");
+    printf("        waittime should multiple of 10 (min=10)\n");
+
+    printf("    -stop\n");
+    printf("        stop the service using the file given in the -pidfile option\n");
+
     printf("\n");
 }
