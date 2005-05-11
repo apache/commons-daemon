@@ -55,7 +55,7 @@ void help(home_data *data) {
     printf("    -check\n");
     printf("        only check service (implies -nodetach)\n");
  
-    printf("    -user\n");
+    printf("    -user <user>\n");
     printf("        user used to run the daemon (defaults to current user)\n");
  
     printf("    -verbose[:class|gc|jni]\n");
