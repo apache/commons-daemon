@@ -10,3 +10,5 @@ Changes with 1.0.1
   * Add support for JVM-4.1.x on MAC OS X (part of PR 31613).
   * Prevent starting jsvc several times with the same pidfile (PR 33580).
   * Finish fixing 31613, automatic detection of JAVA_HOME and headers locations.
+  * -wait and -stop parameters.
+  * fix 34851.
