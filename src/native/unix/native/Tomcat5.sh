@@ -33,7 +33,11 @@ JAVA_HOME=/home2/java/j2sdk1.4.2_03
 CATALINA_HOME=/home/tomcat5/tomcat5/jakarta-tomcat-5/build
 DAEMON_HOME=/home/jfclere/daemon
 TOMCAT_USER=tomcat5
+
+# for multi instances adapt those lines.
 TMP_DIR=/var/tmp
+PID_FILE=/var/run/jsvc.pid
+CATALINA_BASE=/home/tomcat5/tomcat5/jakarta-tomcat-5/build
 
 CATALINA_OPTS="-Djava.library.path=/home/jfclere/jakarta-tomcat-connectors/jni/native/.libs"
 CLASSPATH=\
@@ -50,8 +54,10 @@ case "$1" in
     -user $TOMCAT_USER \
     -home $JAVA_HOME \
     -Dcatalina.home=$CATALINA_HOME \
+    -Dcatalina.base=$CATALINA_BASE \
     -Djava.io.tmpdir=$TMP_DIR \
     -wait 10 \
+    -pidfile $PID_FILE \
     -outfile $CATALINA_HOME/logs/catalina.out \
     -errfile '&1' \
     $CATALINA_OPTS \
@@ -71,6 +77,7 @@ case "$1" in
     #
     $DAEMON_HOME/src/native/unix/jsvc \
     -stop \
+    -pidfile $PID_FILE \
     org.apache.catalina.startup.Bootstrap
     exit $?
     ;;
