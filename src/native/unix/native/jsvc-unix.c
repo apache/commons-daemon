@@ -479,8 +479,8 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     }
 
     /* Do we have to do a "check-only" initialization? */
-    if (java_check(args)!=true) return(2);
-    else if (args->chck==true) {
+    if (args->chck==true) {
+        if (java_check(args)!=true) return(2);
         printf("Service \"%s\" checked successfully\n",args->clas);
         return(0);
     }
