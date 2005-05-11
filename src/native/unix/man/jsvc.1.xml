@@ -5,8 +5,8 @@
   <refmeta>
     <refentrytitle>JSVC</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='date'>October 2004</refmiscinfo>
-    <refmiscinfo class='source'>Jsvc version 1.0</refmiscinfo>
+    <refmiscinfo class='date'>May 2005</refmiscinfo>
+    <refmiscinfo class='source'>Jsvc version 1.0.1</refmiscinfo>
     <refmiscinfo class='manual'>Jakarta project</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
@@ -27,7 +27,9 @@
       <arg choice='opt'>-nodetach</arg>
       <arg choice='opt'>-debug</arg>
       <arg choice='opt'>-check</arg>
-      <arg choice='opt'>-user</arg>
+      <arg choice='opt'>-user <replaceable>user</replaceable></arg>
+      <arg choice='opt'>-wait <replaceable>waittime</replaceable></arg>
+      <arg choice='opt'>-stop</arg>
       <arg choice='opt'>-verbose<replaceable>:class|gc|jni</replaceable></arg>
       <arg choice='opt'>-outfile <replaceable>/full/path/to/file</replaceable></arg>
       <arg choice='opt'>-errfile <replaceable>/full/path/to/file</replaceable></arg>
@@ -100,7 +102,21 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-user</option></term>
+        <term><option>-stop</option></term>
+        <listitem>
+          <para>stop the service using the file given in the -pidfile option</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-wait</option> waittime</term>
+        <listitem>
+          <para>wait up to waittime seconds for the service to start
+                                       waittime should multiple of 10 (min=10)
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-user</option> user</term>
         <listitem>
           <para>user used to run the daemon (defaults to current user)</para>
         </listitem>
