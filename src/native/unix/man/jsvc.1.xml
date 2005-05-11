@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id='jsvc1'>
+  <refmeta>
+    <refentrytitle>JSVC</refentrytitle>
+    <manvolnum>1</manvolnum>
+    <refmiscinfo class='date'>October 2004</refmiscinfo>
+    <refmiscinfo class='source'>Jsvc version 1.0</refmiscinfo>
+    <refmiscinfo class='manual'>Jakarta project</refmiscinfo>
+  </refmeta>
+  <refnamediv id='name'>
+    <refname>jsvc</refname>
+    <refpurpose>application to launch java daemon</refpurpose>
+  </refnamediv>
+  <!-- body begins here -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>jsvc</command>
+      <arg choice='opt'>-jvm <replaceable>JVM name</replaceable></arg>
+      <arg choice='opt'>-classpath <replaceable>path</replaceable></arg>
+      <arg choice='opt'>-cp <replaceable>path</replaceable></arg>
+      <arg choice='opt'>-home <replaceable>directory</replaceable></arg>
+      <arg choice='opt'>-version</arg>
+      <arg choice='opt'>-help</arg>
+      <arg choice='opt'>-?</arg>
+      <arg choice='opt'>-nodetach</arg>
+      <arg choice='opt'>-debug</arg>
+      <arg choice='opt'>-check</arg>
+      <arg choice='opt'>-user</arg>
+      <arg choice='opt'>-verbose<replaceable>:class|gc|jni</replaceable></arg>
+      <arg choice='opt'>-outfile <replaceable>/full/path/to/file</replaceable></arg>
+      <arg choice='opt'>-errfile <replaceable>/full/path/to/file</replaceable></arg>
+      <arg choice='opt'>-pidfile <replaceable>/full/path/to/file</replaceable></arg>
+      <arg choice='opt'>-Dproperty=<replaceable>value</replaceable></arg>
+      <arg choice='opt'>-X<replaceable>option</replaceable></arg>
+      <!-- end of the new arguments -->
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1 id="description">
+    <title>DESCRIPTION</title>
+    <para><command>jsvc</command> executes <emphasis remap="I">classfile</emphasis>
+    that implements a Daemon interface.</para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>OPTIONS</title>
+
+    <variablelist remap="TP">
+      <varlistentry>
+        <term><option>-jvm</option> JVM name</term>
+        <listitem>
+          <para>use a specific Java Virtual Machine.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-cp/ -classpath</option> directory and zip/jar 
+          files</term>
+        <listitem>
+          <para>set search path for service classes and resouces</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-home</option> directory</term>
+        <listitem>
+          <para>set the path of your JDK or JRE installation (or set
+        				the JAVA_HOME environment variable)
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-version</option></term>
+        <listitem>
+          <para>show the current Java environment version (to check
+        				correctness of -home and -jvm. Implies -nodetach)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-help</option></term>
+        <listitem>
+          <para>show this help page (implies -nodetach)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-nodetach</option></term>
+        <listitem>
+          <para>don't detach from parent process and become a daemon</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-debug</option></term>
+        <listitem>
+          <para>verbosely print debugging information</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-check</option></term>
+        <listitem>
+          <para>only check service (implies -nodetach)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-user</option></term>
+        <listitem>
+          <para>user used to run the daemon (defaults to current user)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-verbose[:class|gc|jni]</option></term>
+        <listitem>
+          <para>enable verbose output</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-outfile</option> /full/path/to/file</term>
+        <listitem>
+          <para>Location for output from stdout (defaults to /dev/null). Use 
+            the value '&amp;2' to simulate '1&gt;&amp;2'</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-errfile</option> /full/path/to/file</term>
+        <listitem>
+          <para>Location for output from stderr (defaults to /dev/null). Use 
+            the value '&amp;1' to simulate '2&gt;&amp;1'</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-pidfile</option> /full/path/to/file</term>
+        <listitem>
+          <para>Location for output from the file containing the pid of jsvc 
+            (defaults to /var/run/jsvc.pid)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-D</option>&lt;name&gt;=&lt;value&gt;</term>
+        <listitem>
+          <para>set a Java system property</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-X</option>&lt;option&gt;</term>
+        <listitem>
+          <para>set Virtual Machine specific option</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id='author'><title>AUTHOR</title>
+    <para>JSVC is part of the Jakarta Commons Daemon project. Authors are 
+      Jean-Frederic Clere, Remy Maucherat, Yoav Shapira, Bill Barker. JSVC is 
+      under the Apache License Version 2.0.</para>
+  </refsect1>
+
+</refentry>
