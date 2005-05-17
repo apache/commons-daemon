@@ -19,3 +19,7 @@ To build the native part:
 To build the documentation:
 maven site:generate
 (Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/jakarta/commons/proper/commons-build/trunk/ commons-build))
+
+To deploy the documentation to apache site:
+maven -Dmaven.username=${user.name} site:deploy
+(Check <siteAddress/> in project.xml).
