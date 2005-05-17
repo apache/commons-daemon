@@ -49,7 +49,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN -Kthread"
     LDFLAGS="-Kthread $LDFLAGS -ldl"
     ;;
-  freebsd4.?)
+  freebsd*)
     CFLAGS="$CFLAGS -DOS_FREEBSD -DDSO_DLFCN -D_THREAD_SAFE -pthread"
     LDFLAGS="-pthread $LDFLAGS"
     supported_os="freebsd"
