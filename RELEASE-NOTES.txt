@@ -1,7 +1,7 @@
 $Id$
 
 			Commons Daemon Package
-			   Version 1.0
+			   Version 1.0.1
 			    Release Notes
 
 
@@ -19,7 +19,13 @@ NEW FEATURES:
   for Unix and Windows NT/2K/XP, which allows running a Java program 
   as a native operating system daemon
 
+* Add -wait and -stop parameters. (1.0.1).
+  The -wait parameter is experimental: that a is loop testing for a file in /tmp
+  and waiting n/10 seconds.
+
+* Allow to run as normal user for testing. (1.0.1).
+
 
 BUG FIXES:
 
-
+1.0.1: 304310,  30177, 27523, 29465, 31614, 33580, 31613, 34851.
