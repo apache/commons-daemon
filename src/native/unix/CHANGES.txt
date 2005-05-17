@@ -12,3 +12,4 @@ Changes with 1.0.1
   * Finish fixing 31613, automatic detection of JAVA_HOME and headers locations.
   * -wait and -stop parameters.
   * fix 34851.
+  * Don't break when set_caps() failed and the user is unchanged (linux).
