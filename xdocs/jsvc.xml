@@ -90,7 +90,7 @@ Where options include:
 
     -jvm &lt;JVM name&gt;
         use a specific Java Virtual Machine. Available JVMs:
-            '(null)'
+            'client' 'server'
     -cp / -classpath &lt;directories and zip/jar files&gt;
         set search path for service classes and resouces
     -home &lt;directory&gt;
@@ -107,7 +107,7 @@ Where options include:
         verbosely print debugging information
     -check
         only check service (implies -nodetach)
-    -user
+    -user &lt;user&gt;
         user used to run the daemon (defaults to current user)
     -verbose[:class|gc|jni]
         enable verbose output
@@ -124,6 +124,11 @@ Where options include:
         set a Java system property
     -X&lt;option&gt;
         set Virtual Machine specific option
+    -wait &lt;waittime&gt;
+        wait waittime seconds for the service to start
+        waittime should multiple of 10 (min=10)
+    -stop
+        stop the service using the file given in the -pidfile option
 
 </source>
 </p>
