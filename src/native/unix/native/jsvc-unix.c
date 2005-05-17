@@ -142,8 +142,13 @@ static int set_caps(int caps)
 static int linuxset_user_group(char *user, int uid, int gid)
 {
     /* set capabilities enough for binding port 80 setuid/getuid */
-    if (set_caps(CAPS)!=0)
-        return(-1);
+    if (set_caps(CAPS)!=0) {
+        if (getuid()!= uid) {
+            log_error("set_caps(CAPS) failed");
+            return(-1);
+        }
+        log_debug("set_caps(CAPS) failed");
+    }
 
     /* make sure they are kept after setuid */ 
     if (prctl(PR_SET_KEEPCAPS,1,0,0,0) < 0) {
@@ -158,8 +163,13 @@ static int linuxset_user_group(char *user, int uid, int gid)
     }
 
     /* set capability to binding port 80 read conf */
-    if (set_caps(CAPSMIN)!=0)
-        return(-1);
+    if (set_caps(CAPSMIN)!=0) {
+        if (getuid()!= uid) {
+            log_error("set_caps(CAPSMIN) failed");
+            return(-1);
+        }
+        log_debug("set_caps(CAPSMIN) failed");
+    }
 
     return(0);
 }
