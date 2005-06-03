@@ -13,3 +13,6 @@ Changes with 1.0.1
   * -wait and -stop parameters.
   * fix 34851.
   * Don't break when set_caps() failed and the user is unchanged (linux).
+
+Changes with next-unreleased-yet version.
+  * Add support for hp-ux.
