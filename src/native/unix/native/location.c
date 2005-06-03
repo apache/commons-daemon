@@ -40,6 +40,9 @@ char *location_home[] = {
 #elif defined(OS_TRU64)
     "/usr/opt/java142",
     "/usr/opt/java13",
+#elif defined(OS_HPUX)
+    "/opt/java1.4",
+    "/opt/java1.3",
 #endif
     NULL,
 };
@@ -99,6 +102,11 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/lib/" CPU "/fast32/libjvm.so",
     "$JAVA_HOME/lib/" CPU "/fast64/libjvm.so",
     "$JAVA_HOME/lib/" CPU "/fast32/libjvm.so",
+#elif defined(OS_HPUX)
+    "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.sl",
+    "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.sl",
+    "$JAVA_HOME/jre/lib/" CPU "/hotspot/libjvm.sl",
+    "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.sl",
 #endif
     NULL,
 };
@@ -114,6 +122,9 @@ char *location_jvm_configured[] = {
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD) || defined(OS_TRU64)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",/* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JRE 1.3 */
+#elif defined(OS_HPUX)
+    "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.sl",
+    "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.sl",
 #elif defined(OS_SYSV)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/dce_threads/libjvm.so",
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/green_threads/libjvm.so",

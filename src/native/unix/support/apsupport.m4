@@ -58,6 +58,10 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -pthread -DOS_TRU64 -DDSO_DLFCN -D_XOPEN_SOURCE_EXTENDED"
     LDFLAGS="$LDFLAGS -pthread"
     ;;
+  hpux11*)
+    CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
+    LDFLAGS="$LDFLAGS -pthread -lpthread"
+    ;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported operating system "$host_os"])
@@ -85,6 +89,14 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   alpha*)
     CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
     supported_os="alpha"
+    ;;
+  hppa2.0w)
+    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\""
+    supported_os="hp-ux"
+    ;;
+  hppa2.0)
+    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\""
+    supported_os="hp-ux"
     ;;
   *)
     AC_MSG_RESULT([failed])
