@@ -32,6 +32,7 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define TMNU_STOP          TEXT("Stop service")
 #define TMNU_EXIT          TEXT("Exit")
 #define TMNU_ABOUT         TEXT("About")
+#define TMNU_DUMP          TEXT("Thread Dump")
 
 /* Display only Started/Paused status */
 #define STAT_STARTED        TEXT("Started")
@@ -116,6 +117,7 @@ static void createRbuttonTryMenu(HWND hWnd)
     apxAppendMenuItem(hMnu, IDM_TM_CONFIG, TMNU_CONF,  TRUE, TRUE);
     apxAppendMenuItem(hMnu, IDM_TM_START,  TMNU_START, FALSE, canStart);
     apxAppendMenuItem(hMnu, IDM_TM_STOP,   TMNU_STOP,  FALSE, canStop);
+    apxAppendMenuItem(hMnu, IDM_TM_DUMP,   TMNU_DUMP,  FALSE, canStop);
     apxAppendMenuItem(hMnu, IDM_TM_EXIT,   TMNU_EXIT,  FALSE, TRUE);
     apxAppendMenuItem(hMnu,    -1, NULL,   FALSE, FALSE);
     apxAppendMenuItem(hMnu, IDM_TM_ABOUT,  TMNU_ABOUT, FALSE, TRUE);
@@ -1433,6 +1435,28 @@ void ShowServiceProperties(HWND hWnd)
 
 }
 
+static void signalService(LPCWSTR szServiceName)
+{
+    HANDLE event;
+    WCHAR en[SIZ_DESLEN];
+    int i;
+    lstrcpyW(en, szServiceName);
+    lstrcatW(en, L"SIGNAL");
+    for (i = 0; i < lstrlenW(en); i++) {
+        if (en[i] >= L'a' && en[i] <= L'z')
+            en[i] = en[i] - 32;
+    }
+    
+
+    event = OpenEventW(EVENT_MODIFY_STATE, FALSE, en);
+    if (event) {
+        SetEvent(event);
+        CloseHandle(event);
+    }
+    else
+        apxDisplayError(TRUE, NULL, 0, "Unable to open the Event Mutex");
+
+}
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                              WPARAM wParam, LPARAM lParam) 
@@ -1491,6 +1515,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                                        _currentEntry->lpConfig->lpDisplayName,
                                        __restartServiceCallback, NULL);
                 break; 
+                case IDM_TM_DUMP:
+                    signalService(_currentEntry->szServiceName);
+                break;
                 case IDMS_REFRESH:
                     if (bEnableTry && 
                         (_currentEntry = apxServiceEntry(hService, TRUE)) != NULL) {

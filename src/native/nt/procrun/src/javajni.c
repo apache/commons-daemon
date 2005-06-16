@@ -311,7 +311,7 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
 BOOL
 apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                   LPCVOID lpOptions, DWORD dwMs, DWORD dwMx,
-                  DWORD dwSs, BOOL bReduceSignals)
+                  DWORD dwSs)
 {
     LPAPXJAVAVM     lpJava;
     JDK1_1InitArgs  vmArgs11;
@@ -369,20 +369,11 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (dwSs)
             ++sOptions;
-        if (bReduceSignals)
-            ++sOptions;
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
         szCp = apxPoolAlloc(hJava->hPool, sizeof(JAVA_CLASSPATH) + lstrlenA(szClassPath));
         lstrcpyA(szCp, JAVA_CLASSPATH);
         lstrcatA(szCp, szClassPath);
-        if (bReduceSignals) {
-            /* reduce signals to skip registering console
-             * control handler
-             */
-            lpJvmOptions[nOptions - sOptions].optionString = "-Xrs";
-            --sOptions;
-        }
         lpJvmOptions[nOptions - sOptions].optionString = szCp;
         --sOptions;
         /* default JNI error printer */

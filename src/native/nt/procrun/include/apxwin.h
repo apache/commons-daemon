@@ -190,6 +190,9 @@ LPSTR   AplRindexA(LPCSTR lpStr, int ch);
 
 #define AplMoveMemory   AplCopyMemory
 
+PSECURITY_ATTRIBUTES GetNullACL();
+void CleanNullACL(void *sa);
+
 __APXEND_DECLS
 
 #endif /* _APXWIN_H_INCLUDED_ */

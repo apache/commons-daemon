@@ -34,6 +34,7 @@
 #define IDM_TM_RESTART                  2004
 #define IDM_TM_CONFIG                   2005
 #define IDM_TM_ABOUT                    2006
+#define IDM_TM_DUMP                     2007
 
 #define IDMS_REFRESH                    2020
 

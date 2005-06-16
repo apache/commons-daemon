@@ -944,3 +944,47 @@ apxExpandStrW(APXHANDLE hPool, LPCWSTR szString)
             return NULL;
     }
 }
+
+/* To share the semaphores with other processes, we need a NULL ACL
+ * Code from MS KB Q106387
+ */
+PSECURITY_ATTRIBUTES GetNullACL()
+{
+    PSECURITY_DESCRIPTOR pSD;
+    PSECURITY_ATTRIBUTES sa;
+
+    sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));
+    sa->nLength = sizeof(sizeof(SECURITY_ATTRIBUTES));
+
+    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
+    sa->lpSecurityDescriptor = pSD;
+
+    if (pSD == NULL || sa == NULL) {
+        return NULL;
+    }
+    SetLastError(0);
+    if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
+	|| GetLastError()) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
+	|| GetLastError()) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+
+    sa->bInheritHandle = FALSE;
+    return sa;
+}
+
+
+void CleanNullACL(void *sa) 
+{
+    if (sa) {
+        LocalFree(((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);
+        LocalFree(sa);
+    }
+}

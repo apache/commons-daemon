@@ -53,6 +53,7 @@ static LPCWSTR      PRSRV_JAVA   = L"java";
 static LPCWSTR      PRSRV_JVM    = L"jvm";
 static LPCWSTR      PRSRV_MANUAL = L"manual";
 static LPCWSTR      PRSRV_JBIN   = L"\\bin\\java.exe";
+static LPCWSTR      PRSRV_SIGNAL = L"SIGNAL";
 
 static LPWSTR       _service_name = NULL;
 /* Allowed procrun commands */
@@ -192,14 +193,31 @@ static CHAR   _jni_rclass[SIZ_RESLEN]   = {'\0'};  /* Startup  class */
 static CHAR   _jni_sclass[SIZ_RESLEN]   = {'\0'};  /* Shutdown class */
 
 static HANDLE gShutdownEvent = NULL;
+static HANDLE gSignalEvent   = NULL;
+static HANDLE gSignalThread  = NULL;
+static BOOL   gSignalValid   = TRUE;
+
+DWORD WINAPI eventThread(LPVOID lpParam)
+{
+    for (;;) {
+        DWORD dw = WaitForSingleObject(gSignalEvent, INFINITE);
+        if (dw == WAIT_OBJECT_0 && gSignalValid) {
+            if (!GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, 0))
+                apxLogWrite(APXLOG_MARK_SYSERR);
+            ResetEvent(gSignalEvent);
+        }
+        else
+            break;
+    }
+    ExitThread(0);
+    return 0;
+}
+
 /* redirect console stdout/stderr to files 
  * so that java messages can get logged
  * If stderrfile is not specified it will
  * go to stdoutfile.
  */
-
-
-
 static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 {
     BOOL aErr = FALSE;
@@ -752,7 +770,7 @@ static DWORD serviceStop()
             return 1;
         }
         if (!apxJavaInitialize(hWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS, TRUE)) {
+                               SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
@@ -834,6 +852,14 @@ cleanup:
      */
     if (!IS_INVALID_HANDLE(hWorker))
         apxCloseHandle(hWorker);
+    if (gSignalEvent) {
+        gSignalValid = FALSE;
+        SetEvent(gSignalEvent);
+        WaitForSingleObject(gSignalThread, 1000);
+        CloseHandle(gSignalEvent);
+        CloseHandle(gSignalThread);
+        gSignalEvent = NULL;
+    }
     SetEvent(gShutdownEvent);
     if (timeout > 0x7FFFFFFF)
         timeout = INFINITE;     /* If the timeout was '-1' wait forewer */ 
@@ -899,7 +925,7 @@ static DWORD serviceStart()
             return 1;
         }
         if (!apxJavaInitialize(gWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS, _service_mode)) {
+                               SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
@@ -1008,12 +1034,7 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
     switch (dwCtrlType) {
         case CTRL_BREAK_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console CTRL+BREAK event signaled");
-            if (_service_mode) {
-                serviceStop();
-                return TRUE;
-            }
-            else
-                return FALSE;
+            return FALSE;
         case CTRL_C_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console CTRL+C event signaled");
             serviceStop();
@@ -1025,6 +1046,12 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
         case CTRL_SHUTDOWN_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console SHUTDOWN event signaled");
             serviceStop();
+            return TRUE;
+        case CTRL_LOGOFF_EVENT:
+            apxLogWrite(APXLOG_MARK_INFO "Console LOGOFF event signaled");
+            if (!_service_mode) {
+                serviceStop();
+            }
             return TRUE;
         break;
 
@@ -1047,6 +1074,24 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
     apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
     
+    if (_service_name) {
+        WCHAR en[SIZ_DESLEN];
+        int i;
+        PSECURITY_ATTRIBUTES sa = GetNullACL();
+        lstrcpyW(en, _service_name);
+        lstrcatW(en, PRSRV_SIGNAL);
+        for (i = 0; i < lstrlenW(en); i++) {
+            if (en[i] >= L'a' && en[i] <= L'z')
+                en[i] = en[i] - 32;
+        }
+        gSignalEvent = CreateEventW(sa, TRUE, FALSE, en);
+        CleanNullACL((void *)sa);
+
+        if (gSignalEvent) {
+            DWORD tid;
+            gSignalThread = CreateThread(NULL, 0, eventThread, NULL, 0, &tid);
+        }
+    }
     /* Check the StartMode */
     if (SO_STARTMODE) {
         if (!lstrcmpiW(SO_STARTMODE, PRSRV_JVM)) {
@@ -1113,6 +1158,8 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                         _service_name);
             goto cleanup;
         }
+        /* Allocate console so that events gets processed */
+        AllocConsole();
     }
     reportServiceStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
     if ((rc = serviceStart()) == 0) {
@@ -1155,6 +1202,7 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     BOOL rv = FALSE;
 
     _service_mode = FALSE;
+    _service_name = lpCmdline->szApplication;
     apxLogWrite(APXLOG_MARK_INFO "Debuging Service...");
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished.");
