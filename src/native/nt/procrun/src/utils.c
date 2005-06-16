@@ -897,7 +897,7 @@ apxExpandStrA(APXHANDLE hPool, LPCSTR szString)
         ++p;
     }
     if (p != szString)
-        return (LPSTR)szString;
+        return apxPoolStrdupA(hPool, szString);
     else {
         DWORD l = ExpandEnvironmentStringsA(szString, NULL, 0);
         if (l) {
@@ -927,7 +927,7 @@ apxExpandStrW(APXHANDLE hPool, LPCWSTR szString)
         ++p;
     }
     if (p != szString)
-        return (LPWSTR)szString;
+        return apxPoolStrdupW(hPool, szString);
     else {
         DWORD l = ExpandEnvironmentStringsW(szString, NULL, 0);
         if (l) {
