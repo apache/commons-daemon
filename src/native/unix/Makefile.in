@@ -15,17 +15,17 @@
 #
 
 # @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-# @version $Id: Makefile.in,v 1.2 2004/02/27 08:40:46 jfclere Exp $
+# @version $Id$
 
 SUBDIRS = native
 
 all: native/all
 
 native/all:
-	$(MAKE) -C native all
+	(cd native; $(MAKE)  all)
 
 clean:
-	$(MAKE) -C native clean
+	(cd native; $(MAKE)  clean)
 
 distclean: clean
 	rm -f config.cache
