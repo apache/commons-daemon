@@ -16,3 +16,8 @@ Changes with 1.0.1
 
 Changes with next-unreleased-yet version.
   * Add support for hp-ux.
+  * fix 35017.
+  * fix 36051.
+  * fix 35318.
+  * fix 35340.
+  * fix 36030. (using /proc/self/exe and readlink).
