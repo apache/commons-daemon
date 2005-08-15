@@ -31,6 +31,7 @@
 #define _LINUX_FS_H 
 #include <linux/capability.h>
 #endif
+#include <time.h>
 
 extern char **environ;
 
@@ -600,6 +601,7 @@ int main(int argc, char *argv[]) {
     pid_t pid=0;
     uid_t uid=0;
     gid_t gid=0;
+    time_t laststart;
 
     /* Parse command line arguments */
     args=arguments(argc,argv);
@@ -685,6 +687,7 @@ int main(int argc, char *argv[]) {
     while ((pid=fork())!=-1) {
         /* We forked (again), if this is the child, we go on normally */
         if (pid==0) exit(child(args,data,uid,gid));
+        laststart = time(NULL);
 
         /* We are in the controller, we have to forward all interesting signals
            to the child, and wait for it to die */
@@ -710,6 +713,11 @@ int main(int argc, char *argv[]) {
             /* See java_abort123 (we use this return code to restart when the JVM aborts) */
             if (status==123) {
                 log_debug("Reloading service");
+                /* prevent looping */
+                if (laststart+60>time(NULL)) {
+                  log_debug("Waiting 60 s to prevent looping");
+                  sleep(60);
+                } 
                 continue;
             }
             /* If the child got out with 0 he is shutting down */
