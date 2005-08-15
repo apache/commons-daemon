@@ -331,7 +331,7 @@ static void cleanupStdStreams(APX_STDWRAP *lpWrapper)
     }
 }
 
-/* Debuging functions */
+/* Debugging functions */
 static void printUsage(LPAPXCMDLINE lpCmdline)
 {
 #ifdef _DEBUG
@@ -1007,7 +1007,7 @@ cleanup:
     return rv;    
 }
 
-/* Service controll handler
+/* Service control handler
  */
 void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
 {
@@ -1166,7 +1166,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         /* Service is started */
         DWORD rv;
         reportServiceStatus(SERVICE_RUNNING, NO_ERROR, 0);
-        apxLogWrite(APXLOG_MARK_DEBUG "Waitning worker to finish...");
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting worker to finish...");
         /* Set console handler to capture CTRL events */
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
 
@@ -1203,7 +1203,7 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 
     _service_mode = FALSE;
     _service_name = lpCmdline->szApplication;
-    apxLogWrite(APXLOG_MARK_INFO "Debuging Service...");
+    apxLogWrite(APXLOG_MARK_INFO "Debugging Service...");
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished.");
     
@@ -1287,7 +1287,7 @@ void __cdecl main(int argc, char **argv)
                 rv = 8;
         break;
         default:
-            /* Unknow command option */
+            /* Unknown command option */
             apxLogWrite(APXLOG_MARK_ERROR "Unknown command line option");
             printUsage(lpCmdline);
             rv = 99;
