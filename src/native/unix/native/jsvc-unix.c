@@ -631,8 +631,9 @@ int main(int argc, char *argv[]) {
     if (strcmp(argv[0],args->procname)!=0) {
         char *oldpath=getenv("LD_LIBRARY_PATH");
         char *libf=java_library(args,data);
-        char *old=argv[0];
+        char *filename;
         char buf[2048];
+        int  ret;
         char *tmp=NULL;
         char *p1=NULL;
         char *p2=NULL;
@@ -653,9 +654,18 @@ int main(int argc, char *argv[]) {
 
         log_debug("Invoking w/ LD_LIBRARY_PATH=%s",getenv("LD_LIBRARY_PATH"));
 
+        /* execve needs a full path */
+        ret = readlink("/proc/self/exe",buf,sizeof(buf)-1);
+        if (ret<=0)
+          strcpy(buf,argv[0]);
+        else
+          buf[ret]='\0';
+  
+        filename=buf;
+
         argv[0]=args->procname;
-        execve(old,argv,environ);
-        log_error("Cannot execute JSVC executor process");
+        execve(filename,argv,environ);
+        log_error("Cannot execute JSVC executor process (%s)",filename);
         return(1);
     }
     log_debug("Running w/ LD_LIBRARY_PATH=%s",getenv("LD_LIBRARY_PATH"));
