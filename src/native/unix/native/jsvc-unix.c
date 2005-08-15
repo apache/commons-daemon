@@ -707,6 +707,7 @@ int main(int argc, char *argv[]) {
                 unlink(args->pidf);
 
             /* If the child got out with 123 he wants to be restarted */
+            /* See java_abort123 (we use this return code to restart when the JVM aborts) */
             if (status==123) {
                 log_debug("Reloading service");
                 continue;
