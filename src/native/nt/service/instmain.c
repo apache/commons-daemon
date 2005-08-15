@@ -182,7 +182,7 @@ BOOL InstallSvcNT (CHAR *svcExePath)
     /* open the service control manager with full access right */
     hManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     if (NULL != hManager) {
-        /* create the service
+        /* create the service */
         hService = CreateService(hManager,
             SZSERVICENAME,             /* name of the service */
             SZSERVICEDISPLAYNAME,      /* description */
