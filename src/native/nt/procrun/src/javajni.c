@@ -339,7 +339,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         }
         lpJava->iVersion = JNICALL_0(GetVersion);
         if (lpJava->iVersion < JNI_VERSION_1_2) {
-            apxLogWrite(APXLOG_MARK_ERROR "Unsuported JNI version %d", lpJava->iVersion);
+            apxLogWrite(APXLOG_MARK_ERROR "Unsuported JNI version %#08x", lpJava->iVersion);
             return FALSE;
         }
         rv = TRUE;

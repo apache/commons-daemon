@@ -202,7 +202,7 @@ bool java_init(arg_data *args, home_data *data) {
     /* Do some debugging */
     if (log_debug_flag==true) {
         log_debug("+-- DUMPING JAVA VM CREATION ARGUMENTS -----------------");
-        log_debug("| Version:                       %x",arg.version);
+        log_debug("| Version:                       %#08x",arg.version);
         log_debug("| Ignore Unrecognized Arguments: %s",
                   arg.ignoreUnrecognized==TRUE?"True":"False");
         log_debug("| Extra options:                 %d",arg.nOptions);
