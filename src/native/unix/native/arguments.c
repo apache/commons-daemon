@@ -162,7 +162,7 @@ static arg_data *parse(int argc, char *argv[]) {
                 log_error("Invalid Error File specified");
                 return(NULL);
             }
-        }else if (strstr(argv[x],"-verbose")==argv[x]) {
+        } else if (strstr(argv[x],"-verbose")==argv[x]) {
             args->opts[args->onum++]=strdup(argv[x]);
 
         } else if (strcmp(argv[x],"-D")==0) {
@@ -186,16 +186,17 @@ static arg_data *parse(int argc, char *argv[]) {
         } else if (strstr(argv[x],"-ea")==argv[x]) {
             args->opts[args->onum++]=strdup(argv[x]);
 
+        } else if (strcmp(argv[x],"-procname") == 0) {
+            args->procname = optional(argc, argv, x++);
+            if( args->procname == NULL) {
+              log_error("Invalid process name specified");
+              return (NULL);
+            }
+
         } else if (strstr(argv[x],"-")==argv[x]) {
             log_error("Invalid option %s",argv[x]);
             return(NULL);
 
-        } else if (strcmp(argv[x],"-procname") == 0) {
-            args->procname = optional(argc, argv, x++);
-            if(args->procname == NULL) {
-              log_error("Invalid process name specified");
-              return (NULL);
-            }
         } else {
             args->clas=strdup(argv[x]);
             break;

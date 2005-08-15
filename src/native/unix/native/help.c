@@ -79,6 +79,9 @@ void help(home_data *data) {
     printf("    -X<option>\n");
     printf("        set Virtual Machine specific option\n");
 
+    printf("    -procname <procname>\n");
+    printf("        use the specified process name (works only for Linux)\n");
+
     printf("    -wait <waittime>\n");
     printf("        wait waittime seconds for the service to start\n");
     printf("        waittime should multiple of 10 (min=10)\n");
