@@ -56,7 +56,7 @@ char *java_library(arg_data *args, home_data *data) {
     /* Did we find ANY virtual machine? */
     if (data->jnum==0) {
         log_error("Cannot find any VM in Java Home %s",data->path);
-        return(false);
+        return(NULL);
     }
 
     /* Select the VM */

@@ -638,21 +638,28 @@ int main(int argc, char *argv[]) {
         char *p1=NULL;
         char *p2=NULL;
 
-        p1=strdup(libf);
-        tmp=strrchr(p1,'/');
-        if (tmp!=NULL) tmp[0]='\0';
+        /*
+         * There is no need to change LD_LIBRARY_PATH
+         * if we were not able to find a path to libjvm.so
+         * (additionaly a strdup(NULL) cores dump on my machine).
+         */
+        if (libf!=NULL) {
+            p1=strdup(libf);
+            tmp=strrchr(p1,'/');
+            if (tmp!=NULL) tmp[0]='\0';
 
-        p2=strdup(p1);
-        tmp=strrchr(p2,'/');
-        if (tmp!=NULL) tmp[0]='\0';
+            p2=strdup(p1);
+            tmp=strrchr(p2,'/');
+            if (tmp!=NULL) tmp[0]='\0';
 
-        if (oldpath==NULL) snprintf(buf,2048,"%s:%s",p1,p2);
-        else snprintf(buf,2048,"%s:%s:%s",oldpath,p1,p2);
+            if (oldpath==NULL) snprintf(buf,2048,"%s:%s",p1,p2);
+            else snprintf(buf,2048,"%s:%s:%s",oldpath,p1,p2);
 
-        tmp=strdup(buf);
-        setenv("LD_LIBRARY_PATH",tmp,1);
+            tmp=strdup(buf);
+            setenv("LD_LIBRARY_PATH",tmp,1);
 
-        log_debug("Invoking w/ LD_LIBRARY_PATH=%s",getenv("LD_LIBRARY_PATH"));
+            log_debug("Invoking w/ LD_LIBRARY_PATH=%s",getenv("LD_LIBRARY_PATH"));
+        }
 
         /* execve needs a full path */
         ret = readlink("/proc/self/exe",buf,sizeof(buf)-1);
