@@ -237,6 +237,9 @@ bool java_init(arg_data *args, home_data *data) {
     }
     log_debug("Class %s found",loaderclass);
 
+#if defined(HAVE_SABLEVM)
+    log_debug("sableVM doesn't support RegisterNatives");
+#else
     jsvc_xlate_to_ascii(shutdownclass);
     nativemethod.name=shutdownclass;
     jsvc_xlate_to_ascii(shutdownparams);
@@ -247,6 +250,7 @@ bool java_init(arg_data *args, home_data *data) {
         return(false);
     }
     log_debug("Native methods registered");
+#endif
 
     return(true);
 }

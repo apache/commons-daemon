@@ -16,7 +16,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apjava.m4,v 1.3 2004/02/27 08:40:46 jfclere Exp $
+dnl Version $Id$
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN([AP_PROG_JAVAC_WORKS],[
@@ -85,5 +85,21 @@ AC_DEFUN([AP_JAVA],[
   if test x"$JAVA_HOME" = x
   then
     AC_MSG_ERROR([Java Home not defined. Rerun with --with-java=[...] parameter])
+  fi
+])
+
+dnl check if the JVM in JAVA_HOME is sableVM
+dnl $JAVA_HOME/bin/sablevm and /opt/java/lib/sablevm/bin are tested.
+AC_DEFUN([AP_SABLEVM],[
+  if test x"$JAVA_HOME" != x
+  then
+    AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
+    AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
+    AC_PATH_PROG(SABLEVM,sablevm,NONE,$JAVA_HOME/bin)
+    if test "$SABLEVM" != "NONE"
+    then
+      AC_MSG_RESULT([Using sableVM: $SABLEVM])
+      CFLAGS="$CFLAGS -DHAVE_SABLEVM"
+    fi
   fi
 ])
