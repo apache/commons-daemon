@@ -343,6 +343,7 @@ bool java_load(arg_data *args) {
         return(false);
     }
 
+    log_debug("Daemon loading...");
     ret=(*env)->CallStaticBooleanMethod(env,cls,method,className,stringArray);
     if (ret==FALSE) {
         log_error("Cannot load daemon");

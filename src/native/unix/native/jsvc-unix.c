@@ -480,7 +480,11 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
             return(4);
 #endif
     /* Initialize the Java VM */
-    if (java_init(args,data)!=true) return(1);
+    if (java_init(args,data)!=true) {
+        log_debug("java_init failed");
+        return(1);
+    } else
+        log_debug("java_init done");
 
     /* Check wether we need to dump the VM version */
     if (args->vers==true) {
@@ -497,7 +501,11 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     }
 
     /* Load the service */
-    if (java_load(args)!=true) return(3);
+    if (java_load(args)!=true) {
+        log_debug("java_load failed");
+        return(3);
+    } else
+        log_debug("java_load done");
 
     /* Downgrade user */
 #ifdef OS_LINUX
@@ -511,7 +519,11 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
 #endif
 
     /* Start the service */
-    if (java_start()!=true) return(5);
+    if (java_start()!=true) {
+        log_debug("java_start failed");
+        return(5);
+    } else
+        log_debug("java_start done");
 
     /* Install signal handlers */
     handler_hup=signal_set(SIGHUP,handler);
