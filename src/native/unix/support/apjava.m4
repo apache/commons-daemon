@@ -35,14 +35,14 @@ AC_DEFUN([AP_PROG_JAVAC_WORKS],[
   ])
 ])
 
-dnl AC_PATH_PROG does not work (it checks first PATH then our parameter).
-dnl so we do 2 checks.
+dnl Check for JAVA compilers.
 AC_DEFUN([AP_PROG_JAVAC],[
-  AC_PATH_PROG(JAVAC,javac,NONE,$JAVA_HOME/bin)
-  if test "$JAVAC" = "NONE"
+  if test "$SABLEVM" != "NONE"
   then
-    AC_PATH_PROG(JAVAC_PATH,javac,NONE,$PATH)
-    JAVAC=$JAVAC_PATH
+    AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
+  else
+    XPATH="$JAVA_HOME/bin:$PATH"
+    AC_PATH_PROG(JAVAC,javac,NONE,$XPATH)
   fi
   if test "$JAVAC" = "NONE"
   then
@@ -54,12 +54,14 @@ AC_DEFUN([AP_PROG_JAVAC],[
   AC_SUBST(JAVACFLAGS)
 ])
 
+dnl Check for jar archivers.
 AC_DEFUN([AP_PROG_JAR],[
-  AC_PATH_PROG(JAR,jar,NONE,$JAVA_HOME/bin)
-  if test "$JAR" = "NONE"
+  if test "$SABLEVM" != "NONE"
   then
-    AC_PATH_PROG(JAR_PATH,jar,NONE,$PATH)
-    JAR=$JAR_PATH
+    AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
+  else
+    XPATH="$JAVA_HOME/bin:$PATH"
+    AC_PATH_PROG(JAR,jar,NONE,$XPATH)
   fi
   if test "$JAR" = "NONE"
   then
@@ -93,8 +95,6 @@ dnl $JAVA_HOME/bin/sablevm and /opt/java/lib/sablevm/bin are tested.
 AC_DEFUN([AP_SABLEVM],[
   if test x"$JAVA_HOME" != x
   then
-    AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
-    AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
     AC_PATH_PROG(SABLEVM,sablevm,NONE,$JAVA_HOME/bin)
     if test "$SABLEVM" != "NONE"
     then
