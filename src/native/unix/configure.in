@@ -76,6 +76,7 @@ dnl -------------------------------------------------------------------------
 AP_MSG_HEADER([Java compilation tools])
 AP_JAVA()
 AP_SABLEVM()
+AP_KAFFE()
 AP_PROG_JAVAC()
 AP_PROG_JAR()
 if test "$supported_os" != "darwin"

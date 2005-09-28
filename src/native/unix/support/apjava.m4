@@ -103,3 +103,17 @@ AC_DEFUN([AP_SABLEVM],[
     fi
   fi
 ])
+
+dnl check if the JVM in JAVA_HOME is kaffe
+dnl $JAVA_HOME/bin/kaffe is tested.
+AC_DEFUN([AP_KAFFE],[
+  if test x"$JAVA_HOME" != x
+  then
+    AC_PATH_PROG(KAFFEVM,kaffe,NONE,$JAVA_HOME/bin)
+    if test "$KAFFEVM" != "NONE"
+    then
+      AC_MSG_RESULT([Using kaffe: $KAFFEVM])
+      CFLAGS="$CFLAGS -DHAVE_KAFFEVM"
+    fi
+  fi
+])
