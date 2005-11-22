@@ -17,8 +17,9 @@
 <project>
   <pomVersion>3</pomVersion>
   
-  <id>commons-daemon</id>
-  <currentVersion>1.0.1</currentVersion>
+  <groupId>commons-daemon</groupId>
+  <artifactId>commons-daemon</artifactId>
+  <currentVersion>1.0.2-SNAPSHOT</currentVersion>
   <inceptionYear>2003</inceptionYear>
   <name>Daemon</name>
   <shortDescription>Commons Daemon</shortDescription>
