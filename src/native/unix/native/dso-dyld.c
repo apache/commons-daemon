@@ -20,6 +20,14 @@
 
 #include <mach-o/dyld.h>
 
+#ifdef __bool_true_false_are_defined 
+/* We define these differently than stdbool.h, so ignore the defs there */
+#undef bool
+#undef true
+#undef false
+#endif
+
+
 /* Print an error message and abort all if a specified symbol wasn't found */
 static void nosymbol(const char *s) {
     log_error("Cannot find symbol '%s' in library",s);
