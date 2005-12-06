@@ -19,16 +19,39 @@
 #
 # Adapt the following lines to your configuration
 JAVA_HOME=`echo $JAVA_HOME`
+#JAVA_HOME=/opt/java
+#JAVA_HOME=/opt/kaffe
 DAEMON_HOME=`(cd ../..; pwd)`
 TOMCAT_USER=`echo $USER`
 CLASSPATH=\
 $DAEMON_HOME/dist/commons-daemon.jar:\
 $DAEMON_HOME/dist/SimpleDaemon.jar
 
-$DAEMON_HOME/src/native/unix/jsvc \
+PATH=$PATH:$DAEMON_HOME/src/native/unix
+export PATH
+
+# library could be used to test restart after a core.
+#    -Dnative.library=${DAEMON_HOME}/src/samples/Native.so \
+
+# options below are for kaffe.
+#    -Xclasspath/a:$CLASSPATH \
+#    (to debug the class loader
+#    -vmdebug VMCLASSLOADER \
+
+# option below is for the sun JVM.
+#    -cp $CLASSPATH \
+
+if [ -f $JAVA_HOME/bin/kaffe ]
+then
+  CLOPT="-Xclasspath/a:$CLASSPATH"
+else
+  CLOPT="-cp $CLASSPATH"
+fi
+
+jsvc \
     -user $TOMCAT_USER \
     -home $JAVA_HOME \
-    -cp $CLASSPATH \
+    $CLOPT \
     -pidfile ./pidfile \
     -wait 90 \
     -debug \
@@ -37,7 +60,7 @@ $DAEMON_HOME/src/native/unix/jsvc \
     -Dnative.library=${DAEMON_HOME}/src/samples/Native.so \
     SimpleDaemon \
 #
-# To get a verbose JVM
+# To get a verbose JVM (sun JVM for example)
 #-verbose \
 # To get a debug of jsvc.
 #-debug \
