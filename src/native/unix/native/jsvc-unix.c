@@ -35,6 +35,8 @@
 
 extern char **environ;
 
+static mode_t envmask; /* mask to create the files */
+
 pid_t controlled=0; /* the son process pid */
 static bool stopping=false;
 static bool doreload=false;
@@ -519,6 +521,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
 #endif
 
     /* Start the service */
+    umask(envmask);
     if (java_start()!=true) {
         log_debug("java_start failed");
         return(5);
@@ -709,6 +712,7 @@ int main(int argc, char *argv[]) {
 #endif
     }
 
+    envmask = umask(0077);
     set_output(args->outfile, args->errfile);
 
     /* We have to fork: this process will become the controller and the other
