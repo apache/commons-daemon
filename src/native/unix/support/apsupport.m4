@@ -102,6 +102,18 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\""
     supported_os="hp-ux"
     HOST_CPU=PA_RISC2.0;;
+  mipsel)
+    CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
+    supported_os="mipsel"
+    HOST_CPU=mipsel;;
+  ia64)
+    CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
+    supported_os="ia64"
+    HOST_CPU=ia64;;
+  s390)
+    CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
+    supported_os="s390"
+    HOST_CPU=s390;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
