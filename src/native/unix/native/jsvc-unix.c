@@ -533,7 +533,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
     log_debug("Waiting for a signal to be delivered");
     create_tmp_file(args);
     while (!stopping) {
-#ifdef OSD_POSIX
+#if defined(OSD_POSIX) || defined(HAVE_KAFFEVM)
         java_sleep(60);
         /* pause(); */
 #else

@@ -114,7 +114,7 @@ bool java_init(arg_data *args, home_data *data) {
     }
 
     /* Load the JVM library */
-#ifdef OSD_POSIX
+#if defined(OSD_POSIX) || defined(HAVE_KAFFEVM)
 #else
     libh=dso_link(libf);
     if (libh==NULL) {
@@ -151,7 +151,8 @@ bool java_init(arg_data *args, home_data *data) {
     }
     log_debug("Shell library %s loaded",appf);
 #endif /* ifdef OS_DARWIN */
-#ifdef OSD_POSIX
+#if defined(OSD_POSIX) || defined(HAVE_KAFFEVM)
+    /* BS2000 and kaffe does not allow to call JNI_CreateJavaVM indirectly */
 #else
     symb=dso_symbol(libh,"JNI_CreateJavaVM");
     if (symb==NULL) {
@@ -179,7 +180,13 @@ bool java_init(arg_data *args, home_data *data) {
     #else
         arg.version=JNI_VERSION_1_2;
     #endif
-#ifdef OSD_POSIX_JFC
+#if defined(OSD_POSIX) || defined(HAVE_KAFFEVM)
+
+#if defined(HAVE_KAFFEVM)
+    memset(&arg, 0, sizeof(arg));
+    arg.version = JNI_VERSION_1_4;
+#endif
+
     if (JNI_GetDefaultJavaVMInitArgs(&arg)<0) {
         log_error("Cannot init default JVM default args");
         return(false);
@@ -217,7 +224,7 @@ bool java_init(arg_data *args, home_data *data) {
     }
 
     /* And finally create the Java VM */
-#ifdef OSD_POSIX
+#if defined(OSD_POSIX) || defined(HAVE_KAFFEVM)
     ret=JNI_CreateJavaVM(&jvm, &env, &arg);
 #else
     ret=(*symb)(&jvm, &env, &arg);

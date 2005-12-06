@@ -165,6 +165,16 @@ static arg_data *parse(int argc, char *argv[]) {
         } else if (strstr(argv[x],"-verbose")==argv[x]) {
             args->opts[args->onum++]=strdup(argv[x]);
 
+#ifdef HAVE_KAFFEVM
+        } else if (strstr(argv[x],"-vmdebug")==argv[x]) {
+            args->opts[args->onum++]=strdup(argv[x]);
+            temp=optional(argc,argv,x++);
+            if (temp==NULL) {
+                log_error("vmdebug option requires a debug flag.");
+                return(NULL);
+            }
+            args->opts[args->onum++]=strdup(temp);
+#endif
         } else if (strcmp(argv[x],"-D")==0) {
             log_error("Parameter -D must be followed by <name>=<value>");
             return(NULL);

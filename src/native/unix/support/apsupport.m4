@@ -69,35 +69,39 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   esac
   case $host_cpu in
   powerpc)
-    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
+    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
+    HOST_CPU=$host_cpu;;
   sparc*)
-    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\"" ;;
+    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
+    HOST_CPU=$host_cpu;;
   i?86)
-    CFLAGS="$CFLAGS -DCPU=\\\"i386\\\"" ;;
+    CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
+    HOST_CPU=i386;;
   x86_64)
-    CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\"" ;;
+    CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\""
+    HOST_CPU=amd64;;
   bs2000)
     CFLAGS="$CFLAGS -DCPU=\\\"osd\\\" -DCHARSET_EBCDIC -DOSD_POSIX"
     supported_os="osd"
     LDFLAGS="-Kno_link_stdlibs -B llm4 -l BLSLIB"
     LDCMD="/opt/C/bin/cc"
-    ;;
+    HOST_CPU=osd;;
   mips)
     CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
     supported_os="mips"
-    ;;
+    HOST_CPU=mips;;
   alpha*)
     CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
     supported_os="alpha"
-    ;;
+    HOST_CPU=alpha;;
   hppa2.0w)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\""
     supported_os="hp-ux"
-    ;;
+    HOST_CPU=PA_RISC2.0W;;
   hppa2.0)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\""
     supported_os="hp-ux"
-    ;;
+    HOST_CPU=PA_RISC2.0;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;

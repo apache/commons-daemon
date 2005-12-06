@@ -114,6 +114,7 @@ AC_DEFUN([AP_KAFFE],[
     then
       AC_MSG_RESULT([Using kaffe: $KAFFEVM])
       CFLAGS="$CFLAGS -DHAVE_KAFFEVM"
+      LDFLAGS="$LDFLAGS -Wl,-rpath $JAVA_HOME/jre/lib/$HOST_CPU -L $JAVA_HOME/jre/lib/$HOST_CPU -lkaffevm"
     fi
   fi
 ])

@@ -72,6 +72,9 @@ char *location_jvm_default[] = {
 #if defined(HAVE_SABLEVM)
      "$JAVA_HOME/lib/libsablevm.so",                /* sableVM */
 #endif
+#if defined(HAVE_KAFFEVM)
+     "$JAVA_HOME/jre/lib/" CPU "/libkaffevm.so",    /* kaffe */
+#endif
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so", /* Sun JDK 1.2 */
     "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",  /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/lib/" CPU "/libjvm.so",         /* Sun JDK */
