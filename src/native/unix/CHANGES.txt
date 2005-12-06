@@ -21,3 +21,7 @@ Changes with next-unreleased-yet version.
   * fix 35318.
   * fix 35340.
   * fix 36030. (using /proc/self/exe and readlink).
+  * fix 35403.
+  * fix 35659.
+  * fix 36031.
+  * fix 36058. (mask used for pid/log and load: 0077).
