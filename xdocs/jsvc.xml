@@ -159,7 +159,7 @@ You have to do the following.
 <p>
 You have to write a Class (MyClass) that implements the following methods:
 <ul>
-  <li>void init(String[] arguments): Here open the configuration files, create the trace file, create
+  <li>void load(String[] arguments): Here open the configuration files, create the trace file, create
       the ServerSockets, the Threads</li>
   <li>void start(): Start the Thread, accept incomming connections</li>
   <li>void stop(): Inform the Thread to live the run(), close the ServerSockets</li>
@@ -168,6 +168,73 @@ You have to write a Class (MyClass) that implements the following methods:
 Store it in a jarfile and use as above:
 <source>
   ./jsvc -cp commons-daemon.jar:my.jar MyClass
+</source>
+</p>
+</subsection>
+</section>
+<section name="How jsvc works">
+<p>
+Jsvc uses 3 processes: a launcher process, a controller process and a controlled process.
+The controlled process is also the main java thread, if the JVM crashes
+the controller will restart it in the next minute.
+Jsvc is a daemon process so it should be started as root and the -user parameter
+allows to downgrade to an unprivilegded user.
+When -wait parameter is used, the launcher process waits until the controller says
+"I am ready", otherwise it returns after creating the controller process.
+</p>
+
+<subsection name="Forks in jakarta-daemon">
+<p>
+Launcher process:
+<source>
+main()
+{
+  fork()
+  parent: wait_child(), wait until JAVA service started when the child says "I am ready".
+  child: controller process.
+}
+</source>
+
+Controller process:
+<source>
+  while (fork()) {
+    parent: wait_for_child.
+      if exited and restart needed continue
+      else exit.
+    child: exit(child()). controlled process.
+  }
+</source>
+
+Controlled process:
+<source>
+In child(): controlled process.
+  init_JVM().
+  load_service().
+  start_service().
+  say "I am ready"
+  wait for signal or pool for stop
+  stop_service().
+  destroy_service().
+  destroy_JVM().
+  exit (with different codes so that parent knows if it has to restart us).
+</source>
+Note: The controller process uses signals to stop the controlled process.
+</p>
+</subsection>
+
+<subsection name="Downgrading user">
+<p>
+On linux setuid()/setgid() + capabilities are used on other unix setgid/initgroups are used.
+
+we have something like:
+<source>
+/* as root */
+init_JVM().
+load_service. /*  java_load() calls the load method */
+downgrade user (set_caps() or set_user_group())
+/* as the user $USER (from -user $USER parameter) */
+umask()
+start_service. /* java_start() calls the start method */
 </source>
 </p>
 </subsection>
