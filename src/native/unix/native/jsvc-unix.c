@@ -33,6 +33,12 @@
 #endif
 #include <time.h>
 
+#ifdef OS_CYGWIN
+#include <sys/fcntl.h>
+#define F_ULOCK 0       /* Unlock a previously locked region */
+#define F_LOCK  1       /* Lock a region for exclusive use */
+#endif
+
 extern char **environ;
 
 static mode_t envmask; /* mask to create the files */
@@ -43,6 +49,33 @@ static bool doreload=false;
 static void (*handler_int)(int)=NULL;
 static void (*handler_hup)(int)=NULL;
 static void (*handler_trm)(int)=NULL;
+
+#ifdef OS_CYGWIN
+/*
+ * File locking routine
+ */
+static int lockf(int fildes, int function, off_t size)
+{
+    struct flock buf;
+
+    switch (function) {
+    case F_LOCK:
+        buf.l_type = F_WRLCK;
+        break;
+    case F_ULOCK:
+        buf.l_type = F_UNLCK;
+        break;
+    default:
+        return -1;
+    }
+    buf.l_whence = 0;
+    buf.l_start = 0;
+    buf.l_len = size;
+
+    return fcntl(fildes, F_SETLK, &buf);
+}
+
+#endif
 
 static void handler(int sig) {
     switch (sig) {
