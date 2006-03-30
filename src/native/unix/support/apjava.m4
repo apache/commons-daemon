@@ -39,11 +39,16 @@ dnl Check for JAVA compilers.
 AC_DEFUN([AP_PROG_JAVAC],[
   if test "$SABLEVM" != "NONE"
   then
-    AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
-  else
+    AC_PATH_PROG(JAVACSABLE,javac-sablevm,NONE,$JAVA_HOME/bin)
+  fi
+  if test "$JAVACSABLE" = "NONE"
+  then
     XPATH="$JAVA_HOME/bin:$PATH"
     AC_PATH_PROG(JAVAC,javac,NONE,$XPATH)
+  else
+    AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
   fi
+  AC_MSG_RESULT([$JAVAC])
   if test "$JAVAC" = "NONE"
   then
     AC_MSG_ERROR([javac not found])
@@ -58,10 +63,14 @@ dnl Check for jar archivers.
 AC_DEFUN([AP_PROG_JAR],[
   if test "$SABLEVM" != "NONE"
   then
-    AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
-  else
+    AC_PATH_PROG(JARSABLE,jar-sablevm,NONE,$JAVA_HOME/bin)
+  fi
+  if test "$JARSABLE" = "NONE"
+  then
     XPATH="$JAVA_HOME/bin:$PATH"
     AC_PATH_PROG(JAR,jar,NONE,$XPATH)
+  else
+    AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
   fi
   if test "$JAR" = "NONE"
   then
@@ -96,6 +105,14 @@ AC_DEFUN([AP_SABLEVM],[
   if test x"$JAVA_HOME" != x
   then
     AC_PATH_PROG(SABLEVM,sablevm,NONE,$JAVA_HOME/bin)
+    if test "$SABLEVM" = "NONE"
+    then
+      dnl java may be SableVM.
+      if $JAVA_HOME/bin/java -version 2> /dev/null | grep SableVM > /dev/null
+      then
+        SABLEVM=$JAVA_HOME/bin/java
+      fi
+    fi
     if test "$SABLEVM" != "NONE"
     then
       AC_MSG_RESULT([Using sableVM: $SABLEVM])
