@@ -40,6 +40,8 @@ AC_DEFUN([AP_PROG_JAVAC],[
   if test "$SABLEVM" != "NONE"
   then
     AC_PATH_PROG(JAVACSABLE,javac-sablevm,NONE,$JAVA_HOME/bin)
+  else
+    JAVACSABLE="NONE"
   fi
   if test "$JAVACSABLE" = "NONE"
   then
@@ -64,6 +66,8 @@ AC_DEFUN([AP_PROG_JAR],[
   if test "$SABLEVM" != "NONE"
   then
     AC_PATH_PROG(JARSABLE,jar-sablevm,NONE,$JAVA_HOME/bin)
+  else
+    JARSABLE="NONE"
   fi
   if test "$JARSABLE" = "NONE"
   then
