@@ -25,3 +25,5 @@ Changes with next-unreleased-yet version.
   * fix 35659.
   * fix 36031.
   * fix 36058. (mask used for pid/log and load: 0077).
+  * fix 38992.
+  * Improve support of Mac OS X Server 10.4
