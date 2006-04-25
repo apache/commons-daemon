@@ -6,6 +6,7 @@ To build the native part:
   cd src/native/unix; configure; make
   You need a gnu make.
   The jsvc executable could be found in dist.
+  There is a INSTALL.txt src/native/unix please have a look to it.
 
   On windoze the additional step is needed:
   cd src/native/nt; make
