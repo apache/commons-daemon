@@ -2,10 +2,10 @@ To build the service libraries and binary under an UNIX operating
 system you will need:
 
   An ANSI-C compliant compiler (GCC is good)
-  GNU AutoConf
   A Java Platform 2 compliant SDK
+  GNU AutoConf (when building for SVN).
 
-When building from CVS sources you need to build the "configure" program with:
+When building from SVN sources you need to build the "configure" program with:
 
    sh support/buildconf.sh
 (Note it is possible to replace sh by any compatible shell like bash, ksh).
@@ -41,3 +41,7 @@ It should be straightforward from here on. To check the allowed parameters
 for the jsvc binary simply do
 
   ./native/jsvc -help
+
+Note: On Linux the module capabilities should be loaded, when using -user root
+make sure you REALLY understand what capabilities does (for example for
+files access: the downgraded root may not be able to read some files!).
