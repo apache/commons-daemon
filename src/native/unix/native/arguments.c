@@ -203,6 +203,16 @@ static arg_data *parse(int argc, char *argv[]) {
               return (NULL);
             }
 
+	/* -agentlib: -agentpath: -javaagent: 1.5.x JVM */
+        } else if (strstr(argv[x],"-agentlib:")==argv[x]) {
+            args->opts[args->onum++]=strdup(argv[x]);
+	    
+        } else if (strstr(argv[x],"-agentpath:")==argv[x]) {
+            args->opts[args->onum++]=strdup(argv[x]);
+	    
+        } else if (strstr(argv[x],"-javaagent:")==argv[x]) {
+            args->opts[args->onum++]=strdup(argv[x]);
+	    
         } else if (strstr(argv[x],"-")==argv[x]) {
             log_error("Invalid option %s",argv[x]);
             return(NULL);
