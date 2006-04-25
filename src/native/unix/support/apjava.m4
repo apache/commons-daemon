@@ -45,7 +45,7 @@ AC_DEFUN([AP_PROG_JAVAC],[
   fi
   if test "$JAVACSABLE" = "NONE"
   then
-    XPATH="$JAVA_HOME/bin:$PATH"
+    XPATH="$JAVA_HOME/bin:$JAVA_HOME/Commands:$PATH"
     AC_PATH_PROG(JAVAC,javac,NONE,$XPATH)
   else
     AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
@@ -71,7 +71,7 @@ AC_DEFUN([AP_PROG_JAR],[
   fi
   if test "$JARSABLE" = "NONE"
   then
-    XPATH="$JAVA_HOME/bin:$PATH"
+    XPATH="$JAVA_HOME/bin:$JAVA_HOME/Commands:$PATH"
     AC_PATH_PROG(JAR,jar,NONE,$XPATH)
   else
     AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
