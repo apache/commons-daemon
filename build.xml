@@ -1,4 +1,4 @@
-<project name="Daemon" default="compile" basedir=".">
+<project name="Daemon" default="dist" basedir=".">
 
 
 <!--
