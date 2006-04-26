@@ -1,3 +1,5 @@
+(Please have a look to procrun (subdirectory), procrun is
+probably what you have to use).
 To build the service utilities for windows you will need:
 - MS Visual C++ (I have used version 5.0).
 - CYGWIN to build the jsvc.exe.
