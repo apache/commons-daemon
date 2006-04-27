@@ -27,3 +27,4 @@ Changes with next-unreleased-yet version.
   * fix 36058. (mask used for pid/log and load: 0077).
   * fix 38992.
   * Improve support of Mac OS X Server 10.4
+  * Restart when JVM process is killed (abort is not alway called).
