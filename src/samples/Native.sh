@@ -14,7 +14,7 @@
 ## limitations under the License.
 ##
 # for linux ;-) and Mac OS X
-case `uname -s`
+case `uname -s` in
   Darwin)
     JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK
     INCLUDE=Headers
