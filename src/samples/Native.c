@@ -34,6 +34,7 @@ JNIEXPORT void JNICALL Java_SimpleDaemon_toto
 	int i;
 	i = -1;
 	memcpy(&i, &i, i);
+	memset(&i, ' ', 1024);
 }
  
 #ifdef __cplusplus
