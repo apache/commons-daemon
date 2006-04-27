@@ -132,6 +132,10 @@ static int set_user_group(char *user, int uid, int gid)
             } else
                 log_debug("Cannot set supplement group list for user '%s'",user);
         }
+	if (getuid() == uid) {
+            log_debug("No need to change user to '%s'!",user);
+            return(0);
+	}
         if (setuid(uid)!=0) {
             log_error("Cannot set user id for user '%s'",user);
             return(-1);
@@ -794,7 +798,17 @@ int main(int argc, char *argv[]) {
             /* Otherwise we don't rerun it */
             log_error("Service exit with a return value of %d",status);
             return(1);
+
         } else {
+            if (WIFSIGNALED(status)) {
+                log_error("Service killed by signal %d",WTERMSIG(status));
+                /* prevent looping */
+                if (laststart+60>time(NULL)) {
+                  log_debug("Waiting 60 s to prevent looping");
+                  sleep(60);
+                } 
+                continue;
+            }
             log_error("Service did not exit cleanly",status);
             return(1);
         }
