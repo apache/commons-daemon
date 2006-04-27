@@ -13,6 +13,20 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 ##
-# for linux ;-)
-gcc -c -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux Native.c
-gcc -shared -o Native.so Native.o
+# for linux ;-) and Mac OS X
+case `uname -s`
+  Darwin)
+    JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK
+    INCLUDE=Headers
+    OS=
+    FLAGS=-dynamiclib
+    ;;
+  Linux)
+    OS=linux
+    INCLUDE=include
+    FLAGS=-shared
+    ;;
+esac
+
+gcc -c -I${JAVA_HOME}/${INCLUDE} -I${JAVA_HOME}/${INCLUDE}/${OS} Native.c
+gcc ${FLAGS} -o Native.so Native.o
