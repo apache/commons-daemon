@@ -240,7 +240,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                         out.println("    4) Disconnect");
                         out.println("    5) Cause a core of the JVM");
                         out.println("    6) Create a directory");
-                        out.print("Your choiche: ");
+                        out.print("Your choice: ");
                     }
 
                     /* Read an option from the client */
