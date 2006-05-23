@@ -1,5 +1,9 @@
 (Please have a look to procrun (subdirectory), procrun is
 probably what you have to use).
+
+Note: MAKE SURE you first build the java part (using ant) otherwise the dist
+directory is not created).
+
 To build the service utilities for windows you will need:
 - MS Visual C++ (I have used version 5.0).
 - CYGWIN to build the jsvc.exe.
