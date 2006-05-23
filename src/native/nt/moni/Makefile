@@ -13,3 +13,5 @@ vdenv.o: ../supcalls_nt/vdenv.c
 	gcc $(INCLUDE) -c ../supcalls_nt/vdenv.c
 kills.o: ../signals/kills.c
 	gcc $(INCLUDE) -c ../signals/kills.c
+clean:
+	rm -f vdenv.o kills.o 

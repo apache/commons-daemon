@@ -5,3 +5,5 @@ arguments.o: ../../unix/native/arguments.c
 	gcc -c $(INCLUDE) ../../unix/native/arguments.c
 debug.o: ../../unix/native/debug.c
 	gcc -c $(INCLUDE) ../../unix/native/debug.c
+clean:
+	rm -f arguments.o debug.o
