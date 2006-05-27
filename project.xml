@@ -17,7 +17,7 @@
 <project>
   <pomVersion>3</pomVersion>
   
-  <groupId>commons-daemon</groupId>
+  <groupId>org.apache.commons</groupId>
   <artifactId>commons-daemon</artifactId>
   <currentVersion>1.0.2-SNAPSHOT</currentVersion>
   <inceptionYear>2003</inceptionYear>
@@ -99,10 +99,18 @@
   </developers>
 
   <build>
+    <nagEmailAddress>commons-dev@jakarta.apache.org</nagEmailAddress>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <integrationUnitTestSourceDirectory/>
+    <aspectSourceDirectory/>
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
       </includes>
+      <excludes>
+        <exclude>**/*AbstractTest.java</exclude>
+      </excludes>
       <resources>
          <resource>
             <directory>${pom.build.unitTestSourceDirectory}</directory>
@@ -112,25 +120,6 @@
          </resource>
       </resources>
     </unitTest>
-  </build>
-  
-  <build>
-    	<nagEmailAddress>commons-dev@jakarta.apache.org</nagEmailAddress>
-    	<sourceDirectory>src/java</sourceDirectory>
-    	<unitTestSourceDirectory>src/test</unitTestSourceDirectory>
-    	<integrationUnitTestSourceDirectory/>
-    	<aspectSourceDirectory/>
-
-    	<!-- Unit test classes -->
-    	<unitTest>
-	      	<includes>
-                <include>**/*Test.java</include>
-            </includes>
-            <excludes>
-                <exclude>**/*AbstractTest.java</exclude>
-            </excludes>
-   		</unitTest>
-
   </build>
   
   <reports>
