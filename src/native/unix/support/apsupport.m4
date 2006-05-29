@@ -30,12 +30,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   solaris*)
     CFLAGS="$CFLAGS -DOS_SOLARIS -DDSO_DLFCN"
     supported_os="solaris"
-    LDFLAGS="$LDFLAGS -ldl -lthread"
+    LIBS="$LIBS -ldl -lthread"
     ;;
   linux*)
     CFLAGS="$CFLAGS -DOS_LINUX -DDSO_DLFCN"
     supported_os="linux"
-    LDFLAGS="$LDFLAGS -ldl -lpthread"
+    LIBS="$LIBS -ldl -lpthread"
     ;;
   cygwin)
     CFLAGS="$CFLAGS -DOS_CYGWIN -DDSO_DLFCN -DNO_SETSID"
@@ -43,11 +43,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     ;;
   sysv)
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN"
-    LDFLAGS="$LDFLAGS -ldl"
+    LIBS="$LIBS -ldl"
     ;;
   sysv4)
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN -Kthread"
-    LDFLAGS="-Kthread $LDFLAGS -ldl"
+    LDFLAGS="-Kthread $LDFLAGS"
+    LIBS="$LIBS -ldl"
     ;;
   freebsd*)
     CFLAGS="$CFLAGS -DOS_FREEBSD -DDSO_DLFCN -D_THREAD_SAFE -pthread"
@@ -60,7 +61,8 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     ;;
   hpux11*)
     CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
-    LDFLAGS="$LDFLAGS -pthread -lpthread"
+    LDFLAGS="$LDFLAGS -pthread"
+    LIBS="$LIBS -lpthread"
     ;;
   *)
     AC_MSG_RESULT([failed])
@@ -83,7 +85,8 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   bs2000)
     CFLAGS="$CFLAGS -DCPU=\\\"osd\\\" -DCHARSET_EBCDIC -DOSD_POSIX"
     supported_os="osd"
-    LDFLAGS="-Kno_link_stdlibs -B llm4 -l BLSLIB"
+    LDFLAGS="-Kno_link_stdlibs -B llm4"
+    LIBS="$LIBS -lBLSLIB"
     LDCMD="/opt/C/bin/cc"
     HOST_CPU=osd;;
   mips)
