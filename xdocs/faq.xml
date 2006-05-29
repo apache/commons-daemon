@@ -68,5 +68,17 @@ modprobe capability
 </p>
 </section>
 
+<section name="Cygwin configuration problems">
+<p>
+The configure of jsvc does not like spaces in directory name.
+To configure with java installed in directory whose name contains a space,
+use the 8 characters name of the directory.
+For example for java in installed in <code>c:\Archivos de programa\java\jdk1.5.0_06</code>:
+<source>
+./configure --with-java=/cygdrive/c/Archiv~1/java/jdk1.5.0_06
+</source>
+</p>
+</section>
+
 </body>
 </document>
