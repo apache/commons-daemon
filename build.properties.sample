@@ -4,3 +4,8 @@ junit.home = /usr/local/junit3.7
 
 # The pathname of the "junit.jar" JAR file
 junit.jar = ${junit.home}/junit.jar
+
+# Proxy
+# proxy
+maven.proxy.host = proxy.domain
+maven.proxy.port = 80
