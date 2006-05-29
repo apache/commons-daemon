@@ -114,6 +114,8 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/lib/" CPU "/hotspot/libjvm.sl",
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.sl",
 #endif
+    "/usr/lib/libgcj.so.7", /* gcc java libraries */
+    "/usr/lib/libgcj.so.6",
     NULL,
 };
 
