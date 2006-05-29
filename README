@@ -17,7 +17,7 @@ To build the native part:
   cd src/native/nt/procrun; make
   (It is also possible to use the m$ developement tools).
 
-To build the documentation:
+To build the documentation: (See http://jakarta.apache.org/commons/building.html).
 maven site:generate
 (Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/jakarta/commons/proper/commons-build/trunk/ commons-build))
 
