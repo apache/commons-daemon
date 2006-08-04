@@ -6,7 +6,7 @@
   <property name="dist.home"   value="../../dist"/>
   <property name="build.home"  value="./build"/>
   <property name="source.home" value="."/>
-  <property name="commons-collections.jar" value="${user.home}/commons-collections-3.1/commons-collections-3.1.jar"/>
+  <property name="commons-collections.jar" value="${user.home}/java/commons-collections-3.1/commons-collections-3.1.jar"/>
 
   <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService"/>
 
