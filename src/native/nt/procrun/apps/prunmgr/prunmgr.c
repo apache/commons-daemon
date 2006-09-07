@@ -647,7 +647,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                     }
                     else {
                         SET_BIT_FLAG(_propertyChanged, 1);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }
@@ -802,7 +802,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
                         SET_BIT_FLAG(_propertyChanged, 2);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }
@@ -942,7 +942,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
                         SET_BIT_FLAG(_propertyChanged, 3);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }
@@ -1075,7 +1075,7 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
                         SET_BIT_FLAG(_propertyChanged, 4);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }
@@ -1213,7 +1213,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
                         SET_BIT_FLAG(_propertyChanged, 5);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }
@@ -1360,7 +1360,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
                         SET_BIT_FLAG(_propertyChanged, 6);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }

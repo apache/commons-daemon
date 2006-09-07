@@ -37,6 +37,14 @@
 
 #include <lm.h>
 
+#ifndef _INTPTR_T_DEFINED
+#ifdef  _WIN64
+typedef __int64             intptr_t;
+#else
+typedef _W64 int            intptr_t;
+#endif
+#define _INTPTR_T_DEFINED
+#endif
 
 #define APXMACRO_BEGIN                  do {
 #define APXMACRO_END                    } while(0)

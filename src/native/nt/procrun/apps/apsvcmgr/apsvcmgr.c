@@ -610,10 +610,10 @@ HWND CreateServiceList(HWND hWndParent)
 #endif 
     hWndListHdr = ListView_GetHeader(hWndList);
     /* Sub-class */
-    ListViewWinMain = (WNDPROC)((SIZE_T)SetWindowLong(hWndList, GWL_WNDPROC, 
+    ListViewWinMain = (WNDPROC)((SIZE_T)SetWindowLong(hWndList, GWLP_WNDPROC, 
                                                       (LONG)((SIZE_T)ListViewMainSubclass))); 
 
-    ListViewWinHead = (WNDPROC)((SIZE_T)SetWindowLong(hWndListHdr, GWL_WNDPROC, 
+    ListViewWinHead = (WNDPROC)((SIZE_T)SetWindowLong(hWndListHdr, GWLP_WNDPROC, 
                                                       (LONG)((SIZE_T)ListViewHeadSubclass))); 
 
 
@@ -869,7 +869,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                     }
                     else {
                         SET_BIT_FLAG(_propertyChanged, 1);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }
@@ -1019,7 +1019,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg); 
                     else {
                         SET_BIT_FLAG(_propertyChanged, 2);
-                        SetWindowLong(hDlg, DWL_MSGRESULT,
+                        SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
                         return TRUE;                        
                     }

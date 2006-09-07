@@ -25,8 +25,10 @@ IDB_SSTATUS          BITMAP  DISCARDABLE    "../../resources/sstatus.bmp"
 IDB_SUSERS           BITMAP  DISCARDABLE    "../../resources/susers.bmp"
 IDR_LICENSE          RTF                    "../../resources/license.rtf"
 BMP_JAKARTA          BITMAP                 "../../resources/jakarta.bmp"
- 
+
+#ifdef USE_MAINFEST
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "apsvcmgr.manifest"
+#endif
 
 IDC_APPLICATION MENU 
 BEGIN
@@ -276,8 +278,8 @@ END
  
 
 1 VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION 2,0,1,0
+ PRODUCTVERSION 2,0,1,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
@@ -297,7 +299,7 @@ BEGIN
       VALUE "FileDescription", RSTR_ASM "\0"
       VALUE "FileVersion", PRG_VERSION
       VALUE "InternalName", RSTR_ASM "\0"
-      VALUE "LegalCopyright", "Copyright © 2000-2003 The Apache Software Foundation.\0"
+      VALUE "LegalCopyright", "Copyright © 2000-2006 The Apache Software Foundation.\0"
       VALUE "OriginalFilename", "apsvcmgr.exe\0"
       VALUE "ProductName", RSTR_ASM "\0"
       VALUE "ProductVersion", PRG_VERSION

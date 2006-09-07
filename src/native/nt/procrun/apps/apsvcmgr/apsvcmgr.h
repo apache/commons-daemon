@@ -14,7 +14,7 @@
  */
  
 #undef  PRG_VERSION
-#define PRG_VERSION    "1.0.0.0" 
+#define PRG_VERSION    "2.0.1.0" 
 
 #define NUMTOOLBUTTONS                  17
 #define IDC_TOOLBAR                     2000

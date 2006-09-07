@@ -530,7 +530,7 @@ LPSTR apxGetDlgTextA(APXHANDLE hPool, HWND hDlg, int nIDDlgItem)
 LPSTR apxBrowseForFolderA(HWND hWnd, LPCSTR szTitle, LPCSTR szName)
 {
     BROWSEINFOA  bi;
-    ITEMIDLIST   *il, *ir;
+    LPITEMIDLIST il, ir;
     LPMALLOC     pMalloc;
     CHAR         szPath[MAX_PATH+1];
     LPSTR        rv = NULL;
@@ -561,7 +561,7 @@ LPSTR apxBrowseForFolderA(HWND hWnd, LPCSTR szTitle, LPCSTR szName)
 LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName)
 {
     BROWSEINFOW  bi;
-    ITEMIDLIST   *il, *ir;
+    LPITEMIDLIST il, ir;
     LPMALLOC     pMalloc;
     WCHAR        szPath[MAX_PATH+1];
     LPWSTR       rv = NULL;
@@ -786,7 +786,7 @@ static void __apxSelectUserCreateLv(HWND hDlg)
     DeleteObject(hBmp);
 
     ListView_SetImageList(hList, _st_sel_users_il, LVSIL_SMALL);
-    _st_sel_users_lvm = (WNDPROC)((SIZE_T)SetWindowLong(hList, GWL_WNDPROC, 
+    _st_sel_users_lvm = (WNDPROC)((SIZE_T)SetWindowLong(hList, GWLP_WNDPROC, 
                                                         (LONG)((SIZE_T)__apxSelectUserCreateLvSubclass))); 
 
 }
@@ -894,7 +894,7 @@ static LRESULT CALLBACK __apxSelectUserDlgProc(HWND hDlg, UINT uMsg,
     switch (uMsg) {
         case WM_INITDIALOG:
             /* Set the application icon */
-            SetClassLong(hDlg, GCL_HICON,
+            SetClassLong(hDlg, GCLP_HICON,
                          (LONG)(SIZE_T)LoadIcon(_st_sys_gui.hInstance,
                                         MAKEINTRESOURCE(IDI_MAINICON))); 
             apxCenterWindow(hDlg, _st_sys_gui.hMainWnd);

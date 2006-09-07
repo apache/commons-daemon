@@ -56,7 +56,11 @@ LPVOID AplFillMemory(PVOID Destination, SIZE_T Length, BYTE Fill)
 { 
 
     SIZE_T t;
+#ifdef WIN64
+    UINT64 c;
+#else
     UINT   c;
+#endif
     LPBYTE dst;
 
     dst = Destination;
@@ -100,7 +104,11 @@ LPVOID AplFillMemory(PVOID Destination, SIZE_T Length, BYTE Fill)
     /* Fill words.  Length was >= 2*words so we know t >= 1 here. */
     t = Length / wsize;
     do {
-        *(UINT *)dst = c;
+#ifdef WIN64
+        *(UINT64 *)dst = c;
+#else
+        *(UINT   *)dst = c;
+#endif
         dst += wsize;
     } while (--t != 0);
 
