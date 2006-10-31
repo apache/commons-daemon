@@ -206,7 +206,7 @@
     <mkdir      dir="${dist.home}"/>
     <mkdir      dir="${dist.home}/lib"/>
     <mkdir      dir="${dist.home}/logs"/>
-    <copy      file="LICENSE"
+    <copy      file="LICENSE.txt"
               todir="${dist.home}"/>
     <copy      file="NOTICE.txt"
               todir="${dist.home}"/>
@@ -228,7 +228,7 @@
     <mkdir      dir="${dist.home}"/>
     <mkdir      dir="${dist.home}/bin"/>
     <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="LICENSE"
+    <copy      file="LICENSE.txt"
              tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <copy      file="NOTICE.txt"
              tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
