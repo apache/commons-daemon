@@ -17,7 +17,7 @@
 <project>
   <pomVersion>3</pomVersion>
   
-  <groupId>org.apache.commons</groupId>
+  <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
   <currentVersion>1.0.2-SNAPSHOT</currentVersion>
   <inceptionYear>2003</inceptionYear>
