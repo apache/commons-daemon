@@ -23,8 +23,6 @@ package org.apache.commons.daemon;
  * communicate with the Daemon container.
  *
  * @author Pier Fumagalli
- * @author Copyright &copy; 2000-2001 <a href="http://www.apache.org/">The
- *         Apache Software Foundation</a>. All rights reserved.
  * @version 1.0 <i>(CVS $Revision$)</i>
  */
 public interface DaemonContext {
