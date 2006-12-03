@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* ====================================================================
  * prunsrv -- Service Runner.
  * Contributed by Mladen Turk <mturk@apache.org>
  * 05 Aug 2003
- * ==================================================================== 
+ * ====================================================================
  */
 
 /* Force the JNI vprintf functions */
@@ -74,40 +74,42 @@ static APXCMDLINEOPT _options[] = {
 /* 0  */    { L"Description",       L"Description",     NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 /* 1  */    { L"DisplayName",       L"DisplayName",     NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 /* 2  */    { L"Install",           L"ImagePath",       NULL,           APXCMDOPT_STE | APXCMDOPT_SRV, NULL, 0},
-/* 3  */    { L"Startup",           L"Startup",         NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
-/* 4  */    { L"DependsOn",         L"DependsOn",       NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 5  */    { L"Environment",       L"Environment",     NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 6  */    { L"User",              L"User",            NULL,           APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 7  */    { L"Password",          L"Password",        NULL,           APXCMDOPT_BIN | APXCMDOPT_REG, NULL, 0},
+/* 3  */    { L"ServiceUser",       L"ServiceUser",     NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
+/* 4  */    { L"ServicePassword",   L"ServicePassword", NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
+/* 5  */    { L"Startup",           L"Startup",         NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
+/* 6  */    { L"DependsOn",         L"DependsOn",       NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 7  */    { L"Environment",       L"Environment",     NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 8  */    { L"User",              L"User",            NULL,           APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 9  */    { L"Password",          L"Password",        NULL,           APXCMDOPT_BIN | APXCMDOPT_REG, NULL, 0},
 
-/* 8  */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 9  */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 10 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 11 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 12 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 13 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 14 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 10 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 11 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 12 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 13 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 14 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 15 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 16 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 15 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 16 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 17 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 18 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 19 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 20 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 21 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 17 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 18 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 19 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 20 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 21 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 22 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 23 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 22 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 23 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 24 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 25 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 26 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 27 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 24 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 25 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 26 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 27 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 28 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 29 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
 
-/* 28 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 29 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 30 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 31 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 32 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 30 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 31 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 32 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 33 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 34 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
             /* NULL terminate the array */
             { NULL }
 };
@@ -119,47 +121,52 @@ static APXCMDLINEOPT _options[] = {
 #define ST_DESCRIPTION      GET_OPT_T(0)
 #define ST_DISPLAYNAME      GET_OPT_T(1)
 #define ST_INSTALL          GET_OPT_T(2)
-#define ST_STARTUP          GET_OPT_T(3)
+#define ST_SUSER            GET_OPT_T(3)
+#define ST_SPASSWORD        GET_OPT_T(4)
+#define ST_STARTUP          GET_OPT_T(5)
 
 #define SO_DESCRIPTION      GET_OPT_V(0)
 #define SO_DISPLAYNAME      GET_OPT_V(1)
 #define SO_INSTALL          GET_OPT_V(2)
-#define SO_STARTUP          GET_OPT_V(3)
-#define SO_DEPENDSON        GET_OPT_V(4)
-#define SO_ENVIRONMENT      GET_OPT_V(5)
+#define SO_SUSER            GET_OPT_V(3)
+#define SO_SPASSWORD        GET_OPT_V(4)
 
-#define SO_USER             GET_OPT_V(6)
-#define SO_PASSWORD         GET_OPT_V(7)
+#define SO_STARTUP          GET_OPT_V(5)
+#define SO_DEPENDSON        GET_OPT_V(6)
+#define SO_ENVIRONMENT      GET_OPT_V(7)
 
-#define SO_JAVAHOME         GET_OPT_V(8)
-#define SO_JVM              GET_OPT_V(9)
-#define SO_JVMOPTIONS       GET_OPT_V(10)
-#define SO_CLASSPATH        GET_OPT_V(11)
-#define SO_JVMMS            GET_OPT_I(12)
-#define SO_JVMMX            GET_OPT_I(13)
-#define SO_JVMSS            GET_OPT_I(14)
+#define SO_USER             GET_OPT_V(8)
+#define SO_PASSWORD         GET_OPT_V(9)
 
-#define SO_STOPIMAGE        GET_OPT_V(15)
-#define SO_STOPPATH         GET_OPT_V(16)
-#define SO_STOPCLASS        GET_OPT_V(17)
-#define SO_STOPPARAMS       GET_OPT_V(18)
-#define SO_STOPMETHOD       GET_OPT_V(19)
-#define SO_STOPMODE         GET_OPT_V(20)
-#define SO_STOPTIMEOUT      GET_OPT_I(21)
+#define SO_JAVAHOME         GET_OPT_V(10)
+#define SO_JVM              GET_OPT_V(11)
+#define SO_JVMOPTIONS       GET_OPT_V(12)
+#define SO_CLASSPATH        GET_OPT_V(13)
+#define SO_JVMMS            GET_OPT_I(14)
+#define SO_JVMMX            GET_OPT_I(15)
+#define SO_JVMSS            GET_OPT_I(16)
 
-#define SO_STARTIMAGE       GET_OPT_V(22)
-#define SO_STARTPATH        GET_OPT_V(23)
-#define SO_STARTCLASS       GET_OPT_V(24)
-#define SO_STARTPARAMS      GET_OPT_V(25)
-#define SO_STARTMETHOD      GET_OPT_V(26)
-#define SO_STARTMODE        GET_OPT_V(27)
+#define SO_STOPIMAGE        GET_OPT_V(17)
+#define SO_STOPPATH         GET_OPT_V(18)
+#define SO_STOPCLASS        GET_OPT_V(19)
+#define SO_STOPPARAMS       GET_OPT_V(20)
+#define SO_STOPMETHOD       GET_OPT_V(21)
+#define SO_STOPMODE         GET_OPT_V(22)
+#define SO_STOPTIMEOUT      GET_OPT_I(23)
 
-#define SO_LOGPATH          GET_OPT_V(28)
-#define SO_LOGPREFIX        GET_OPT_V(29)
-#define SO_LOGLEVEL         GET_OPT_V(30)
+#define SO_STARTIMAGE       GET_OPT_V(24)
+#define SO_STARTPATH        GET_OPT_V(25)
+#define SO_STARTCLASS       GET_OPT_V(26)
+#define SO_STARTPARAMS      GET_OPT_V(27)
+#define SO_STARTMETHOD      GET_OPT_V(28)
+#define SO_STARTMODE        GET_OPT_V(29)
 
-#define SO_STDERROR         GET_OPT_V(31)
-#define SO_STDOUTPUT        GET_OPT_V(32)
+#define SO_LOGPATH          GET_OPT_V(20)
+#define SO_LOGPREFIX        GET_OPT_V(31)
+#define SO_LOGLEVEL         GET_OPT_V(32)
+
+#define SO_STDERROR         GET_OPT_V(33)
+#define SO_STDOUTPUT        GET_OPT_V(34)
 
 /* Main servic table entry
  * filled at run-time
@@ -168,9 +175,9 @@ static SERVICE_TABLE_ENTRYW _service_table[] = {
         {NULL, NULL},
         {NULL, NULL}
 };
- 
-static SERVICE_STATUS        _service_status; 
-static SERVICE_STATUS_HANDLE _service_status_handle = NULL; 
+
+static SERVICE_STATUS        _service_status;
+static SERVICE_STATUS_HANDLE _service_status_handle = NULL;
 /* Set if launched by SCM   */
 static BOOL                  _service_mode = FALSE;
 /* JVM used as worker       */
@@ -214,7 +221,7 @@ DWORD WINAPI eventThread(LPVOID lpParam)
     return 0;
 }
 
-/* redirect console stdout/stderr to files 
+/* redirect console stdout/stderr to files
  * so that java messages can get logged
  * If stderrfile is not specified it will
  * go to stdoutfile.
@@ -224,10 +231,10 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     BOOL aErr = FALSE;
     BOOL aOut = FALSE;
 
-    /* Clear up the handles */    
+    /* Clear up the handles */
     lpWrapper->fpStdErrFile = NULL;
     lpWrapper->fpStdOutFile = NULL;
-    
+
     /* Save the original streams */
     lpWrapper->fpStdOutSave = *stdout;
     lpWrapper->fpStdErrSave = *stderr;
@@ -260,12 +267,12 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     }
     else {
         lpWrapper->hStdOutFile = CreateFileW(L"CONOUT$",
-                                             GENERIC_READ | GENERIC_WRITE, 
-                                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                             GENERIC_READ | GENERIC_WRITE,
+                                             FILE_SHARE_READ | FILE_SHARE_WRITE,
                                              NULL,
                                              OPEN_EXISTING,
                                              0,
-                                             NULL); 
+                                             NULL);
         if (IS_INVALID_HANDLE(lpWrapper->hStdOutFile))
             return FALSE;
     }
@@ -298,7 +305,7 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     else {
         lpWrapper->hStdErrFile = lpWrapper->hStdOutFile;
     }
-    /* Open the stream buffers 
+    /* Open the stream buffers
      * This will redirect all printf to go to the redirected files.
      * It is used for JNI vprintf functionality.
      */
@@ -377,7 +384,7 @@ static void setInprocEnvironment()
 
     if (!SO_ENVIRONMENT)
         return;    /* Nothing to do */
-    
+
     for (p = SO_ENVIRONMENT; *p; p++) {
         e = apxExpandStrW(gPool, p);
         _wputenv(e);
@@ -456,7 +463,7 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
         ++i;
     }
     apxCloseHandle(hRegistry);
-#ifdef _DEBUG    
+#ifdef _DEBUG
     dumpCmdline();
 #endif
     return TRUE;
@@ -510,7 +517,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     BOOL  rv;
     DWORD dwStart = SERVICE_DEMAND_START;
     WCHAR szImage[SIZ_HUGLEN];
-    
+
     apxLogWrite(APXLOG_MARK_DEBUG "Installing service...");
     hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
@@ -542,21 +549,36 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     /* Display configured options */
     dumpCmdline();
 #endif
-    apxLogWrite(APXLOG_MARK_INFO "Service %S name %S", lpCmdline->szApplication, 
+    apxLogWrite(APXLOG_MARK_INFO "Service %S name %S", lpCmdline->szApplication,
                 SO_DISPLAYNAME);
-    rv = apxServiceInstall(hService, 
+    rv = apxServiceInstall(hService,
                           lpCmdline->szApplication,
                           SO_DISPLAYNAME,    /* --DisplayName  */
-                          SO_INSTALL,    
+                          SO_INSTALL,
                           SO_DEPENDSON,      /* --DependendsOn */
                           SERVICE_WIN32_OWN_PROCESS,
                           dwStart);
     /* Set the --Description */
-    if (rv && (ST_DESCRIPTION & APXCMDOPT_FOUND)) {
-        apxLogWrite(APXLOG_MARK_DEBUG "Setting service description %S",
-                    SO_DESCRIPTION);
-        apxServiceSetNames(hService, NULL, NULL, SO_DESCRIPTION,
-                           NULL, NULL);
+    if (rv) {
+        LPCWSTR sd = NULL;
+        LPCWSTR su = NULL;
+        LPCWSTR sp = NULL;
+        if (ST_DESCRIPTION & APXCMDOPT_FOUND) {
+            sd = SO_DESCRIPTION;
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service description %S",
+                        SO_DESCRIPTION);
+        }
+        if (ST_SUSER & APXCMDOPT_FOUND) {
+            su = SO_SUSER;
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user %S",
+                        SO_SUSER);
+        }
+        if (ST_SPASSWORD & APXCMDOPT_FOUND) {
+            sp = SO_SPASSWORD;
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password %S",
+                        SO_SPASSWORD);
+        }
+        apxServiceSetNames(hService, NULL, NULL, sd, su, sp);
     }
     apxCloseHandle(hService);
     if (rv) {
@@ -678,7 +700,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
                                  SERVICE_NO_CHANGE,
                                  dwStart,
                                  SERVICE_NO_CHANGE);
-    
+
         }
         apxLogWrite(APXLOG_MARK_INFO "Service %S updated",
                     lpCmdline->szApplication);
@@ -703,7 +725,7 @@ int reportServiceStatus(DWORD dwCurrentState,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   if (_service_mode && _service_status_handle) {      
+   if (_service_mode && _service_status_handle) {
        if (dwCurrentState == SERVICE_START_PENDING)
             _service_status.dwControlsAccepted = 0;
         else
@@ -760,7 +782,7 @@ static DWORD serviceStop()
     }
     if (_jni_shutdown) {
         if (!SO_STARTPATH && SO_STOPPATH) {
-            /* If the Working path is specified change the current directory 
+            /* If the Working path is specified change the current directory
              * but only if the start path wasn't specified already.
              */
             SetCurrentDirectoryW(SO_STARTPATH);
@@ -790,16 +812,16 @@ static DWORD serviceStop()
         }
         else {
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java jni stop worker to finish...");
-            apxJavaWait(hWorker, INFINITE, FALSE);        
+            apxJavaWait(hWorker, INFINITE, FALSE);
             apxLogWrite(APXLOG_MARK_DEBUG "Java jni stop worker finished.");
         }
         wait_to_die = TRUE;
-    } 
+    }
     else if (SO_STOPMODE) { /* Only in case we have a stop mode */
         DWORD nArgs;
         LPWSTR *pArgs;
         /* Redirect process */
-        hWorker = apxCreateProcessW(gPool, 
+        hWorker = apxCreateProcessW(gPool,
                                     0,
                                     child_callback,
                                     SO_USER,
@@ -832,7 +854,7 @@ static DWORD serviceStop()
                         SO_STOPPATH);
             goto cleanup;
         }
-        /* Finally execute the child process 
+        /* Finally execute the child process
          */
         if (!apxProcessExecute(hWorker)) {
             rv = 5;
@@ -840,7 +862,7 @@ static DWORD serviceStop()
             goto cleanup;
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting stop worker to finish...");
-            apxHandleWait(hWorker, INFINITE, FALSE);        
+            apxHandleWait(hWorker, INFINITE, FALSE);
             apxLogWrite(APXLOG_MARK_DEBUG "Stop worker finished.");
         }
         wait_to_die = TRUE;
@@ -863,11 +885,11 @@ cleanup:
     }
     SetEvent(gShutdownEvent);
     if (timeout > 0x7FFFFFFF)
-        timeout = INFINITE;     /* If the timeout was '-1' wait forewer */ 
+        timeout = INFINITE;     /* If the timeout was '-1' wait forewer */
     if (wait_to_die && !timeout)
         timeout = 300 * 1000;   /* Use the 5 minute default shutdown */
 
-    if (timeout) {  
+    if (timeout) {
         FILETIME fts, fte;
         ULARGE_INTEGER s, e;
         DWORD    nms;
@@ -947,7 +969,7 @@ static DWORD serviceStart()
     }
     else {
         /* Redirect process */
-        gWorker = apxCreateProcessW(gPool, 
+        gWorker = apxCreateProcessW(gPool,
                                     0,
                                     child_callback,
                                     SO_USER,
@@ -980,7 +1002,7 @@ static DWORD serviceStart()
                         SO_STARTPATH);
             goto cleanup;
         }
-        /* Finally execute the child process 
+        /* Finally execute the child process
          */
         if (!apxProcessExecute(gWorker)) {
             rv = 5;
@@ -1005,7 +1027,7 @@ cleanup:
     if (!IS_INVALID_HANDLE(gWorker))
         apxCloseHandle(gWorker);    /* Close the worker handle */
     gWorker = NULL;
-    return rv;    
+    return rv;
 }
 
 /* Service control handler
@@ -1028,7 +1050,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
 }
 
 /* Console control handler
- * 
+ *
  */
 BOOL WINAPI console_handler(DWORD dwCtrlType)
 {
@@ -1065,16 +1087,16 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 {
     DWORD rc;
     _service_status.dwServiceType      = SERVICE_WIN32_OWN_PROCESS;
-    _service_status.dwCurrentState     = SERVICE_START_PENDING; 
+    _service_status.dwCurrentState     = SERVICE_START_PENDING;
     _service_status.dwControlsAccepted = SERVICE_ACCEPT_STOP |
-                                         SERVICE_ACCEPT_PAUSE_CONTINUE; 
-    _service_status.dwWin32ExitCode    = 0; 
-    _service_status.dwCheckPoint       = 0; 
-    _service_status.dwWaitHint         = 0; 
-    _service_status.dwServiceSpecificExitCode = 0; 
+                                         SERVICE_ACCEPT_PAUSE_CONTINUE;
+    _service_status.dwWin32ExitCode    = 0;
+    _service_status.dwCheckPoint       = 0;
+    _service_status.dwWaitHint         = 0;
+    _service_status.dwServiceSpecificExitCode = 0;
 
     apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
-    
+
     if (_service_name) {
         WCHAR en[SIZ_DESLEN];
         int i;
@@ -1096,7 +1118,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     /* Check the StartMode */
     if (SO_STARTMODE) {
         if (!lstrcmpiW(SO_STARTMODE, PRSRV_JVM)) {
-            _jni_startup = TRUE;            
+            _jni_startup = TRUE;
             WideToAscii(SO_STARTCLASS, _jni_rclass);
             /* Exchange all dots with slashes */
             apxStrCharReplaceA(_jni_rclass, '.', '/');
@@ -1117,7 +1139,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     /* Check the StopMode */
     if (SO_STOPMODE) {
         if (!lstrcmpiW(SO_STOPMODE, PRSRV_JVM)) {
-            _jni_shutdown = TRUE;            
+            _jni_shutdown = TRUE;
             WideToAscii(SO_STOPCLASS, _jni_sclass);
             apxStrCharReplaceA(_jni_sclass, '.', '/');
             _jni_sparam = MzWideToAscii(SO_STOPPARAMS, (LPSTR)SO_STOPPARAMS);
@@ -1153,7 +1175,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (_service_mode) {
         /* Register Service Control handler */
         _service_status_handle = RegisterServiceCtrlHandlerW(_service_name,
-                                                              service_ctrl_handler); 
+                                                              service_ctrl_handler);
         if (IS_INVALID_HANDLE(_service_status_handle)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed to register Service Control for %S",
                         _service_name);
@@ -1207,7 +1229,7 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_INFO "Debugging Service...");
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished.");
-    
+
     return rv;
 }
 
@@ -1220,7 +1242,7 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     _service_name = lpCmdline->szApplication;
     _service_table[0].lpServiceName = lpCmdline->szApplication;
     _service_table[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONW)serviceMain;
-    rv = (StartServiceCtrlDispatcherW(_service_table) == FALSE); 
+    rv = (StartServiceCtrlDispatcherW(_service_table) == FALSE);
     apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
     return rv;
 }
@@ -1254,7 +1276,7 @@ void __cdecl main(int argc, char **argv)
     apxLogWrite(APXLOG_MARK_DEBUG "Procrun log initialized");
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
-    
+
     gStdwrap.szLogPath = SO_LOGPATH;
     /* In debug mode allways use console */
     if (lpCmdline->dwCmdIndex != 1) {

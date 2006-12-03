@@ -200,8 +200,10 @@ apxServiceSetNames(APXHANDLE hService,
                                         szImagePath,
                                         szUsername,
                                         szPassword,
-                                        szDisplayName))
+                                        szDisplayName)) {
+        apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
+    }
     if (szDescription) {
         return apxSetServiceDescriptionW(lpService->stServiceEntry.szServiceName,
                                          szDescription);
