@@ -161,7 +161,7 @@ static APXCMDLINEOPT _options[] = {
 #define SO_STARTMETHOD      GET_OPT_V(28)
 #define SO_STARTMODE        GET_OPT_V(29)
 
-#define SO_LOGPATH          GET_OPT_V(20)
+#define SO_LOGPATH          GET_OPT_V(30)
 #define SO_LOGPREFIX        GET_OPT_V(31)
 #define SO_LOGLEVEL         GET_OPT_V(32)
 
