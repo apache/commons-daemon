@@ -157,6 +157,20 @@
     <td>Password for user account set by --User parameter</td>
     </tr>
     <tr>
+    <td>--ServiceUser</td>
+    <td></td>
+    <td>Specifies the name of the account under which the service should run.
+        Use an account name in the form <i>DomainName\UserName</i>.
+        The service process will be logged on as this user.
+        if the account belongs to the built-in domain, you can specify <i>.\UserName<i> 
+    </td>
+    </tr>
+    <tr>
+    <td>--ServicePassword</td>
+    <td></td>
+    <td>Password for user account set by --ServiceUser parameter</td>
+    </tr>
+    <tr>
     <td>--JavaHome</td>
     <td>JAVA_HOME</td>
     <td>Set a different JAVA_HOME then defined by JAVA_HOME environment
