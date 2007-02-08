@@ -850,16 +850,17 @@ apxMszToCRLFW(APXHANDLE hPool, LPCWSTR szStr)
 
     l = __apxGetMultiSzLengthW(szStr, &c);    
     b = rv = apxPoolCalloc(hPool, (l + c + 2) * sizeof(WCHAR));
-    do {
+
+    while (c > 0) {
         if (*p)
             *b++ = *p;
         else {
             *b++ = L'\r';
             *b++ = L'\n';
+            c--;
         }
         p++;
-    } while( *p || *(p + 1));
- 
+    }
     return rv;
 }
 
