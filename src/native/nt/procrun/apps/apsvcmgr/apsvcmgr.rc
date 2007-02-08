@@ -248,9 +248,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_APPLICATION     RSTR_ASM
-    IDS_APPVERSION      "Version 1.0.0"
+    IDS_APPVERSION      "Version 2.0.2"
     IDS_APPFULLNAME     RSTR_ASM " Version " PRG_VERSION
-    IDS_APPCOPYRIGHT    "Copyright © 2000-2003 The Apache Software Foundation"
+    IDS_APPCOPYRIGHT    "Copyright © 2000-2007 The Apache Software Foundation"
     IDS_APPDESCRIPTION  "Apache NT Service Management Tool"
     IDS_HSSTART         RSTR_SCMATS "start the following service ..."
     IDS_HSSTOP          RSTR_SCMATS "stop the following service ..."
@@ -279,8 +279,8 @@ END
  
 
 1 VERSIONINFO
- FILEVERSION 2,0,1,0
- PRODUCTVERSION 2,0,1,0
+ FILEVERSION 2,0,2,0
+ PRODUCTVERSION 2,0,2,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
@@ -300,7 +300,7 @@ BEGIN
       VALUE "FileDescription", RSTR_ASM "\0"
       VALUE "FileVersion", PRG_VERSION
       VALUE "InternalName", RSTR_ASM "\0"
-      VALUE "LegalCopyright", "Copyright © 2000-2006 The Apache Software Foundation.\0"
+      VALUE "LegalCopyright", "Copyright © 2000-2007 The Apache Software Foundation.\0"
       VALUE "OriginalFilename", "apsvcmgr.exe\0"
       VALUE "ProductName", RSTR_ASM "\0"
       VALUE "ProductVersion", PRG_VERSION
