@@ -26,7 +26,11 @@
 #endif
 
 #ifdef JNI_VERSION_1_4
+#ifdef JNI_VERSION_1_6
+#define JNI_VERSION_DEFAULT JNI_VERSION_1_6
+#else
 #define JNI_VERSION_DEFAULT JNI_VERSION_1_4
+#endif
 #else
 #define JNI_VERSION_DEFAULT JNI_VERSION_1_2
 #endif
@@ -315,7 +319,6 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                   DWORD dwSs)
 {
     LPAPXJAVAVM     lpJava;
-    JDK1_1InitArgs  vmArgs11;
     JavaVMInitArgs  vmArgs; 
     JavaVMOption    *lpJvmOptions;
     DWORD           i, nOptions, sOptions = 2;
@@ -348,22 +351,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
     else {
         CHAR  iB[3][64];
         LPSTR szCp;
-        vmArgs11.version = JNI_VERSION_DEFAULT;
-        if (DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&vmArgs11) != JNI_OK) {
-            /* fall back to version 1.2 */
-            if (JNI_VERSION_DEFAULT != JNI_VERSION_1_2) {
-                vmArgs11.version = JNI_VERSION_1_2;
-                if (DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&vmArgs11) != JNI_OK)
-                    return FALSE;
-            }
-            else
-                return FALSE;
-        }
-        /* we need at least 1.2 JNI */
-        if ((lpJava->iVersion = vmArgs11.version) < JNI_VERSION_1_2) {
-            apxLogWrite(APXLOG_MARK_ERROR "Unsupported JNI version %d", vmArgs11.version);
-            return FALSE; 
-        }
+        lpJava->iVersion = JNI_VERSION_DEFAULT;
         if (dwMs)
             ++sOptions;
         if (dwMx)
