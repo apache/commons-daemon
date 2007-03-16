@@ -26,11 +26,7 @@
 #endif
 
 #ifdef JNI_VERSION_1_4
-#ifdef JNI_VERSION_1_6
-#define JNI_VERSION_DEFAULT JNI_VERSION_1_6
-#else
 #define JNI_VERSION_DEFAULT JNI_VERSION_1_4
-#endif
 #else
 #define JNI_VERSION_DEFAULT JNI_VERSION_1_2
 #endif
