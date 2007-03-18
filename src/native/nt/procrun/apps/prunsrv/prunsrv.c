@@ -32,6 +32,10 @@
 #include <fcntl.h>
 #include <io.h>         /* _open_osfhandle */
 
+#ifndef  MIN
+#define  MIN(a,b)    (((a)<(b)) ? (a) : (b))
+#endif
+
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
@@ -796,12 +800,13 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
 }
 
 /* Executed when the service receives stop event */
-static DWORD serviceStop()
+static DWORD WINAPI serviceStop(LPVOID lpParameter)
 {
     APXHANDLE hWorker = NULL;
     DWORD  rv = 0;
     BOOL   wait_to_die = FALSE;
     DWORD  timeout     = SO_STOPTIMEOUT * 1000;
+    DWORD  dwCtrlType  = (DWORD)((BYTE *)lpParameter - (BYTE *)0);
 
     apxLogWrite(APXLOG_MARK_INFO "Stopping service...");
 
@@ -918,6 +923,10 @@ cleanup:
     if (wait_to_die && !timeout)
         timeout = 300 * 1000;   /* Use the 5 minute default shutdown */
 
+    if (dwCtrlType == SERVICE_CONTROL_SHUTDOWN)
+        timeout = MIN(timeout, apxGetMaxServiceTimeout(gPool));
+    reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, timeout);
+
     if (timeout) {
         FILETIME fts, fte;
         ULARGE_INTEGER s, e;
@@ -945,6 +954,7 @@ cleanup:
     }
 
     apxLogWrite(APXLOG_MARK_INFO "Service stopped.");
+    reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
     return rv;
 }
 
@@ -1063,19 +1073,40 @@ cleanup:
  */
 void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
 {
+    DWORD  threadId;
+    HANDLE stopThread;
+
     switch (dwCtrlCode) {
         case SERVICE_CONTROL_STOP:
-            apxLogWrite(APXLOG_MARK_INFO "Service STOP signaled");
-            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
-            /* Call the stop handler that will actualy stop the service */
-            serviceStop();
+            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3000);
+            /* Stop the service asynchronously */
+            stopThread = CreateThread(NULL, 0,
+                                      serviceStop,
+                                      (LPVOID)SERVICE_CONTROL_STOP,
+                                      0, &threadId);
+            WaitForSingleObject(stopThread, INFINITE);
+            CloseHandle(stopThread);
+
+            return;
+        case SERVICE_CONTROL_SHUTDOWN:
+            apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signaled");
+            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3000);
+            /* Stop the service asynchronously */
+            stopThread = CreateThread(NULL, 0,
+                                      serviceStop,
+                                      (LPVOID)SERVICE_CONTROL_SHUTDOWN,
+                                      0, &threadId);
+            WaitForSingleObject(stopThread, INFINITE);
+            CloseHandle(stopThread);
             return;
         case SERVICE_CONTROL_INTERROGATE:
-        break;
+            reportServiceStatus(_service_status.dwCurrentState,
+                                _service_status.dwWin32ExitCode,
+                                _service_status.dwWaitHint);
+            return;
         default:
-        break;
+            break;
    }
-   reportServiceStatus(_service_status.dwCurrentState, NO_ERROR, 0);
 }
 
 /* Console control handler
@@ -1089,20 +1120,20 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
             return FALSE;
         case CTRL_C_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console CTRL+C event signaled");
-            serviceStop();
+            serviceStop((LPVOID)SERVICE_CONTROL_STOP);
             return TRUE;
         case CTRL_CLOSE_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console CTRL+CLOSE event signaled");
-            serviceStop();
+            serviceStop((LPVOID)SERVICE_CONTROL_STOP);
             return TRUE;
         case CTRL_SHUTDOWN_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console SHUTDOWN event signaled");
-            serviceStop();
+            serviceStop((LPVOID)SERVICE_CONTROL_SHUTDOWN);
             return TRUE;
         case CTRL_LOGOFF_EVENT:
             apxLogWrite(APXLOG_MARK_INFO "Console LOGOFF event signaled");
             if (!_service_mode) {
-                serviceStop();
+                serviceStop((LPVOID)SERVICE_CONTROL_STOP);
             }
             return TRUE;
         break;

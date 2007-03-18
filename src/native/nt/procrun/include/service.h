@@ -68,6 +68,8 @@ DWORD       apxServiceBrowse(APXHANDLE hService,
                              LPAPXFNCALLBACK fnDisplayCallback,
                              LPVOID lpCbData);
 
+DWORD       apxGetMaxServiceTimeout(APXHANDLE hPool);
+
 __APXEND_DECLS
 
 #endif /* _SERVICE_H_INCLUDED_ */

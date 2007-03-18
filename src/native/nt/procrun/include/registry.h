@@ -134,7 +134,6 @@ DWORD   apxRegistryGetNumberW(APXHANDLE hRegistry, DWORD dwFrom,
 BOOL    apxRegistryDeleteW(APXHANDLE hRegistry, DWORD dwFrom,
                            LPCWSTR szSubkey, LPCWSTR szValueName);
 
-
 #ifdef _UNICODE
 #define apxRegistryDelete    apxRegistryDeleteW
 #else
