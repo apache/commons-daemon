@@ -131,6 +131,11 @@
     <td>manual</td>
     <td>Service startup mode can be either <b>auto</b> or <b>manual</b></td>
     </tr>
+    <td>--Type</td>
+    <td></td>
+    <td>Service type can be <b>interactive</b> to Allow service to interact with desktop.
+    Use this option only with Local system accounts.</td>
+    </tr>
     <tr>
     <td>--DependsOn</td>
     <td></td>
@@ -187,7 +192,8 @@
     <td>-Xrs</td>
     <td>List of options in the form of <b>-D</b> or <b>-X</b> that will be
         passed to the JVM. The options are separated using either
-        <b>#</b> or <b>;</b> characters.</td>
+        <b>#</b> or <b>;</b> characters. if you need to embed either # or ;
+        character put them inside single quotes.</td>
     </tr>
     <tr>
     <td>--Classpath</td>
