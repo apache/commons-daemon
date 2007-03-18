@@ -196,7 +196,7 @@ apxServiceSetNames(APXHANDLE hService,
     /* Check if the ServiceOpen has been called */
     if (IS_INVALID_HANDLE(lpService->hService))
         return FALSE;
-    if (szDisplayName &&!CHANGE_SERVICE(lpService->hService,
+    if (!CHANGE_SERVICE(lpService->hService,
                                         szImagePath,
                                         szUsername,
                                         szPassword,

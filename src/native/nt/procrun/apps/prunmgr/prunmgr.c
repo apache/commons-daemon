@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* ====================================================================
  * prunsrv -- Service Runner.
  * Contributed by Mladen Turk <mturk@apache.org>
  * 05 Aug 2003
- * ==================================================================== 
+ * ====================================================================
  */
 
 /* Force the JNI vprintf functions */
@@ -54,7 +54,7 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define START_DISABLED       L"Disabled"
 #define START_BOOT           L"Boot"
 #define START_SYSTEM         L"SystemInit"
-#define EMPTY_PASSWORD       L"               " 
+#define EMPTY_PASSWORD       L"               "
 
 /* Main application pool */
 APXHANDLE hPool     = NULL;
@@ -90,7 +90,7 @@ static APXCMDLINEOPT _options[] = {
             { NULL }
 };
 
-/* Create RBUTTON try menu 
+/* Create RBUTTON try menu
  * Configure... (default, or lbutton dblclick)
  * Start <service name>
  * Stop  <service name>
@@ -104,8 +104,8 @@ static void createRbuttonTryMenu(HWND hWnd)
     BOOL canStop  = FALSE;
     BOOL canStart = FALSE;
     hMnu = CreatePopupMenu();
-    
-    if (_currentEntry) {        
+
+    if (_currentEntry) {
         if (_currentEntry->stServiceStatus.dwCurrentState == SERVICE_RUNNING) {
             if (_currentEntry->stServiceStatus.dwControlsAccepted & SERVICE_ACCEPT_STOP)
                 canStop = TRUE;
@@ -122,15 +122,15 @@ static void createRbuttonTryMenu(HWND hWnd)
     apxAppendMenuItem(hMnu, IDM_TM_EXIT,   TMNU_EXIT,  FALSE, TRUE);
     apxAppendMenuItem(hMnu,    -1, NULL,   FALSE, FALSE);
     apxAppendMenuItem(hMnu, IDM_TM_ABOUT,  TMNU_ABOUT, FALSE, TRUE);
-    
+
     /* Ensure we have a focus */
     if (!SetForegroundWindow(hWnd))
         SetForegroundWindow(NULL);
     GetCursorPos(&pt);
     /* Display the try menu */
-    TrackPopupMenu(hMnu, TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
+    TrackPopupMenu(hMnu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
                    pt.x, pt.y, 0, hWnd, NULL);
-    DestroyMenu(hMnu); 
+    DestroyMenu(hMnu);
 }
 
 /* wParam progress dialog handle
@@ -153,7 +153,7 @@ static BOOL __startServiceCallback(APXHANDLE hObject, UINT uMsg,
                                   __startServiceCallback, hDlg)) {
                 _currentEntry->stServiceStatus.dwCurrentState = SERVICE_RUNNING;
                 _currentEntry->stStatusProcess.dwCurrentState = SERVICE_RUNNING;
-                                
+
             }
             EndDialog(hDlg, IDOK);
             PostMessage(_gui_store->hMainWnd, WM_COMMAND,
@@ -165,7 +165,7 @@ static BOOL __startServiceCallback(APXHANDLE hObject, UINT uMsg,
             break;
     }
     return TRUE;
-} 
+}
 
 static BOOL __stopServiceCallback(APXHANDLE hObject, UINT uMsg,
                                    WPARAM wParam, LPARAM lParam)
@@ -207,7 +207,7 @@ static BOOL __restartServiceCallback(APXHANDLE hObject, UINT uMsg,
             /* TODO: use 128 as controll code */
             if (apxServiceControl(hService, 128, WM_USER+2,
                                   __restartServiceCallback, hDlg)) {
-                                
+
             }
             EndDialog(hDlg, IDOK);
             PostMessage(_gui_store->hMainWnd, WM_COMMAND,
@@ -259,7 +259,7 @@ static HWND   _propertyHwnd = NULL;
 int CALLBACK __propertyCallback(HWND hwndPropSheet, UINT uMsg, LPARAM lParam)
 {
     switch(uMsg) {
-        case PSCB_PRECREATE:       
+        case PSCB_PRECREATE:
            {
                 LPDLGTEMPLATE  lpTemplate = (LPDLGTEMPLATE)lParam;
                 if (!(lpTemplate->style & WS_SYSMENU))
@@ -277,7 +277,7 @@ int CALLBACK __propertyCallback(HWND hwndPropSheet, UINT uMsg, LPARAM lParam)
     return TRUE;
 }
 
-BOOL __generalPropertySave(HWND hDlg) 
+BOOL __generalPropertySave(HWND hDlg)
 {
     WCHAR szN[256];
     WCHAR szD[256];
@@ -308,7 +308,7 @@ BOOL __generalPropertySave(HWND hDlg)
     return TRUE;
 }
 
-BOOL __generalLogonSave(HWND hDlg) 
+BOOL __generalLogonSave(HWND hDlg)
 {
     WCHAR szU[64];
     WCHAR szP[64];
@@ -324,7 +324,7 @@ BOOL __generalLogonSave(HWND hDlg)
     GetDlgItemTextW(hDlg, IDC_PPSLUSER,  szU, 63);
     GetDlgItemTextW(hDlg, IDC_PPSLPASS,  szP, 63);
     GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, 63);
-    
+
     if (lstrlenW(szU) && lstrcmpiW(szU, STAT_SYSTEM)) {
         if (szP[0] != L' ' &&  szC[0] != L' ' && !lstrcmpW(szP, szC))
             apxServiceSetNames(hService, NULL, NULL, NULL, szU, szP);
@@ -334,8 +334,9 @@ BOOL __generalLogonSave(HWND hDlg)
                         MB_OK | MB_ICONSTOP);
             return FALSE;
         }
-    }             
+    }
     else {
+        apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SYSTEM, L"");
         if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED)
             apxServiceSetOptions(hService,
                 _currentEntry->stServiceStatus.dwServiceType | SERVICE_INTERACTIVE_PROCESS,
@@ -350,7 +351,7 @@ BOOL __generalLogonSave(HWND hDlg)
     return TRUE;
 }
 
-BOOL __generalLoggingSave(HWND hDlg) 
+BOOL __generalLoggingSave(HWND hDlg)
 {
     WCHAR szB[SIZ_DESLEN];
 
@@ -362,22 +363,22 @@ BOOL __generalLoggingSave(HWND hDlg)
         return FALSE;
 
     GetDlgItemTextW(hDlg, IDC_PPLGLEVEL,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Level", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Level", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGPATH,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Path", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Path", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGPREFIX,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Prefix", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Prefix", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGSTDOUT,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"StdOutput", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"StdOutput", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGSTDERR,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"StdError", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"StdError", szB);
 
     if (!(TST_BIT_FLAG(_propertyChanged, 1)))
         PostMessage(_gui_store->hMainWnd, WM_COMMAND, MAKEWPARAM(IDMS_REFRESH, 0), 0);
     return TRUE;
 }
 
-BOOL __generalJvmSave(HWND hDlg) 
+BOOL __generalJvmSave(HWND hDlg)
 {
     WCHAR szB[SIZ_DESLEN];
     LPWSTR p, s;
@@ -393,10 +394,10 @@ BOOL __generalJvmSave(HWND hDlg)
     }
     else
         lstrcpyW(szB, L"auto");
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"Jvm", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"Jvm", szB);
     GetDlgItemTextW(hDlg, IDC_PPJCLASSPATH,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"Classpath", szB); 
-    
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"Classpath", szB);
+
     l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPJOPTIONS));
     p = apxPoolAlloc(hPool, (l + 2) * sizeof(WCHAR));
     GetDlgItemTextW(hDlg, IDC_PPJOPTIONS,  p, l + 1);
@@ -423,7 +424,7 @@ BOOL __generalJvmSave(HWND hDlg)
     return TRUE;
 }
 
-BOOL __generalStartSave(HWND hDlg) 
+BOOL __generalStartSave(HWND hDlg)
 {
     WCHAR szB[SIZ_DESLEN];
     LPWSTR p, s;
@@ -437,16 +438,16 @@ BOOL __generalStartSave(HWND hDlg)
         return FALSE;
 
     GetDlgItemTextW(hDlg, IDC_PPRCLASS,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Class", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Class", szB);
     GetDlgItemTextW(hDlg, IDC_PPRIMAGE,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Image", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Image", szB);
     GetDlgItemTextW(hDlg, IDC_PPRWPATH,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"WorkingPath", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"WorkingPath", szB);
     GetDlgItemTextW(hDlg, IDC_PPRMETHOD,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Method", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Method", szB);
     GetDlgItemTextW(hDlg, IDC_PPRMODE,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Mode", szB); 
-    
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Mode", szB);
+
     l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPRARGS));
     p = apxPoolAlloc(hPool, (l + 2) * sizeof(WCHAR));
     GetDlgItemTextW(hDlg, IDC_PPRARGS,  p, l + 1);
@@ -461,7 +462,7 @@ BOOL __generalStartSave(HWND hDlg)
     return TRUE;
 }
 
-BOOL __generalStopSave(HWND hDlg) 
+BOOL __generalStopSave(HWND hDlg)
 {
     WCHAR szB[SIZ_DESLEN];
     LPWSTR p, s;
@@ -475,18 +476,18 @@ BOOL __generalStopSave(HWND hDlg)
         return FALSE;
 
     GetDlgItemTextW(hDlg, IDC_PPSCLASS,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Class", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Class", szB);
     GetDlgItemTextW(hDlg, IDC_PPSIMAGE,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Image", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Image", szB);
     GetDlgItemTextW(hDlg, IDC_PPSWPATH,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"WorkingPath", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"WorkingPath", szB);
     GetDlgItemTextW(hDlg, IDC_PPSMETHOD,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Method", szB); 
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Method", szB);
     GetDlgItemTextW(hDlg, IDC_PPSTIMEOUT,  szB, SIZ_DESMAX);
-    apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Timeout", apxAtoulW(szB)); 
+    apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Timeout", apxAtoulW(szB));
     GetDlgItemTextW(hDlg, IDC_PPSMODE,  szB, SIZ_DESMAX);
-    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Mode", szB); 
-    
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Mode", szB);
+
     l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPSARGS));
     p = apxPoolAlloc(hPool, (l + 2) * sizeof(WCHAR));
     GetDlgItemTextW(hDlg, IDC_PPSARGS,  p, l + 1);
@@ -546,11 +547,11 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                                    LPARAM lParam)
 {
     LPPSHNOTIFY lpShn;
-    WCHAR       szBuf[1024]; 
+    WCHAR       szBuf[1024];
 
-    switch (uMessage) { 
-        case WM_INITDIALOG: 
-            {              
+    switch (uMessage) {
+        case WM_INITDIALOG:
+            {
                 if (!bEnableTry)
                     apxCenterWindow(GetParent(hDlg), NULL);
                 else if (!bpropCentered)
@@ -583,7 +584,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
             switch (LOWORD(wParam)) {
                 case IDC_PPSGCMBST:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 1);
                     }
                 break;
@@ -639,10 +640,10 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                 break;
             }
         break;
-        case WM_NOTIFY:           
+        case WM_NOTIFY:
             lpShn = (LPPSHNOTIFY )lParam;
             switch (lpShn->hdr.code) {
-                case PSN_APPLY:   /* sent when OK or Apply button pressed */ 
+                case PSN_APPLY:   /* sent when OK or Apply button pressed */
                     if (__generalPropertySave(hDlg)) {
                         PropSheet_UnChanged(GetParent(hDlg), hDlg);
                     }
@@ -650,7 +651,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                         SET_BIT_FLAG(_propertyChanged, 1);
                         SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
-                        return TRUE;                        
+                        return TRUE;
                     }
 
                 break;
@@ -661,7 +662,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
         default:
         break;
     }
- 
+
     return FALSE;
 }
 
@@ -671,8 +672,8 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                                  LPARAM lParam)
 {
     LPPSHNOTIFY lpShn;
-    WCHAR       szBuf[1024]; 
-    switch (uMessage) { 
+    WCHAR       szBuf[1024];
+    switch (uMessage) {
         case WM_INITDIALOG:
             {
                 BOOL           bAccount = FALSE;
@@ -694,7 +695,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                 }
                 else {
                     CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, IDC_PPSLLS);
-                    if (_currentEntry->lpConfig->dwServiceType & 
+                    if (_currentEntry->lpConfig->dwServiceType &
                         SERVICE_INTERACTIVE_PROCESS)
                         CheckDlgButton(hDlg, IDC_PPSLID, BST_CHECKED);
                 }
@@ -720,13 +721,13 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), FALSE);
                     EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), FALSE);
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), FALSE);
-                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, (INT)wParam);                     
+                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, (INT)wParam);
                     if (lstrcmpiW(_currentEntry->szObjectName, STAT_SYSTEM)) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 2);
                     }
                     else {
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                         CLR_BIT_FLAG(_propertyChanged, 2);
                     }
                     break;
@@ -741,18 +742,18 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), TRUE);
                     EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), TRUE);
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), TRUE);
-                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, (INT)wParam);                     
+                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, (INT)wParam);
                     if (lstrcmpW(_currentEntry->szObjectName, STAT_SYSTEM)) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 2);
                     }
                     else {
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                         CLR_BIT_FLAG(_propertyChanged, 2);
                     }
                     break;
                 case IDC_PPSLID:
-                    PropSheet_Changed(GetParent(hDlg), hDlg); 
+                    PropSheet_Changed(GetParent(hDlg), hDlg);
                     SET_BIT_FLAG(_propertyChanged, 2);
                 break;
                 case IDC_PPSLUSER:
@@ -798,14 +799,14 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
         case WM_NOTIFY:
             lpShn = (LPPSHNOTIFY )lParam;
             switch (lpShn->hdr.code) {
-                case PSN_APPLY:   /* sent when OK or Apply button pressed */ 
+                case PSN_APPLY:   /* sent when OK or Apply button pressed */
                     if (__generalLogonSave(hDlg))
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                     else {
                         SET_BIT_FLAG(_propertyChanged, 2);
                         SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
-                        return TRUE;                        
+                        return TRUE;
                     }
 
                 break;
@@ -826,8 +827,8 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
     LPPSHNOTIFY lpShn;
     LPWSTR      lpBuf;
 
-    switch (uMessage) { 
-        case WM_INITDIALOG: 
+    switch (uMessage) {
+        case WM_INITDIALOG:
             {
                 LPWSTR b;
                 startPage = 2;
@@ -854,58 +855,58 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 0);
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"Path")) != NULL) {
-                    SetDlgItemTextW(hDlg, IDC_PPLGPATH, b);                    
+                    SetDlgItemTextW(hDlg, IDC_PPLGPATH, b);
                     apxFree(b);
                 }
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"StdOutput")) != NULL) {
-                    SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, b);                    
+                    SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, b);
                     apxFree(b);
                 }
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"StdError")) != NULL) {
-                    SetDlgItemTextW(hDlg, IDC_PPLGSTDERR, b);                    
+                    SetDlgItemTextW(hDlg, IDC_PPLGSTDERR, b);
                     apxFree(b);
-                }                
+                }
             }
         break;
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
                 case IDC_PPLGLEVEL:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGPATH:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 3);                    
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGPREFIX:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 3);                    
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGSTDERR:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 3);                    
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGSTDOUT:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
-                        SET_BIT_FLAG(_propertyChanged, 3);                    
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 3);
                     }
                 break;
                 case IDC_PPLGBPATH:
                     lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_LGPATHTITLE, 0),
                                                 NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPLGPATH, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPLGPATH, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 3);
@@ -916,7 +917,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                                             apxLoadResourceW(IDS_ALLFILES, 1), NULL,
                                             NULL, FALSE, NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 3);
@@ -927,7 +928,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                                             apxLoadResourceW(IDS_ALLFILES, 1), NULL,
                                             NULL, FALSE, NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPLGSTDERR, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPLGSTDERR, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 3);
@@ -938,14 +939,14 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
         case WM_NOTIFY:
             lpShn = (LPPSHNOTIFY )lParam;
             switch (lpShn->hdr.code) {
-                case PSN_APPLY:   /* sent when OK or Apply button pressed */ 
+                case PSN_APPLY:   /* sent when OK or Apply button pressed */
                     if (__generalLoggingSave(hDlg))
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                     else {
                         SET_BIT_FLAG(_propertyChanged, 3);
                         SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
-                        return TRUE;                        
+                        return TRUE;
                     }
 
                 break;
@@ -968,8 +969,8 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
     DWORD       v;
     CHAR        bn[32];
 
-    switch (uMessage) { 
-        case WM_INITDIALOG: 
+    switch (uMessage) {
+        case WM_INITDIALOG:
             {
                 startPage = 3;
                 if (!bpropCentered)
@@ -1032,14 +1033,14 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                                             TRUE, NULL);
                     apxFree(b);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPJJVM, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPJJVM, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 4);
                     }
                 break;
                 case IDC_PPJAUTO:
-                    PropSheet_Changed(GetParent(hDlg), hDlg); 
+                    PropSheet_Changed(GetParent(hDlg), hDlg);
                     SET_BIT_FLAG(_propertyChanged, 4);
                     if (IsDlgButtonChecked(hDlg, IDC_PPJAUTO)) {
                         EnableWindow(GetDlgItem(hDlg, IDC_PPJJVM), FALSE);
@@ -1062,7 +1063,7 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                 case IDC_PPJMS:
                 case IDC_PPJSS:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 4);
                     }
                 break;
@@ -1071,14 +1072,14 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
         case WM_NOTIFY:
             lpShn = (LPPSHNOTIFY )lParam;
             switch (lpShn->hdr.code) {
-                case PSN_APPLY:   /* sent when OK or Apply button pressed */ 
+                case PSN_APPLY:   /* sent when OK or Apply button pressed */
                     if (__generalJvmSave(hDlg))
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                     else {
                         SET_BIT_FLAG(_propertyChanged, 4);
                         SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
-                        return TRUE;                        
+                        return TRUE;
                     }
 
                 break;
@@ -1099,8 +1100,8 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
     LPPSHNOTIFY lpShn;
     LPWSTR      lpBuf, b;
 
-    switch (uMessage) { 
-        case WM_INITDIALOG: 
+    switch (uMessage) {
+        case WM_INITDIALOG:
             {
                 startPage = 4;
                 if (!bpropCentered)
@@ -1162,7 +1163,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                     lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_PPWPATH, 0),
                                                 NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPRWPATH, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPRWPATH, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 5);
@@ -1173,7 +1174,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                                             apxLoadResourceW(IDS_EXEFILES, 1), NULL,
                                             NULL, TRUE, NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPRIMAGE, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPRIMAGE, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 5);
@@ -1185,13 +1186,13 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                 case IDC_PPRIMAGE:
                 case IDC_PPRWPATH:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 5);
                     }
                 break;
                 case IDC_PPRMODE:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 5);
                         if (ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPRMODE))) {
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), FALSE);
@@ -1209,14 +1210,14 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
         case WM_NOTIFY:
             lpShn = (LPPSHNOTIFY )lParam;
             switch (lpShn->hdr.code) {
-                case PSN_APPLY:   /* sent when OK or Apply button pressed */ 
+                case PSN_APPLY:   /* sent when OK or Apply button pressed */
                     if (__generalStartSave(hDlg))
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                     else {
                         SET_BIT_FLAG(_propertyChanged, 5);
                         SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
-                        return TRUE;                        
+                        return TRUE;
                     }
 
                 break;
@@ -1238,8 +1239,8 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
     LPWSTR      lpBuf, b;
     DWORD       v;
 
-    switch (uMessage) { 
-        case WM_INITDIALOG: 
+    switch (uMessage) {
+        case WM_INITDIALOG:
             {
                 startPage = 5;
                 if (!bpropCentered)
@@ -1308,7 +1309,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                     lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_PPWPATH, 0),
                                                 NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPSWPATH, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPSWPATH, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 6);
@@ -1319,7 +1320,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                                             apxLoadResourceW(IDS_EXEFILES, 1), NULL,
                                             NULL, TRUE, NULL);
                     if (lpBuf) {
-                        SetDlgItemTextW(hDlg, IDC_PPSIMAGE, lpBuf);                    
+                        SetDlgItemTextW(hDlg, IDC_PPSIMAGE, lpBuf);
                         apxFree(lpBuf);
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 6);
@@ -1332,13 +1333,13 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                 case IDC_PPSIMAGE:
                 case IDC_PPSWPATH:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 6);
                     }
                 break;
                 case IDC_PPSMODE:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg); 
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 6);
                         if (ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPSMODE))) {
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), FALSE);
@@ -1356,14 +1357,14 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
         case WM_NOTIFY:
             lpShn = (LPPSHNOTIFY )lParam;
             switch (lpShn->hdr.code) {
-                case PSN_APPLY:   /* sent when OK or Apply button pressed */ 
+                case PSN_APPLY:   /* sent when OK or Apply button pressed */
                     if (__generalStopSave(hDlg))
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg); 
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
                     else {
                         SET_BIT_FLAG(_propertyChanged, 6);
                         SetWindowLong(hDlg, DWLP_MSGRESULT,
                                       PSNRET_INVALID_NOCHANGEPAGE);
-                        return TRUE;                        
+                        return TRUE;
                     }
 
                 break;
@@ -1391,24 +1392,24 @@ void __initPpage(PROPSHEETPAGEW *lpPage, INT iDlg, INT iTitle, DLGPROC pfnDlgPro
 void ShowServiceProperties(HWND hWnd)
 {
     PROPSHEETPAGEW   psP[6];
-    PROPSHEETHEADERW psH; 
+    PROPSHEETHEADERW psH;
     WCHAR           szT[1024] = {0};
-    
+
     if (_propertyOpened) {
         SetForegroundWindow(_gui_store->hMainWnd);
         return;
     }
-    __initPpage(&psP[0], IDD_PROPPAGE_SGENERAL, IDS_PPGENERAL, 
+    __initPpage(&psP[0], IDD_PROPPAGE_SGENERAL, IDS_PPGENERAL,
                 __generalProperty);
-    __initPpage(&psP[1], IDD_PROPPAGE_LOGON, IDS_PPLOGON, 
+    __initPpage(&psP[1], IDD_PROPPAGE_LOGON, IDS_PPLOGON,
                 __logonProperty);
-    __initPpage(&psP[2], IDD_PROPPAGE_LOGGING, IDS_PPLOGGING, 
+    __initPpage(&psP[2], IDD_PROPPAGE_LOGGING, IDS_PPLOGGING,
                 __loggingProperty);
-    __initPpage(&psP[3], IDD_PROPPAGE_JVM, IDS_PPJAVAVM, 
+    __initPpage(&psP[3], IDD_PROPPAGE_JVM, IDS_PPJAVAVM,
                 __jvmProperty);
-    __initPpage(&psP[4], IDD_PROPPAGE_START, IDS_PPSTART, 
+    __initPpage(&psP[4], IDD_PROPPAGE_START, IDS_PPSTART,
                 __startProperty);
-    __initPpage(&psP[5], IDD_PROPPAGE_STOP, IDS_PPSTOP, 
+    __initPpage(&psP[5], IDD_PROPPAGE_STOP, IDS_PPSTOP,
                 __stopProperty);
 
     if (_currentEntry && _currentEntry->lpConfig)
@@ -1426,8 +1427,8 @@ void ShowServiceProperties(HWND hWnd)
     psH.nPages           = 6;
     psH.ppsp             = (LPCPROPSHEETPAGEW) &psP;
     psH.pfnCallback      = (PFNPROPSHEETCALLBACK)__propertyCallback;
-    psH.nStartPage       = startPage;   
-    
+    psH.nStartPage       = startPage;
+
     PropertySheetW(&psH);
     _propertyOpened = FALSE;
     if (!bEnableTry)
@@ -1447,7 +1448,7 @@ static void signalService(LPCWSTR szServiceName)
         if (en[i] >= L'a' && en[i] <= L'z')
             en[i] = en[i] - 32;
     }
-    
+
 
     event = OpenEventW(EVENT_MODIFY_STATE, FALSE, en);
     if (event) {
@@ -1460,7 +1461,7 @@ static void signalService(LPCWSTR szServiceName)
 }
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
-                             WPARAM wParam, LPARAM lParam) 
+                             WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg) {
         case WM_CREATE:
@@ -1482,21 +1483,21 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
         break;
         case WM_COMMAND:
-            switch(LOWORD(wParam)) { 
+            switch(LOWORD(wParam)) {
                 case IDM_TM_CONFIG:
                     ShowServiceProperties(hWnd);
                 break;
                 case IDM_TM_ABOUT:
-                    apxAboutBox(hWnd); 
+                    apxAboutBox(hWnd);
                 break;
                 case IDM_TM_EXIT:
-                    SendMessage(hWnd, WM_CLOSE, 0, 0);                
+                    SendMessage(hWnd, WM_CLOSE, 0, 0);
                 break;
                 case IDM_TM_START:
                     if (!_propertyOpened)
                         apxProgressBox(hWnd, apxLoadResource(IDS_HSSTART, 0),
                                        _currentEntry->lpConfig->lpDisplayName,
-                                       __startServiceCallback, NULL); 
+                                       __startServiceCallback, NULL);
                 break;
                 case IDM_TM_STOP:
                     if (!_propertyOpened)
@@ -1515,17 +1516,17 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                         apxProgressBox(hWnd, apxLoadResource(IDS_HSRESTART, 0),
                                        _currentEntry->lpConfig->lpDisplayName,
                                        __restartServiceCallback, NULL);
-                break; 
+                break;
                 case IDM_TM_DUMP:
                     signalService(_currentEntry->szServiceName);
                 break;
                 case IDMS_REFRESH:
-                    if (bEnableTry && 
+                    if (bEnableTry &&
                         (_currentEntry = apxServiceEntry(hService, TRUE)) != NULL) {
                         BOOL isRunning = _currentEntry->stServiceStatus.dwCurrentState == SERVICE_RUNNING;
                         apxManageTryIconW(hWnd, NIM_MODIFY, NULL,
                                           _currentEntry->lpConfig->lpDisplayName,
-                                          isRunning ? hIcoRun : hIcoStop);                        
+                                          isRunning ? hIcoRun : hIcoStop);
                     }
                 break;
 
@@ -1543,7 +1544,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             }
         break;
         case WM_QUIT:
-            return DefWindowProc(hWnd, uMsg, wParam, lParam); 
+            return DefWindowProc(hWnd, uMsg, wParam, lParam);
         break;
         case WM_DESTROY:
             if (bEnableTry)
@@ -1551,11 +1552,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             PostQuitMessage(0);
         break;
         default:
-            return DefWindowProc(hWnd, uMsg, wParam, lParam); 
+            return DefWindowProc(hWnd, uMsg, wParam, lParam);
         break;
     }
 
-    return FALSE; 
+    return FALSE;
 }
 
 static BOOL loadConfiguration()
@@ -1599,7 +1600,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     if (!lpCmdline->dwCmdIndex) {
         /* Skip sytem error message */
         SetLastError(ERROR_SUCCESS);
-        apxDisplayError(TRUE, NULL, 0, 
+        apxDisplayError(TRUE, NULL, 0,
                         apxLoadResourceA(IDS_ERRORCMD, 0),
                         lpCmdLine);
         goto cleanup;
@@ -1616,16 +1617,20 @@ int WINAPI WinMain(HINSTANCE hInstance,
     }
     /* Open the main service handle */
     if (!apxServiceOpen(hService, lpCmdline->szApplication,
-                        GENERIC_READ | GENERIC_EXECUTE)) {
+                        SERVICE_ALL_ACCESS)) {
         LPWSTR w = lpCmdline->szApplication + lstrlenW(lpCmdline->szApplication) - 1;
         if (*w == L'w')
             *w = L'\0';
         if (!apxServiceOpen(hService, lpCmdline->szApplication,
-                            GENERIC_READ | GENERIC_EXECUTE)) {
-            if (!quiet)
-                apxDisplayError(TRUE, NULL, 0, "Unable to open the service '%S'",
-                                lpCmdline->szApplication);
-            goto cleanup;
+                            SERVICE_ALL_ACCESS)) {
+            if (!apxServiceOpen(hService, lpCmdline->szApplication,
+                                GENERIC_READ | GENERIC_EXECUTE)) {
+
+                if (!quiet)
+                    apxDisplayError(TRUE, NULL, 0, "Unable to open the service '%S'",
+                                    lpCmdline->szApplication);
+                goto cleanup;
+            }
         }
     }
     /* Obtain service parameters and status */
@@ -1650,10 +1655,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
         goto cleanup;
     }
     hIcoRun  = LoadImage(_gui_store->hInstance, MAKEINTRESOURCE(IDI_ICONRUN),
-                         IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);  
+                         IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     hIcoStop = LoadImage(_gui_store->hInstance, MAKEINTRESOURCE(IDI_ICONSTOP),
-                         IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);  
-    
+                         IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+
     /* Handle //MQ// option */
     if (lpCmdline->dwCmdIndex == 4) {
         HANDLE hOther = FindWindow(_gui_store->szWndClass, NULL);
@@ -1664,7 +1669,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
     if (!_options[0].dwValue) {
         mutex = CreateMutex(NULL, FALSE, _gui_store->szWndMutex);
-        if ((mutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS)) { 
+        if ((mutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS)) {
             /* Skip sytem error message */
             SetLastError(ERROR_SUCCESS);
             if (!quiet)

@@ -697,12 +697,24 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
     if (apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
         DWORD dwStart = SERVICE_NO_CHANGE;
         DWORD dwType  = SERVICE_NO_CHANGE;
+        LPCWSTR su = NULL;
+        LPCWSTR sp = NULL;
+        if (ST_SUSER & APXCMDOPT_FOUND) {
+            su = SO_SUSER;
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user %S",
+                        SO_SUSER);
+        }
+        if (ST_SPASSWORD & APXCMDOPT_FOUND) {
+            sp = SO_SPASSWORD;
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password %S",
+                        SO_SPASSWORD);
+        }
         apxServiceSetNames(hService,
                            NULL,                /* Never update the ImagePath */
                            SO_DISPLAYNAME,
                            SO_DESCRIPTION,
-                           NULL,
-                           NULL);
+                           su,
+                           sp);
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
             if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
