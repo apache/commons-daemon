@@ -56,6 +56,8 @@ static LPCWSTR      PRSRV_MANUAL = L"manual";
 static LPCWSTR      PRSRV_JBIN   = L"\\bin\\java.exe";
 static LPCWSTR      PRSRV_SIGNAL = L"SIGNAL";
 
+static LPCWSTR      STYPE_INTERACTIVE = L"interactive";
+
 static LPWSTR       _service_name = NULL;
 /* Allowed procrun commands */
 static LPCWSTR _commands[] = {
@@ -77,39 +79,41 @@ static APXCMDLINEOPT _options[] = {
 /* 3  */    { L"ServiceUser",       L"ServiceUser",     NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 /* 4  */    { L"ServicePassword",   L"ServicePassword", NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 /* 5  */    { L"Startup",           L"Startup",         NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
-/* 6  */    { L"DependsOn",         L"DependsOn",       NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 7  */    { L"Environment",       L"Environment",     NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 8  */    { L"User",              L"User",            NULL,           APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 9  */    { L"Password",          L"Password",        NULL,           APXCMDOPT_BIN | APXCMDOPT_REG, NULL, 0},
+/* 6  */    { L"Type",              L"Type",            NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 
-/* 10 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 11 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 12 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 13 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 14 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 15 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 16 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 7  */    { L"DependsOn",         L"DependsOn",       NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 8  */    { L"Environment",       L"Environment",     NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 9  */    { L"User",              L"User",            NULL,           APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 10 */    { L"Password",          L"Password",        NULL,           APXCMDOPT_BIN | APXCMDOPT_REG, NULL, 0},
 
-/* 17 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 18 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 19 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 20 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 21 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 22 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 23 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 11 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 12 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 13 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 14 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 15 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 16 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 17 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 24 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 25 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 26 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 27 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 28 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 29 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 18 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 19 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 20 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 21 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 22 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 23 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 24 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 30 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 31 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 32 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 33 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 34 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 25 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 26 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 27 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 28 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 29 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 30 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+
+/* 31 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 32 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 33 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 34 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 35 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
             /* NULL terminate the array */
             { NULL }
 };
@@ -124,49 +128,51 @@ static APXCMDLINEOPT _options[] = {
 #define ST_SUSER            GET_OPT_T(3)
 #define ST_SPASSWORD        GET_OPT_T(4)
 #define ST_STARTUP          GET_OPT_T(5)
+#define ST_TYPE             GET_OPT_T(6)
 
 #define SO_DESCRIPTION      GET_OPT_V(0)
 #define SO_DISPLAYNAME      GET_OPT_V(1)
 #define SO_INSTALL          GET_OPT_V(2)
 #define SO_SUSER            GET_OPT_V(3)
 #define SO_SPASSWORD        GET_OPT_V(4)
-
 #define SO_STARTUP          GET_OPT_V(5)
-#define SO_DEPENDSON        GET_OPT_V(6)
-#define SO_ENVIRONMENT      GET_OPT_V(7)
+#define SO_TYPE             GET_OPT_V(6)
 
-#define SO_USER             GET_OPT_V(8)
-#define SO_PASSWORD         GET_OPT_V(9)
+#define SO_DEPENDSON        GET_OPT_V(7)
+#define SO_ENVIRONMENT      GET_OPT_V(8)
 
-#define SO_JAVAHOME         GET_OPT_V(10)
-#define SO_JVM              GET_OPT_V(11)
-#define SO_JVMOPTIONS       GET_OPT_V(12)
-#define SO_CLASSPATH        GET_OPT_V(13)
-#define SO_JVMMS            GET_OPT_I(14)
-#define SO_JVMMX            GET_OPT_I(15)
-#define SO_JVMSS            GET_OPT_I(16)
+#define SO_USER             GET_OPT_V(9)
+#define SO_PASSWORD         GET_OPT_V(10)
 
-#define SO_STOPIMAGE        GET_OPT_V(17)
-#define SO_STOPPATH         GET_OPT_V(18)
-#define SO_STOPCLASS        GET_OPT_V(19)
-#define SO_STOPPARAMS       GET_OPT_V(20)
-#define SO_STOPMETHOD       GET_OPT_V(21)
-#define SO_STOPMODE         GET_OPT_V(22)
-#define SO_STOPTIMEOUT      GET_OPT_I(23)
+#define SO_JAVAHOME         GET_OPT_V(11)
+#define SO_JVM              GET_OPT_V(12)
+#define SO_JVMOPTIONS       GET_OPT_V(13)
+#define SO_CLASSPATH        GET_OPT_V(14)
+#define SO_JVMMS            GET_OPT_I(15)
+#define SO_JVMMX            GET_OPT_I(16)
+#define SO_JVMSS            GET_OPT_I(17)
 
-#define SO_STARTIMAGE       GET_OPT_V(24)
-#define SO_STARTPATH        GET_OPT_V(25)
-#define SO_STARTCLASS       GET_OPT_V(26)
-#define SO_STARTPARAMS      GET_OPT_V(27)
-#define SO_STARTMETHOD      GET_OPT_V(28)
-#define SO_STARTMODE        GET_OPT_V(29)
+#define SO_STOPIMAGE        GET_OPT_V(18)
+#define SO_STOPPATH         GET_OPT_V(19)
+#define SO_STOPCLASS        GET_OPT_V(20)
+#define SO_STOPPARAMS       GET_OPT_V(21)
+#define SO_STOPMETHOD       GET_OPT_V(22)
+#define SO_STOPMODE         GET_OPT_V(23)
+#define SO_STOPTIMEOUT      GET_OPT_I(24)
 
-#define SO_LOGPATH          GET_OPT_V(30)
-#define SO_LOGPREFIX        GET_OPT_V(31)
-#define SO_LOGLEVEL         GET_OPT_V(32)
+#define SO_STARTIMAGE       GET_OPT_V(25)
+#define SO_STARTPATH        GET_OPT_V(26)
+#define SO_STARTCLASS       GET_OPT_V(27)
+#define SO_STARTPARAMS      GET_OPT_V(28)
+#define SO_STARTMETHOD      GET_OPT_V(29)
+#define SO_STARTMODE        GET_OPT_V(30)
 
-#define SO_STDERROR         GET_OPT_V(33)
-#define SO_STDOUTPUT        GET_OPT_V(34)
+#define SO_LOGPATH          GET_OPT_V(31)
+#define SO_LOGPREFIX        GET_OPT_V(32)
+#define SO_LOGLEVEL         GET_OPT_V(33)
+
+#define SO_STDERROR         GET_OPT_V(34)
+#define SO_STDOUTPUT        GET_OPT_V(35)
 
 /* Main servic table entry
  * filled at run-time
@@ -516,6 +522,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     APXHANDLE hService;
     BOOL  rv;
     DWORD dwStart = SERVICE_DEMAND_START;
+    DWORD dwType  = SERVICE_WIN32_OWN_PROCESS;
     WCHAR szImage[SIZ_HUGLEN];
 
     apxLogWrite(APXLOG_MARK_DEBUG "Installing service...");
@@ -528,6 +535,11 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     if ((ST_STARTUP & APXCMDOPT_FOUND) &&
         lstrcmpiW(SO_STARTUP, PRSRV_AUTO) == 0)
         dwStart = SERVICE_AUTO_START;
+    /* Check the service type */
+    if ((ST_TYPE & APXCMDOPT_FOUND) &&
+        lstrcmpiW(SO_TYPE, STYPE_INTERACTIVE) == 0)
+        dwType |= SERVICE_INTERACTIVE_PROCESS;
+
     /* Check if --Install is provided */
     if (!SO_INSTALL) {
         lstrcpyW(szImage, lpCmdline->szExePath);
@@ -556,7 +568,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
                           SO_DISPLAYNAME,    /* --DisplayName  */
                           SO_INSTALL,
                           SO_DEPENDSON,      /* --DependendsOn */
-                          SERVICE_WIN32_OWN_PROCESS,
+                          dwType,
                           dwStart);
     /* Set the --Description */
     if (rv) {
@@ -683,6 +695,8 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
     SetLastError(0);
     /* Open the service */
     if (apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
+        DWORD dwStart = SERVICE_NO_CHANGE;
+        DWORD dwType  = SERVICE_NO_CHANGE;
         apxServiceSetNames(hService,
                            NULL,                /* Never update the ImagePath */
                            SO_DISPLAYNAME,
@@ -691,17 +705,20 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
                            NULL);
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
-            DWORD dwStart = SERVICE_NO_CHANGE;
             if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
                 dwStart = SERVICE_AUTO_START;
             else if (!lstrcmpiW(SO_STARTUP, PRSRV_MANUAL))
                 dwStart = SERVICE_DEMAND_START;
-            apxServiceSetOptions(hService,
-                                 SERVICE_NO_CHANGE,
-                                 dwStart,
-                                 SERVICE_NO_CHANGE);
-
         }
+        if (ST_TYPE & APXCMDOPT_FOUND) {
+            if (!lstrcmpiW(SO_TYPE, STYPE_INTERACTIVE))
+                dwType = SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS;
+        }
+        apxServiceSetOptions(hService,
+                             dwType,
+                             dwStart,
+                             SERVICE_NO_CHANGE);
+
         apxLogWrite(APXLOG_MARK_INFO "Service %S updated",
                     lpCmdline->szApplication);
 
