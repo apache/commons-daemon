@@ -34,7 +34,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"$(INTDIR)\prunmgr.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_UNICODE" /D "UNICODE" /Fp"$(INTDIR)\prunmgr.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -95,7 +95,7 @@ SOURCE=.\prunmgr.c
 SOURCE=.\prunmgr.rc
 
 "$(INTDIR)\prunmgr.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\prunmgr.res" /i "..\..\include" /d "NDEBUG" /d "USE_MANIFEST" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\prunmgr.res" /i "..\..\include" /d "NDEBUG" /d "_UNICODE" /d "UNICODE" /d "USE_MANIFEST" $(SOURCE)
 
 
 "libprocrun MAKE" : 

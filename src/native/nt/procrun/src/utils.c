@@ -77,7 +77,7 @@ LPWSTR __apxGetEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName)
     rc = GetEnvironmentVariableW(wsName, NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
         return NULL;
-    
+
     if (!(wsRet = apxPoolAlloc(hPool, (rc + 1) * sizeof(WCHAR))))
         return NULL;
     if (!GetEnvironmentVariableW(wsName, wsRet, rc)) {
@@ -96,7 +96,7 @@ LPSTR __apxGetEnvironmentVariableA(APXHANDLE hPool, LPCSTR szName)
     rc = GetEnvironmentVariableA(szName, NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
         return NULL;
-    
+
     if (!(szRet = apxPoolAlloc(hPool, rc + 1)))
         return NULL;
     if (!GetEnvironmentVariableA(szName, szRet, rc)) {
@@ -136,6 +136,19 @@ LPSTR WideToAscii(LPCWSTR ws, LPSTR s)
     return pszSave;
 }
 
+LPSTR WideToUTF8(LPCWSTR ws)
+{
+
+    LPSTR s;
+    int cch = WideCharToMultiByte(CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL);
+    s = (LPSTR)apxAlloc(cch);
+    if (!WideCharToMultiByte(CP_UTF8, 0, ws, -1, s, cch, NULL, NULL)) {
+        apxFree(s);
+        return NULL;
+    }
+    return s;
+}
+
 LPSTR MzWideToAscii(LPCWSTR ws, LPSTR s)
 {
     LPSTR pszSave = s;
@@ -150,6 +163,38 @@ LPSTR MzWideToAscii(LPCWSTR ws, LPSTR s)
     *s++ = '\0';
     *s   = '\0';
     return pszSave;
+}
+
+LPSTR MzWideToUTF8(LPCWSTR ws)
+{
+    LPSTR str;
+    LPSTR s;
+    LPCWSTR p = ws;
+    int cch = 0;
+
+    for ( ; p && *p; p++) {
+        int len = WideCharToMultiByte(CP_UTF8, 0, p, -1, NULL, 0, NULL, NULL);
+        if (len > 0)
+            cch += len;
+        while (*p)
+            p++;
+    }
+    cch ++;
+    str = s = (LPSTR)apxAlloc(cch + 1);
+
+    p = ws;
+    for ( ; p && *p; p++) {
+        int len = WideCharToMultiByte(CP_UTF8, 0, p, -1, s, cch, NULL, NULL);
+        if (len > 0) {
+            s = s + len;
+            cch -= len;
+        }
+        while (*p)
+            p++;
+    }
+    /* double terminate */
+    *s = '\0';
+    return str;
 }
 
 #ifdef _DEBUG
@@ -171,18 +216,18 @@ void ErrorMessage(LPCTSTR szError, BOOL bFatal)
         FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
                       FORMAT_MESSAGE_FROM_SYSTEM |
                       FORMAT_MESSAGE_IGNORE_INSERTS,
-                      NULL, 
-                      dwErr, 
+                      NULL,
+                      dwErr,
                       MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
                       (LPTSTR) &lpMsgBuf, 0, NULL);
-        nRet = MessageBox(NULL, (LPCTSTR)lpMsgBuf, 
+        nRet = MessageBox(NULL, (LPCTSTR)lpMsgBuf,
                           TEXT("Application System Error"), nType);
         LocalFree(lpMsgBuf);
     }
     if (bFatal && (nRet == IDCANCEL || nRet == IDABORT)) {
         ExitProcess(dwErr);
     }
-} 
+}
 #endif /* _DEBUG */
 
 DWORD __apxGetMultiSzLengthA(LPCSTR lpStr, LPDWORD lpdwCount)
@@ -220,10 +265,10 @@ LPWSTR apxMultiSzCombine(APXHANDLE hPool, LPCWSTR lpStrA, LPCWSTR lpStrB,
     DWORD  la = 0, lb = 0;
     if (!lpStrA && !lpStrB)
         return NULL;    /* Nothing to do if both are NULL */
-    
+
     la = __apxGetMultiSzLengthW(lpStrA, NULL);
     lb = __apxGetMultiSzLengthW(lpStrB, NULL);
-    
+
     rv = apxPoolCalloc(hPool, (la + lb + 1) * sizeof(WCHAR));
     if (la) {
         AplMoveMemory(rv, lpStrA, la * sizeof(WCHAR));
@@ -290,7 +335,7 @@ apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray)
         p++;
     }
     (*lppArray)[++i] = NULL;
-    
+
     return n;
 }
 
@@ -319,7 +364,7 @@ apxMultiSzToArrayA(APXHANDLE hPool, LPCSTR lpString, LPSTR **lppArray)
         p++;
     }
     (*lppArray)[++i] = NULL;
-    
+
     return n;
 }
 
@@ -357,7 +402,7 @@ LPTSTR  apxMultiSzStrcat(LPAPXMULTISZ lpmSz, LPCTSTR szSrc)
 {
     DWORD l = lstrlen(szSrc);
     LPTSTR p;
-    
+
     if (lpmSz->dwInsert + l + 2 > lpmSz->dwAllocated) {
         if ((lpmSz = (LPAPXMULTISZ )apxRealloc(lpmSz, QSTR_ALIGN(lpmSz->dwInsert + l))) == NULL)
             return NULL;
@@ -387,7 +432,7 @@ LPCTSTR apxMultiSzGet(LPAPXMULTISZ lpmSz)
 }
 #endif
 
-LPTSTR apxStrCharRemove(LPTSTR szString, TCHAR chSkip) 
+LPTSTR apxStrCharRemove(LPTSTR szString, TCHAR chSkip)
 {
   LPTSTR p = szString;
   LPTSTR q = szString;
@@ -399,9 +444,9 @@ LPTSTR apxStrCharRemove(LPTSTR szString, TCHAR chSkip)
   *q = TEXT('\0');
 
   return szString;
-} 
+}
 
-DWORD apxStrCharRemoveA(LPSTR szString, CHAR chSkip) 
+DWORD apxStrCharRemoveA(LPSTR szString, CHAR chSkip)
 {
   LPSTR p = szString;
   LPSTR q = szString;
@@ -416,9 +461,9 @@ DWORD apxStrCharRemoveA(LPSTR szString, CHAR chSkip)
   *q = '\0';
 
   return c;
-} 
+}
 
-DWORD apxStrCharRemoveW(LPWSTR szString, WCHAR chSkip) 
+DWORD apxStrCharRemoveW(LPWSTR szString, WCHAR chSkip)
 {
   LPWSTR p = szString;
   LPWSTR q = szString;
@@ -433,37 +478,37 @@ DWORD apxStrCharRemoveW(LPWSTR szString, WCHAR chSkip)
   *q = L'\0';
 
   return c;
-} 
+}
 
 void
-apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith) 
+apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith)
 {
   LPSTR p = szString;
   LPSTR q = szString;
   while (*p) {
     if(*p == chReplace)
       *q++ = chReplaceWith;
-    else 
+    else
       *q++ = *p;
     ++p;
   }
   *q = '\0';
-} 
+}
 
 void
-apxStrCharReplaceW(LPWSTR szString, WCHAR chReplace, WCHAR chReplaceWith) 
+apxStrCharReplaceW(LPWSTR szString, WCHAR chReplace, WCHAR chReplaceWith)
 {
   LPWSTR p = szString;
   LPWSTR q = szString;
   while (*p) {
     if(*p == chReplace)
       *q++ = chReplaceWith;
-    else 
+    else
       *q++ = *p;
     ++p;
   }
   *q = L'\0';
-} 
+}
 
 static const LPCTSTR _st_hex = TEXT("0123456789abcdef");
 #define XTOABUFFER_SIZE (sizeof(ULONG) * 2 + 2)
@@ -506,7 +551,7 @@ BOOL apxUptohex(ULONG_PTR n, LPTSTR lpBuff, DWORD dwBuffLength)
     return TRUE;
 }
 
-ULONG apxStrToul(LPCTSTR szNum) 
+ULONG apxStrToul(LPCTSTR szNum)
 {
     ULONG rv = 0;
     DWORD sh = 0;
@@ -518,7 +563,7 @@ ULONG apxStrToul(LPCTSTR szNum)
         return 0;
     /* go to the last digit */
     while (*(p + 1)) p++;
-    
+
     /* go back to 'x' */
     while (*p != TEXT('x')) {
         ULONG v = 0;
@@ -539,8 +584,8 @@ ULONG apxStrToul(LPCTSTR szNum)
             case TEXT('d'): case TEXT('D'): v = 13UL; break;
             case TEXT('e'): case TEXT('E'): v = 14UL; break;
             case TEXT('f'): case TEXT('F'): v = 15UL; break;
-            default: 
-                return 0; 
+            default:
+                return 0;
             break;
         }
         rv |= rv + (v << sh);
@@ -549,7 +594,7 @@ ULONG apxStrToul(LPCTSTR szNum)
     return rv;
 }
 
-ULONG apxStrToulW(LPCWSTR szNum) 
+ULONG apxStrToulW(LPCWSTR szNum)
 {
     ULONG rv = 0;
     DWORD sh = 0;
@@ -561,7 +606,7 @@ ULONG apxStrToulW(LPCWSTR szNum)
         return 0;
     /* go to the last digit */
     while (*(p + 1)) p++;
-    
+
     /* go back to 'x' */
     while (*p != L'x') {
         ULONG v = 0;
@@ -582,8 +627,8 @@ ULONG apxStrToulW(LPCWSTR szNum)
             case L'd': case L'D': v = 13UL; break;
             case L'e': case L'E': v = 14UL; break;
             case L'f': case L'F': v = 15UL; break;
-            default: 
-                return 0; 
+            default:
+                return 0;
             break;
         }
         rv |= rv + (v << sh);
@@ -592,7 +637,7 @@ ULONG apxStrToulW(LPCWSTR szNum)
     return rv;
 }
 
-ULONG apxAtoulW(LPCWSTR szNum) 
+ULONG apxAtoulW(LPCWSTR szNum)
 {
     ULONG rv = 0;
     DWORD sh = 1;
@@ -607,7 +652,7 @@ ULONG apxAtoulW(LPCWSTR szNum)
         ++p;
     }
     while (*(p + 1)) p++;
-    
+
     /* go back */
     while (p >= szNum) {
         ULONG v = 0;
@@ -622,8 +667,8 @@ ULONG apxAtoulW(LPCWSTR szNum)
             case L'7': v = 7UL; break;
             case L'8': v = 8UL; break;
             case L'9': v = 9UL; break;
-            default: 
-                return rv * s; 
+            default:
+                return rv * s;
             break;
         }
         rv = rv + (v * sh);
@@ -632,13 +677,13 @@ ULONG apxAtoulW(LPCWSTR szNum)
     return rv * s;
 }
 
-/* Make the unique system resource name from prefix and process id 
- * 
+/* Make the unique system resource name from prefix and process id
+ *
  */
 BOOL
 apxMakeResourceName(LPCTSTR szPrefix, LPTSTR lpBuff, DWORD dwBuffLength)
 {
-    DWORD pl = lstrlen(szPrefix);        
+    DWORD pl = lstrlen(szPrefix);
     if (dwBuffLength < (pl + 11))
         return FALSE;
     lstrcpy(lpBuff, szPrefix);
@@ -680,7 +725,7 @@ INT apxStrMatchA(LPCSTR szString, LPCSTR szPattern, BOOL bIgnoreCase)
         }
     }
     return (szString[x] != '\0');
-} 
+}
 
 INT apxStrMatchW(LPCWSTR szString, LPCWSTR szPattern, BOOL bIgnoreCase)
 {
@@ -714,7 +759,7 @@ INT apxStrMatchW(LPCWSTR szString, LPCWSTR szPattern, BOOL bIgnoreCase)
         }
     }
     return (szString[x] != L'\0');
-} 
+}
 
 INT apxMultiStrMatchW(LPCWSTR szString, LPCWSTR szPattern,
                       WCHAR chSeparator, BOOL bIgnoreCase)
@@ -848,7 +893,7 @@ apxMszToCRLFW(APXHANDLE hPool, LPCWSTR szStr)
     LPWSTR rv, b;
     LPCWSTR p = szStr;
 
-    l = __apxGetMultiSzLengthW(szStr, &c);    
+    l = __apxGetMultiSzLengthW(szStr, &c);
     b = rv = apxPoolCalloc(hPool, (l + c + 2) * sizeof(WCHAR));
 
     while (c > 0) {
@@ -870,7 +915,7 @@ apxCRLFToMszW(APXHANDLE hPool, LPCWSTR szStr, LPDWORD lpdwBytes)
     DWORD l, c, n = 0;
     LPWSTR rv, b;
 
-    l = lstrlenW(szStr);    
+    l = lstrlenW(szStr);
     b = rv = apxPoolCalloc(hPool, (l + 2) * sizeof(WCHAR));
     for (c = 0; c < l; c++) {
         if (szStr[c] == L'\r') {
@@ -983,7 +1028,7 @@ PSECURITY_ATTRIBUTES GetNullACL()
 }
 
 
-void CleanNullACL(void *sa) 
+void CleanNullACL(void *sa)
 {
     if (sa) {
         LocalFree(((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);

@@ -195,16 +195,16 @@ static APXHANDLE    gPool;
 static APXHANDLE    gWorker;
 static APX_STDWRAP  gStdwrap;           /* stdio/stderr redirection */
 
-static LPWSTR _jni_jvmpath              = NULL;   /* Path to jvm dll */
-static LPSTR  _jni_jvmoptions           = NULL;   /* Path to jvm options */
+static LPWSTR   _jni_jvmpath              = NULL;   /* Path to jvm dll */
+static LPSTR    _jni_jvmoptions           = NULL;   /* Path to jvm options */
 
-static LPSTR  _jni_classpath            = NULL;
-static LPSTR  _jni_rparam               = NULL;    /* Startup  arguments */
-static LPSTR  _jni_sparam               = NULL;    /* Shutdown arguments */
-static LPSTR  _jni_rmethod              = NULL;    /* Startup  arguments */
-static LPSTR  _jni_smethod              = NULL;    /* Shutdown arguments */
-static CHAR   _jni_rclass[SIZ_RESLEN]   = {'\0'};  /* Startup  class */
-static CHAR   _jni_sclass[SIZ_RESLEN]   = {'\0'};  /* Shutdown class */
+static LPSTR    _jni_classpath            = NULL;
+static LPCWSTR  _jni_rparam               = NULL;    /* Startup  arguments */
+static LPCWSTR  _jni_sparam               = NULL;    /* Shutdown arguments */
+static LPSTR    _jni_rmethod              = NULL;    /* Startup  arguments */
+static LPSTR    _jni_smethod              = NULL;    /* Shutdown arguments */
+static CHAR     _jni_rclass[SIZ_RESLEN]   = {'\0'};  /* Startup  class */
+static CHAR     _jni_sclass[SIZ_RESLEN]   = {'\0'};  /* Shutdown class */
 
 static HANDLE gShutdownEvent = NULL;
 static HANDLE gSignalEvent   = NULL;
@@ -1151,7 +1151,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             WideToAscii(SO_STARTCLASS, _jni_rclass);
             /* Exchange all dots with slashes */
             apxStrCharReplaceA(_jni_rclass, '.', '/');
-            _jni_rparam = MzWideToAscii(SO_STARTPARAMS, (LPSTR)SO_STARTPARAMS);
+            _jni_rparam = SO_STARTPARAMS;
         }
         else if (!lstrcmpiW(SO_STARTMODE, PRSRV_JAVA)) {
             LPWSTR jx = NULL, szJH = apxGetJavaSoftHome(gPool, FALSE);
@@ -1171,7 +1171,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             _jni_shutdown = TRUE;
             WideToAscii(SO_STOPCLASS, _jni_sclass);
             apxStrCharReplaceA(_jni_sclass, '.', '/');
-            _jni_sparam = MzWideToAscii(SO_STOPPARAMS, (LPSTR)SO_STOPPARAMS);
+            _jni_sparam = SO_STOPPARAMS;
         }
         else if (!lstrcmpiW(SO_STOPMODE, PRSRV_JAVA)) {
             LPWSTR jx = NULL, szJH = apxGetJavaSoftHome(gPool, FALSE);
@@ -1192,14 +1192,12 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 _jni_jvmpath = SO_JVM;
         }
         if (SO_CLASSPATH)
-            _jni_classpath = WideToAscii(SO_CLASSPATH, (LPSTR)SO_CLASSPATH);
+            _jni_classpath = WideToUTF8(SO_CLASSPATH);
         if (SO_STARTMETHOD)
-            _jni_rmethod = WideToAscii(SO_STARTMETHOD, (LPSTR)SO_STARTMETHOD);
+            _jni_rmethod   = WideToAscii(SO_STARTMETHOD, (LPSTR)SO_STARTMETHOD);
         if (SO_STOPMETHOD)
-            _jni_smethod = WideToAscii(SO_STOPMETHOD, (LPSTR)SO_STOPMETHOD);
-        if (SO_JVMOPTIONS) {
-            _jni_jvmoptions = MzWideToAscii(SO_JVMOPTIONS, (LPSTR)SO_JVMOPTIONS);
-        }
+            _jni_smethod   = WideToAscii(SO_STOPMETHOD, (LPSTR)SO_STOPMETHOD);
+        _jni_jvmoptions    = MzWideToUTF8(SO_JVMOPTIONS);
     }
     if (_service_mode) {
         /* Register Service Control handler */

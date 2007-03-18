@@ -35,7 +35,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /EHsc /O2 /I "..\..\include" /I "$(JAVA_HOME)\include" /I "$(JAVA_HOME)\include\win32" /D "WIN32"  /D "_IA64_=1" -DWIN64 /D "_WIN64" /Wp64 /FIPRE64PRA.H /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /EHsc /O2 /I "..\..\include" /I "$(JAVA_HOME)\include" /I "$(JAVA_HOME)\include\win32" /D "WIN32"  /D "_IA64_=1" -DWIN64 /D "_WIN64" /Wp64 /FIPRE64PRA.H /D "NDEBUG" /D "_CONSOLE" /D "_UNICODE" /D "UNICODE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -93,7 +93,7 @@ SOURCE=.\prunsrv.c
 SOURCE=.\prunsrv.rc
 
 "$(INTDIR)\prunsrv.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\prunsrv.res" /i "..\..\include" /d "NDEBUG" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\prunsrv.res" /i "..\..\include" /d "NDEBUG" /d "_UNICODE" /d "UNICODE" $(SOURCE)
 
 
 "libprocrun MAKE" : 

@@ -424,7 +424,7 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
                      LPCSTR szMethodName,
                      LPCVOID lpArguments)
 {
-    LPSTR       *lpArgs = NULL;
+    LPWSTR      *lpArgs = NULL;
     DWORD       nArgs;
     LPAPXJAVAVM lpJava;
     jclass      jClazz;
@@ -459,15 +459,15 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
         apxLogWrite(APXLOG_MARK_ERROR "Static method 'void main(String[])' in Class %s not found", szClassName);
         return FALSE;
     }
-    nArgs = apxMultiSzToArrayA(hJava->hPool, lpArguments, &lpArgs);
+    nArgs = apxMultiSzToArrayW(hJava->hPool, lpArguments, &lpArgs);
     if (nArgs) {
         DWORD i;
         lpJava->clWorker.jArgs = JNICALL_3(NewObjectArray, nArgs,
                                            lpJava->clString.jClazz, NULL);
         for (i = 0; i < nArgs; i++) {
-            jstring arg = JNICALL_1(NewStringUTF, lpArgs[i]);
+            jstring arg = JNICALL_2(NewString, lpArgs[i], lstrlenW(lpArgs[i]));
             JNICALL_3(SetObjectArrayElement, lpJava->clWorker.jArgs, i, arg);
-            apxLogWrite(APXLOG_MARK_DEBUG "argv[%d] = %s", i, lpArgs[i]);
+            apxLogWrite(APXLOG_MARK_DEBUG "argv[%d] = %S", i, lpArgs[i]);
         }
     }
     apxFree(lpArgs);
