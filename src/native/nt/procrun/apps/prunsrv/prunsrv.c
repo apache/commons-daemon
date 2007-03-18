@@ -1291,6 +1291,7 @@ void __cdecl main(int argc, char **argv)
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
     apxLogWrite(APXLOG_MARK_DEBUG "Procrun log initialized");
+    apxLogWrite(APXLOG_MARK_INFO "Procrun (%s) started", PRG_VERSION);
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
 
