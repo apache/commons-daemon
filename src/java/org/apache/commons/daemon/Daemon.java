@@ -73,7 +73,7 @@ public interface Daemon {
      * Start the operation of this <code>Daemon</code> instance. This
      * method is to be invoked by the environment after the init()
      * method has been successfully invoked and possibly the security
-     * level of the JVM has been dropped.  <code>Implementors of this
+     * level of the JVM has been dropped. Implementors of this
      * method are free to start any number of threads, but need to
      * return control after having done that to enable invocation of
      * the stop()-method.
