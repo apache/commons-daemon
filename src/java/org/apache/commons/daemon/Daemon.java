@@ -75,7 +75,7 @@ public interface Daemon {
      * method has been successfully invoked and possibly the security
      * level of the JVM has been dropped.  <code>Implementors of this
      * method are free to start any number of threads, but need to
-     * return control avfter having done that to enable invocation of
+     * return control after having done that to enable invocation of
      * the stop()-method.
      */
     public void start()
