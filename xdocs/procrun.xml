@@ -131,6 +131,7 @@
     <td>manual</td>
     <td>Service startup mode can be either <b>auto</b> or <b>manual</b></td>
     </tr>
+    <tr>
     <td>--Type</td>
     <td></td>
     <td>Service type can be <b>interactive</b> to Allow service to interact with desktop.
@@ -167,7 +168,7 @@
     <td>Specifies the name of the account under which the service should run.
         Use an account name in the form <i>DomainName\UserName</i>.
         The service process will be logged on as this user.
-        if the account belongs to the built-in domain, you can specify <i>.\UserName<i> 
+        if the account belongs to the built-in domain, you can specify <i>.\UserName</i> 
     </td>
     </tr>
     <tr>
