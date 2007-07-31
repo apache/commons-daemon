@@ -18,7 +18,7 @@ services support under win NT/2000/XP.
 (See in ../native/nt/README how to install jsvc as a service in win32).
 
 It uses jakarta Commons Collections:
-http://jakarta.apache.org/commons/collections/
+http://commons.apache.org/collections/
 To use it you need at least commons-collections-1.0
 Check in build.xml that the property commons-collections.jar correspond to thei
 location of your commons-collections.jar file.

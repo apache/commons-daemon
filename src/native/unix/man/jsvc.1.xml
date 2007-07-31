@@ -164,7 +164,7 @@
   </refsect1>
 
   <refsect1 id='author'><title>AUTHOR</title>
-    <para>JSVC is part of the Jakarta Commons Daemon project. Authors are 
+    <para>JSVC is part of the Apache Commons Daemon project. Authors are 
       Jean-Frederic Clere, Remy Maucherat, Yoav Shapira, Bill Barker. JSVC is 
       under the Apache License Version 2.0.</para>
   </refsect1>
