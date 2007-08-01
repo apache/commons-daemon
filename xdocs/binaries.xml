@@ -27,7 +27,7 @@
 <section name="What to download">
 <p>
 In the directory
-<a href="http://www.apache.org/dist/jakarta/commons/daemon/binaries/">binaries</a>
+<a href="http://www.apache.org/dist/commons/daemon/binaries/">binaries</a>
 you found subdirectories containing executables
 corresponding to your operating system. If your machine is not in the list
 mail us we will try to make it available or try to build it on your own.
