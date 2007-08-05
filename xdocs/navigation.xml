@@ -37,7 +37,7 @@
       <item name="Native binaries"         href="/binaries.html"/>
       <item name="FAQ"                     href="/faq.html"/>
       <item name="JavaDoc"                 href="apidocs/index.html"/>
-      <item name="Wiki"                    href="http://wiki.apache.org/jakarta-commons/Daemon"/>
+      <item name="Wiki"                    href="http://wiki.apache.org/commons/Daemon"/>
     </menu>
 
     <menu name="Development">
