@@ -26,21 +26,21 @@
 <body>
 <section name="Introduction">
 <p>
-      Actualy only the UNIX like platforms are supported.
-      The sources are located in the src/native/unix subdirectory of the
+      Actually only the UNIX like platforms are supported.
+      The sources are located in the <code>src/native/unix</code> subdirectory of the
       project sources.
-      For win32 platfroms the cygwin emulation layer is used. See
-      <a href="http://www.cygwin.com/"> cygwin</a> for more informations.
+      For win32 platforms the cygwin emulation layer is used. See
+      <a href="http://www.cygwin.com/">cygwin</a> for more information.
 </p>
 <p>
-      In the futur <a href="http://apr.apache.org/"> APR </a> may be used
-      to provide more convinient platform support.
+      In the future <a href="http://apr.apache.org/">APR</a> may be used
+      to provide more convenient platform support.
 </p>
 </section>
 
-<section name="Building from cvs">
+<section name="Building from source">
 <p>
-To build under an UNIX operating system you will need:
+To build under a UNIX operating system you will need:
 <ul>
   <li>GNU AutoConf (at least version 2.53)</li>
   <li>An ANSI-C compliant compiler (GCC is good)</li>
@@ -51,7 +51,10 @@ To build under an UNIX operating system you will need:
 
 You need to build the "configure" program with:
 
-   sh support/buildconf.sh
+<source>
+sh support/buildconf.sh
+</source>
+
 (Note it is possible to replace sh by any compatible shell like bash, ksh).
 
 The result should be something like:
@@ -63,25 +66,25 @@ Once the configure script is generated, follow the next section.
 </p>
 </section>
 
-<section name="Building for a release tarball">
+<section name="Building from a release tarball">
 <p>
-To build the binary under an UNIX operating system you will need:
+To build the binary under a UNIX operating system you will need:
 <ul>
   <li>An ANSI-C compliant compiler (GCC is good)</li>
   <li>GNU Make</li>
   <li>A Java Platform 2 compliant SDK</li>
 </ul>
 
-You have to specify the JAVA_HOME of the SDK
-either the --with-java=&lt;dir&gt; parameter or set the JAVA_HOME environment
+You have to specify the <code>JAVA_HOME</code> of the SDK
+either with the <code>--with-java=&lt;dir&gt;</code> parameter or set the <code>JAVA_HOME</code> environment
 to point to your SDK installation. For example:
 <source>
-  ./configure --with-java=/usr/java
+./configure --with-java=/usr/java
 </source>
 or
 <source>
-  export JAVA_HOME
-  ./configure
+export JAVA_HOME
+./configure
 </source>
 
 If your operating system is supported, configure will go thru cleanly,
@@ -89,9 +92,9 @@ otherwise it will report an error (please send us the details of your
 OS/JDK, or a patch against the sources). To build the binaries and
 libraries simply do:
 <source>
-  make
+make
 </source>
-This will generate the executable file jsvc.
+This will generate the executable file <code>jsvc</code>.
 </p>
 </section>
 
@@ -165,7 +168,7 @@ You have to do the following.
   <li>Put it in the jarfile (my.jar).</li>
   <li>Call jsvc like:
   <source>
-    ./jsvc -cp commons-daemon.jar:my.jar MyClass
+./jsvc -cp commons-daemon.jar:my.jar MyClass
   </source>
   </li>
 </ul>
@@ -175,15 +178,15 @@ You have to do the following.
 <p>
 You have to write a Class (MyClass) that implements the following methods:
 <ul>
-  <li>void load(String[] arguments): Here open the configuration files, create the trace file, create
+  <li><code>void load(String[] arguments)</code>: Here open the configuration files, create the trace file, create
       the ServerSockets, the Threads</li>
-  <li>void start(): Start the Thread, accept incomming connections</li>
-  <li>void stop(): Inform the Thread to live the run(), close the ServerSockets</li>
-  <li>void destroy(): Destroy any object created in init()</li>
+  <li><code>void start()</code>: Start the Thread, accept incoming connections</li>
+  <li><code>void stop()</code>: Inform the Thread to live the run(), close the ServerSockets</li>
+  <li><code>void destroy()</code>: Destroy any object created in init()</li>
 </ul>
 Store it in a jarfile and use as above:
 <source>
-  ./jsvc -cp commons-daemon.jar:my.jar MyClass
+./jsvc -cp commons-daemon.jar:my.jar MyClass
 </source>
 </p>
 </subsection>
@@ -193,13 +196,13 @@ Store it in a jarfile and use as above:
 Jsvc uses 3 processes: a launcher process, a controller process and a controlled process.
 The controlled process is also the main java thread, if the JVM crashes
 the controller will restart it in the next minute.
-Jsvc is a daemon process so it should be started as root and the -user parameter
+Jsvc is a daemon process so it should be started as root and the <code>-user</code> parameter
 allows to downgrade to an unprivilegded user.
-When -wait parameter is used, the launcher process waits until the controller says
+When the <code>-wait</code> parameter is used, the launcher process waits until the controller says
 "I am ready", otherwise it returns after creating the controller process.
 </p>
 
-<subsection name="Forks in jakarta-daemon">
+<subsection name="Forks in commons-daemon">
 <p>
 Launcher process:
 <source>
@@ -240,9 +243,9 @@ Note: The controller process uses signals to stop the controlled process.
 
 <subsection name="Downgrading user">
 <p>
-On linux setuid()/setgid() + capabilities are used on other unix setgid/initgroups are used.
+On linux <code>setuid()</code>/<code>setgid()</code> + capabilities are used. On other unix <code>setgid</code>/<code>initgroups</code> are used.
 
-we have something like:
+We have something like:
 <source>
 /* as root */
 init_JVM().
