@@ -56,6 +56,12 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define START_SYSTEM         L"SystemInit"
 #define EMPTY_PASSWORD       L"               "
 
+#ifdef WIN64
+#define KREG_WOW6432  KEY_WOW64_32KEY
+#else
+#define KREG_WOW6432  0
+#endif
+
 /* Main application pool */
 APXHANDLE hPool     = NULL;
 APXHANDLE hService  = NULL;
@@ -1442,9 +1448,11 @@ static void signalService(LPCWSTR szServiceName)
     HANDLE event;
     WCHAR en[SIZ_DESLEN];
     int i;
-    lstrcpyW(en, szServiceName);
+
+    lstrcpyW(en, L"Global\\");
+    lstrcatW(en, szServiceName);
     lstrcatW(en, L"SIGNAL");
-    for (i = 0; i < lstrlenW(en); i++) {
+    for (i = 7; i < lstrlenW(en); i++) {
         if (en[i] >= L'a' && en[i] <= L'z')
             en[i] = en[i] - 32;
     }
@@ -1682,7 +1690,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
                                   apxLoadResource(IDS_APPLICATION, 0),
                                   APXREG_USER);
     loadConfiguration();
-    hRegserv = apxCreateRegistryW(hPool, KEY_READ | KEY_WRITE, PRG_REGROOT,
+    hRegserv = apxCreateRegistryW(hPool, KEY_READ | KEY_WRITE | KREG_WOW6432,
+                                  PRG_REGROOT,
                                   lpCmdline->szApplication,
                                   APXREG_SOFTWARE | APXREG_SERVICE);
 

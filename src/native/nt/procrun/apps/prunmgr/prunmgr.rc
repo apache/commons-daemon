@@ -30,9 +30,7 @@ BMP_JAKARTA          BITMAP                 "../../resources/jakarta.bmp"
 BMP_APMNUHDR         BITMAP                 "../../resources/apmnuhdr.bmp"
 #endif
 
-#ifdef USE_MAINFEST
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunmgr.manifest"
-#endif
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 337, 187
 STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
@@ -227,7 +225,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_APPLICATION     RSTR_PSM
-    IDS_APPVERSION      "Version 2.0.2"
+    IDS_APPVERSION      "Version 2.0.4"
     IDS_APPFULLNAME     RSTR_PSM " Version " PRG_VERSION
     IDS_APPCOPYRIGHT    "Copyright © 2000-2007 The Apache Software Foundation"
     IDS_APPDESCRIPTION  "Apache Procrun Service Management Tool"
@@ -258,8 +256,8 @@ BEGIN
 END
 
 1 VERSIONINFO
- FILEVERSION 2,0,3,0
- PRODUCTVERSION 2,0,3,0
+ FILEVERSION 2,0,4,0
+ PRODUCTVERSION 2,0,4,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L

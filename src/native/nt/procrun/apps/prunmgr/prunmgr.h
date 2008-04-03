@@ -15,7 +15,6 @@
  */
  
 /* ====================================================================
- * jar2exe -- convert .jar file to WIN32 executable.
  * Contributed by Mladen Turk <mturk@apache.org>
  * 05 Aug 2003
  * ==================================================================== 
@@ -25,7 +24,7 @@
 #define _PRUNMGR_H
 
 #undef  PRG_VERSION
-#define PRG_VERSION    "2.0.3.0" 
+#define PRG_VERSION    "2.0.4.0" 
 #define PRG_REGROOT   L"Apache Software Foundation\\Procrun 2.0"
 
 #define IDM_TM_EXIT                     2000
