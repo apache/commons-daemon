@@ -40,6 +40,12 @@
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
 
+#ifdef WIN64
+#define KREG_WOW6432  KEY_WOW64_32KEY
+#else
+#define KREG_WOW6432  0
+#endif
+
 typedef struct APX_STDWRAP {
     LPCWSTR szLogPath;
     LPCWSTR szStdOutFilename;
@@ -413,7 +419,8 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
     int i = 0;
 
     SetLastError(ERROR_SUCCESS);
-    hRegistry = apxCreateRegistryW(gPool, KEY_READ, PRG_REGROOT,
+    hRegistry = apxCreateRegistryW(gPool, KEY_READ | KREG_WOW6432,
+                                   PRG_REGROOT,
                                    lpCmdline->szApplication,
                                    APXREG_SOFTWARE | APXREG_SERVICE);
     if (IS_INVALID_HANDLE(hRegistry)) {
@@ -485,7 +492,8 @@ static BOOL saveConfiguration(LPAPXCMDLINE lpCmdline)
 {
     APXHANDLE hRegistry;
     int i = 0;
-    hRegistry = apxCreateRegistryW(gPool, KEY_WRITE, PRG_REGROOT,
+    hRegistry = apxCreateRegistryW(gPool, KEY_WRITE | KREG_WOW6432,
+                                   PRG_REGROOT,
                                    lpCmdline->szApplication,
                                    APXREG_SOFTWARE | APXREG_SERVICE);
     if (IS_INVALID_HANDLE(hRegistry))
@@ -1161,9 +1169,10 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         WCHAR en[SIZ_DESLEN];
         int i;
         PSECURITY_ATTRIBUTES sa = GetNullACL();
-        lstrcpyW(en, _service_name);
+        lstrcpyW(en, L"Global\\");
+        lstrcatW(en, _service_name);
         lstrcatW(en, PRSRV_SIGNAL);
-        for (i = 0; i < lstrlenW(en); i++) {
+        for (i = 7; i < lstrlenW(en); i++) {
             if (en[i] >= L'a' && en[i] <= L'z')
                 en[i] = en[i] - 32;
         }
