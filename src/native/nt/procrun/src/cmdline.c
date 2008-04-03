@@ -20,6 +20,10 @@
 #define EXE_SUFFIX      L".EXE"
 #define EXE_SUFFIXLEN   (sizeof(EXE_SUFFIX) / sizeof(WCHAR) - 1)
 
+#define X86_SUFFIX      L".X86"
+#define X64_SUFFIX      L".X64"
+#define A64_SUFFIX      L".I64"
+
 /* Those two are declared in handles.c */
 extern LPWSTR   *_st_sys_argvw;
 extern int      _st_sys_argc;
@@ -84,6 +88,20 @@ LPAPXCMDLINE apxCmdlineParse(
     p = _st_sys_argvw[0] + l - EXE_SUFFIXLEN;
     if (lstrcmpiW(p, EXE_SUFFIX) == 0)
         *p = L'\0';
+    /* Strip CPU specific suffixes */
+    l = lstrlenW(_st_sys_argvw[0]);
+    if (l > EXE_SUFFIXLEN) {
+        p = _st_sys_argvw[0] + l - EXE_SUFFIXLEN;
+        if (lstrcmpiW(p, X86_SUFFIX) == 0) {
+            *p = L'\0';
+        }
+        else if (lstrcmpiW(p, X64_SUFFIX) == 0) {
+            *p = L'\0';
+        }
+        else if (lstrcmpiW(p, A64_SUFFIX) == 0) {
+            *p = L'\0';
+        }
+    }
     if (lpszCommands && _st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 5) {
         if (_st_sys_argvw[1][0] == L'/' &&
             _st_sys_argvw[1][1] == L'/' &&
