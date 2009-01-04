@@ -26,10 +26,14 @@
 #include <sys/stat.h>
 
 /* Definitions for booleans */
+#ifdef OS_DARWIN
+#include <stdbool.h>
+#else
 typedef enum {
     false,
     true
 } bool;
+#endif
 
 #include "debug.h"
 #include "arguments.h"
