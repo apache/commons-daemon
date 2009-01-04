@@ -182,9 +182,6 @@ static arg_data *parse(int argc, char *argv[]) {
 
         } else if (strstr(argv[x],"-D")==argv[x]) {
             temp=strchr(argv[x],'=');
-            if (temp==NULL) {
-                log_debug("Parameter -D must contain one '=' character");
-            }
             if (temp==argv[x]+2) {
                 log_error("A property name must be specified before '='");
                 return(NULL);
