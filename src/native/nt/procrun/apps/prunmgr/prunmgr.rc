@@ -24,7 +24,7 @@ IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
 IDI_ICONSTOP         ICON                   "../../resources/procruns.ico" 
 IDI_ICONRUN          ICON                   "../../resources/procrunr.ico" 
 IDR_LICENSE          RTF                    "../../resources/license.rtf"
-BMP_JAKARTA          BITMAP                 "../../resources/jakarta.bmp"
+BMP_JAKARTA          BITMAP                 "../../resources/commons.bmp"
 
 #if 0 
 BMP_APMNUHDR         BITMAP                 "../../resources/apmnuhdr.bmp"
@@ -42,8 +42,8 @@ BEGIN
                     ES_READONLY | WS_BORDER | WS_VSCROLL,0,31,335,115
     CONTROL         "BMP_JAKARTA",IDC_STATIC,"Static",SS_BITMAP|0x00000040L,0,0,337,30
     LTEXT           " ",IDC_ABOUTAPP,2,150,270,12
-    LTEXT           "Copyright © 2000-2003 The Apache Software Foundation.",IDC_STATIC,2,160,270,12
-    LTEXT           "http://www.jakarta.org",IDC_STATIC,2,170,270,12 
+    LTEXT           "Copyright © 2000-2009 The Apache Software Foundation.",IDC_STATIC,2,160,270,12
+    LTEXT           "http://commons.apache.org",IDC_STATIC,2,170,270,12 
     PUSHBUTTON      "&System Info",IAB_SYSINF,285,170,50,14
 END
 
@@ -227,7 +227,7 @@ BEGIN
     IDS_APPLICATION     RSTR_PSM
     IDS_APPVERSION      "Version 2.0.4"
     IDS_APPFULLNAME     RSTR_PSM " Version " PRG_VERSION
-    IDS_APPCOPYRIGHT    "Copyright © 2000-2007 The Apache Software Foundation"
+    IDS_APPCOPYRIGHT    "Copyright © 2000-2009 The Apache Software Foundation"
     IDS_APPDESCRIPTION  "Apache Procrun Service Management Tool"
     IDS_ALREAY_RUNING   "An instance of '%S' application is already running"
     IDS_ERRORCMD        "Unknown command line option '%s'\nSee the manual for command line usage."
@@ -277,7 +277,7 @@ BEGIN
       VALUE "FileDescription", RSTR_PSM "\0"
       VALUE "FileVersion", PRG_VERSION
       VALUE "InternalName", RSTR_PSM "\0"
-      VALUE "LegalCopyright", "Copyright © 2000-2007 The Apache Software Foundation.\0"
+      VALUE "LegalCopyright", "Copyright © 2000-2009 The Apache Software Foundation.\0"
       VALUE "OriginalFilename", "prunmgr.exe\0"
       VALUE "ProductName", RSTR_PSM "\0"
       VALUE "ProductVersion", PRG_VERSION
