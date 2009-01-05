@@ -267,8 +267,6 @@ arg_data *arguments(int argc, char *argv[]) {
     }
 
     if (log_debug_flag==true) {
-        char *temp;
-
         log_debug("+-- DUMPING PARSED COMMAND LINE ARGUMENTS --------------");
 
         log_debug("| Detach:          %s",IsTrueFalse(args->dtch));
