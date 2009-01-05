@@ -20,7 +20,7 @@
 /**
  * A library handle represents a unique pointer to its location in memory.
  */
-#ifdef DSO_DLFCN
+#ifdef OS_DARWIN
 #include <mach-o/dyld.h>
 #endif
 typedef void *dso_handle;
