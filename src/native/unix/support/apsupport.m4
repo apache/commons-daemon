@@ -25,7 +25,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
 
   case $host_os in
   darwin*)
-    CFLAGS="$CFLAGS -DOS_DARWIN -DDSO_DYLD"
+    CFLAGS="$CFLAGS -DOS_DARWIN -DDSO_DLFCN"
     supported_os="darwin"
     ;;
   solaris*)
