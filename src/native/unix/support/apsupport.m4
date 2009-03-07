@@ -65,6 +65,10 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     LDFLAGS="$LDFLAGS -pthread"
     LIBS="$LIBS -lpthread"
     ;;
+  aix5*)
+    CFLAGS="$CFLAGS -DOS_AIX -DDSO_DLFCN"
+    LDFLAGS="$LDFLAGS -ldl"
+    ;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported operating system "$host_os"])
