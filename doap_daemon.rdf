@@ -18,11 +18,11 @@
       </SVNRepository>
     </repository>
     <release>
-      <revision>
+      <Version>
         <name>commons-daemon</name>
         <created>2005-05-17</created>
-        <version>1.0.1</version>
-      </revision>
+        <revision>1.0.1</revision>
+      </Version>
     </release>
     <mailing-list rdf:resource="http://commons.apache.org/mail-lists.html"/>
   </Project>
