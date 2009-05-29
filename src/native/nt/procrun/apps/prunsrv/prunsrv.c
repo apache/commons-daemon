@@ -1320,6 +1320,18 @@ void __cdecl main(int argc, char **argv)
 
     LPAPXCMDLINE lpCmdline;
 
+    if (argc > 1 && strncmp(argv[1], "//PP//", 6) == 0) {
+        /* Handy sleep routine defaulting to 1 minute */
+        DWORD ss = 60;
+        if (argv[1][6]) {
+             int us = atoi(argv[1] + 6);
+             if (us > 0)
+                ss = (DWORD)us;
+        }
+        Sleep(ss * 1000);
+        ExitProcess(0);
+        return;                        
+    }
     apxHandleManagerInitialize();
     /* Create the main Pool */
     gPool = apxPoolCreate(NULL, 0);
