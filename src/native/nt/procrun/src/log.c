@@ -246,6 +246,7 @@ apxLogWrite(
     BOOL    dolock = TRUE;
     apx_logfile_st *lf = (apx_logfile_st *)hFile;
 
+    err = GetLastError(); /* save the last Error code */
     if (IS_INVALID_HANDLE(lf))
         lf = _st_sys_loghandle;
     if (IS_INVALID_HANDLE(lf)) {
@@ -255,7 +256,6 @@ apxLogWrite(
     }
     if (dwLevel < lf->dwLogLevel)
         return 0;
-    err = GetLastError(); /* save the last Error code */
     if (f) {
         f = (szFile + lstrlenA(szFile) - 1);    
         while(f != szFile && '\\' != *f && '/' != *f)
