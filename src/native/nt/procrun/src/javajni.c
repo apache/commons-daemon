@@ -47,6 +47,9 @@ static DYNLOAD_FPTR_DECLARE(JNI_GetCreatedJavaVMs) = NULL;
 
 static HANDLE _st_sys_jvmDllHandle = NULL;
 
+DYNOLAD_TYPE_DECLARE(SetDllDirectoryW, WINAPI, BOOL)(LPCWSTR);
+static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
+
 #define JVM_DELETE_CLAZZ(jvm, cl)                                               \
     APXMACRO_BEGIN                                                              \
     if ((jvm)->lpEnv && (jvm)->##cl.jClazz) {                                   \
@@ -152,6 +155,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
 {
     UINT errMode;
     LPWSTR dllJvmPath = (LPWSTR)szJvmDllPath;
+    DYNLOAD_FPTR_DECLARE(SetDllDirectoryW);
 
     if (!IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
         return TRUE;    /* jvm.dll is already loaded */
@@ -168,6 +172,25 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
         _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL,
                                               LOAD_WITH_ALTERED_SEARCH_PATH);
+
+    if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
+        WCHAR  jreBinPath[1024];
+        DWORD  i, l = 0;
+
+        lstrcpynW(jreBinPath, dllJvmPath, 1023);
+        DYNLOAD_FPTR_ADDRESS(SetDllDirectoryW, KERNEL32);
+        for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
+            if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
+                jreBinPath[i] = L'\0';
+                DYNLOAD_CALL(SetDllDirectoryW)(jreBinPath);
+                l++;
+            }
+        }
+        _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
+        if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
+            _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL,
+                                                  LOAD_WITH_ALTERED_SEARCH_PATH);
+    }
     /* Restore the error mode signalization */
     SetErrorMode(errMode);
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
