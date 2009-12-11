@@ -22,8 +22,8 @@
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico" 
 
 1 VERSIONINFO
- FILEVERSION 2,0,5,0
- PRODUCTVERSION 2,0,5,0
+ FILEVERSION 2,0,6,0
+ PRODUCTVERSION 2,0,6,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
@@ -53,4 +53,5 @@ BEGIN
   BEGIN
     VALUE "Translation", 0x409, 1200
   END
-END 
+END
+
