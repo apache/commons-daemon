@@ -43,12 +43,13 @@ APXHANDLE apxCreateRegistryW(APXHANDLE hPool, REGSAM samDesired,
 #endif
 
 /** Delete the process registry keys
+ *  samDesired only needs to be KREG_WOW6432 or 0
  */
 BOOL      apxDeleteRegistryA(LPCSTR szRoot, LPCSTR szKeyName,
-                            BOOL bDeleteEmpty);
+                            REGSAM samDesired, BOOL bDeleteEmptyRoot);
 
 BOOL      apxDeleteRegistryW(LPCWSTR szRoot, LPCWSTR szKeyName,
-                            BOOL bDeleteEmpty);
+                            REGSAM samDesired, BOOL bDeleteEmptyRoot);
 
 #ifdef _UNICODE
 #define apxDeleteRegistry   apxDeleteRegistryW

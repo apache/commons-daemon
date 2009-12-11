@@ -815,39 +815,86 @@ apxRegistryDeleteW(APXHANDLE hRegistry, DWORD dwFrom,
 }
 
 
+LONG apxDeleteRegistryRecursive(HKEY hKeyRoot, LPCWSTR szSubKey) {
+    LONG rc = ERROR_SUCCESS;
+    DWORD dwSize = 0;
+    WCHAR szName[SIZ_BUFLEN];
+    HKEY hKey = NULL;
+
+    if (ERROR_SUCCESS == RegDeleteKey(hKeyRoot, szSubKey)) {
+        return ERROR_SUCCESS;
+    }
+
+    rc = RegOpenKeyExW(hKeyRoot, szSubKey, 0, KEY_ENUMERATE_SUB_KEYS | DELETE, &hKey);
+    if (rc != ERROR_SUCCESS) {
+        if (rc == ERROR_FILE_NOT_FOUND) {
+            return ERROR_SUCCESS;
+        } else {
+            return rc;
+        }
+    }
+    while (rc == ERROR_SUCCESS) {
+        dwSize = SIZ_BUFLEN;
+        rc = RegEnumKeyExW(hKey, 0, szName, &dwSize, NULL, NULL, NULL, NULL );
+       
+        if (rc == ERROR_NO_MORE_ITEMS) {           
+            rc = RegDeleteKeyW(hKeyRoot, szSubKey);
+            break;
+        } else {
+            rc = apxDeleteRegistryRecursive(hKey, szName);
+            if (rc != ERROR_SUCCESS) {
+                break;   // abort when we start failing
+            }
+        }
+    }    
+    RegCloseKey(hKey);
+    return rc;
+}
+
+
 BOOL
 apxDeleteRegistryW(LPCWSTR szRoot,
                    LPCWSTR szKeyName,
-                   BOOL bDeleteEmpty)
+                   REGSAM samDesired,
+                   BOOL bDeleteEmptyRoot)
 {
     WCHAR     buff[SIZ_BUFLEN];
-    BOOL      rv;
+    LONG      rc = ERROR_SUCCESS;
+    HKEY      hKey = NULL;
+    BOOL      rv = TRUE;
+    HKEY      hives[] = {HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER, NULL}, *hive = NULL;
 
     if (!szKeyName || lstrlenW(szKeyName) > SIZ_RESMAX)
         return FALSE;
     if (szRoot && lstrlenW(szRoot) > SIZ_RESMAX)
         return FALSE;
 
-    lstrcpyW(buff, REGSOFTWARE_ROOT);
     if (szRoot)
-        lstrcatW(buff, szRoot);
+        lstrcpyW(buff, szRoot);
     else
-        lstrcatW(buff, REGAPACHE_ROOT);
+        lstrcpyW(buff, REGAPACHE_ROOT);
     lstrcatW(buff, REGSEPARATOR);
-    lstrcatW(buff, szKeyName);
 
-    rv = SHDeleteKeyW(HKEY_LOCAL_MACHINE, buff);
-    rv += SHDeleteKeyW(HKEY_CURRENT_USER, buff);
+    for (hive = &hives[0]; *hive; hive++) {
+        HKEY hkeySoftware = NULL;
 
-    if (bDeleteEmpty) {
-        lstrcpyW(buff, REGSOFTWARE_ROOT);
-        if (szRoot)
-            lstrcatW(buff, szRoot);
-        else
-            lstrcatW(buff, REGAPACHE_ROOT);
-
-        SHDeleteEmptyKeyW(HKEY_LOCAL_MACHINE, buff);
-        SHDeleteEmptyKeyW(HKEY_CURRENT_USER, buff);
+        rc = RegOpenKeyExW(*hive, REGSOFTWARE_ROOT, 0, KEY_READ | samDesired, &hkeySoftware);
+        if (rc != ERROR_SUCCESS) {
+            rv = FALSE;
+        } else {
+            rc = RegOpenKeyExW(hkeySoftware, buff, 0, samDesired | KEY_ENUMERATE_SUB_KEYS | DELETE, &hKey);
+            if (rc == ERROR_SUCCESS) {
+                rc = apxDeleteRegistryRecursive(hKey, szKeyName);
+                RegCloseKey(hKey);
+                hKey = NULL;
+                rv |= (rc == ERROR_SUCCESS);
+            }
+            if (bDeleteEmptyRoot) {  
+                // will fail if there are subkeys, just like we want
+                RegDeleteKeyW(hkeySoftware, buff);
+            }
+            RegCloseKey(hkeySoftware);
+        } 
     }
     return rv;
 }
@@ -855,7 +902,8 @@ apxDeleteRegistryW(LPCWSTR szRoot,
 BOOL
 apxDeleteRegistryA(LPCSTR szRoot,
                    LPCSTR szKeyName,
-                   BOOL bDeleteEmpty)
+                   REGSAM samDesired,
+                   BOOL bDeleteEmptyRoot)
 {
     WCHAR    wcRoot[SIZ_RESLEN];
     WCHAR    wcKey[SIZ_RESLEN];
@@ -866,7 +914,7 @@ apxDeleteRegistryA(LPCSTR szRoot,
     }
     AsciiToWide(szKeyName, wcKey);
 
-    return apxDeleteRegistryW(wsRoot, wcKey, bDeleteEmpty);
+    return apxDeleteRegistryW(wsRoot, wcKey, samDesired, bDeleteEmptyRoot);
 }
 
 

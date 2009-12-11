@@ -642,7 +642,7 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
     }
     if (rv) {
         /* Delete all service registry settings */
-        apxDeleteRegistryW(PRG_REGROOT, lpCmdline->szApplication, TRUE);
+        apxDeleteRegistryW(PRG_REGROOT, lpCmdline->szApplication, KREG_WOW6432, TRUE);
         apxLogWrite(APXLOG_MARK_DEBUG "Service %S deleted",
                     lpCmdline->szApplication);
     }
