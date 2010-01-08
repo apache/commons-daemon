@@ -28,24 +28,24 @@
 <p>
 In the directory
 <a href="http://www.apache.org/dist/commons/daemon/binaries/">binaries</a>
-you find subdirectories containing executables
+you will find subdirectories containing executables
 corresponding to your operating system. If your machine is not in the list,
-please mail us and we will try to make it available or try to build it on your own.
+please mail us and we will try to make it available, or you can try to build it on your own.
 The files are compressed tar files. They are named <code>jvm_name-os_name</code>.
 For example: In the directory <code>freebsd</code> we have <code>jdk1.4.1-FreeBSD_4.9.tar.gz</code>
 That is a file built on FreeBSD 4.9 using the FreeBSD JVM 1.4.1.
 </p>
 </section>
 
-<section name="How do I get the excutable?">
+<section name="How do I get the executable?">
 <subsection name="jsvc">
 <p>
-You have to do the following:
+Do the following:
 <ul>
-  <li>Find the nearest tar file corresponding to our configuration.</li>
+  <li>Find the tar file corresponding to your configuration.</li>
   <li>Download it.</li>
-  <li>Uncompress the tar file and extract it (better with a gnu tar).</li>
-  <li>Copy the executable in the location where you want to run it.</li>
+  <li>Uncompress the tar file and extract it (better with gnu tar).</li>
+  <li>Copy the executable to the location where you want to run it.</li>
   <li>Write an rc shell
      (see in <code>src/samples</code> and <code>src/native/unix/native/Tomcat.sh</code>)
      to get your java application started as a daemon.
@@ -55,8 +55,8 @@ You have to do the following:
 </subsection>
 <subsection name="procrun">
 <p>
-The <code>procrun.exe</code> has to be installed as a service.
-See <a href="procrun.html">procrun</a> for more information.
+The <code>procrun.exe</code> has to be installed as a service
+(see <a href="procrun.html">procrun</a> for more information).
 </p>
 </subsection>
 </section>

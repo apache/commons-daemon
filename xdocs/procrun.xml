@@ -26,7 +26,7 @@
 <section name="Introduction">
 <p>
     Procrun is a set of libraries and applications for making Java
-    applications to run on WIN32 much easier.    
+    applications run on WIN32 more easily.
 </p> 
 <subsection name="Procrun service application">
 <p>

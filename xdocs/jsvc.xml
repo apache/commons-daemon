@@ -26,15 +26,19 @@
 <body>
 <section name="Introduction">
 <p>
-      Actually only the UNIX like platforms are supported.
-      The sources are located in the <code>src/native/unix</code> subdirectory of the
-      project sources.
-      For win32 platforms the cygwin emulation layer is used. See
-      <a href="http://www.cygwin.com/">cygwin</a> for more information.
+      Jsvc is a set of libraries and applications for making Java
+      applications run on UNIX more easily. It can run on win32 via
+      the cygwin emulation layer (see 
+      <a href="http://www.cygwin.com/"> cygwin</a> for more information),
+      however win32 users may prefer to use <a href="procrun.html"> procrun</a>
+      instead.
 </p>
 <p>
-      In the future <a href="http://apr.apache.org/">APR</a> may be used
-      to provide more convenient platform support.
+      The sources are located in the src/native/unix subdirectory.
+</p>
+<p>
+      In the future <a href="http://apr.apache.org/"> APR </a> may be used
+      to provide more portable platform support.
 </p>
 </section>
 
@@ -87,7 +91,7 @@ export JAVA_HOME
 ./configure
 </source>
 
-If your operating system is supported, configure will go thru cleanly,
+If your operating system is supported, configure will go through cleanly,
 otherwise it will report an error (please send us the details of your
 OS/JDK, or a patch against the sources). To build the binaries and
 libraries simply do:
@@ -143,6 +147,8 @@ Where options include:
         set a Java system property
     -X&lt;option&gt;
         set Virtual Machine specific option
+    -procname &lt;process name&gt;
+        Allows the process name to be configured on Linux
     -wait &lt;waittime&gt;
         wait waittime seconds for the service to start
         waittime should multiple of 10 (min=10)
@@ -156,16 +162,16 @@ Where options include:
 <section name="Using jsvc">
 <p>
 There two ways to use jsvc: via a Class that implements the Daemon interface or
-via  calling a Class that have the required methods.
+via calling a Class that has the required methods.
 For example Tomcat-4.1.x uses the Daemon interface
-and Tomcat-5.0.x provide a Class whose methods are called by jsvc directly.
+whereas Tomcat-5.0.x provides a Class whose methods are called by jsvc directly.
 </p>
 <subsection name="Via Daemon interface">
 <p>
-You have to do the following.
+Do the following:
 <ul>
   <li>Write a Class that implements the Daemon interface (MyClass).</li>
-  <li>Put it in the jarfile (my.jar).</li>
+  <li>Put it in a jarfile (my.jar).</li>
   <li>Call jsvc like:
   <source>
 ./jsvc -cp commons-daemon.jar:my.jar MyClass
@@ -176,12 +182,12 @@ You have to do the following.
 </subsection>
 <subsection name="Directly">
 <p>
-You have to write a Class (MyClass) that implements the following methods:
+Write a Class (MyClass) that implements the following methods:
 <ul>
-  <li><code>void load(String[] arguments)</code>: Here open the configuration files, create the trace file, create
-      the ServerSockets, the Threads</li>
-  <li><code>void start()</code>: Start the Thread, accept incoming connections</li>
-  <li><code>void stop()</code>: Inform the Thread to live the run(), close the ServerSockets</li>
+  <li>void init(String[] arguments): Here open configuration files, create a trace file, create
+      ServerSockets, Threads</li>
+  <li>void start(): Start the Thread, accept incoming connections</li>
+  <li>void stop(): Inform the Thread to terminate the run(), close the ServerSockets</li>
   <li><code>void destroy()</code>: Destroy any object created in init()</li>
 </ul>
 Store it in a jarfile and use as above:

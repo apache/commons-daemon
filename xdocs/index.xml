@@ -27,8 +27,8 @@
 <section name="Introduction">
 <p>
       Since 1994, the Java programming language evolved and became a
-      valid tool to develop, other than applets and client applications,
-      reliable and performant server applications. The major disadvantage of
+      valid tool to develop reliable and performant server applications as 
+      opposed to just applets and client applications. The major disadvantage of
       the Java platform is that still today the only portable way to
       start a Java application relies on a single point of entry: the
       <CODE><EM CLASS="key">public static void</EM>
@@ -56,19 +56,25 @@
       message to be issued. When the message is received, all operations
       required to shut down the server applications are performed and at the
       end the <CODE><EM CLASS="ref">System</EM>.exit</CODE> method is called
-      to terminate the Virtual Machine process. This method, however, implies
-      several disadvantages and risks: for example in case of a system-wide
-      shutdown, it might happen that the Virtual Machine process will be shut
-      down directly by the operating system, without notifying the running
-      server application. Or, for example, if an attacker finds out what is
-      the required message to send to the server, and discovers a way to send
-      this message to the running server application, he can easily interrupt
-      the operation of a server, bypassing all the security restrictions
+      to terminate the Virtual Machine process. This method however, has
+      several disadvantages and risks:
+      <ul>
+      <li>
+      In case of a system-wide shutdown, the Virtual Machine process may be
+      shut down directly by the operating system without notifying the running
+      server application.
+      </li>
+      <li>
+      If an attacker finds out the shutdown message to send to the server 
+      and discovers a way to send this message, he can easily interrupt
+      the server's operation, bypassing all the security restrictions
       implemented in the operating system.
+      </li>
+      </ul>
 </p>
 <p>
       Most multi-user operating systems already have a way in which server
-      applications are started and stopped, under Unix based operating systems
+      applications are started and stopped. Under Unix based operating systems
       non interactive server applications are called <em>daemons</em> and are
       controlled by the operating system with a set of specified
       <em>signals</em>. Under Windows such programs are called <em>services</em>
@@ -91,16 +97,16 @@
 
 <section name="Platforms">
 <p>
-      Actually win32 and the UNIX like platforms are supported.
-      For win32 platfroms use <a href="procrun.html">procrun</a>.
+      Both win32 and UNIX like platforms are supported.
+      For win32 platforms use <a href="procrun.html">procrun</a>.
       For UNIX like platforms use <a href="jsvc.html">jsvc</a>.
 </p>
 </section>
 <section name="Initial Source of the Package">
 
-<p>The original Java classes come from the Jakarta Tomcat 4.0 project.</p>
+<p>The original Java classes came from the Jakarta Tomcat 4.0 project.</p>
 
-<p>The proposed package name for the Daemon component is
+<p>The package name for the Daemon component is
 <code>org.apache.commons.daemon</code>.
 </p>
 </section>
