@@ -31,10 +31,10 @@ extern "C" {
  */
 JNIEXPORT void JNICALL Java_SimpleDaemon_toto
   (JNIEnv *env, jclass class) {
-	int i;
-	i = -1;
-	memcpy(&i, &i, i);
-	memset(&i, ' ', 1024);
+    int i;
+    i = -1;
+    memcpy(&i, &i, i);
+    memset(&i, ' ', 1024);
 }
  
 #ifdef __cplusplus

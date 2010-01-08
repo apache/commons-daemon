@@ -52,12 +52,12 @@ char Variable[ENVSIZE];
 int OnServeSetEnv ()
 {
 HKEY    hKey=NULL;
-DWORD	Type;
-char	jakarta_home[ENVSIZE]; /* for the path */
-char	cygwin[ENVSIZE]; /* for the path */
-char	Data[ENVSIZE];
-DWORD	LData;
-int	qreturn=0;
+DWORD   Type;
+char    jakarta_home[ENVSIZE]; /* for the path */
+char    cygwin[ENVSIZE]; /* for the path */
+char    Data[ENVSIZE];
+DWORD   LData;
+int     qreturn=0;
 
 
     /* Read the registry and set environment. */
@@ -122,7 +122,7 @@ int	qreturn=0;
  */
 int BuildCommand(char *data)
 {
-    int	i;
+    int  i;
     LONG lRet;
     DWORD dwIndex;
     char name[128];
@@ -130,7 +130,7 @@ int BuildCommand(char *data)
     char value[256];
     DWORD lvalue;
     DWORD nvalue;
-    DWORD	Type;
+    DWORD   Type;
     HKEY    hKey=NULL;
 
 

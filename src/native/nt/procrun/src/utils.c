@@ -1011,13 +1011,13 @@ PSECURITY_ATTRIBUTES GetNullACL()
     }
     SetLastError(0);
     if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
-	|| GetLastError()) {
+    || GetLastError()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;
     }
     if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
-	|| GetLastError()) {
+    || GetLastError()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;

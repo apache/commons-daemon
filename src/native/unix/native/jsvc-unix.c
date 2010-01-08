@@ -133,10 +133,10 @@ static int set_user_group(char *user, int uid, int gid)
             } else
                 log_debug("Cannot set supplement group list for user '%s'",user);
         }
-	if (getuid() == uid) {
+    if (getuid() == uid) {
             log_debug("No need to change user to '%s'!",user);
             return(0);
-	}
+    }
         if (setuid(uid)!=0) {
             log_error("Cannot set user id for user '%s'",user);
             return(-1);

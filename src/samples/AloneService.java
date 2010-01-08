@@ -56,7 +56,7 @@ public class AloneService {
         prop = new ExtendedProperties("startfile");
 
         /* create an array to store the processes */
-	int i=0;
+        int i=0;
         for (Iterator e = prop.getKeys(); e.hasNext() ;) {
             e.next();
             i++;
@@ -80,7 +80,7 @@ public class AloneService {
         System.err.println("ServiceDaemon: starting");
 
         /* Start */
-	int i=0;
+        int i=0;
         for (Iterator e = prop.getKeys(); e.hasNext() ;) {
            String name = (String) e.next();
            System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getString(name));

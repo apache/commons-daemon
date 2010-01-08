@@ -609,7 +609,7 @@ LPSTR apxGetFileNameA(HWND hWnd, LPCSTR szTitle, LPCSTR szFilter,
     lpOf.lpstrInitialDir = szDefPath;
     lpOf.lpstrFile       = szFile;
     lpOf.nMaxFile        = SIZ_BUFMAX;
- 	lpOf.Flags = OFN_LONGNAMES | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+    lpOf.Flags = OFN_LONGNAMES | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 
     if (bOpenOrSave)
         rv = GetOpenFileNameA(&lpOf);
@@ -644,7 +644,7 @@ LPWSTR apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
     lpOf.lpstrInitialDir = szDefPath;
     lpOf.lpstrFile       = szFile;
     lpOf.nMaxFile        = SIZ_BUFMAX;
- 	lpOf.Flags = OFN_LONGNAMES | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+    lpOf.Flags = OFN_LONGNAMES | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 
     if (bOpenOrSave)
         rv = GetOpenFileNameW(&lpOf);

@@ -33,11 +33,11 @@
 #define WINHEIGHT 460
 
 #define CLASSMAIN
-#define VM_ICON_MESS	WM_USER+1
-#define VM_ID_TIMER		WM_USER+2
-#define VM_START_ICON	WM_USER+3
-#define VM_ID_TIMER1	WM_USER+4
-#define VM_ID_TIMER2	WM_USER+5
+#define VM_ICON_MESS    WM_USER+1
+#define VM_ID_TIMER     WM_USER+2
+#define VM_START_ICON   WM_USER+3
+#define VM_ID_TIMER1    WM_USER+4
+#define VM_ID_TIMER2    WM_USER+5
 
 BOOL InitApplication(HANDLE hInstance);
 
@@ -79,20 +79,20 @@ char MessBox[256];
 BOOL MyTaskBarAddIcon(HWND hWnd)
 { 
     BOOL res; 
-	NOTIFYICONDATA  notifyicondata;
-	HICON hicon;
+    NOTIFYICONDATA  notifyicondata;
+    HICON hicon;
  
-	notifyicondata.cbSize=sizeof(notifyicondata); 
-	notifyicondata.hWnd=hWnd; 
-	notifyicondata.uID=ID_TASKICON; 
-	notifyicondata.uFlags= NIF_ICON|NIF_MESSAGE|NIF_TIP; 
-	notifyicondata.uCallbackMessage=VM_ICON_MESS;
-	hicon = LoadIcon(hInst,"OnServe");
+    notifyicondata.cbSize=sizeof(notifyicondata); 
+    notifyicondata.hWnd=hWnd; 
+    notifyicondata.uID=ID_TASKICON; 
+    notifyicondata.uFlags= NIF_ICON|NIF_MESSAGE|NIF_TIP; 
+    notifyicondata.uCallbackMessage=VM_ICON_MESS;
+    hicon = LoadIcon(hInst,"OnServe");
     notifyicondata.hIcon = hicon;
-	strcpy(notifyicondata.szTip,"Jakarta Service");
+    strcpy(notifyicondata.szTip,"Jakarta Service");
 
 
-	res = Shell_NotifyIcon(NIM_ADD,&notifyicondata);
+    res = Shell_NotifyIcon(NIM_ADD,&notifyicondata);
  
     if (hicon) 
         DestroyIcon(hicon); 
@@ -130,8 +130,8 @@ PROCESS_INFORMATION ProcessInformation;
    
   if (!CreateProcess(NULL,"vdcom.exe",NULL,NULL,FALSE,NORMAL_PRIORITY_CLASS,      
          NULL,NULL, &StartupInfo, &ProcessInformation)) {
-	  DisplayMess(hDlg,CANNOT_START_VDCOM);
-	  return;
+      DisplayMess(hDlg,CANNOT_START_VDCOM);
+      return;
      }
   /* the handle to the process */
   CloseHandle(ProcessInformation.hProcess); 
@@ -148,8 +148,8 @@ PROCESS_INFORMATION ProcessInformation;
    
   if (!CreateProcess(NULL,"vdconf.exe",NULL,NULL,FALSE,NORMAL_PRIORITY_CLASS,      
          NULL,NULL, &StartupInfo, &ProcessInformation)) {
-	  DisplayMess(hDlg,CANNOT_START_VDCONF);
-	  return;
+      DisplayMess(hDlg,CANNOT_START_VDCONF);
+      return;
      }
   /* the handle to the process */
   CloseHandle(ProcessInformation.hProcess); 
@@ -161,16 +161,16 @@ BOOL IsRunning(HWND hDlg)
 {
   SERVICE_STATUS  svcStatus;
 
-	if (!QueryServiceStatus(hService, &svcStatus)) {
-		DisplayMess(hDlg,ERROR_STATUS);
-		PostQuitMessage(0);
-		return(FALSE);
-	}
-	else {
-		if (SERVICE_RUNNING == svcStatus.dwCurrentState)
-			return(TRUE);
-	}
-	return(FALSE);
+    if (!QueryServiceStatus(hService, &svcStatus)) {
+        DisplayMess(hDlg,ERROR_STATUS);
+        PostQuitMessage(0);
+        return(FALSE);
+    }
+    else {
+        if (SERVICE_RUNNING == svcStatus.dwCurrentState)
+            return(TRUE);
+    }
+    return(FALSE);
 
 }
 /* test if service is stoppped */
@@ -178,16 +178,16 @@ BOOL IsStopped(HWND hDlg)
 {
   SERVICE_STATUS  svcStatus;
 
-	if (!QueryServiceStatus(hService, &svcStatus)) {
-		DisplayMess(hDlg,ERROR_STATUS);
-		PostQuitMessage(0);
-		return(FALSE);
-	}
-	else {
-		if (SERVICE_STOPPED == svcStatus.dwCurrentState)
-			return(TRUE);
-	}
-	return(FALSE);
+    if (!QueryServiceStatus(hService, &svcStatus)) {
+        DisplayMess(hDlg,ERROR_STATUS);
+        PostQuitMessage(0);
+        return(FALSE);
+    }
+    else {
+        if (SERVICE_STOPPED == svcStatus.dwCurrentState)
+            return(TRUE);
+    }
+    return(FALSE);
 
 }
 /* Yes/No dialog box */
@@ -197,24 +197,24 @@ LRESULT APIENTRY StopYesNo(
         UINT wParam,              /* message-specific information    */
         LONG lParam)
 {
-	SERVICE_STATUS  svcStatus;
-	
-	switch (message) {
-	case WM_COMMAND:                     /* message: received a command */
-		if (LOWORD(wParam) == IDOK) {	 /* "OK" box selected */
-			if (!IsStopped(hDlg)) {
-				ControlService(hService, SERVICE_CONTROL_STOP, &svcStatus);
-				EndDialog(hDlg, TRUE);
-			}
-			else
-				EndDialog(hDlg, FALSE);
-		}
-		if (LOWORD(wParam) == IDCANCEL)
-			EndDialog(hDlg, FALSE);
-		return(TRUE);
-	} /* End switch message */
-	return (FALSE);                            /* Didn't process a message    */
-	UNREFERENCED_PARAMETER(lParam);
+    SERVICE_STATUS  svcStatus;
+    
+    switch (message) {
+    case WM_COMMAND:                     /* message: received a command */
+        if (LOWORD(wParam) == IDOK) {     /* "OK" box selected */
+            if (!IsStopped(hDlg)) {
+                ControlService(hService, SERVICE_CONTROL_STOP, &svcStatus);
+                EndDialog(hDlg, TRUE);
+            }
+            else
+                EndDialog(hDlg, FALSE);
+        }
+        if (LOWORD(wParam) == IDCANCEL)
+            EndDialog(hDlg, FALSE);
+        return(TRUE);
+    } /* End switch message */
+    return (FALSE);                            /* Didn't process a message    */
+    UNREFERENCED_PARAMETER(lParam);
 }
 /* Please wait stopping dialog box */
 LRESULT APIENTRY PleaseWait(
@@ -223,23 +223,23 @@ LRESULT APIENTRY PleaseWait(
         UINT wParam,              /* message-specific information    */
         LONG lParam)
 {
-	
-	switch (message) {
-	case WM_INITDIALOG:
-		SetTimer(hDlg,VM_ID_TIMER2,5000,NULL); /* wait 5 seconds. */
-	case WM_COMMAND:                     /* message: received a command */
-		if (LOWORD(wParam) == IDCANCEL)
-			EndDialog(hDlg, FALSE);
-		return(TRUE);
-	case WM_TIMER:
-		if(IsStopped(hDlg))
-			EndDialog(hDlg, TRUE);
-		else
-			SetTimer(hDlg,VM_ID_TIMER2,5000,NULL); /* wait 5 seconds. */
-		return(TRUE);
-	} /* End switch message */
-	return (FALSE);                            /* Didn't process a message    */
-	UNREFERENCED_PARAMETER(lParam);
+    
+    switch (message) {
+    case WM_INITDIALOG:
+        SetTimer(hDlg,VM_ID_TIMER2,5000,NULL); /* wait 5 seconds. */
+    case WM_COMMAND:                     /* message: received a command */
+        if (LOWORD(wParam) == IDCANCEL)
+            EndDialog(hDlg, FALSE);
+        return(TRUE);
+    case WM_TIMER:
+        if(IsStopped(hDlg))
+            EndDialog(hDlg, TRUE);
+        else
+            SetTimer(hDlg,VM_ID_TIMER2,5000,NULL); /* wait 5 seconds. */
+        return(TRUE);
+    } /* End switch message */
+    return (FALSE);                            /* Didn't process a message    */
+    UNREFERENCED_PARAMETER(lParam);
 }
 LRESULT APIENTRY StartYesNo(
         HWND hDlg,                /* window handle of the dialog box */
@@ -247,40 +247,40 @@ LRESULT APIENTRY StartYesNo(
         UINT wParam,              /* message-specific information    */
         LONG lParam)
 {
-	
-	switch (message) {
-	case WM_INITDIALOG:
-		if (!StartService(hService,0,NULL)) {
-			DisplayMess(hDlg,CANNOT_START);
-			PostQuitMessage(0);
-		}
-		/* test if running, if not set a timer. */
-		/* wait until service is start */
-		if (IsRunning(hDlg)) 
-			EndDialog(hDlg, TRUE);
-		else
-			SetTimer(hDlg,VM_ID_TIMER1,5000,NULL); /* wait 5 seconds. */
-		return(TRUE);
-		
-	case WM_TIMER:
-		if(IsRunning(hDlg))
-			EndDialog(hDlg, TRUE);
-		else
-			SetTimer(hDlg,VM_ID_TIMER1,5000,NULL); /* wait 5 seconds. */
-		return(TRUE);
-		
-	case WM_COMMAND:                    /* message: received a command */
-		if (LOWORD(wParam) == IDCANCEL) {
-			if (IsRunning(hDlg)) 
-				EndDialog(hDlg, TRUE);
-			else
-				PostQuitMessage(0);
-		}
-		return(TRUE);
-		
-	} /* End switch message */
-	return (FALSE);                            /* Didn't process a message    */
-	UNREFERENCED_PARAMETER(lParam);
+
+    switch (message) {
+    case WM_INITDIALOG:
+        if (!StartService(hService,0,NULL)) {
+            DisplayMess(hDlg,CANNOT_START);
+            PostQuitMessage(0);
+        }
+        /* test if running, if not set a timer. */
+        /* wait until service is start */
+        if (IsRunning(hDlg)) 
+            EndDialog(hDlg, TRUE);
+        else
+            SetTimer(hDlg,VM_ID_TIMER1,5000,NULL); /* wait 5 seconds. */
+        return(TRUE);
+        
+    case WM_TIMER:
+        if(IsRunning(hDlg))
+            EndDialog(hDlg, TRUE);
+        else
+            SetTimer(hDlg,VM_ID_TIMER1,5000,NULL); /* wait 5 seconds. */
+        return(TRUE);
+        
+    case WM_COMMAND:                    /* message: received a command */
+        if (LOWORD(wParam) == IDCANCEL) {
+            if (IsRunning(hDlg)) 
+                EndDialog(hDlg, TRUE);
+            else
+                PostQuitMessage(0);
+        }
+        return(TRUE);
+        
+    } /* End switch message */
+    return (FALSE);                            /* Didn't process a message    */
+    UNREFERENCED_PARAMETER(lParam);
 }
 
 /* Display the menu */
@@ -298,7 +298,7 @@ void   ShowMenu(HWND hWnd)
 
    SetForegroundWindow(hWnd); /* MS bug. */
    TrackPopupMenuEx(hMenu1,TPM_RIGHTALIGN|TPM_BOTTOMALIGN|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,
-					point.x,point.y,hWnd,NULL);
+                    point.x,point.y,hWnd,NULL);
    PostMessage(hWnd, WM_USER, 0, 0); /* MS bug. */
    DestroyMenu(hMenu);
 
@@ -316,7 +316,7 @@ BOOL InitInstance(
     int             nCmdShow)           /* Param for first ShowWindow() call. */
 {
     HWND            hWnd;               /* Main window handle.                */
-	DWORD			dwStyle,dwExStyle;
+    DWORD           dwStyle,dwExStyle;
 
 
     /* Save the instance handle in static variable, which will be used in  */
@@ -326,20 +326,20 @@ BOOL InitInstance(
 
     /* Create a main window for this application instance.  */
 
-	if (optmode == VDMONISTART || optmode == VDMONICHECK) {
-		dwStyle = ICONWINDOW;
-		dwExStyle = WS_EX_APPWINDOW;
-	}
-	else {
-		dwStyle = NORMALWINDOW;
-		dwExStyle = 0;
-	}
+    if (optmode == VDMONISTART || optmode == VDMONICHECK) {
+        dwStyle = ICONWINDOW;
+        dwExStyle = WS_EX_APPWINDOW;
+    }
+    else {
+        dwStyle = NORMALWINDOW;
+        dwExStyle = 0;
+    }
 
     hWnd = CreateWindowEx(
-		dwExStyle,
+        dwExStyle,
         "OnServe",                      /* See RegisterClass() call.          */
-        "OnServe Monitor Control",		/* Text for window title bar.   */
-        dwStyle,						/* Window style.*/
+        "OnServe Monitor Control",      /* Text for window title bar.   */
+        dwStyle,                        /* Window style.*/
         CW_USEDEFAULT,                  /* Default horizontal position.       */
         CW_USEDEFAULT,                  /* Default vertical position.         */
         WINWIDTH,                       /* Windows width.                     */
@@ -355,7 +355,7 @@ BOOL InitInstance(
 
     if (!hWnd) {
         return (FALSE);
-	}
+    }
 
     return (TRUE);               /* Returns the value from PostQuitMessage */
 
@@ -379,126 +379,126 @@ LONG APIENTRY MainWndProc(
    switch (message) {
    case WM_CREATE:
 
-	  /* acces to service manager. */
+      /* acces to service manager. */
       hManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	  if (hManager==NULL) {
-		  DisplayMess(hWnd,NO_ACCESS);
-		  PostQuitMessage(0);
-		  break;
-	  }
-	  /* access to monitor service.  */
+      if (hManager==NULL) {
+          DisplayMess(hWnd,NO_ACCESS);
+          PostQuitMessage(0);
+          break;
+      }
+      /* access to monitor service.  */
       hService = OpenService(hManager, SZSERVICENAME, SERVICE_ALL_ACCESS);
-	  if (hService==NULL) {
-		  DisplayMess(hWnd,NO_ACCESS_MONI);
-		  PostQuitMessage(0);
-		  break;
-	  }
-	  /* check if running. */
+      if (hService==NULL) {
+          DisplayMess(hWnd,NO_ACCESS_MONI);
+          PostQuitMessage(0);
+          break;
+      }
+      /* check if running. */
       if (QueryServiceStatus(hService, &svcStatus)) {       
           /* and see if the service is stopped */
           if (SERVICE_STOPPED == svcStatus.dwCurrentState &&
-			  optmode == VDMONISTOP) {
-			  DisplayMess(hWnd,ALREADY_STOP);
-			  PostQuitMessage(0);
-			  break;
-		  }
-		  else if (SERVICE_RUNNING == svcStatus.dwCurrentState &&
-			  optmode == VDMONISTART) {
-			  DisplayMess(hWnd,ALREADY_START);
-			  PostQuitMessage(0);
-			  break;
-		  }
+              optmode == VDMONISTOP) {
+              DisplayMess(hWnd,ALREADY_STOP);
+              PostQuitMessage(0);
+              break;
+          }
+          else if (SERVICE_RUNNING == svcStatus.dwCurrentState &&
+              optmode == VDMONISTART) {
+              DisplayMess(hWnd,ALREADY_START);
+              PostQuitMessage(0);
+              break;
+          }
 
-	  }
-	  else {
-		  DisplayMess(hWnd,ERROR_STATUS);
-		  PostQuitMessage(0);
-		  break;
-	  }
+      }
+      else {
+          DisplayMess(hWnd,ERROR_STATUS);
+          PostQuitMessage(0);
+          break;
+      }
 
       /* DialogBoxes Yes/No */
-	  if (optmode == VDMONISTART)
-		  DialogBox(hInst,				     /* current instance         */
-		        "StartYesNo",                /* resource to use          */
-			    hWnd,                        /* parent handle            */
-				StartYesNo);                 /* instance address         */
-	  else if (optmode == VDMONISTOP)
-		  if (DialogBox(hInst,"StopYesNo",hWnd,StopYesNo))
-			  DialogBox(hInst,"PleaseWait",hWnd,PleaseWait);
+      if (optmode == VDMONISTART)
+          DialogBox(hInst,                     /* current instance         */
+                "StartYesNo",                /* resource to use          */
+                hWnd,                        /* parent handle            */
+                StartYesNo);                 /* instance address         */
+      else if (optmode == VDMONISTOP)
+          if (DialogBox(hInst,"StopYesNo",hWnd,StopYesNo))
+              DialogBox(hInst,"PleaseWait",hWnd,PleaseWait);
 
-	
-	  if (optmode == VDMONISTOP)
-		  PostQuitMessage(0);
-	  else {
-		  SetTimer(hWnd,VM_ID_TIMER,5000,NULL);
-		  MyTaskBarAddIcon(hWnd);
-	  }
+    
+      if (optmode == VDMONISTOP)
+          PostQuitMessage(0);
+      else {
+          SetTimer(hWnd,VM_ID_TIMER,5000,NULL);
+          MyTaskBarAddIcon(hWnd);
+      }
 
       break;   /* WM_CREATE */
 
    case VM_ICON_MESS:
-	   switch ((UINT)lParam) {
-	   case WM_LBUTTONDBLCLK:
-		   StartVdcom(hWnd);
-		   break;
-	   case WM_RBUTTONDOWN:
-	  	   flagdown = 1;
-		   break;
-	   case WM_RBUTTONUP:
-		   if (flagdown == 1) {
-		   flagdown = 2;
-		   /* show a  menu. */
-		   ShowMenu(hWnd);
-		   }
-		   break;
-	   }
-	   break;
+       switch ((UINT)lParam) {
+       case WM_LBUTTONDBLCLK:
+           StartVdcom(hWnd);
+           break;
+       case WM_RBUTTONDOWN:
+             flagdown = 1;
+           break;
+       case WM_RBUTTONUP:
+           if (flagdown == 1) {
+           flagdown = 2;
+           /* show a  menu. */
+           ShowMenu(hWnd);
+           }
+           break;
+       }
+       break;
 
 
    case WM_TIMER:
-	   /* check if service is running */
+       /* check if service is running */
        if (QueryServiceStatus(hService, &svcStatus)) {       
           /* and see if the service is stopped */
-		   if (SERVICE_STOPPED == svcStatus.dwCurrentState) {
-			   MyTaskBarDeleteIcon(hWnd);
-			   PostQuitMessage(0);
-		   }
-		   SetTimer(hWnd,VM_ID_TIMER,5000,NULL);
-		   return(0);
-	   }
-	   break;
+           if (SERVICE_STOPPED == svcStatus.dwCurrentState) {
+               MyTaskBarDeleteIcon(hWnd);
+               PostQuitMessage(0);
+           }
+           SetTimer(hWnd,VM_ID_TIMER,5000,NULL);
+           return(0);
+       }
+       break;
 
    case VM_START_ICON:
-	   /* add the icon and timer. */
-	   MyTaskBarAddIcon(hWnd);
-	   SetTimer(hWnd,VM_ID_TIMER,5000,NULL);
-	   break;
+       /* add the icon and timer. */
+       MyTaskBarAddIcon(hWnd);
+       SetTimer(hWnd,VM_ID_TIMER,5000,NULL);
+       break;
 
    case WM_COMMAND:
-	   /* command for the popup menu. */
-	   switch (LOWORD(wParam)) {
-	   case ID_START_VDCOM:
-		   StartVdcom(hWnd);
-		   break;
-	   case ID_STOP_VDMONI:
-    	   if (DialogBox(hInst,"StopYesNo",hWnd,StopYesNo))
-			  DialogBox(hInst,"PleaseWait",hWnd,PleaseWait);
-		   break;
-	   case ID_PROPRETY:
-		   StartVdconf(hWnd);
-		   break;
+       /* command for the popup menu. */
+       switch (LOWORD(wParam)) {
+       case ID_START_VDCOM:
+           StartVdcom(hWnd);
+           break;
+       case ID_STOP_VDMONI:
+           if (DialogBox(hInst,"StopYesNo",hWnd,StopYesNo))
+              DialogBox(hInst,"PleaseWait",hWnd,PleaseWait);
+           break;
+       case ID_PROPRETY:
+           StartVdconf(hWnd);
+           break;
 
-	   }
-	   break;
+       }
+       break;
 
   /*
    *   Clean up.
    */
    case WM_DESTROY:
-	   if (hService!=NULL)
-		   CloseServiceHandle(hService);
-	   if (hManager!=NULL) 
-		   CloseServiceHandle(hManager);
+       if (hService!=NULL)
+           CloseServiceHandle(hService);
+       if (hManager!=NULL) 
+           CloseServiceHandle(hManager);
       PostQuitMessage(0);
       break;
 
@@ -529,12 +529,12 @@ WINAPI WinMain(
     MSG msg;
 
     UNREFERENCED_PARAMETER( lpCmdLine );
-	if (strcmp(lpCmdLine,"start")==0) 
-		optmode = VDMONISTART;
-	else if (strcmp(lpCmdLine,"stop")==0)
-		optmode = VDMONISTOP;
-	else
-		optmode = VDMONICHECK;
+    if (strcmp(lpCmdLine,"start")==0) 
+        optmode = VDMONISTART;
+    else if (strcmp(lpCmdLine,"stop")==0)
+        optmode = VDMONISTOP;
+    else
+        optmode = VDMONICHECK;
 
     if (!hPrevInstance)                  /* Other instances of app running? */
         if (!InitApplication(hInstance)) /* Initialize shared things        */

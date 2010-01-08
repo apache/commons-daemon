@@ -76,13 +76,13 @@ VOID AddToMessageLog(LPTSTR lpszMsg)
 
         /* Use event logging to log the error. */
 
-	if (isWindowsNT())
+    if (isWindowsNT())
             hEventSource = RegisterEventSource(NULL, TEXT(SZSERVICENAME));
-	else
-	    hEventSource = NULL;
+    else
+        hEventSource = NULL;
 
 #ifdef CYGWIN
-	sprintf(szMsg, TEXT("%s ERROR: %d"), TEXT(SZSERVICENAME), dwErr);
+    sprintf(szMsg, TEXT("%s ERROR: %d"), TEXT(SZSERVICENAME), dwErr);
 #else
         _stprintf(szMsg, TEXT("%s ERROR: %d"), TEXT(SZSERVICENAME), dwErr);
 #endif
@@ -102,10 +102,10 @@ VOID AddToMessageLog(LPTSTR lpszMsg)
 
             (VOID) DeregisterEventSource(hEventSource);
         } else {
-	    /* Default to a trace file */
-	    FILE *log;
-	    log = fopen("c:/jakarta-service.log","a+");
-	    if (log != NULL) {
+        /* Default to a trace file */
+        FILE *log;
+        log = fopen("c:/jakarta-service.log","a+");
+        if (log != NULL) {
                 struct tm *newtime;
                 time_t long_time;
 
@@ -113,12 +113,12 @@ VOID AddToMessageLog(LPTSTR lpszMsg)
                 newtime = localtime( &long_time );
 
                 if (dwErr)
-		    fprintf(log,"%.24s:%s: %s\n",asctime(newtime),szMsg, lpszMsg);
+            fprintf(log,"%.24s:%s: %s\n",asctime(newtime),szMsg, lpszMsg);
                 else
-		    fprintf(log,"%.24s: %s\n",asctime(newtime), lpszMsg);
-		fclose(log);
-	    }
-	}
+            fprintf(log,"%.24s: %s\n",asctime(newtime), lpszMsg);
+        fclose(log);
+        }
+    }
 }
 
 /*
@@ -410,7 +410,7 @@ int ReportManager(int event)
  */
 VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 {
-char	Data[512];
+char    Data[512];
 DWORD   qreturn;
 STARTUPINFO StartupInfo;
 PROCESS_INFORMATION ProcessInformation;
@@ -629,9 +629,9 @@ void WINAPI service_main(DWORD dwArgc, LPTSTR *lpszArgv)
                                                    service_ctrl);
 
     if (!sshStatusHandle) {
-	AddToMessageLog(TEXT("service_main:RegisterServiceCtrlHandler failed"));
+    AddToMessageLog(TEXT("service_main:RegisterServiceCtrlHandler failed"));
         goto cleanup;
-	}
+    }
 
     /* SERVICE_STATUS members that don't change in example */
     ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
@@ -640,9 +640,9 @@ void WINAPI service_main(DWORD dwArgc, LPTSTR *lpszArgv)
 
     /* report the status to the service control manager. */
     if (!ReportStatusToSCMgr(SERVICE_START_PENDING,NO_ERROR,3000))   {
-	AddToMessageLog(TEXT("service_main:ReportStatusToSCMgr failed"));
+    AddToMessageLog(TEXT("service_main:ReportStatusToSCMgr failed"));
         goto cleanup;
-	}
+    }
 
 
     ServiceStart( dwArgc, lpszArgv );
@@ -693,16 +693,16 @@ void _CRTAPI1 main(int argc, char **argv)
         { NULL, NULL }
     };
 
-	AddToMessageLog(TEXT("StartService starting"));
-	if (isWindowsNT()) {
+    AddToMessageLog(TEXT("StartService starting"));
+    if (isWindowsNT()) {
             if (!StartServiceCtrlDispatcher(dispatchTable)) {
-		AddToMessageLog(TEXT("StartServiceCtrlDispatcher failed."));
-		return;
-	    }
-	    AddToMessageLog(TEXT("StartService started"));
-	} else {
-	    Windows9xServiceCtrlHandler();
-	    ServiceStart(argc,argv);
-	    AddToMessageLog(TEXT("StartService stopped"));
-	}
+        AddToMessageLog(TEXT("StartServiceCtrlDispatcher failed."));
+        return;
+        }
+        AddToMessageLog(TEXT("StartService started"));
+    } else {
+        Windows9xServiceCtrlHandler();
+        ServiceStart(argc,argv);
+        AddToMessageLog(TEXT("StartService stopped"));
+    }
 }
