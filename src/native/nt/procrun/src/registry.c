@@ -1081,7 +1081,7 @@ BOOL apxSetServiceDescriptionW(LPCWSTR szServiceName, LPCWSTR szDescription)
                         lstrlenW(szDescription) * sizeof(WCHAR));
     SAFE_CLOSE_KEY(hKey);
 
-    return rc = ERROR_SUCCESS;
+    return rc == ERROR_SUCCESS;
 }
 
 BOOL apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,

@@ -695,7 +695,7 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
 static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 {
     APXHANDLE hService;
-    BOOL  rv = FALSE;
+    BOOL  rv = TRUE;
 
     apxLogWrite(APXLOG_MARK_INFO "Updating service...");
 
@@ -721,12 +721,12 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
             apxLogWrite(APXLOG_MARK_DEBUG "Setting service password %S",
                         SO_SPASSWORD);
         }
-        apxServiceSetNames(hService,
-                           NULL,                /* Never update the ImagePath */
-                           SO_DISPLAYNAME,
-                           SO_DESCRIPTION,
-                           su,
-                           sp);
+        rv = (rv && apxServiceSetNames(hService,
+                                       NULL,                /* Never update the ImagePath */
+                                       SO_DISPLAYNAME,
+                                       SO_DESCRIPTION,
+                                       su,
+                                       sp));
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
             if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
@@ -738,19 +738,21 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
             if (!lstrcmpiW(SO_TYPE, STYPE_INTERACTIVE))
                 dwType = SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS;
         }
-        apxServiceSetOptions(hService,
-                             dwType,
-                             dwStart,
-                             SERVICE_NO_CHANGE);
+        rv = (rv && apxServiceSetOptions(hService,
+                                         dwType,
+                                         dwStart,
+                                         SERVICE_NO_CHANGE));
 
         apxLogWrite(APXLOG_MARK_INFO "Service %S updated",
                     lpCmdline->szApplication);
 
-        saveConfiguration(lpCmdline);
+        rv = (rv && saveConfiguration(lpCmdline));
     }
-    else
+    else {
         apxDisplayError(TRUE, NULL, 0, "Unable to open %S service",
                         lpCmdline->szApplication);
+        rv = FALSE;
+    }
     apxCloseHandle(hService);
     apxLogWrite(APXLOG_MARK_INFO "Update service finished.");
     return rv;
