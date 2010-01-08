@@ -68,6 +68,8 @@ typedef struct {
     char *errfile;
     /** Program name for Linux **/
     char *procname;
+    /** Whether to redirect stdin to /dev/null or not. Defaults to true **/
+    bool redirectstdin;
 } arg_data;
 
 /**

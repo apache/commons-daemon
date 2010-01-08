@@ -619,8 +619,11 @@ static FILE *loc_freopen(char *outfile, char *mode, FILE *stream)
 /**
  *  Redirect stdin, stdout, stderr.
  */
-static void set_output(char *outfile, char *errfile) {
-    freopen("/dev/null", "r", stdin); 
+static void set_output(char *outfile, char *errfile, bool redirectstdin) {
+    if (redirectstdin==true) {
+        freopen("/dev/null", "r", stdin);
+    }
+
     log_debug("redirecting stdout to %s and stderr to %s",outfile,errfile);
 
     /* make sure the debug goes out */
@@ -751,7 +754,7 @@ int main(int argc, char *argv[]) {
     }
 
     envmask = umask(0077);
-    set_output(args->outfile, args->errfile);
+    set_output(args->outfile, args->errfile, args->redirectstdin);
 
     /* We have to fork: this process will become the controller and the other
        will be the child */

@@ -90,5 +90,8 @@ void help(home_data *data) {
     printf("    -stop\n");
     printf("        stop the service using the file given in the -pidfile option\n");
 
+    printf("    -keepstdin\n");
+    printf("        does not redirect stdin to /dev/null\n");
+
     printf("\n");
 }

@@ -56,6 +56,7 @@ static arg_data *parse(int argc, char *argv[]) {
     args->anum=0;               /* Zero class specific arguments but make room*/
     args->outfile="/dev/null";   /* Swallow by default */
     args->errfile="/dev/null";   /* Swallow by default */
+    args->redirectstdin=true;	 /* Redirect stdin to /dev/null by default */
     args->args=(char **)malloc(argc*sizeof(char *));
     args->procname = "jsvc.exec";
     /* Set up the command name */
@@ -134,6 +135,9 @@ static arg_data *parse(int argc, char *argv[]) {
 
         } else if (strcmp(argv[x],"-nodetach")==0) {
             args->dtch=false;
+
+        } else if (strcmp(argv[x], "-keepstdin")==0) {
+           args->redirectstdin = false;
 
         } else if (strcmp(argv[x],"-service")==0) {
             args->service=true;
