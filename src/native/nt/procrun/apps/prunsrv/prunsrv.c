@@ -1196,12 +1196,18 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             _jni_rparam = SO_STARTPARAMS;
         }
         else if (!lstrcmpiW(SO_STARTMODE, PRSRV_JAVA)) {
-            LPWSTR jx = NULL, szJH = apxGetJavaSoftHome(gPool, FALSE);
+            LPWSTR jx = NULL, szJH = SO_JAVAHOME;
+            if (!szJH)
+                szJH = apxGetJavaSoftHome(gPool, FALSE);
             if (szJH) {
                 jx = apxPoolAlloc(gPool, (lstrlenW(szJH) + 16) * sizeof(WCHAR));
                 lstrcpyW(jx, szJH);
                 lstrcatW(jx, PRSRV_JBIN);
                 SO_STARTPATH = szJH;
+            }
+            else {
+                apxLogWrite(APXLOG_MARK_ERROR "Unable to find Java Runtime Environment.");
+                goto cleanup;
             }
             /* StartImage now contains the full path to the java.exe */
             SO_STARTIMAGE = jx;
@@ -1216,12 +1222,18 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             _jni_sparam = SO_STOPPARAMS;
         }
         else if (!lstrcmpiW(SO_STOPMODE, PRSRV_JAVA)) {
-            LPWSTR jx = NULL, szJH = apxGetJavaSoftHome(gPool, FALSE);
+            LPWSTR jx = NULL, szJH = SO_JAVAHOME;
+            if (!szJH)
+                szJH = apxGetJavaSoftHome(gPool, FALSE);
             if (szJH) {
                 jx = apxPoolAlloc(gPool, (lstrlenW(szJH) + 16) * sizeof(WCHAR));
                 lstrcpyW(jx, szJH);
                 lstrcatW(jx, PRSRV_JBIN);
                 SO_STOPPATH = szJH;
+            }
+            else {
+                apxLogWrite(APXLOG_MARK_ERROR "Unable to find Java Runtime Environment.");
+                goto cleanup;
             }
             /* StopImage now contains the full path to the java.exe */
             SO_STOPIMAGE = jx;
