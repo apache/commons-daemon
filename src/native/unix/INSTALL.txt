@@ -45,3 +45,14 @@ for the jsvc binary simply do
 Note: On Linux the module capabilities should be loaded, when using -user root
 make sure you REALLY understand what capabilities does (for example for
 files access: the downgraded root may not be able to read some files!).
+
+Making 64-bit binaries
+
+To be able to build the 64-binaries for supported platforms enter the
+specific parameters before calling configure
+
+   export CFLAGS=-m64
+   export LDFLAGS=-m64
+   ./configure
+   make
+
