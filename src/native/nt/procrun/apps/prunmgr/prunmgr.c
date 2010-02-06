@@ -858,7 +858,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     apxFree(b);
                 }
                 else
-                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 0);
+                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 1);
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"Path")) != NULL) {
                     SetDlgItemTextW(hDlg, IDC_PPLGPATH, b);
