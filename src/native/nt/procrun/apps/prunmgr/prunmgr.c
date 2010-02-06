@@ -1119,7 +1119,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                     apxCenterWindow(GetParent(hDlg), NULL);
                 bpropCentered = TRUE;
 
-                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPRMODE), L"");
+                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPRMODE), L"exe");
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPRMODE), L"jvm");
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPRMODE), _s_java);
 
@@ -1258,7 +1258,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                     apxCenterWindow(GetParent(hDlg), NULL);
                 bpropCentered = TRUE;
 
-                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSMODE), L"");
+                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSMODE), L"exe");
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSMODE), L"jvm");
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSMODE), _s_java);
 
