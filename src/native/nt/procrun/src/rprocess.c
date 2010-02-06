@@ -878,25 +878,23 @@ apxProcessRunning(APXHANDLE hProcess)
 static LPWSTR __apxStrQuote(LPWSTR lpDest, LPCWSTR szSrc)
 {
     LPWSTR p;
-    BOOL   q = FALSE;
+    BOOL   space = FALSE, quote = FALSE;
 
-    /* Find if string has embeded spaces 
+    /* Find if string has embeded spaces, add quotes only if no quotes found 
      */
     for (p = (LPWSTR)szSrc; *p; p++) {
-        if (*p == L' ' || *p == '\t' ||
-            *p == '"' || *p == '\\') {
-            q = TRUE;
-            break;
+        if (*p == L' ' || *p == '\t') {
+            space = TRUE;
+        } else if (*p == L'"') {
+            quote = TRUE;
         }
     }
     p = lpDest;
-    if (q) *p++ = L'"';
+    if (space && !quote) *p++ = L'"';
     while (*szSrc) {
-        if (*szSrc == '"' || *szSrc == '\\')
-            *p++ = L'\\';
         *p++ = *szSrc++;
     }
-    if (q) *p++ = L'"';
+    if (space && !quote) *p++ = L'"';
     return p;
 }
 
@@ -914,17 +912,9 @@ apxProcessSetCommandArgsW(APXHANDLE hProcess, LPCWSTR szTitle,
     apxFree(lpProc->szCommandLine);
     
     l = lstrlenW(szTitle) + 3;
-    for (i = 0; i < (DWORD)lstrlenW(szTitle); i++) {
-        if (szTitle[i] == L'"')
-            ++l;
-    }
     for (i = 0; i < dwArgc; i++) {
         int x, q = 0;
         l += (lstrlenW(lpArgs[i]) + 3);
-        for (x = 0; x < lstrlenW(lpArgs[i]); x++) {
-            if (lpArgs[i][x] == L'"')
-                ++q;
-        }
         l += q;
     }
     p = lpProc->szCommandLine = apxPoolAlloc(hProcess->hPool, l * sizeof(WCHAR));
@@ -937,3 +927,4 @@ apxProcessSetCommandArgsW(APXHANDLE hProcess, LPCWSTR szTitle,
     OutputDebugStringW(lpProc->szCommandLine);
     return lpProc->szCommandLine != NULL;
 }
+
