@@ -865,6 +865,11 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     apxFree(b);
                 }
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
+                                               _s_log, L"Prefix")) != NULL) {
+                    SetDlgItemTextW(hDlg, IDC_PPLGPREFIX, b);
+                    apxFree(b);
+                }
+                if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"StdOutput")) != NULL) {
                     SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, b);
                     apxFree(b);
