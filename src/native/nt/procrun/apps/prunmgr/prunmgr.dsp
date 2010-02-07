@@ -7,21 +7,21 @@
 CFG=prunmgr - Win32 Unicode Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "prunmgr.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "prunmgr.mak" CFG="prunmgr - Win32 Unicode Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "prunmgr - Win32 Release" (based on "Win32 (x86) Application")
 !MESSAGE "prunmgr - Win32 Debug" (based on "Win32 (x86) Application")
 !MESSAGE "prunmgr - Win32 Unicode Release" (based on "Win32 (x86) Application")
 !MESSAGE "prunmgr - Win32 Unicode Debug" (based on "Win32 (x86) Application")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -81,7 +81,12 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib comctl32.lib netapi32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Debug/prunmgrd.exe" /pdbtype:sept
-
+# Begin Special Build Tool
+TargetPath=.\Debug\httpd.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
+# End Special Build Tool
 !ELSEIF  "$(CFG)" == "prunmgr - Win32 Unicode Release"
 
 # PROP BASE Use_MFC 0
@@ -107,6 +112,12 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib comctl32.lib netapi32.lib /nologo /subsystem:windows /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib comctl32.lib netapi32.lib /nologo /subsystem:windows /machine:I386 /out:"Unicode Release/prunmgru.exe"
+# Begin Special Build Tool
+TargetPath=.\Debug\httpd.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "prunmgr - Win32 Unicode Debug"
 
@@ -133,8 +144,14 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib comctl32.lib netapi32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib shlwapi.lib comctl32.lib netapi32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"Unicode Debug/prunmgrdu.exe" /pdbtype:sept
+# Begin Special Build Tool
+TargetPath=.\Debug\httpd.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
+# End Special Build Tool
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 

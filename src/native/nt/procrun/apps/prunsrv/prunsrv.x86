@@ -84,6 +84,7 @@ LINK32_OBJS= \
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
+	if exist $(OUTDIR)\prunsrv.exe.manifest mt.exe -manifest $(OUTDIR)\prunsrv.exe.manifest -outputresource:$(OUTDIR)\prunsrv.exe;1
 
 SOURCE=.\prunsrv.c
 
