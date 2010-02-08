@@ -98,6 +98,8 @@ static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
         ((*(lpJava->lpEnv))->##fName(lpJava->lpEnv, (a1), (a2), (a3), (a4)))
 
 typedef struct APXJAVASTDCLAZZ {
+    CHAR        sClazz[1024];
+    CHAR        sMethod[512];
     jclass      jClazz;
     jmethodID   jMethod;
     jobject     jObject;
@@ -470,14 +472,13 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     lpJava->clWorker.jClazz  = JNICALL_1(NewGlobalRef, jClazz);
     JNI_LOCAL_UNREF(jClazz);
 
-    if (szMethodName)
-        lpJava->clWorker.jMethod = JNICALL_3(GetStaticMethodID,
-                                             lpJava->clWorker.jClazz,
-                                             szMethodName, "([Ljava/lang/String;)V");
-    else
-        lpJava->clWorker.jMethod = JNICALL_3(GetStaticMethodID,
-                                             lpJava->clWorker.jClazz,
-                                             "main", "([Ljava/lang/String;)V");
+    if (!szMethodName)
+        szMethodName = "main";
+    lstrcpyA(lpJava->clWorker.sClazz,  szClassName);
+    lstrcpyA(lpJava->clWorker.sMethod, szMethodName);
+    lpJava->clWorker.jMethod = JNICALL_3(GetStaticMethodID,
+                                         lpJava->clWorker.jClazz,
+                                         szMethodName, "([Ljava/lang/String;)V");
     if (!lpJava->clWorker.jMethod) {
         JVM_EXCEPTION_CLEAR(lpJava);
         apxLogWrite(APXLOG_MARK_ERROR "Static method 'void main(String[])' in Class %s not found", szClassName);
@@ -518,6 +519,8 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
         WORKER_EXIT(2);
     if (!__apxJvmAttach(lpJava))
         WORKER_EXIT(3);
+    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
+                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
     JNICALL_3(CallStaticVoidMethod,
               lpJava->clWorker.jClazz,
@@ -528,7 +531,8 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     __apxJvmDetach(lpJava);
 finished:
     lpJava->dwWorkerStatus = 0;
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished");
+    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s",
+                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
     return 0;

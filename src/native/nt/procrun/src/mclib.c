@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /*
  * Copyright (c) 1994
  *  The Regents of the University of California.  All rights reserved.
@@ -54,7 +54,7 @@ typedef UINT    word;       /* "word" used for optimal copy speed */
 #define wmask   (wsize - 1)
 
 LPVOID AplFillMemory(PVOID Destination, SIZE_T Length, BYTE Fill)
-{ 
+{
 
     SIZE_T t;
 #ifdef WIN64
@@ -119,11 +119,11 @@ LPVOID AplFillMemory(PVOID Destination, SIZE_T Length, BYTE Fill)
         do {
             *dst++ = Fill;
         } while (--t != 0);
-    return (Destination); 
+    return (Destination);
 }
 
 void AplZeroMemory(PVOID Destination, SIZE_T Length)
-{ 
+{
 
     SIZE_T t;
     LPBYTE dst;
@@ -237,7 +237,7 @@ LPVOID AplCopyMemory(PVOID Destination, const VOID* Source, SIZE_T Length)
     }
 done:
     return (Destination);
-} 
+}
 
 
 INT
@@ -252,7 +252,7 @@ AplMemCmp(LPCVOID lpA, LPCVOID lpB, SIZE_T nBytes)
         } while (--nBytes != 0);
     }
     return 0;
-} 
+}
 
 /*
  * Find the first occurrence of lpFind in lpMem.
@@ -277,7 +277,7 @@ ApcMemSearch(LPCVOID lpMem, LPCVOID lpFind, SIZE_T dwLen, SIZE_T dwSize)
         s--;
     }
     return (LPBYTE)s;
-} 
+}
 
 LPSTR
 AplRindexA(LPCSTR lpStr, int ch)
@@ -289,6 +289,121 @@ AplRindexA(LPCSTR lpStr, int ch)
             save = (LPSTR)lpStr;
         if (!*lpStr)
             return save;
-    } 
+    }
     /* NOTREACHED */
-} 
+}
+
+/*
+ * Appends src to string dst of size siz (unlike strncat, siz is the
+ * full size of dst, not space left).  At most siz-1 characters
+ * will be copied.  Always NUL terminates (unless siz <= strlen(dst)).
+ * Returns strlen(src) + MIN(siz, strlen(initial dst)).
+ * If retval >= siz, truncation occurred.
+ */
+LPSTR
+lstrlcatA(LPSTR dst, int siz, LPCSTR src)
+{
+    LPSTR  d = dst;
+    LPCSTR s = src;
+    int n = siz;
+    int dlen;
+
+    /* Find the end of dst and adjust bytes left but don't go past end */
+    while (n-- != 0 && *d != '\0')
+        d++;
+    dlen = d - dst;
+    n = siz - dlen;
+
+    if (n == 0)
+        return NULL;
+    while (*s != '\0') {
+        if (n != 1) {
+            *d++ = *s;
+            n--;
+        }
+        s++;
+    }
+    *d = '\0';
+
+    return dst;
+}
+
+LPWSTR
+lstrlcatW(LPWSTR dst, int siz, LPCWSTR src)
+{
+    LPWSTR  d = dst;
+    LPCWSTR s = src;
+    int n = siz;
+    int dlen;
+
+    /* Find the end of dst and adjust bytes left but don't go past end */
+    while (n-- != 0 && *d != '\0')
+        d++;
+    dlen = d - dst;
+    n = siz - dlen;
+
+    if (n == 0)
+        return NULL;
+    while (*s != L'\0') {
+        if (n != 1) {
+            *d++ = *s;
+            n--;
+        }
+        s++;
+    }
+    *d = L'\0';
+
+    return dst;
+}
+
+LPSTR
+lstrlcpyA(LPSTR dst, int siz, LPCSTR src)
+{
+    LPSTR  d = dst;
+    LPCSTR s = src;
+    int    n = siz;
+
+    /* Copy as many bytes as will fit */
+    if (n != 0) {
+        while (--n != 0) {
+            if ((*d++ = *s++) == '\0')
+                break;
+        }
+    }
+
+    /* Not enough room in dst, add NUL and traverse rest of src */
+    if (n == 0) {
+        if (siz != 0)
+            *d = '\0';      /* NUL-terminate dst */
+        while (*s++)
+            ;
+    }
+
+    return d;
+}
+
+LPWSTR
+lstrlcpyW(LPWSTR dst, int siz, LPCWSTR src)
+{
+    LPWSTR  d = dst;
+    LPCWSTR s = src;
+    int    n = siz;
+
+    /* Copy as many bytes as will fit */
+    if (n != 0) {
+        while (--n != 0) {
+            if ((*d++ = *s++) == L'\0')
+                break;
+        }
+    }
+
+    /* Not enough room in dst, add NUL and traverse rest of src */
+    if (n == 0) {
+        if (siz != 0)
+            *d = L'\0';      /* NUL-terminate dst */
+        while (*s++)
+            ;
+    }
+
+    return d;
+}

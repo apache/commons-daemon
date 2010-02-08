@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 
 #include "apxwin.h"
 #include "private.h"
@@ -57,11 +57,11 @@ LPWSTR apxLogFile(
     if (!szPath) {
         if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
             return INVALID_HANDLE_VALUE;
-        lstrcatW(sPath, L"\\LogFiles\\");
+        lstrlcatW(sPath, MAX_PATH, L"\\LogFiles\\");
         if (!szPrefix)
-            lstrcatW(sPath, L"Apache");
+            lstrlcatW(sPath, MAX_PATH, L"Apache");
         else
-            lstrcatW(sPath, szPrefix);
+            lstrlcatW(sPath, MAX_PATH, szPrefix);
         wsprintfW(sName, L"\\%s%04d%02d%02d.log",
                   szName,
                   sysTime.wYear,
@@ -69,7 +69,7 @@ LPWSTR apxLogFile(
                   sysTime.wDay);
     }
     else {
-        lstrcpyW(sPath, szPath);
+        lstrlcpyW(sPath, MAX_PATH, szPath);
         if (szPrefix)
             wsprintfW(sName, L"\\%s", szPrefix);
         else
@@ -82,14 +82,14 @@ LPWSTR apxLogFile(
     sRet = apxPoolAlloc(hPool, (MAX_PATH + 1) * sizeof(WCHAR));
     /* Set default level to info */
     CreateDirectoryW(sPath, NULL);
-    
-    lstrcpyW(sRet, sPath);
-    lstrcatW(sRet, sName);
+
+    lstrlcpyW(sRet, MAX_PATH, sPath);
+    lstrlcatW(sRet, MAX_PATH, sName);
 
     return sRet;
 }
 
-/* Open the log file 
+/* Open the log file
  * TODO: format like standard apache error.log
  * Add the EventLogger
  */
@@ -108,43 +108,34 @@ HANDLE apxLogOpen(
     if (!szPath) {
         if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
             return INVALID_HANDLE_VALUE;
-        lstrcatW(sPath, L"\\LogFiles\\");
-        if (!szPrefix)
-            lstrcatW(sPath, L"Apache");
-        else
-            lstrcatW(sPath, szPrefix);
-        wsprintfW(sName, L"\\%04d%02d%02d.log",
-                  sysTime.wYear,
-                  sysTime.wMonth,
-                  sysTime.wDay);
+        lstrlcatW(sPath, MAX_PATH, L"\\LogFiles\\Apache");
     }
     else {
-        lstrcpyW(sPath, szPath);
-        if (szPrefix)
-            wsprintfW(sName, L"\\%s", szPrefix);
-        else
-            wsprintfW(sName, L"\\jakarta_service_%04d%02d%02d.log",
-                      sysTime.wYear,
-                      sysTime.wMonth,
-                      sysTime.wDay);
+        lstrlcpyW(sPath, MAX_PATH, szPath);
     }
+    if (!szPrefix)
+        szPrefix = L"jakarta_service_";
+    wsprintfW(sName, L"\\%s%04d%02d%02d.log",
+              szPrefix,
+              sysTime.wYear,
+              sysTime.wMonth,
+              sysTime.wDay);
     if (!(h = (apx_logfile_st *)apxPoolCalloc(hPool, sizeof(apx_logfile_st))))
         return NULL;
     /* Set default level to info */
     h->dwLogLevel = APXLOG_LEVEL_INFO;
     CreateDirectoryW(sPath, NULL);
-    
+
     h->sysTime = sysTime;
-    lstrcpyW(h->szPath, sPath);
-    lstrcatW(sPath, sName);
-    if (szPrefix)
-        lstrcpyW(h->szPrefix, szPrefix);
+    lstrlcpyW(h->szPath, MAX_PATH, sPath);
+    lstrlcatW(sPath, MAX_PATH, sName);
+    lstrlcpyW(h->szPrefix, MAX_PATH, szPrefix);
 
     h->hFile =  CreateFileW(sPath,
                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                       NULL,
                       OPEN_ALWAYS,
-                      FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+                      FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH | FILE_FLAG_SEQUENTIAL_SCAN,
                       NULL);
     /* Set this file as system log file */
     if (!_st_sys_loghandle)
@@ -199,12 +190,12 @@ static BOOL apx_log_rotate(apx_logfile_st *l,
                            LPSYSTEMTIME lpCtime)
 {
     WCHAR sPath[MAX_PATH+1];
-    
+
     /* rotate on daily basis */
     if (l->sysTime.wDay == lpCtime->wDay)
         return TRUE;
     FlushFileBuffers(l->hFile);
-    CloseHandle(l->hFile);    
+    CloseHandle(l->hFile);
     l->sysTime = *lpCtime;
 
     wsprintfW(sPath, L"%s\\%s%04d%02d%02d.log",
@@ -217,7 +208,7 @@ static BOOL apx_log_rotate(apx_logfile_st *l,
                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                       NULL,
                       OPEN_ALWAYS,
-                      FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+                      FILE_FLAG_NO_BUFFERING | FILE_FLAG_SEQUENTIAL_SCAN,
                       NULL);
     if (IS_INVALID_HANDLE(l->hFile))
         return FALSE;
@@ -257,18 +248,18 @@ apxLogWrite(
     if (dwLevel < lf->dwLogLevel)
         return 0;
     if (f) {
-        f = (szFile + lstrlenA(szFile) - 1);    
+        f = (szFile + lstrlenA(szFile) - 1);
         while(f != szFile && '\\' != *f && '/' != *f)
             f--;
         if(f != szFile)
             f++;
     }
-    lstrcpyA(buffer, _log_level[dwLevel]);
+    lstrlcpyA(buffer, 1056, _log_level[dwLevel]);
     if (!dolock)
-        lstrcatA(buffer, "\n");
+        lstrlcatA(buffer, 1056, "\n");
     szBp = &buffer[lstrlenA(buffer)];
     if (!szFormat) {
-        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | 
+        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
                        FORMAT_MESSAGE_IGNORE_INSERTS,
                        NULL,
                        err,
@@ -300,7 +291,7 @@ apxLogWrite(
                 APX_LOGLOCK(lf->hFile);
             }
             if (bTimeStamp) {
-                wsprintfA(sb, "[%d-%02d-%02d %02d:%02d:%02d] ", 
+                wsprintfA(sb, "[%d-%02d-%02d %02d:%02d:%02d] ",
                           t.wYear, t.wMonth, t.wDay,
                           t.wHour, t.wMinute, t.wSecond);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
@@ -311,7 +302,7 @@ apxLogWrite(
             }
 
             WriteFile(lf->hFile, buffer, len, &wr, NULL);
-            /* Terminate the line */            
+            /* Terminate the line */
             WriteFile(lf->hFile, LINE_SEP, sizeof(LINE_SEP) - 1, &wr, NULL);
 #ifdef _DEBUG_FULL
             FlushFileBuffers(lf->hFile);
@@ -323,7 +314,7 @@ apxLogWrite(
 #ifdef _DEBUG_FULL
         {
             char tid[1024 + 16];
-            wsprintfA(tid, "[%04X] %s", GetCurrentThreadId(), buffer);
+            wsprintfA(tid, "[%04d] %s", GetCurrentThreadId(), buffer);
             OutputDebugStringA(tid);
         }
 #endif
@@ -342,7 +333,7 @@ void apxLogClose(
         lf = _st_sys_loghandle;
     if (IS_INVALID_HANDLE(lf))
         return;
-    
+
     FlushFileBuffers(lf->hFile);
     CloseHandle(lf->hFile);
     if (lf == _st_sys_loghandle)
@@ -359,13 +350,13 @@ apxDisplayError(
     ...)
 {
     va_list args;
-    CHAR    buffer[1024+16];
+    CHAR    buffer[1024+32];
     CHAR    sysbuf[2048];
     int     len = 0, nRet;
     LPCSTR  f = szFile;
     DWORD   err = GetLastError(); /* save the last Error code */
     if (f) {
-        f = (szFile + lstrlenA(szFile) - 1);    
+        f = (szFile + lstrlenA(szFile) - 1);
         while(f != szFile && '\\' != *f && '/' != *f)
             f--;
         if(f != szFile)
@@ -373,7 +364,7 @@ apxDisplayError(
     }
     sysbuf[0] = '\0';
     if (err != ERROR_SUCCESS) {
-        len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | 
+        len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
                              FORMAT_MESSAGE_IGNORE_INSERTS,
                              NULL,
                              err,
@@ -392,15 +383,15 @@ apxDisplayError(
             wsprintfA(sb, "\n%s (%d)", f, dwLine);
             lstrcatA(sysbuf, sb);
         }
-        lstrcatA(sysbuf, "\n");
-        lstrcatA(sysbuf, buffer);
+        lstrlcatA(sysbuf, 2048, "\n");
+        lstrlcatA(sysbuf, 2048, buffer);
     }
     len = lstrlenA(sysbuf);
 #ifdef _DEBUG_FULL
     OutputDebugStringA(sysbuf);
 #endif
     if (len > 0 && bDisplay) {
-        nRet = MessageBoxA(NULL, sysbuf, 
+        nRet = MessageBoxA(NULL, sysbuf,
                            "Application System Error",
                            MB_ICONERROR | MB_OK | MB_SYSTEMMODAL);
     }

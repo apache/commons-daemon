@@ -35,7 +35,6 @@
 #include <shellapi.h>
 #include <zmouse.h>
 #include <richedit.h>
-
 #include <lm.h>
 
 #ifndef _INTPTR_T_DEFINED
@@ -200,6 +199,11 @@ LPBYTE  ApcMemSearch(LPCVOID lpMem, LPCVOID lpFind, SIZE_T dwLen, SIZE_T dwSize)
 LPSTR   AplRindexA(LPCSTR lpStr, int ch);
 
 #define AplMoveMemory   AplCopyMemory
+
+LPSTR   lstrlcatA(LPSTR dst, int siz, LPCSTR src);
+LPWSTR  lstrlcatW(LPWSTR dst, int siz, LPCWSTR src);
+LPSTR   lstrlcpyA(LPSTR dst, int siz, LPCSTR src);
+LPWSTR  lstrlcpyW(LPWSTR dst, int siz, LPCWSTR src);
 
 PSECURITY_ATTRIBUTES GetNullACL();
 void CleanNullACL(void *sa);

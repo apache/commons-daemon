@@ -52,10 +52,8 @@ typedef struct APX_STDWRAP {
     LPCWSTR szStdErrFilename;
     HANDLE  hStdOutFile;
     HANDLE  hStdErrFile;
-    FILE    *fpStdOutFile;
-    FILE    *fpStdErrFile;
-    FILE    fpStdOutSave;
-    FILE    fpStdErrSave;
+    int     fdStdOutFile;
+    int     fdStdErrFile;
 } APX_STDWRAP;
 
 /* Use static variables instead of #defines */
@@ -247,14 +245,6 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     BOOL aErr = FALSE;
     BOOL aOut = FALSE;
 
-    /* Clear up the handles */
-    lpWrapper->fpStdErrFile = NULL;
-    lpWrapper->fpStdOutFile = NULL;
-
-    /* Save the original streams */
-    lpWrapper->fpStdOutSave = *stdout;
-    lpWrapper->fpStdErrSave = *stderr;
-
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
         if (lstrcmpiW(lpWrapper->szStdOutFilename, PRSRV_AUTO) == 0) {
@@ -270,11 +260,11 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
         if (!aOut)
             DeleteFileW(lpWrapper->szStdOutFilename);
         lpWrapper->hStdOutFile = CreateFileW(lpWrapper->szStdOutFilename,
-                                             GENERIC_WRITE | GENERIC_READ,
+                                             GENERIC_WRITE,
                                              FILE_SHARE_READ | FILE_SHARE_WRITE,
                                              NULL,
                                              OPEN_ALWAYS,
-                                             FILE_ATTRIBUTE_NORMAL,
+                                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH | FILE_FLAG_SEQUENTIAL_SCAN,
                                              NULL);
         if (IS_INVALID_HANDLE(lpWrapper->hStdOutFile))
             return FALSE;
@@ -283,7 +273,7 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     }
     else {
         lpWrapper->hStdOutFile = CreateFileW(L"CONOUT$",
-                                             GENERIC_READ | GENERIC_WRITE,
+                                             GENERIC_WRITE,
                                              FILE_SHARE_READ | FILE_SHARE_WRITE,
                                              NULL,
                                              OPEN_EXISTING,
@@ -303,11 +293,11 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
         if (!aErr)
             DeleteFileW(lpWrapper->szStdErrFilename);
         lpWrapper->hStdErrFile = CreateFileW(lpWrapper->szStdErrFilename,
-                                             GENERIC_WRITE | GENERIC_READ,
+                                             GENERIC_WRITE,
                                              FILE_SHARE_READ | FILE_SHARE_WRITE,
                                              NULL,
                                              OPEN_ALWAYS,
-                                             FILE_ATTRIBUTE_NORMAL,
+                                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH | FILE_FLAG_SEQUENTIAL_SCAN,
                                              NULL);
         if (IS_INVALID_HANDLE(lpWrapper->hStdErrFile))
             return FALSE;
@@ -325,34 +315,20 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
      * This will redirect all printf to go to the redirected files.
      * It is used for JNI vprintf functionality.
      */
-    lpWrapper->fpStdOutFile = _fdopen(_open_osfhandle(
-                                      (intptr_t)lpWrapper->hStdOutFile,
-                                      _O_TEXT), "w");
-    lpWrapper->fpStdErrFile = _fdopen(_open_osfhandle(
-                                      (intptr_t)lpWrapper->hStdErrFile,
-                                      _O_TEXT), "w");
-    if (lpWrapper->fpStdOutFile) {
-        *stdout = *lpWrapper->fpStdOutFile;
+    lpWrapper->fdStdOutFile = _open_osfhandle((ptrdiff_t)lpWrapper->hStdOutFile,
+                                              _O_WRONLY | _O_TEXT);
+    if (lpWrapper->fdStdOutFile > 0) {
+        lpWrapper->fdStdOutFile = dup2(lpWrapper->fdStdOutFile, 1);
         setvbuf(stdout, NULL, _IONBF, 0);
     }
-    if (lpWrapper->fpStdErrFile) {
-        *stderr = *lpWrapper->fpStdErrFile;
+    lpWrapper->fdStdErrFile = _open_osfhandle((ptrdiff_t)lpWrapper->hStdErrFile,
+                                              _O_WRONLY | _O_TEXT);
+    if (lpWrapper->fdStdErrFile > 0) {
+        lpWrapper->fdStdErrFile = dup2(lpWrapper->fdStdErrFile, 2);
         setvbuf(stderr, NULL, _IONBF, 0);
     }
-    return TRUE;
-}
 
-static void cleanupStdStreams(APX_STDWRAP *lpWrapper)
-{
-    /* Close the redirectied streams */
-    if (lpWrapper->fpStdOutFile) {
-        fclose(lpWrapper->fpStdOutFile);
-        *stdout = lpWrapper->fpStdOutSave;
-    }
-    if (lpWrapper->fpStdErrFile) {
-        fclose(lpWrapper->fpStdErrFile);
-        *stderr = lpWrapper->fpStdErrSave;
-    }
+    return TRUE;
 }
 
 /* Debugging functions */
@@ -554,18 +530,18 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
 
     /* Check if --Install is provided */
     if (!SO_INSTALL) {
-        lstrcpyW(szImage, lpCmdline->szExePath);
-        lstrcatW(szImage, L"\\");
-        lstrcatW(szImage, lpCmdline->szExecutable);
-        lstrcatW(szImage, L".exe");
+        lstrlcpyW(szImage, SIZ_HUGLEN, lpCmdline->szExePath);
+        lstrlcatW(szImage, SIZ_HUGLEN, L"\\");
+        lstrlcatW(szImage, SIZ_HUGLEN, lpCmdline->szExecutable);
+        lstrlcatW(szImage, SIZ_HUGLEN, L".exe");
     }
     else
         lstrcpyW(szImage, SO_INSTALL);
     /* Replace not needed qoutes */
     apxStrQuoteInplaceW(szImage);
     /* Add run-service command line option */
-    lstrcatW(szImage, L" //RS//");
-    lstrcatW(szImage, lpCmdline->szApplication);
+    lstrlcatW(szImage, SIZ_HUGLEN, L" //RS//");
+    lstrlcatW(szImage, SIZ_HUGLEN, lpCmdline->szApplication);
     SO_INSTALL = apxPoolStrdupW(gPool, szImage);
     /* Ensure that option gets saved in the registry */
     ST_INSTALL |= APXCMDOPT_FOUND;
@@ -632,8 +608,8 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
     if (apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
         WCHAR szWndManagerClass[SIZ_RESLEN];
         HANDLE hWndManager = NULL;
-        lstrcpyW(szWndManagerClass, lpCmdline->szApplication);
-        lstrcatW(szWndManagerClass, L"_CLASS");
+        lstrlcpyW(szWndManagerClass, SIZ_RESLEN, lpCmdline->szApplication);
+        lstrlcatW(szWndManagerClass, SIZ_RESLEN, L"_CLASS");
         /* Close the monitor application if running */
         if ((hWndManager = FindWindowW(szWndManagerClass, NULL)) != NULL) {
             SendMessage(hWndManager, WM_CLOSE, 0, 0);
@@ -1171,9 +1147,9 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         WCHAR en[SIZ_DESLEN];
         int i;
         PSECURITY_ATTRIBUTES sa = GetNullACL();
-        lstrcpyW(en, L"Global\\");
-        lstrcatW(en, _service_name);
-        lstrcatW(en, PRSRV_SIGNAL);
+        lstrlcpyW(en, SIZ_DESLEN, L"Global\\");
+        lstrlcatW(en, SIZ_DESLEN, _service_name);
+        lstrlcatW(en, SIZ_DESLEN, PRSRV_SIGNAL);
         for (i = 7; i < lstrlenW(en); i++) {
             if (en[i] >= L'a' && en[i] <= L'z')
                 en[i] = en[i] - 32;
@@ -1344,7 +1320,7 @@ void __cdecl main(int argc, char **argv)
         }
         Sleep(ss * 1000);
         ExitProcess(0);
-        return;                        
+        return;
     }
     apxHandleManagerInitialize();
     /* Create the main Pool */
@@ -1420,6 +1396,5 @@ cleanup:
     _service_status_handle = NULL;
     apxLogClose(NULL);
     apxHandleManagerDestroy();
-    cleanupStdStreams(&gStdwrap);
     ExitProcess(rv);
 }

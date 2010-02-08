@@ -82,7 +82,7 @@ LINK32_OBJS= \
 
 "$(OUTDIR)\prunsrv.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
+  $(LINK32_FLAGS) $(LINK32_OBJS) commode.obj
 <<
 	if exist $(OUTDIR)\prunsrv.exe.manifest mt.exe -manifest $(OUTDIR)\prunsrv.exe.manifest -outputresource:$(OUTDIR)\prunsrv.exe;1
 

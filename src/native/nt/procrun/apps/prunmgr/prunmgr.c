@@ -869,6 +869,8 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     SetDlgItemTextW(hDlg, IDC_PPLGPREFIX, b);
                     apxFree(b);
                 }
+                else
+                    SetDlgItemTextW(hDlg, IDC_PPLGPREFIX, L"jakarta_service_");
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"StdOutput")) != NULL) {
                     SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, b);
@@ -1424,10 +1426,10 @@ void ShowServiceProperties(HWND hWnd)
                 __stopProperty);
 
     if (_currentEntry && _currentEntry->lpConfig)
-        lstrcpyW(szT, _currentEntry->lpConfig->lpDisplayName);
+        lstrlcpyW(szT, 1024, _currentEntry->lpConfig->lpDisplayName);
     else
         return;
-    lstrcatW(szT, L" Properties");
+    lstrlcatW(szT, 1024, L" Properties");
 
     psH.dwSize           = sizeof(PROPSHEETHEADER);
     psH.dwFlags          = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_USECALLBACK | PSH_NOCONTEXTHELP;
@@ -1454,9 +1456,9 @@ static void signalService(LPCWSTR szServiceName)
     WCHAR en[SIZ_DESLEN];
     int i;
 
-    lstrcpyW(en, L"Global\\");
-    lstrcatW(en, szServiceName);
-    lstrcatW(en, L"SIGNAL");
+    lstrlcpyW(en, SIZ_DESLEN, L"Global\\");
+    lstrlcatW(en, SIZ_DESLEN, szServiceName);
+    lstrlcatW(en, SIZ_DESLEN, L"SIGNAL");
     for (i = 7; i < lstrlenW(en); i++) {
         if (en[i] >= L'a' && en[i] <= L'z')
             en[i] = en[i] - 32;
