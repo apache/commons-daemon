@@ -179,7 +179,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
         WCHAR  jreBinPath[1024];
         DWORD  i, l = 0;
 
-        lstrcpynW(jreBinPath, dllJvmPath, 1023);
+        lstrlcpyW(jreBinPath, 1024, dllJvmPath);
         DYNLOAD_FPTR_ADDRESS(SetDllDirectoryW, KERNEL32);
         for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
             if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
@@ -474,8 +474,8 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
 
     if (!szMethodName)
         szMethodName = "main";
-    lstrcpyA(lpJava->clWorker.sClazz,  szClassName);
-    lstrcpyA(lpJava->clWorker.sMethod, szMethodName);
+    lstrlcpyA(lpJava->clWorker.sClazz, 1024, szClassName);
+    lstrlcpyA(lpJava->clWorker.sMethod, 512, szMethodName);
     lpJava->clWorker.jMethod = JNICALL_3(GetStaticMethodID,
                                          lpJava->clWorker.jClazz,
                                          szMethodName, "([Ljava/lang/String;)V");

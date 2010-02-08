@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "apxwin.h"
 #include "private.h"
 
@@ -34,7 +34,7 @@ typedef struct APXSERVICE {
     /* Handle to the current service */
     SC_HANDLE       hService;
     /* Handle of the Service manager */
-    SC_HANDLE       hManager;     
+    SC_HANDLE       hManager;
     APXSERVENTRY    stServiceEntry;
 
 } APXSERVICE, *LPAPXSERVICE;
@@ -74,7 +74,7 @@ apxCreateService(APXHANDLE hPool, DWORD dwOptions, BOOL bManagerMode)
 {
     APXHANDLE    hService;
     LPAPXSERVICE lpService;
-    SC_HANDLE    hManager; 
+    SC_HANDLE    hManager;
 
     if (!(hManager = OpenSCManager(NULL, NULL, dwOptions))) {
         apxLogWrite(APXLOG_MARK_SYSERR);
@@ -126,7 +126,7 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
         apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
     }
-    lstrcpyW(lpService->stServiceEntry.szServiceName, szServiceName);
+    lstrlcpyW(lpService->stServiceEntry.szServiceName, SIZ_RESLEN, szServiceName);
     if (!apxGetServiceDescriptionW(szServiceName,
                                    lpService->stServiceEntry.szServiceDescription,
                                    SIZ_DESLEN)) {
@@ -173,7 +173,7 @@ apxServiceEntry(APXHANDLE hService, BOOL bRequeryStatus)
     return &lpService->stServiceEntry;
 }
 
-/* Set the service names etc... 
+/* Set the service names etc...
  * If the ImagePath contains a space, it must be quoted
  */
 BOOL
@@ -298,7 +298,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
                 break;
             default:
                 break;
-        }     
+        }
     }
     if (!dwPending && !dwState)
         return FALSE;
@@ -310,7 +310,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     /* signal that we are about to control the service */
     if (fnControlCallback)
         (*fnControlCallback)(lpCbData, uMsg, (WPARAM)1, (LPARAM)dwState);
-    if (dwControl == SERVICE_CONTROL_CONTINUE && 
+    if (dwControl == SERVICE_CONTROL_CONTINUE &&
         stStatus.dwCurrentState != SERVICE_PAUSED)
         bStatus = StartService(lpService->hService, 0, NULL);
     else
@@ -321,9 +321,9 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
         Sleep(100); /* Initial Sleep period */
         while (QueryServiceStatus(lpService->hService, &stStatus)) {
             if (stStatus.dwCurrentState == dwPending) {
-                /* Do not wait longer than the wait hint. A good interval is 
-                 * one tenth the wait hint, but no less than 1 second and no 
-                 * more than 10 seconds. 
+                /* Do not wait longer than the wait hint. A good interval is
+                 * one tenth the wait hint, but no less than 1 second and no
+                 * more than 10 seconds.
                  */
                 dwWait = stStatus.dwWaitHint / 10;
 
@@ -354,7 +354,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
             }
             else
                 break;
-        }         
+        }
     }
     /* signal that we are done with controling the service */
     if (fnControlCallback)
@@ -423,7 +423,8 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
         return FALSE;
     }
     else {
-        lstrcpyW(lpService->stServiceEntry.szServiceName, szServiceName);
+        lstrlcpyW(lpService->stServiceEntry.szServiceName,
+                  SIZ_RESLEN, szServiceName);
         lpService->stServiceEntry.dwStart = dwStartType;
         return TRUE;
     }
@@ -451,7 +452,7 @@ apxServiceDelete(APXHANDLE hService)
         rv = DeleteService(lpService->hService);
         SAFE_CLOSE_SCH(lpService->hService);
         SAFE_CLOSE_SCH(lpService->hManager);
-     
+
         return rv;
     }
     return FALSE;
@@ -459,7 +460,7 @@ apxServiceDelete(APXHANDLE hService)
 
 /* Browse the services */
 DWORD
-apxServiceBrowse(APXHANDLE hService, 
+apxServiceBrowse(APXHANDLE hService,
                  LPCWSTR szIncludeNamePattern,
                  LPCWSTR szIncludeImagePattern,
                  LPCWSTR szExcludeNamePattern,
@@ -539,7 +540,7 @@ apxServiceBrowse(APXHANDLE hService,
                         if (_st_apx_oslevel >= 4) {
                             DWORD dwNeed;
                             QueryServiceStatusEx(hSrv, SC_STATUS_PROCESS_INFO,
-                                                 (LPBYTE)(&(stEntry.stStatusProcess)), 
+                                                 (LPBYTE)(&(stEntry.stStatusProcess)),
                                                  sizeof(SERVICE_STATUS_PROCESS),
                                                  &dwNeed);
                         }

@@ -252,8 +252,8 @@ void apxCmdlineLoadEnvVars(
     while (lpCmdline->lpOptions[i].szName) {
         DWORD l;
         WCHAR szVar[SIZ_HUGLEN];
-        lstrcpyW(szEnv, L"PR_");
-        lstrcatW(szEnv, lpCmdline->lpOptions[i].szName);
+        lstrlcpyW(szEnv, SIZ_HUGLEN, L"PR_");
+        lstrlcatW(szEnv, SIZ_HUGLEN, lpCmdline->lpOptions[i].szName);
         l = GetEnvironmentVariableW(szEnv, szVar, SIZ_HUGMAX);
         if (l == 0 && GetLastError() !=  ERROR_ENVVAR_NOT_FOUND) {
             apxLogWrite(APXLOG_MARK_ERROR "Error geting environment variable %S",
