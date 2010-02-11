@@ -288,7 +288,7 @@
     </tr>
     <tr>
     <td>--LogPath</td>
-    <td>SystemDirectory\LogFiles\Apache</td>
+    <td>%SystemRoot%\System\LogFiles\Apache</td>
     <td>Defines the path for logging</td>
     </tr>
     <tr>
