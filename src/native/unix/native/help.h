@@ -15,4 +15,10 @@
    limitations under the License.
 */
 /* @version $Id$ */
+#ifndef __JSVC_HELP_H__
+#define __JSVC_HELP_H__
+
 void help(home_data *data);
+
+#endif /* __JSVC_HELP_H__ */
+

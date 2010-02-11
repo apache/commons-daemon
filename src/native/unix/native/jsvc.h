@@ -43,6 +43,8 @@ typedef enum {
 #include "dso.h"
 #include "java.h"
 #include "help.h"
+#include "signals.h"
+#include "locks.h"
 
 int main(int argc, char *argv[]);
 void main_reload(void);

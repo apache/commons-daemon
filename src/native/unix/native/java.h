@@ -15,6 +15,8 @@
    limitations under the License.
 */
 /* @version $Id$ */
+#ifndef __JSVC_JAVA_H__
+#define __JSVC_JAVA_H__
 
 #define LOADER "org/apache/commons/daemon/support/DaemonLoader"
 
@@ -27,3 +29,6 @@ bool java_stop(void);
 bool java_version(void);
 bool java_check(arg_data *args);
 bool JVM_destroy(int exit);
+
+#endif /* __JSVC_JAVA_H__ */
+

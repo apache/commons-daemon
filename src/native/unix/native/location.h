@@ -15,9 +15,15 @@
    limitations under the License.
 */
 /* @version $Id$ */
+#ifndef __JSVC_LOCATION_H__
+#define __JSVC_LOCATION_H__
+
 #include "jsvc.h"
 
 extern char *location_home[];
 extern char *location_jvm_cfg[];
 extern char *location_jvm_default[];
 extern char *location_jvm_configured[];
+
+#endif /* __JSVC_LOCATION_H__ */
+

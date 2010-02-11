@@ -15,6 +15,9 @@
    limitations under the License.
 */
 /* @version $Id$ */
+#ifndef __JSVC_DSO_H__
+#define __JSVC_DSO_H__
+
 #include "jsvc.h"
 
 /**
@@ -29,3 +32,7 @@ bool dso_init(void);
 dso_handle dso_link(const char *pth);
 bool dso_unlink(dso_handle lib);
 void *dso_symbol(dso_handle lib, const char *nam);
+char *dso_error(void);
+
+#endif /* __JSVC_DSO_H__ */
+

@@ -69,7 +69,7 @@ VOID AddToMessageLog(LPTSTR lpszMsg)
 {
     TCHAR   szMsg[256];
     HANDLE  hEventSource;
-    LPTSTR  lpszStrings[2];
+    LPCTSTR lpszStrings[2];
 
 
         dwErr = GetLastError();

@@ -45,8 +45,8 @@ static void shutdown(JNIEnv *env, jobject source, jboolean reload) {
     if (reload==TRUE) main_reload();
     else main_shutdown();
 }
-/* Automaticly restart when the JVM crashes */
-static void java_abort123()
+/* Automatically restart when the JVM crashes */
+static void java_abort123(void)
 {
     exit(123);
 }

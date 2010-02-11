@@ -26,7 +26,7 @@ bool ld_library_path_set=false;
 #endif /* ifdef OS_LINUX */
 
 /* Initialize all DSO stuff */
-bool dso_init() {
+bool dso_init(void) {
     return(true);
 }
 
@@ -49,7 +49,7 @@ void *dso_symbol(dso_handle hdl, const char *nam) {
 }
 
 /* Return the error message from dlopen */
-char *dso_error() {
+char *dso_error(void) {
     return(dlerror());
 }
 

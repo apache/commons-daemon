@@ -17,14 +17,14 @@
 /* @version $Id$ */
 
 /*
- * as Windows does not support signal, jsvc use event to emulate them.
+ * as Windows does not support signal, jsvc uses events to emulate them.
  * The supported signal is SIGTERM.
  * The kills.c contains the kill logic.
  */
 #ifdef OS_CYGWIN
 #include <windows.h>
 #include <stdio.h>
-static void (*HandleTerm)()=NULL; /* address of the handler routine. */
+static void (*HandleTerm)(void)=NULL; /* address of the handler routine. */
 
 /*
  * Event handling routine
@@ -51,7 +51,7 @@ HANDLE hevint; /* make a local copy because the parameter is shared! */
  * set a routine handler for the signal
  * note that it cannot be used to change the signal handler
  */
-int SetTerm(void (*func)())
+int SetTerm(void (*func)(void))
 {
 char Name[256];
 HANDLE hevint, hthread;
@@ -81,7 +81,7 @@ SECURITY_DESCRIPTOR sd;
   /*  It works also with NULL instead &sa!! */
   hevint = CreateEvent(&sa,FALSE, FALSE,Name);
 
-  HandleTerm = (int (*)()) func;
+  HandleTerm = func;
 
   if (hevint == NULL) return(-1); /* failed */
 

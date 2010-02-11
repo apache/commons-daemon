@@ -191,11 +191,11 @@ BOOL IsStopped(HWND hDlg)
 
 }
 /* Yes/No dialog box */
-LRESULT APIENTRY StopYesNo(
+BOOL CALLBACK StopYesNo(
         HWND hDlg,                /* window handle of the dialog box */
         UINT message,             /* type of message                 */
-        UINT wParam,              /* message-specific information    */
-        LONG lParam)
+        WPARAM wParam,            /* message-specific information    */
+        LPARAM lParam)
 {
     SERVICE_STATUS  svcStatus;
     
@@ -217,11 +217,11 @@ LRESULT APIENTRY StopYesNo(
     UNREFERENCED_PARAMETER(lParam);
 }
 /* Please wait stopping dialog box */
-LRESULT APIENTRY PleaseWait(
+BOOL CALLBACK PleaseWait(
         HWND hDlg,                /* window handle of the dialog box */
         UINT message,             /* type of message                 */
-        UINT wParam,              /* message-specific information    */
-        LONG lParam)
+        WPARAM wParam,            /* message-specific information    */
+        LPARAM lParam)
 {
     
     switch (message) {
@@ -241,11 +241,11 @@ LRESULT APIENTRY PleaseWait(
     return (FALSE);                            /* Didn't process a message    */
     UNREFERENCED_PARAMETER(lParam);
 }
-LRESULT APIENTRY StartYesNo(
+BOOL CALLBACK StartYesNo(
         HWND hDlg,                /* window handle of the dialog box */
         UINT message,             /* type of message                 */
-        UINT wParam,              /* message-specific information    */
-        LONG lParam)
+        WPARAM wParam,            /* message-specific information    */
+        LPARAM lParam)
 {
 
     switch (message) {
@@ -285,7 +285,7 @@ LRESULT APIENTRY StartYesNo(
 
 /* Display the menu */
 
-void   ShowMenu(HWND hWnd)
+void ShowMenu(HWND hWnd)
 {
    HMENU hMenu,hMenu1;
    POINT point;
@@ -368,11 +368,11 @@ BOOL InitInstance(
 *
 *\***************************************************************************/
 
-LONG APIENTRY MainWndProc(
+LRESULT CALLBACK MainWndProc(
         HWND hWnd,                /* window handle                   */
         UINT message,             /* type of message                 */
-        UINT wParam,              /* additional information          */
-        LONG lParam)              /* additional information          */
+        WPARAM wParam,            /* additional information          */
+        LPARAM lParam)            /* additional information          */
 {
    SERVICE_STATUS  svcStatus;
 
@@ -576,7 +576,7 @@ BOOL InitApplication(HANDLE hInstance)       /* current instance             */
     /* main window.                                                           */
 
     wc.style = 0;                       /* Class style(s).                    */
-    wc.lpfnWndProc = (WNDPROC)MainWndProc;/* Function to retrieve messages for  */
+    wc.lpfnWndProc = MainWndProc;       /* Function to retrieve messages for  */
                                         /* windows of this class.             */
     wc.cbClsExtra = 0;                  /* No per-class extra data.           */
     wc.cbWndExtra = 0;                  /* No per-window extra data.          */

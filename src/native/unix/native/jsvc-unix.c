@@ -44,7 +44,7 @@ extern char **environ;
 
 static mode_t envmask; /* mask to create the files */
 
-pid_t controlled=0; /* the son process pid */
+pid_t controlled=0; /* the child process pid */
 static bool stopping=false;
 static bool doreload=false;
 static void (*handler_int)(int)=NULL;
@@ -267,7 +267,7 @@ static bool checkuser(char *user, uid_t *uid, gid_t *gid) {
 }
 
 #ifdef OS_CYGWIN
-static void cygwincontroller() {
+static void cygwincontroller(void) {
     raise(SIGTERM);
 }
 #endif
@@ -378,8 +378,8 @@ static int get_pidf(arg_data *args) {
  * /tmp/pid.jsvc_up
  * Notes:
  * we fork several times
- * 1 - to be a daemon before the setsid(), the son is the controler process.
- * 2 - to start the JVM in the son process. (whose pid is stored in pidfile).
+ * 1 - to be a daemon before the setsid(), the child is the controler process.
+ * 2 - to start the JVM in the child process. (whose pid is stored in pidfile).
  */
 static int check_tmp_file(arg_data *args) {
     int pid;
@@ -492,7 +492,7 @@ static int stop_child(arg_data *args) {
 }
 
 /*
- * son process logic.
+ * child process logic.
  */
 
 static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
@@ -517,7 +517,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid) {
 #ifdef OS_LINUX
     /* setuid()/setgid() only apply the current thread so we must do it now */
     if (linuxset_user_group(args->user,uid,gid)!=0)
-            return(4);
+        return(4);
 #endif
     /* Initialize the Java VM */
     if (java_init(args,data)!=true) {

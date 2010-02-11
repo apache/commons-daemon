@@ -200,7 +200,7 @@ static arg_data *parse(int argc, char *argv[]) {
 
         } else if (strcmp(argv[x],"-procname") == 0) {
             args->procname = optional(argc, argv, x++);
-            if( args->procname == NULL) {
+            if (args->procname == NULL) {
               log_error("Invalid process name specified");
               return (NULL);
             }

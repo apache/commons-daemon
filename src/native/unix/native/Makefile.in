@@ -28,6 +28,7 @@ OBJS =  arguments.o \
 	java.o \
 	location.o \
 	replace.o \
+	locks.o \
 	signals.o
 
 all: jsvc libservice.a
