@@ -158,10 +158,13 @@ static int set_user_group(char *user, int uid, int gid)
                 (1 << CAP_DAC_OVERRIDE)
 /* That a more reasonable configuration */
 #define CAPS    (1 << CAP_NET_BIND_SERVICE)+ \
+                (1 << CAP_DAC_READ_SEARCH)+ \
                 (1 << CAP_SETUID)+ \
                 (1 << CAP_SETGID)
 /* probably the only one Java could use */
-#define CAPSMIN (1 << CAP_NET_BIND_SERVICE)
+#define CAPSMIN (1 << CAP_NET_BIND_SERVICE)+ \
+                (1 << CAP_DAC_READ_SEARCH)
+
 static int set_caps(int caps)
 {
     struct __user_cap_header_struct caphead;
