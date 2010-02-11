@@ -24,6 +24,10 @@ APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath);
 BOOL        apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                               LPCVOID lpOptions, DWORD dwMs, DWORD dwMx,
                               DWORD dwSs);
+DWORD
+apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
+                     LPCWSTR szOptions, DWORD dwMs, DWORD dwMx,
+                     DWORD dwSs, LPCWSTR szCmdArgs, LPWSTR **lppArray);
 
 BOOL        apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
                                  LPCSTR szMethodName,

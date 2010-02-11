@@ -386,7 +386,7 @@ BOOL __generalLoggingSave(HWND hDlg)
 
 BOOL __generalJvmSave(HWND hDlg)
 {
-    WCHAR szB[SIZ_DESLEN];
+    WCHAR szB[SIZ_HUGLEN];
     LPWSTR p, s;
     DWORD  l;
     if (!(TST_BIT_FLAG(_propertyChanged, 4)))
@@ -396,12 +396,12 @@ BOOL __generalJvmSave(HWND hDlg)
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
     if (!IsDlgButtonChecked(hDlg, IDC_PPJAUTO)) {
-        GetDlgItemTextW(hDlg, IDC_PPJJVM,  szB, SIZ_DESMAX);
+        GetDlgItemTextW(hDlg, IDC_PPJJVM,  szB, SIZ_HUGMAX);
     }
     else
         lstrcpyW(szB, L"auto");
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"Jvm", szB);
-    GetDlgItemTextW(hDlg, IDC_PPJCLASSPATH,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPJCLASSPATH,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"Classpath", szB);
 
     l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPJOPTIONS));
@@ -411,7 +411,7 @@ BOOL __generalJvmSave(HWND hDlg)
     apxFree(p);
     apxRegistrySetMzStrW(hRegserv, APXREG_PARAMSOFTWARE,
                          _s_java, L"Options", s, l);
-    if (!GetDlgItemTextW(hDlg, IDC_PPJMS,  szB, SIZ_DESMAX))
+    if (!GetDlgItemTextW(hDlg, IDC_PPJMS,  szB, SIZ_HUGMAX))
         szB[0] = L'\0';
 
     apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"JvmMs",
@@ -432,7 +432,7 @@ BOOL __generalJvmSave(HWND hDlg)
 
 BOOL __generalStartSave(HWND hDlg)
 {
-    WCHAR szB[SIZ_DESLEN];
+    WCHAR szB[SIZ_HUGLEN];
     LPWSTR p, s;
     DWORD  l;
 
@@ -443,15 +443,15 @@ BOOL __generalStartSave(HWND hDlg)
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
 
-    GetDlgItemTextW(hDlg, IDC_PPRCLASS,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPRCLASS,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Class", szB);
-    GetDlgItemTextW(hDlg, IDC_PPRIMAGE,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPRIMAGE,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Image", szB);
-    GetDlgItemTextW(hDlg, IDC_PPRWPATH,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPRWPATH,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"WorkingPath", szB);
-    GetDlgItemTextW(hDlg, IDC_PPRMETHOD,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPRMETHOD,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Method", szB);
-    GetDlgItemTextW(hDlg, IDC_PPRMODE,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPRMODE,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_start, L"Mode", szB);
 
     l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPRARGS));
@@ -470,7 +470,7 @@ BOOL __generalStartSave(HWND hDlg)
 
 BOOL __generalStopSave(HWND hDlg)
 {
-    WCHAR szB[SIZ_DESLEN];
+    WCHAR szB[SIZ_HUGLEN];
     LPWSTR p, s;
     DWORD  l;
 
@@ -481,17 +481,17 @@ BOOL __generalStopSave(HWND hDlg)
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
 
-    GetDlgItemTextW(hDlg, IDC_PPSCLASS,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSCLASS,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Class", szB);
-    GetDlgItemTextW(hDlg, IDC_PPSIMAGE,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSIMAGE,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Image", szB);
-    GetDlgItemTextW(hDlg, IDC_PPSWPATH,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSWPATH,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"WorkingPath", szB);
-    GetDlgItemTextW(hDlg, IDC_PPSMETHOD,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSMETHOD,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Method", szB);
-    GetDlgItemTextW(hDlg, IDC_PPSTIMEOUT,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSTIMEOUT,  szB, SIZ_HUGMAX);
     apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Timeout", apxAtoulW(szB));
-    GetDlgItemTextW(hDlg, IDC_PPSMODE,  szB, SIZ_DESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSMODE,  szB, SIZ_HUGMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_stop, L"Mode", szB);
 
     l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPSARGS));

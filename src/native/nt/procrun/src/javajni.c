@@ -122,6 +122,7 @@ typedef struct APXJAVAVM {
 } APXJAVAVM, *LPAPXJAVAVM;
 
 #define JAVA_CLASSPATH      "-Djava.class.path="
+#define JAVA_CLASSPATH_W    L"-Djava.class.path="
 #define JAVA_CLASSSTRING    "java/lang/String"
 
 static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
@@ -444,6 +445,99 @@ cleanup:
     JVM_EXCEPTION_CLEAR(lpJava);
     return FALSE;
 }
+
+/* ANSI version only */
+DWORD
+apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
+                     LPCWSTR szOptions, DWORD dwMs, DWORD dwMx,
+                     DWORD dwSs, LPCWSTR szCmdArgs, LPWSTR **lppArray)
+{
+
+    DWORD i, nJVM, nCmd, nTotal, lJVM, lCmd;
+    LPWSTR p;
+
+    // Calculate the number of all arguments
+    nTotal = 0;
+    if (szClassPath)
+        ++nTotal;
+    if (szClass)
+        ++nTotal;
+    lJVM = __apxGetMultiSzLengthW(szOptions, &nJVM);
+    nTotal += nJVM;
+    lCmd = __apxGetMultiSzLengthW(szCmdArgs, &nCmd);
+    nTotal += nCmd;
+    if (dwMs)
+        ++nTotal;
+    if (dwMx)
+        ++nTotal;
+    if (dwSs)
+        ++nTotal;
+
+    if (nTotal == 0)
+        return 0;
+
+    // Allocate the array to store all arguments' pointers
+    *lppArray = (LPWSTR *)apxPoolAlloc(hPool, (nTotal + 2) * sizeof(LPWSTR));
+
+    // Process JVM options
+    if (nJVM && lJVM) {
+        p = (LPWSTR)apxPoolAlloc(hPool, (lJVM + 1) * sizeof(WCHAR));
+        AplCopyMemory(p, szOptions, (lJVM + 1) * sizeof(WCHAR) + sizeof(WCHAR));
+        for (i = 0; i < nJVM; i++) {
+            (*lppArray)[i] = p;
+            while (*p)
+                p++;
+            p++;
+        }
+    }
+
+    // Process the 3 extra JVM options
+    if (dwMs) {
+        p = (LPWSTR)apxPoolAlloc(hPool, 64 * sizeof(WCHAR));
+        wsprintfW(p, L"-Xms%dm", dwMs);
+        (*lppArray)[i++] = p;
+    }
+    if (dwMx) {
+        p = (LPWSTR)apxPoolAlloc(hPool, 64 * sizeof(WCHAR));
+        wsprintfW(p, L"-Xmx%dm", dwMx);
+        (*lppArray)[i++] = p;
+    }
+    if (dwSs) {
+        p = (LPWSTR)apxPoolAlloc(hPool, 64 * sizeof(WCHAR));
+        wsprintfW(p, L"-Xss%dk", dwSs);
+        (*lppArray)[i++] = p;
+    }
+
+    // Process the classpath and class
+    if (szClassPath) {
+        p = (LPWSTR)apxPoolAlloc(hPool, (lstrlenW(JAVA_CLASSPATH_W) + lstrlenW(szClassPath)) * sizeof(WCHAR));
+        lstrcpyW(p, JAVA_CLASSPATH_W);
+        lstrcatW(p, szClassPath);
+        (*lppArray)[i++] = p;
+    }
+    if (szClass) {
+        p = (LPWSTR)apxPoolAlloc(hPool, (lstrlenW(szClass)) * sizeof(WCHAR));
+        lstrcpyW(p, szClass);
+        (*lppArray)[i++] = p;
+    }
+
+    // Process command arguments
+    if (nCmd && lCmd) {
+        p = (LPWSTR)apxPoolAlloc(hPool, (lCmd + 1) * sizeof(WCHAR));
+        AplCopyMemory(p, szCmdArgs, (lCmd + 1) * sizeof(WCHAR) + sizeof(WCHAR));
+        for (; i < nTotal; i++) {
+            (*lppArray)[i] = p;
+            while (*p)
+                p++;
+            p++;
+        }
+    }
+
+    (*lppArray)[++i] = NULL;
+
+    return nTotal;
+}
+
 
 BOOL
 apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
@@ -809,3 +903,4 @@ apxJavaSetOut(APXHANDLE hJava, BOOL setErrorOrOut, LPCWSTR szFilename)
         return TRUE;
 
 }
+

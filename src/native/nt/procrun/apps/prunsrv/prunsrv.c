@@ -198,6 +198,10 @@ static BOOL                  _service_mode = FALSE;
 static BOOL                  _jni_startup  = FALSE;
 /* JVM used for shutdown    */
 static BOOL                  _jni_shutdown = FALSE;
+/* Java used as worker       */
+static BOOL                  _java_startup  = FALSE;
+/* Java used for shutdown    */
+static BOOL                  _java_shutdown = FALSE;
 /* Global variables and objects */
 static APXHANDLE    gPool;
 static APXHANDLE    gWorker;
@@ -211,8 +215,8 @@ static LPCWSTR  _jni_rparam               = NULL;    /* Startup  arguments */
 static LPCWSTR  _jni_sparam               = NULL;    /* Shutdown arguments */
 static LPSTR    _jni_rmethod              = NULL;    /* Startup  arguments */
 static LPSTR    _jni_smethod              = NULL;    /* Shutdown arguments */
-static CHAR     _jni_rclass[SIZ_RESLEN]   = {'\0'};  /* Startup  class */
-static CHAR     _jni_sclass[SIZ_RESLEN]   = {'\0'};  /* Shutdown class */
+static CHAR     _jni_rclass[SIZ_HUGLEN]   = {'\0'};  /* Startup  class */
+static CHAR     _jni_sclass[SIZ_HUGLEN]   = {'\0'};  /* Shutdown class */
 
 static HANDLE gShutdownEvent = NULL;
 static HANDLE gSignalEvent   = NULL;
@@ -858,7 +862,15 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             goto cleanup;
         }
         /* Assemble the command line */
-        nArgs = apxMultiSzToArrayW(gPool, SO_STOPPARAMS, &pArgs);
+        if (_java_shutdown) {
+            nArgs = apxJavaCmdInitialize(gPool, SO_CLASSPATH, SO_STOPCLASS,
+                                         SO_JVMOPTIONS, SO_JVMMS, SO_JVMMX,
+                                         SO_JVMSS, SO_STOPPARAMS, &pArgs);
+        }
+        else {
+            nArgs = apxMultiSzToArrayW(gPool, SO_STOPPARAMS, &pArgs);
+        }
+
         /* Pass the argv to child process */
         if (!apxProcessSetCommandArgsW(hWorker, SO_STOPIMAGE,
                                        nArgs, pArgs)) {
@@ -1011,7 +1023,15 @@ static DWORD serviceStart()
             goto cleanup;
         }
         /* Assemble the command line */
-        nArgs = apxMultiSzToArrayW(gPool, SO_STARTPARAMS, &pArgs);
+        if (_java_startup) {
+            nArgs = apxJavaCmdInitialize(gPool, SO_CLASSPATH, SO_STARTCLASS,
+                                         SO_JVMOPTIONS, SO_JVMMS, SO_JVMMX,
+                                         SO_JVMSS, SO_STARTPARAMS, &pArgs);
+        }
+        else {
+            nArgs = apxMultiSzToArrayW(gPool, SO_STARTPARAMS, &pArgs);
+        }
+
         /* Pass the argv to child process */
         if (!apxProcessSetCommandArgsW(gWorker, SO_STARTIMAGE,
                                        nArgs, pArgs)) {
@@ -1144,7 +1164,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
 
     if (_service_name) {
-        WCHAR en[SIZ_DESLEN];
+        WCHAR en[SIZ_HUGLEN];
         int i;
         PSECURITY_ATTRIBUTES sa = GetNullACL();
         lstrlcpyW(en, SIZ_DESLEN, L"Global\\");
@@ -1185,6 +1205,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 apxLogWrite(APXLOG_MARK_ERROR "Unable to find Java Runtime Environment.");
                 goto cleanup;
             }
+            _java_startup = TRUE;
             /* StartImage now contains the full path to the java.exe */
             SO_STARTIMAGE = jx;
         }
@@ -1211,6 +1232,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 apxLogWrite(APXLOG_MARK_ERROR "Unable to find Java Runtime Environment.");
                 goto cleanup;
             }
+            _java_shutdown = TRUE;
             /* StopImage now contains the full path to the java.exe */
             SO_STOPIMAGE = jx;
         }
