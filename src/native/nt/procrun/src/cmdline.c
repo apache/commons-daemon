@@ -265,14 +265,17 @@ void apxCmdlineLoadEnvVars(
             lpCmdline->lpOptions[i].szValue = apxPoolStrdupW(lpCmdline->hPool, szVar);
             lpCmdline->lpOptions[i].dwType |= APXCMDOPT_FOUND;
         }
+        else if (l && (lpCmdline->lpOptions[i].dwType & APXCMDOPT_INT)) {
+            lpCmdline->lpOptions[i].dwValue = (DWORD)apxAtoulW(szVar);
+            lpCmdline->lpOptions[i].dwType |= APXCMDOPT_FOUND;
+        }
         else if (l && (lpCmdline->lpOptions[i].dwType & APXCMDOPT_MSZ)) {
             LPWSTR pp;
             BOOL insquote = FALSE, indquote = FALSE;
             DWORD sp = 0;
+            lpCmdline->lpOptions[i].dwValue = (lstrlenW(szVar) + 2) * sizeof(WCHAR);
             lpCmdline->lpOptions[i].szValue = apxPoolCalloc(lpCmdline->hPool,
-                                                            (lstrlenW(szVar) + 2) *
-                                                            sizeof(WCHAR));
-            lstrcpyW(lpCmdline->lpOptions[i].szValue, szVar);
+                                                    lpCmdline->lpOptions[i].dwValue);
             pp = szVar;
             while(*pp) {
                 if (*pp == L'\'')
