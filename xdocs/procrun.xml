@@ -288,12 +288,12 @@
     </tr>
     <tr>
     <td>--LogPath</td>
-    <td>working path</td>
+    <td>SystemDirectory\LogFiles\Apache</td>
     <td>Defines the path for logging</td>
     </tr>
     <tr>
     <td>--LogPrefix</td>
-    <td>jakarta_service</td>
+    <td>jakarta_service_</td>
     <td>Defines the service log filename</td>
     </tr>
     <tr>
