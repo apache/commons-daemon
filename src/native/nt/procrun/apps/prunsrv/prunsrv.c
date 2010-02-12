@@ -215,8 +215,8 @@ static LPCWSTR  _jni_rparam               = NULL;    /* Startup  arguments */
 static LPCWSTR  _jni_sparam               = NULL;    /* Shutdown arguments */
 static LPSTR    _jni_rmethod              = NULL;    /* Startup  arguments */
 static LPSTR    _jni_smethod              = NULL;    /* Shutdown arguments */
-static CHAR     _jni_rclass[SIZ_HUGLEN]   = {'\0'};  /* Startup  class */
-static CHAR     _jni_sclass[SIZ_HUGLEN]   = {'\0'};  /* Shutdown class */
+static LPSTR    _jni_rclass               = NULL;    /* Startup  class */
+static LPSTR    _jni_sclass               = NULL;    /* Shutdown class */
 
 static HANDLE gShutdownEvent = NULL;
 static HANDLE gSignalEvent   = NULL;
@@ -255,8 +255,8 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
             aOut = TRUE;
             lpWrapper->szStdOutFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
-                                                     NULL,
-                                                     L"stdout_");
+                                                     L"stdout_",
+                                                     NULL);
         }
         /* Delete the file if not in append mode
          * XXX: See if we can use the params instead of that.
@@ -291,8 +291,8 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
             aErr = TRUE;
             lpWrapper->szStdErrFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
-                                                     NULL,
-                                                     L"stderr_");
+                                                     L"stderr_",
+                                                     NULL);
         }
         if (!aErr)
             DeleteFileW(lpWrapper->szStdErrFilename);
@@ -323,13 +323,15 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
                                               _O_WRONLY | _O_TEXT);
     if (lpWrapper->fdStdOutFile > 0) {
         lpWrapper->fdStdOutFile = dup2(lpWrapper->fdStdOutFile, 1);
-        setvbuf(stdout, NULL, _IONBF, 0);
+        if (lpWrapper->fdStdOutFile > 0)
+            setvbuf(stdout, NULL, _IONBF, 0);
     }
     lpWrapper->fdStdErrFile = _open_osfhandle((ptrdiff_t)lpWrapper->hStdErrFile,
                                               _O_WRONLY | _O_TEXT);
     if (lpWrapper->fdStdErrFile > 0) {
         lpWrapper->fdStdErrFile = dup2(lpWrapper->fdStdErrFile, 2);
-        setvbuf(stderr, NULL, _IONBF, 0);
+        if (lpWrapper->fdStdErrFile > 0)
+            setvbuf(stderr, NULL, _IONBF, 0);
     }
 
     return TRUE;
@@ -1186,7 +1188,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (SO_STARTMODE) {
         if (!lstrcmpiW(SO_STARTMODE, PRSRV_JVM)) {
             _jni_startup = TRUE;
-            WideToAscii(SO_STARTCLASS, _jni_rclass);
+            _jni_rclass  = WideToUTF8(SO_STARTCLASS);
             /* Exchange all dots with slashes */
             apxStrCharReplaceA(_jni_rclass, '.', '/');
             _jni_rparam = SO_STARTPARAMS;
@@ -1214,7 +1216,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (SO_STOPMODE) {
         if (!lstrcmpiW(SO_STOPMODE, PRSRV_JVM)) {
             _jni_shutdown = TRUE;
-            WideToAscii(SO_STOPCLASS, _jni_sclass);
+            _jni_sclass = WideToUTF8(SO_STOPCLASS);
             apxStrCharReplaceA(_jni_sclass, '.', '/');
             _jni_sparam = SO_STOPPARAMS;
         }
@@ -1275,7 +1277,11 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         rv = apxHandleWait(gWorker, INFINITE, FALSE);
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
-        fflush(stdout);
+        /* This will cause to wait for all threads to exit
+         * TODO: Use some kind of timeout wait logic
+         */
+        apxDestroyJvm();
+        apxLogWrite(APXLOG_MARK_DEBUG "JVM destroyed.");
     }
     else {
         apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d", rc);
@@ -1416,6 +1422,7 @@ cleanup:
     if (_service_status_handle)
         CloseHandle(_service_status_handle);
     _service_status_handle = NULL;
+    _flushall();
     apxLogClose(NULL);
     apxHandleManagerDestroy();
     ExitProcess(rv);

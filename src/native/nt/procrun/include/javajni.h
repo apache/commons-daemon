@@ -19,6 +19,8 @@
 
 __APXBEGIN_DECLS
 
+#define     APX_JVM_DESTROY 0x00000001
+
 APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath);
 
 BOOL        apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
@@ -39,6 +41,9 @@ DWORD       apxJavaWait(APXHANDLE hJava, DWORD dwMilliseconds, BOOL bKill);
 
 BOOL        apxJavaSetOut(APXHANDLE hJava, BOOL setErrorOrOut,
                           LPCWSTR szFilename);
+DWORD       apxJavaSetOptions(APXHANDLE hJava, DWORD dwOptions);
+
+BOOL        apxDestroyJvm(void);
 
 
 __APXEND_DECLS

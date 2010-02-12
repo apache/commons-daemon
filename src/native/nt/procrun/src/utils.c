@@ -149,6 +149,19 @@ LPSTR WideToUTF8(LPCWSTR ws)
     return s;
 }
 
+LPWSTR UTF8ToWide(LPCSTR cs)
+{
+
+    LPWSTR s;
+    int cch = MultiByteToWideChar(CP_UTF8, 0, cs, -1, NULL, 0);
+    s = (LPWSTR)apxAlloc(cch * sizeof(WCHAR));
+    if (!MultiByteToWideChar(CP_UTF8, 0, cs, -1, s, cch)) {
+        apxFree(s);
+        return NULL;
+    }
+    return s;
+}
+
 LPSTR MzWideToAscii(LPCWSTR ws, LPSTR s)
 {
     LPSTR pszSave = s;

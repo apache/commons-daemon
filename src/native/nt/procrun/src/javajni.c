@@ -45,7 +45,8 @@ static DYNLOAD_FPTR_DECLARE(JNI_CreateJavaVM) = NULL;
 DYNOLAD_TYPE_DECLARE(JNI_GetCreatedJavaVMs, JNICALL, jint)(JavaVM **, jsize, jsize *);
 static DYNLOAD_FPTR_DECLARE(JNI_GetCreatedJavaVMs) = NULL;
 
-static HANDLE _st_sys_jvmDllHandle = NULL;
+static HANDLE  _st_sys_jvmDllHandle = NULL;
+static JavaVM *_st_sys_jvm = NULL;
 
 DYNOLAD_TYPE_DECLARE(SetDllDirectoryW, WINAPI, BOOL)(LPCWSTR);
 static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
@@ -127,7 +128,11 @@ typedef struct APXJAVAVM {
 
 static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
 {
-    jint _iStatus = (*(lpJava->lpJvm))->GetEnv(lpJava->lpJvm,
+    jint _iStatus;
+
+    if (!_st_sys_jvm)
+      return FALSE;  
+    _iStatus = (*(lpJava->lpJvm))->GetEnv(lpJava->lpJvm,
                                           (void **)&(lpJava->lpEnv),
                                           lpJava->iVersion);
     if (_iStatus != JNI_OK) {
@@ -145,8 +150,9 @@ static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
 
 static __inline BOOL __apxJvmDetach(LPAPXJAVAVM lpJava)
 {
-    jint _iStatus = (*(lpJava->lpJvm))->DetachCurrentThread(lpJava->lpJvm);
-    if (_iStatus != JNI_OK) {
+    if (!_st_sys_jvm)
+      return FALSE;  
+    if ((*(lpJava->lpJvm))->DetachCurrentThread(lpJava->lpJvm) != JNI_OK) {
         lpJava->lpEnv = NULL;
         return FALSE;
     }
@@ -226,7 +232,7 @@ static BOOL __apxJavaJniCallback(APXHANDLE hObject, UINT uMsg,
     lpJava = APXHANDLE_DATA(hObject);
     switch (uMsg) {
         case WM_CLOSE:
-            if (lpJava->lpJvm) {
+            if (_st_sys_jvm && lpJava->lpJvm) {
                 if (!IS_INVALID_HANDLE(lpJava->hWorkerThread)) {
                     if (GetExitCodeThread(lpJava->hWorkerThread, &dwJvmRet) &&
                         dwJvmRet == STILL_ACTIVE) {
@@ -240,11 +246,6 @@ static BOOL __apxJavaJniCallback(APXHANDLE hObject, UINT uMsg,
                 __apxJvmDetach(lpJava);
                 /* Check if this is the jvm loader */
                 if (!lpJava->iVmCount && _st_sys_jvmDllHandle) {
-#if 0
-                    /* Do not destroy if we terminated the worker thread */
-                    if (dwJvmRet != STILL_ACTIVE)
-                        (*(lpJava->lpJvm))->DestroyJavaVM(lpJava->lpJvm);
-#endif
                     /* Unload JVM dll */
                     FreeLibrary(_st_sys_jvmDllHandle);
                     _st_sys_jvmDllHandle = NULL;
@@ -286,7 +287,23 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     lpJava = APXHANDLE_DATA(hJava);
     lpJava->lpJvm = lpJvm;
     lpJava->iVmCount = iVmCount;
+    if (!_st_sys_jvm)
+        _st_sys_jvm = lpJvm;
     return hJava;
+}
+
+BOOL
+apxDestroyJvm()
+{
+    if (_st_sys_jvm) {
+        JavaVM *lpJvm = _st_sys_jvm;
+        _st_sys_jvm = NULL;
+        (*lpJvm)->DetachCurrentThread(lpJvm);
+        (*lpJvm)->DestroyJavaVM(lpJvm);
+        return TRUE;
+    }
+    else
+        return FALSE;
 }
 
 static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
@@ -421,8 +438,11 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             apxLogWrite(APXLOG_MARK_ERROR "CreateJavaVM Failed");
             rv = FALSE;
         }
-        else
+        else {
             rv = TRUE;
+            if (!_st_sys_jvm)
+                _st_sys_jvm = lpJava->lpJvm;
+        }
         apxFree(szCp);
         apxFree(lpJvmOptions);
     }
@@ -456,7 +476,7 @@ apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
     DWORD i, nJVM, nCmd, nTotal, lJVM, lCmd;
     LPWSTR p;
 
-    // Calculate the number of all arguments
+    /* Calculate the number of all arguments */
     nTotal = 0;
     if (szClassPath)
         ++nTotal;
@@ -476,10 +496,11 @@ apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
     if (nTotal == 0)
         return 0;
 
-    // Allocate the array to store all arguments' pointers
+    /* Allocate the array to store all arguments' pointers
+     */
     *lppArray = (LPWSTR *)apxPoolAlloc(hPool, (nTotal + 2) * sizeof(LPWSTR));
 
-    // Process JVM options
+    /* Process JVM options */
     if (nJVM && lJVM) {
         p = (LPWSTR)apxPoolAlloc(hPool, (lJVM + 1) * sizeof(WCHAR));
         AplCopyMemory(p, szOptions, (lJVM + 1) * sizeof(WCHAR) + sizeof(WCHAR));
@@ -491,7 +512,7 @@ apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
         }
     }
 
-    // Process the 3 extra JVM options
+    /* Process the 3 extra JVM options */
     if (dwMs) {
         p = (LPWSTR)apxPoolAlloc(hPool, 64 * sizeof(WCHAR));
         wsprintfW(p, L"-Xms%dm", dwMs);
@@ -508,7 +529,7 @@ apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
         (*lppArray)[i++] = p;
     }
 
-    // Process the classpath and class
+    /* Process the classpath and class */
     if (szClassPath) {
         p = (LPWSTR)apxPoolAlloc(hPool, (lstrlenW(JAVA_CLASSPATH_W) + lstrlenW(szClassPath)) * sizeof(WCHAR));
         lstrcpyW(p, JAVA_CLASSPATH_W);
@@ -521,7 +542,7 @@ apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
         (*lppArray)[i++] = p;
     }
 
-    // Process command arguments
+    /* Process command arguments */
     if (nCmd && lCmd) {
         p = (LPWSTR)apxPoolAlloc(hPool, (lCmd + 1) * sizeof(WCHAR));
         AplCopyMemory(p, szCmdArgs, (lCmd + 1) * sizeof(WCHAR) + sizeof(WCHAR));
@@ -593,7 +614,6 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     return TRUE;
 }
 
-
 /* Main java application worker thread
  * It will launch Java main and wait until
  * it finishes.
@@ -623,6 +643,8 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
 
     JVM_EXCEPTION_CLEAR(lpJava);
     __apxJvmDetach(lpJava);
+    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread %s:%s finished",
+                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
 finished:
     lpJava->dwWorkerStatus = 0;
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s",
@@ -654,6 +676,20 @@ apxJavaStart(APXHANDLE hJava)
     /* Give some time to initialize the thread */
     Sleep(1000);
     return TRUE;
+}
+
+DWORD
+apxJavaSetOptions(APXHANDLE hJava, DWORD dwOptions)
+{
+    DWORD dwOrgOptions;
+    LPAPXJAVAVM lpJava;
+
+    if (hJava->dwType != APXHANDLE_TYPE_JVM)
+        return 0;
+    lpJava = APXHANDLE_DATA(hJava);
+    dwOrgOptions = lpJava->dwOptions;
+    lpJava->dwOptions = dwOptions;
+    return dwOrgOptions;
 }
 
 DWORD

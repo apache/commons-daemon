@@ -57,28 +57,23 @@ LPWSTR apxLogFile(
     if (!szPath) {
         if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
             return INVALID_HANDLE_VALUE;
-        lstrlcatW(sPath, MAX_PATH, L"\\LogFiles\\");
-        if (!szPrefix)
-            lstrlcatW(sPath, MAX_PATH, L"Apache");
-        else
-            lstrlcatW(sPath, MAX_PATH, szPrefix);
-        wsprintfW(sName, L"\\%s%04d%02d%02d.log",
-                  szName,
-                  sysTime.wYear,
-                  sysTime.wMonth,
-                  sysTime.wDay);
+        lstrlcatW(sPath, MAX_PATH, L"\\LogFiles\\Apache");
     }
     else {
         lstrlcpyW(sPath, MAX_PATH, szPath);
-        if (szPrefix)
-            wsprintfW(sName, L"\\%s", szPrefix);
-        else
-            wsprintfW(sName, L"\\%s%04d%02d%02d.log",
-                      szName,
-                      sysTime.wYear,
-                      sysTime.wMonth,
-                      sysTime.wDay);
     }
+    if (!szPrefix)
+        szPrefix = L"";
+    if (!szName)
+        szName   = L"";
+    wsprintfW(sName,
+              L"\\%s%s%04d%02d%02d.log",
+              szPrefix,
+              szName,
+              sysTime.wYear,
+              sysTime.wMonth,
+              sysTime.wDay);
+
     sRet = apxPoolAlloc(hPool, (MAX_PATH + 1) * sizeof(WCHAR));
     /* Set default level to info */
     CreateDirectoryW(sPath, NULL);
