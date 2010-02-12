@@ -133,10 +133,10 @@ static int set_user_group(char *user, int uid, int gid)
             } else
                 log_debug("Cannot set supplement group list for user '%s'",user);
         }
-    if (getuid() == uid) {
+        if (getuid() == uid) {
             log_debug("No need to change user to '%s'!",user);
-            return(0);
-    }
+             return(0);
+        }
         if (setuid(uid)!=0) {
             log_error("Cannot set user id for user '%s'",user);
             return(-1);
@@ -185,19 +185,22 @@ static int set_caps(int caps)
 }
 static int linuxset_user_group(char *user, int uid, int gid)
 {
+    int caps_set = 0;
     /* set capabilities enough for binding port 80 setuid/getuid */
-    if (set_caps(CAPS)!=0) {
-        if (getuid()!= uid) {
-            log_error("set_caps(CAPS) failed");
+    if (getuid() == 0) {
+        if (set_caps(CAPS)!=0) {
+            if (getuid()!= uid) {
+                log_error("set_caps(CAPS) failed");
+                return(-1);
+            }
+            log_debug("set_caps(CAPS) failed");
+        }
+        /* make sure they are kept after setuid */ 
+        if (prctl(PR_SET_KEEPCAPS,1,0,0,0) < 0) {
+            log_error("prctl failed in linuxset_user_group");
             return(-1);
         }
-        log_debug("set_caps(CAPS) failed");
-    }
-
-    /* make sure they are kept after setuid */ 
-    if (prctl(PR_SET_KEEPCAPS,1,0,0,0) < 0) {
-        log_error("prctl failed in linuxset_user_group");
-        return(-1);
+        caps_set = 1;
     }
 
     /* set setuid/getuid */
@@ -206,13 +209,15 @@ static int linuxset_user_group(char *user, int uid, int gid)
         return(-1);
     }
 
-    /* set capability to binding port 80 read conf */
-    if (set_caps(CAPSMIN)!=0) {
-        if (getuid()!= uid) {
-            log_error("set_caps(CAPSMIN) failed");
-            return(-1);
+    if (caps_set) {
+        /* set capability to binding port 80 read conf */
+        if (set_caps(CAPSMIN)!=0) {
+            if (getuid()!= uid) {
+                log_error("set_caps(CAPSMIN) failed");
+                return(-1);
+            }
+            log_debug("set_caps(CAPSMIN) failed");
         }
-        log_debug("set_caps(CAPSMIN) failed");
     }
 
     return(0);
