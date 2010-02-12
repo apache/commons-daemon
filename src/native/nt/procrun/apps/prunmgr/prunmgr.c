@@ -285,8 +285,8 @@ int CALLBACK __propertyCallback(HWND hwndPropSheet, UINT uMsg, LPARAM lParam)
 
 BOOL __generalPropertySave(HWND hDlg)
 {
-    WCHAR szN[256];
-    WCHAR szD[256];
+    WCHAR szN[SIZ_RESLEN];
+    WCHAR szD[SIZ_DESLEN];
     DWORD dwStartType = SERVICE_NO_CHANGE;
     int i;
 
@@ -296,8 +296,8 @@ BOOL __generalPropertySave(HWND hDlg)
 
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
-    GetDlgItemTextW(hDlg, IDC_PPSGDISP, szN, 255);
-    GetDlgItemTextW(hDlg, IDC_PPSGDESC, szD, 1023);
+    GetDlgItemTextW(hDlg, IDC_PPSGDISP, szN, SIZ_RESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSGDESC, szD, SIZ_DESMAX);
     i = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST));
     if (i == 0)
         dwStartType = SERVICE_AUTO_START;
@@ -316,9 +316,9 @@ BOOL __generalPropertySave(HWND hDlg)
 
 BOOL __generalLogonSave(HWND hDlg)
 {
-    WCHAR szU[64];
-    WCHAR szP[64];
-    WCHAR szC[64];
+    WCHAR szU[SIZ_RESLEN];
+    WCHAR szP[SIZ_RESLEN];
+    WCHAR szC[SIZ_RESLEN];
     DWORD dwStartType = SERVICE_NO_CHANGE;
 
     if (!(TST_BIT_FLAG(_propertyChanged, 2)))
@@ -327,13 +327,15 @@ BOOL __generalLogonSave(HWND hDlg)
 
     if (IS_INVALID_HANDLE(hService))
         return FALSE;
-    GetDlgItemTextW(hDlg, IDC_PPSLUSER,  szU, 63);
-    GetDlgItemTextW(hDlg, IDC_PPSLPASS,  szP, 63);
-    GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, 63);
+    GetDlgItemTextW(hDlg, IDC_PPSLUSER,  szU, SIZ_RESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSLPASS,  szP, SIZ_RESMAX);
+    GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, SIZ_RESMAX);
 
     if (lstrlenW(szU) && lstrcmpiW(szU, STAT_SYSTEM)) {
-        if (szP[0] != L' ' &&  szC[0] != L' ' && !lstrcmpW(szP, szC))
+        if (szP[0] != L' ' &&  szC[0] != L' ' && !lstrcmpW(szP, szC)) {
             apxServiceSetNames(hService, NULL, NULL, NULL, szU, szP);
+            lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, szU);
+        }
         else {
             MessageBoxW(hDlg, apxLoadResourceW(IDS_VALIDPASS, 0),
                         apxLoadResourceW(IDS_APPLICATION, 1),
@@ -343,6 +345,7 @@ BOOL __generalLogonSave(HWND hDlg)
     }
     else {
         apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SYSTEM, L"");
+        lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SYSTEM);
         if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED)
             apxServiceSetOptions(hService,
                 _currentEntry->stServiceStatus.dwServiceType | SERVICE_INTERACTIVE_PROCESS,
@@ -553,7 +556,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                                    LPARAM lParam)
 {
     LPPSHNOTIFY lpShn;
-    WCHAR       szBuf[1024];
+    WCHAR       szBuf[SIZ_DESLEN];
 
     switch (uMessage) {
         case WM_INITDIALOG:
@@ -566,8 +569,8 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                 startPage = 0;
                 if (!bEnableTry)
                     apxCenterWindow(GetParent(hDlg), NULL);
-                SendMessage(GetDlgItem(hDlg, IDC_PPSGDISP), EM_LIMITTEXT, 255, 0);
-                SendMessage(GetDlgItem(hDlg, IDC_PPSGDESC), EM_LIMITTEXT, 1023, 0);
+                SendMessage(GetDlgItem(hDlg, IDC_PPSGDISP), EM_LIMITTEXT, SIZ_RESMAX, 0);
+                SendMessage(GetDlgItem(hDlg, IDC_PPSGDESC), EM_LIMITTEXT, SIZ_DESMAX, 0);
 
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSGCMBST), START_AUTO);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSGCMBST), START_MANUAL);
@@ -596,7 +599,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                 break;
                 case IDC_PPSGDISP:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        GetDlgItemTextW(hDlg, IDC_PPSGDISP, szBuf, 255);
+                        GetDlgItemTextW(hDlg, IDC_PPSGDISP, szBuf, SIZ_RESMAX);
                         if (!lstrcmpW(szBuf, _currentEntry->lpConfig->lpDisplayName)) {
                             PropSheet_UnChanged(GetParent(hDlg), hDlg);
                             CLR_BIT_FLAG(_propertyChanged, 1);
@@ -609,7 +612,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                 break;
                 case IDC_PPSGDESC:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        GetDlgItemTextW(hDlg, IDC_PPSGDESC, szBuf, 1023);
+                        GetDlgItemTextW(hDlg, IDC_PPSGDESC, szBuf, SIZ_DESMAX);
                         if (!lstrcmpW(szBuf, _currentEntry->szServiceDescription)) {
                             PropSheet_UnChanged(GetParent(hDlg), hDlg);
                             CLR_BIT_FLAG(_propertyChanged, 1);
@@ -678,7 +681,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                                  LPARAM lParam)
 {
     LPPSHNOTIFY lpShn;
-    WCHAR       szBuf[1024];
+    WCHAR       szBuf[SIZ_DESLEN];
     switch (uMessage) {
         case WM_INITDIALOG:
             {
@@ -764,7 +767,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                 break;
                 case IDC_PPSLUSER:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        GetDlgItemTextW(hDlg, IDC_PPSLUSER, szBuf, 63);
+                        GetDlgItemTextW(hDlg, IDC_PPSLUSER, szBuf, SIZ_RESMAX);
                         if (!lstrcmpiW(szBuf, _currentEntry->szObjectName)) {
                             PropSheet_UnChanged(GetParent(hDlg), hDlg);
                             CLR_BIT_FLAG(_propertyChanged, 2);
@@ -778,10 +781,10 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                 case IDC_PPSLPASS:
                 case IDC_PPSLCPASS:
                     if (HIWORD(wParam) == EN_CHANGE) {
-                        WCHAR szP[64];
-                        WCHAR szC[64];
-                        GetDlgItemTextW(hDlg, IDC_PPSLPASS, szP, 63);
-                        GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, 63);
+                        WCHAR szP[SIZ_RESLEN];
+                        WCHAR szC[SIZ_RESLEN];
+                        GetDlgItemTextW(hDlg, IDC_PPSLPASS, szP, SIZ_RESMAX);
+                        GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, SIZ_RESMAX);
                         /* check for valid password match */
                         if (szP[0] == L' ' &&  szC[0] == L' ') {
                             PropSheet_UnChanged(GetParent(hDlg), hDlg);
@@ -1406,7 +1409,7 @@ void ShowServiceProperties(HWND hWnd)
 {
     PROPSHEETPAGEW   psP[6];
     PROPSHEETHEADERW psH;
-    WCHAR           szT[1024] = {0};
+    WCHAR           szT[SIZ_DESLEN] = {0};
 
     if (_propertyOpened) {
         SetForegroundWindow(_gui_store->hMainWnd);
@@ -1426,10 +1429,10 @@ void ShowServiceProperties(HWND hWnd)
                 __stopProperty);
 
     if (_currentEntry && _currentEntry->lpConfig)
-        lstrlcpyW(szT, 1024, _currentEntry->lpConfig->lpDisplayName);
+        lstrlcpyW(szT, SIZ_DESMAX, _currentEntry->lpConfig->lpDisplayName);
     else
         return;
-    lstrlcatW(szT, 1024, L" Properties");
+    lstrlcatW(szT, SIZ_DESMAX, L" Properties");
 
     psH.dwSize           = sizeof(PROPSHEETHEADER);
     psH.dwFlags          = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_USECALLBACK | PSH_NOCONTEXTHELP;
