@@ -1277,11 +1277,6 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
         rv = apxHandleWait(gWorker, INFINITE, FALSE);
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
-        if (gShutdownEvent) {
-        }
-        else
-            apxDestroyJvm(INFINITE);
-        apxLogWrite(APXLOG_MARK_DEBUG "JVM destroyed.");
     }
     else {
         apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d", rc);
