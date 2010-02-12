@@ -39,6 +39,7 @@
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
+#define ONE_MINUTE    (60 * 1000)
 
 #ifdef WIN64
 #define KREG_WOW6432  KEY_WOW64_32KEY
@@ -1276,11 +1277,10 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
         rv = apxHandleWait(gWorker, INFINITE, FALSE);
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
-        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
-        /* This will cause to wait for all threads to exit
-         * TODO: Use some kind of timeout wait logic
-         */
-        apxDestroyJvm();
+        if (gShutdownEvent) {
+        }
+        else
+            apxDestroyJvm(INFINITE);
         apxLogWrite(APXLOG_MARK_DEBUG "JVM destroyed.");
     }
     else {
@@ -1288,12 +1288,27 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         goto cleanup;
     }
     if (gShutdownEvent) {
+        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
         /* Ensure that shutdown thread exits before us */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
-        WaitForSingleObject(gShutdownEvent, 60 * 1000);
+        WaitForSingleObject(gShutdownEvent, ONE_MINUTE);
         apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
         CloseHandle(gShutdownEvent);
+        /* This will cause to wait for all threads to exit
+         */
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting 1 minute for all threads to exit");
+        apxDestroyJvm(ONE_MINUTE);
     }
+    else {
+        /* We came here without shutdown event
+         * Probably because main() returned without ensuring all threads
+         * have finished
+         */
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for all threads to exit");
+        apxDestroyJvm(INFINITE);
+        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+    }
+    apxLogWrite(APXLOG_MARK_DEBUG "JVM destroyed.");
     reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
 
     return;

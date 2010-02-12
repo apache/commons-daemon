@@ -131,7 +131,7 @@ static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
     jint _iStatus;
 
     if (!_st_sys_jvm)
-      return FALSE;  
+      return FALSE;
     _iStatus = (*(lpJava->lpJvm))->GetEnv(lpJava->lpJvm,
                                           (void **)&(lpJava->lpEnv),
                                           lpJava->iVersion);
@@ -151,7 +151,7 @@ static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
 static __inline BOOL __apxJvmDetach(LPAPXJAVAVM lpJava)
 {
     if (!_st_sys_jvm)
-      return FALSE;  
+      return FALSE;
     if ((*(lpJava->lpJvm))->DetachCurrentThread(lpJava->lpJvm) != JNI_OK) {
         lpJava->lpEnv = NULL;
         return FALSE;
@@ -292,15 +292,34 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     return hJava;
 }
 
+static DWORD WINAPI __apxJavaDestroyThread(LPVOID lpParameter)
+{
+    JavaVM *lpJvm = (JavaVM *)lpParameter;
+    (*lpJvm)->DestroyJavaVM(lpJvm);
+    return 0;
+}
+
 BOOL
-apxDestroyJvm()
+apxDestroyJvm(DWORD dwTimeout)
 {
     if (_st_sys_jvm) {
+        DWORD  tid;
+        HANDLE hWaiter;
+        BOOL   rv = FALSE;
         JavaVM *lpJvm = _st_sys_jvm;
+
         _st_sys_jvm = NULL;
         (*lpJvm)->DetachCurrentThread(lpJvm);
-        (*lpJvm)->DestroyJavaVM(lpJvm);
-        return TRUE;
+        hWaiter = CreateThread(NULL, 0, __apxJavaDestroyThread,
+                               (void *)lpJvm, 0, &tid);
+        if (IS_INVALID_HANDLE(hWaiter)) {
+            apxLogWrite(APXLOG_MARK_SYSERR);
+            return FALSE;
+        }
+        if (WaitForSingleObject(hWaiter, dwTimeout) == WAIT_OBJECT_0)
+            rv = TRUE;
+        CloseHandle(hWaiter);
+        return rv;
     }
     else
         return FALSE;

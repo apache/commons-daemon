@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _JAVAJNI_H_INCLUDED_
 #define _JAVAJNI_H_INCLUDED_
 
@@ -43,7 +43,7 @@ BOOL        apxJavaSetOut(APXHANDLE hJava, BOOL setErrorOrOut,
                           LPCWSTR szFilename);
 DWORD       apxJavaSetOptions(APXHANDLE hJava, DWORD dwOptions);
 
-BOOL        apxDestroyJvm(void);
+BOOL        apxDestroyJvm(DWORD dwTimeout);
 
 
 __APXEND_DECLS
