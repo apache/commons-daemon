@@ -97,6 +97,13 @@
       <email>billbarker@apache.org</email>
       <organization>Apache</organization>
     </developer>
+
+    <developer>
+      <name>Mladen Turk</name>
+      <id>mturk</id>
+      <email>mturk@apache.org</email>
+      <organization>Apache</organization>
+    </developer>
   </developers>
 
   <dependencies>

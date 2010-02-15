@@ -70,6 +70,11 @@
       <id>billbarker</id>
       <email>billbarker at apache.org</email>
     </developer>
+    <developer>
+      <name>Mladen Turk</name>
+      <id>mturk</id>
+      <email>mturk at apache.org</email>
+    </developer>
   </developers>
 
   <dependencies>
@@ -83,7 +88,7 @@
 
   <properties>
     <commons.componentid>daemon</commons.componentid>
-    <commons.release.version>1.0.1</commons.release.version>
+    <commons.release.version>1.0.2</commons.release.version>
     <commons.binary.suffix></commons.binary.suffix>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
@@ -121,3 +126,4 @@
   </build>
 
 </project>
+
