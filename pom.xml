@@ -91,7 +91,6 @@
   <properties>
     <commons.componentid>daemon</commons.componentid>
     <commons.release.version>1.0.2</commons.release.version>
-    <commons.binary.suffix></commons.binary.suffix>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
   </properties> 
