@@ -35,6 +35,7 @@ typedef enum {
 } bool;
 #endif
 
+#include "version.h"
 #include "debug.h"
 #include "arguments.h"
 #include "home.h"
@@ -51,3 +52,4 @@ void main_reload(void);
 void main_shutdown(void);
 
 #endif /* ifndef __JSVC_H__ */
+
