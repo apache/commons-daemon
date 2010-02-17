@@ -21,7 +21,7 @@
   <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
   <currentVersion>1.0.2-SNAPSHOT</currentVersion>
-  <inceptionYear>2003</inceptionYear>
+  <inceptionYear>2002</inceptionYear>
   <name>Daemon</name>
   <shortDescription>Commons Daemon</shortDescription>
   <description>Commons Daemon</description>

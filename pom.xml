@@ -29,7 +29,7 @@
   <artifactId>commons-daemon</artifactId>
   <version>1.0.2-SNAPSHOT</version>
   <name>Commons Daemon</name>
-  <inceptionYear>2003</inceptionYear>
+  <inceptionYear>2002</inceptionYear>
   <description>
      Alternative invocation mechanism for unix-daemon-like java code.
   </description>
