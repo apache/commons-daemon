@@ -56,3 +56,14 @@ specific parameters before calling configure
    ./configure
    make
 
+Making Universal binaries
+
+Some platforms like Mac OSX allow universal or fat binaries that allow
+both 32 and 64 binaries inside the same executable. To be able to build
+the fat binaries enter the specific parameters before calling configure
+
+   export CFLAGS="-arch i386 -arch x86_64"
+   export LDFLAGS="-arch i386 -arch x86_64"
+   ./configure
+   make
+
