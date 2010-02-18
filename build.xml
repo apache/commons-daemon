@@ -67,9 +67,6 @@
   <!-- The base directory for component executable files -->
   <property name="bin.home"                value="src/bin"/>
 
-  <!-- The base directory for component configuration files -->
-  <property name="conf.home"               value="src/conf"/>
-
   <!-- The base directory for distribution targets -->
   <property name="dist.home"               value="dist"/>
 
@@ -141,23 +138,14 @@
 
   <target name="prepare" depends="init"
    description="Prepare build directory">
+    <tstamp/>
     <mkdir dir="${build.home}"/>
     <mkdir dir="${build.home}/classes"/>
     <mkdir dir="${build.home}/conf"/>
     <mkdir dir="${build.home}/tests"/>
   </target>
 
-
-  <target name="static" depends="prepare"
-   description="Copy static files to build directory">
-    <tstamp/>
-    <copy  todir="${build.home}/conf" filtering="on">
-      <fileset dir="${conf.home}" includes="*.MF"/>
-    </copy>
-  </target>
-
-
-  <target name="compile" depends="static"
+  <target name="compile" depends="prepare"
    description="Compile shareable components">
     <javac  srcdir="${source.home}"
            destdir="${build.home}/classes"
@@ -240,7 +228,7 @@
       <fileset dir="src/native/unix" />
     </copy>
     <fixcrlf srcdir="${dist.home}/bin/unix" eol="lf" />
-    <tar compression="gzip" destfile="${dist.home}/bin/jsvc.tar.gz"
+    <tar compression="gzip" destfile="${dist.home}/bin/jsvc-${component.version}.tar.gz"
          basedir="${dist.home}/bin/unix" />
     <delete dir="${dist.home}/bin/unix" />
     <antcall target="jar"/>
@@ -260,10 +248,10 @@
         <manifest>
             <attribute name="Specification-Title" value="Commons Daemon"/>
             <attribute name="Specification-Version" value="${component.version}"/>
-            <attribute name="Specification-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Specification-Vendor" value="Apache Software Foundation"/>
             <attribute name="Implementation-Title" value="Commons Daemon"/>
             <attribute name="Implementation-Version" value="${component.version}"/> 
-            <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
             <attribute name="Implementation-Vendor-Id" value="org.apache"/>
             <attribute name="X-Compile-Source-JDK" value="${compile.source}"/>
             <attribute name="X-Compile-Target-JDK" value="${compile.target}"/>
