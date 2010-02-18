@@ -35,6 +35,7 @@
             <lineEnding>lf</lineEnding>
             <excludes>
                 <exclude>**/*.sh</exclude>
+                <exclude>configure</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -44,12 +45,15 @@
             <fileMode>775</fileMode>
             <includes>
                 <include>**/*.sh</include>
+                <include>configure</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>src/native/nt/procrun</directory>
             <outputDirectory>windows</outputDirectory>
             <lineEnding>crlf</lineEnding>
+            <fileMode>664</fileMode>
         </fileSet>
     </fileSets>
 </assembly>
+
