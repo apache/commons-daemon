@@ -8,19 +8,24 @@ To build the native part:
   The jsvc executable could be found in dist.
   There is a INSTALL.txt src/native/unix please have a look to it.
 
-  On windoze the additional step is needed:
+  On Windows the additional step is needed:
   cd src/native/nt; make
   There is a README in src/native/nt please have a look to it.
   The exe files are created in dist.
 2 - procrun:
   procrun is only for windows
-  cd src/native/nt/procrun; make
+  cd src\native\nt\procrun\apps
+  cd prunsrv
+  nmake -f prunsrv.x86 (prunsrv.amd64 | prunsrv.ia64)
+  cd ..\prunmgr
+  nmake -f prunmgs.x86
   (It is also possible to use the MS development tools).
 
 To build the documentation: (See http://jakarta.apache.org/commons/building.html).
 maven site:generate
-(Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/jakarta/commons/proper/commons-build/trunk/ commons-build))
+(Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/commons/proper/commons-build/trunk/ commons-build))
 
 To deploy the documentation to the apache site:
 maven -Dmaven.username=${user.name} site:deploy
 (Check <siteAddress/> in project.xml).
+
