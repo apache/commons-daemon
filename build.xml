@@ -82,6 +82,11 @@
   <!-- The pattern to be used to grab ant jars (usefull for non standard layout)  -->
   <property name="ant.jars.pattern"        value="*.jar"/>
 
+  <!-- Name of the jsvc arctifacts  -->
+  <property name="jsvc.name"               value="jsvc-${component.version}-src"/>
+
+  <!-- Path of the jsvc arctifacts  -->
+  <property name="jsvc.path"               value="${dist.home}/bin/unix/${jsvc.name}"/>
 
 <!-- ========== Compiler Defaults ========================================= -->
 
@@ -224,28 +229,32 @@
               todir="${dist.home}"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
-    <copy todir="${dist.home}/bin/unix/jsvc-${component.version}">
+    <copy todir="${jsvc.path}">
       <!-- Make sure this is clean repository with
            running sh support/buildconf.sh
            This will create configure script
         -->
       <fileset dir="src/native/unix" />
     </copy>
-    <fixcrlf srcdir="${dist.home}/bin/unix" eol="lf" />
-    <chmod dir="${dist.home}/bin/unix/jsvc-${component.version}"
+    <copy file="LICENSE.txt"
+          todir="${jsvc.path}"/>
+    <copy file="NOTICE.txt"
+          todir="${jsvc.path}"/>
+    <fixcrlf srcdir="${jsvc.path}" eol="lf" />
+    <chmod dir="${jsvc.path}"
            includes="configure" perm="+x" />
-    <chmod dir="${dist.home}/bin/unix/jsvc-${component.version}/support"
+    <chmod dir="${jsvc.path}/support"
            includes="*.sh" perm="+x" />
     <tar longfile="gnu" compression="gzip"
-         tarfile="${dist.home}/bin/jsvc-${component.version}.tar.gz">
+         tarfile="${dist.home}/bin/${jsvc.name}.tar.gz">
       <tarfileset dir="${dist.home}/bin/unix">
-        <include name="jsvc-${component.version}/**" />
-        <exclude name="jsvc-${component.version}/configure" />
-        <exclude name="jsvc-${component.version}/support/*.sh" />
+        <include name="${jsvc.name}/**" />
+        <exclude name="${jsvc.name}/configure" />
+        <exclude name="${jsvc.name}/support/*.sh" />
       </tarfileset>
       <tarfileset dir="${dist.home}/bin/unix" mode="755">
-        <include name="jsvc-${component.version}/configure" />
-        <include name="jsvc-${component.version}/support/*.sh" />
+        <include name="${jsvc.name}/configure" />
+        <include name="${jsvc.name}/support/*.sh" />
       </tarfileset>
     </tar>
     <delete dir="${dist.home}/bin/unix" />
