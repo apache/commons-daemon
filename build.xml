@@ -50,7 +50,7 @@
 
 
   <!-- The name of this component -->
-  <property name="component.name"          value="daemon"/>
+  <property name="component.name"          value="commons-daemon"/>
 
   <!-- The primary package name of this component -->
   <property name="component.package"       value="org.apache.commons.daemon"/>
@@ -60,6 +60,9 @@
 
   <!-- The current version number of this component -->
   <property name="component.version"       value="1.0.2"/>
+
+  <!-- The name of this component -->
+  <property name="component.release"       value="${component.name}-${component.version}"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -82,11 +85,17 @@
   <!-- The pattern to be used to grab ant jars (usefull for non standard layout)  -->
   <property name="ant.jars.pattern"        value="*.jar"/>
 
-  <!-- Name of the jsvc arctifacts  -->
-  <property name="jsvc.name"               value="jsvc-${component.version}-src"/>
+  <!-- Name of the unix jsvc arctifacts  -->
+  <property name="native.unix.name"        value="${component.release}-native-src"/>
 
-  <!-- Path of the jsvc arctifacts  -->
-  <property name="jsvc.path"               value="${dist.home}/bin/unix/${jsvc.name}"/>
+  <!-- Path of the unix jsvc arctifacts  -->
+  <property name="native.unix.path"        value="${dist.home}/bin/unix/${native.unix.name}"/>
+
+  <!-- Name of the windows procrun arctifacts  -->
+  <property name="native.windows.name"     value="${component.release}-native-src"/>
+
+  <!-- Path of the windows procrun arctifacts  -->
+  <property name="native.windows.path"     value="${dist.home}/bin/nt/${native.windows.name}"/>
 
 <!-- ========== Compiler Defaults ========================================= -->
 
@@ -229,7 +238,7 @@
               todir="${dist.home}"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
-    <copy todir="${jsvc.path}">
+    <copy todir="${native.unix.path}">
       <!-- Make sure this is clean repository with
            running sh support/buildconf.sh
            This will create configure script
@@ -237,27 +246,46 @@
       <fileset dir="src/native/unix" />
     </copy>
     <copy file="LICENSE.txt"
-          todir="${jsvc.path}"/>
+          todir="${native.unix.path}"/>
     <copy file="NOTICE.txt"
-          todir="${jsvc.path}"/>
-    <fixcrlf srcdir="${jsvc.path}" eol="lf" />
-    <chmod dir="${jsvc.path}"
+          todir="${native.unix.path}"/>
+    <fixcrlf srcdir="${native.unix.path}" eol="lf" />
+    <chmod dir="${native.unix.path}"
            includes="configure" perm="+x" />
-    <chmod dir="${jsvc.path}/support"
+    <chmod dir="${native.unix.path}/support"
            includes="*.sh" perm="+x" />
     <tar longfile="gnu" compression="gzip"
-         tarfile="${dist.home}/bin/${jsvc.name}.tar.gz">
+         tarfile="${dist.home}/bin/${native.unix.name}.tar.gz">
       <tarfileset dir="${dist.home}/bin/unix">
-        <include name="${jsvc.name}/**" />
-        <exclude name="${jsvc.name}/configure" />
-        <exclude name="${jsvc.name}/support/*.sh" />
+        <include name="${native.unix.name}/**" />
+        <exclude name="${native.unix.name}/configure" />
+        <exclude name="${native.unix.name}/support/*.sh" />
       </tarfileset>
       <tarfileset dir="${dist.home}/bin/unix" mode="755">
-        <include name="${jsvc.name}/configure" />
-        <include name="${jsvc.name}/support/*.sh" />
+        <include name="${native.unix.name}/configure" />
+        <include name="${native.unix.name}/support/*.sh" />
       </tarfileset>
     </tar>
     <delete dir="${dist.home}/bin/unix" />
+
+    <copy todir="${native.windows.path}">
+      <!-- Make sure this is clean repository with
+           running sh support/buildconf.sh
+           This will create configure script
+        -->
+      <fileset dir="src/native/nt/procrun" />
+    </copy>
+    <copy file="LICENSE.txt"
+          todir="${native.windows.path}"/>
+    <copy file="NOTICE.txt"
+          todir="${native.windows.path}"/>
+    <fixcrlf srcdir="${native.windows.path}" eol="crlf" />
+    <zip zipfile="${dist.home}/bin/${native.windows.name}.zip">
+      <tarfileset dir="${dist.home}/bin/nt">
+        <include name="${native.windows.name}/**" />
+      </tarfileset>
+    </zip>
+    <delete dir="${dist.home}/bin/nt" />
     <antcall target="jar"/>
   </target>
 
@@ -271,7 +299,7 @@
              tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <copy      file="NOTICE.txt"
              tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
-    <jar    jarfile="${dist.home}/commons-${component.name}-${component.version}.jar">
+    <jar    jarfile="${dist.home}/${component.release}.jar">
         <manifest>
             <attribute name="Specification-Title" value="Commons Daemon"/>
             <attribute name="Specification-Version" value="${component.version}"/>
@@ -296,7 +324,7 @@
    description="--> Installs jar file in ${lib.repo}">
     <copy todir="${lib.repo}" filtering="off">
       <fileset dir="${dist.home}">
-        <include name="commons-${component.name}-${component.version}.jar"/>
+        <include name="${component.release}.jar"/>
       </fileset>
     </copy>
   </target>
