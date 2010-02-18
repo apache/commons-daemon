@@ -50,7 +50,7 @@
 
 
   <!-- The name of this component -->
-  <property name="component.name"          value="commons-daemon"/>
+  <property name="component.name"          value="daemon"/>
 
   <!-- The primary package name of this component -->
   <property name="component.package"       value="org.apache.commons.daemon"/>
@@ -60,9 +60,6 @@
 
   <!-- The current version number of this component -->
   <property name="component.version"       value="1.0.2"/>
-
-  <!-- The name of this component -->
-  <property name="component.release"       value="${component.name}-${component.version}"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -86,7 +83,7 @@
   <property name="ant.jars.pattern"        value="*.jar"/>
 
   <!-- Name of the native arctifacts  -->
-  <property name="native.name"             value="${component.release}-native-src"/>
+  <property name="native.name"             value="commons-${component.name}-${component.version}-native-src"/>
 
   <!-- Path of the native arctifacts  -->
   <property name="native.path"             value="${dist.home}/bin/native/${native.name}"/>
@@ -287,7 +284,7 @@
              tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <copy      file="NOTICE.txt"
              tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
-    <jar    jarfile="${dist.home}/${component.release}.jar">
+    <jar    jarfile="${dist.home}/commons-${component.name}-${component.version}.jar">
         <manifest>
             <attribute name="Specification-Title" value="Commons Daemon"/>
             <attribute name="Specification-Version" value="${component.version}"/>
@@ -312,7 +309,7 @@
    description="--> Installs jar file in ${lib.repo}">
     <copy todir="${lib.repo}" filtering="off">
       <fileset dir="${dist.home}">
-        <include name="${component.release}.jar"/>
+        <include name="commons-${component.name}-${component.version}.jar"/>
       </fileset>
     </copy>
   </target>
@@ -325,5 +322,5 @@
    description="Run all unit test cases">
   </target>
 
-
 </project>
+
