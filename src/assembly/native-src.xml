@@ -30,10 +30,6 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>target/native</directory>
-            <outputDirectory></outputDirectory>
-        </fileSet>
-        <fileSet>
             <directory>src/native/unix</directory>
             <outputDirectory>unix</outputDirectory>
             <lineEnding>lf</lineEnding>
