@@ -85,17 +85,12 @@
   <!-- The pattern to be used to grab ant jars (usefull for non standard layout)  -->
   <property name="ant.jars.pattern"        value="*.jar"/>
 
-  <!-- Name of the unix jsvc arctifacts  -->
-  <property name="native.unix.name"        value="${component.release}-native-src"/>
+  <!-- Name of the native arctifacts  -->
+  <property name="native.name"             value="${component.release}-native-src"/>
 
-  <!-- Path of the unix jsvc arctifacts  -->
-  <property name="native.unix.path"        value="${dist.home}/bin/unix/${native.unix.name}"/>
+  <!-- Path of the native arctifacts  -->
+  <property name="native.path"             value="${dist.home}/bin/native/${native.name}"/>
 
-  <!-- Name of the windows procrun arctifacts  -->
-  <property name="native.windows.name"     value="${component.release}-native-src"/>
-
-  <!-- Path of the windows procrun arctifacts  -->
-  <property name="native.windows.path"     value="${dist.home}/bin/nt/${native.windows.name}"/>
 
 <!-- ========== Compiler Defaults ========================================= -->
 
@@ -238,54 +233,47 @@
               todir="${dist.home}"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
-    <copy todir="${native.unix.path}">
+    <copy todir="${native.path}/unix">
       <!-- Make sure this is clean repository with
            running sh support/buildconf.sh
            This will create configure script
         -->
       <fileset dir="src/native/unix" />
     </copy>
-    <copy file="LICENSE.txt"
-          todir="${native.unix.path}"/>
-    <copy file="NOTICE.txt"
-          todir="${native.unix.path}"/>
-    <fixcrlf srcdir="${native.unix.path}" eol="lf" />
-    <chmod dir="${native.unix.path}"
-           includes="configure" perm="+x" />
-    <chmod dir="${native.unix.path}/support"
-           includes="*.sh" perm="+x" />
-    <tar longfile="gnu" compression="gzip"
-         tarfile="${dist.home}/bin/${native.unix.name}.tar.gz">
-      <tarfileset dir="${dist.home}/bin/unix">
-        <include name="${native.unix.name}/**" />
-        <exclude name="${native.unix.name}/configure" />
-        <exclude name="${native.unix.name}/support/*.sh" />
-      </tarfileset>
-      <tarfileset dir="${dist.home}/bin/unix" mode="755">
-        <include name="${native.unix.name}/configure" />
-        <include name="${native.unix.name}/support/*.sh" />
-      </tarfileset>
-    </tar>
-    <delete dir="${dist.home}/bin/unix" />
-
-    <copy todir="${native.windows.path}">
-      <!-- Make sure this is clean repository with
-           running sh support/buildconf.sh
-           This will create configure script
-        -->
+    <copy todir="${native.path}/windows">
       <fileset dir="src/native/nt/procrun" />
     </copy>
     <copy file="LICENSE.txt"
-          todir="${native.windows.path}"/>
+          todir="${native.path}"/>
     <copy file="NOTICE.txt"
-          todir="${native.windows.path}"/>
-    <fixcrlf srcdir="${native.windows.path}" eol="crlf" />
-    <zip zipfile="${dist.home}/bin/${native.windows.name}.zip">
-      <tarfileset dir="${dist.home}/bin/nt">
-        <include name="${native.windows.name}/**" />
+          todir="${native.path}"/>
+    <fixcrlf srcdir="${native.path}/unix" eol="lf" />
+    <fixcrlf srcdir="${native.path}/windows" eol="crlf" />
+    <tar longfile="gnu" compression="gzip"
+         tarfile="${dist.home}/bin/${native.name}.tar.gz">
+      <tarfileset dir="${dist.home}/bin/native">
+        <include name="${native.name}/**" />
+        <exclude name="${native.name}/unix/configure" />
+        <exclude name="${native.name}/unix/support/*.sh" />
       </tarfileset>
+      <tarfileset dir="${dist.home}/bin/native" mode="755">
+        <include name="${native.name}/unix/configure" />
+        <include name="${native.name}/unix/support/*.sh" />
+      </tarfileset>
+    </tar>
+    <zip zipfile="${dist.home}/bin/${native.name}.zip">
+      <zipfileset dir="${dist.home}/bin/native">
+        <include name="${native.name}/**" />
+        <exclude name="${native.name}/unix/configure" />
+        <exclude name="${native.name}/unix/support/*.sh" />
+      </zipfileset>
+      <zipfileset dir="${dist.home}/bin/native" filemode="755">
+        <include name="${native.name}/unix/configure" />
+        <include name="${native.name}/unix/support/*.sh" />
+      </zipfileset>
     </zip>
-    <delete dir="${dist.home}/bin/nt" />
+
+    <delete dir="${dist.home}/bin/native" />
     <antcall target="jar"/>
   </target>
 
