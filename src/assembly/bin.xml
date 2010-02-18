@@ -33,7 +33,7 @@
             <directory>target/bin</directory>
             <outputDirectory>bin</outputDirectory>
             <includes>
-                <include>jsvc*</include>
+                <include>*-native-src.*</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -49,3 +49,4 @@
         </fileSet>
     </fileSets>
 </assembly>
+
