@@ -224,12 +224,30 @@
               todir="${dist.home}"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
-    <copy todir="${dist.home}/bin/unix/jsvc-src">
+    <copy todir="${dist.home}/bin/unix/jsvc-${component.version}">
+      <!-- Make sure this is clean repository with
+           running sh support/buildconf.sh
+           This will create configure script
+        -->
       <fileset dir="src/native/unix" />
     </copy>
     <fixcrlf srcdir="${dist.home}/bin/unix" eol="lf" />
-    <tar compression="gzip" destfile="${dist.home}/bin/jsvc-${component.version}.tar.gz"
-         basedir="${dist.home}/bin/unix" />
+    <chmod dir="${dist.home}/bin/unix/jsvc-${component.version}"
+           includes="configure" perm="+x" />
+    <chmod dir="${dist.home}/bin/unix/jsvc-${component.version}/support"
+           includes="*.sh" perm="+x" />
+    <tar longfile="gnu" compression="gzip"
+         tarfile="${dist.home}/bin/jsvc-${component.version}.tar.gz">
+      <tarfileset dir="${dist.home}/bin/unix">
+        <include name="jsvc-${component.version}/**" />
+        <exclude name="jsvc-${component.version}/configure" />
+        <exclude name="jsvc-${component.version}/support/*.sh" />
+      </tarfileset>
+      <tarfileset dir="${dist.home}/bin/unix" mode="755">
+        <include name="jsvc-${component.version}/configure" />
+        <include name="jsvc-${component.version}/support/*.sh" />
+      </tarfileset>
+    </tar>
     <delete dir="${dist.home}/bin/unix" />
     <antcall target="jar"/>
   </target>
