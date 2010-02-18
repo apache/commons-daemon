@@ -1,7 +1,7 @@
 $Id$
 
 			Commons Daemon Package
-			   Version 1.0.1
+			   Version 1.0.2
 			    Release Notes
 
 
@@ -25,7 +25,10 @@ NEW FEATURES:
 
 * Allow to run as normal user for testing. (1.0.1).
 
+* Switch to JIRA bug tracking sytem.
 
 BUG FIXES:
 
 1.0.1: 304310,  30177, 27523, 29465, 31614, 33580, 31613, 34851.
+1.0.2: See https://issues.apache.org/jira/browse/DAEMON
+
