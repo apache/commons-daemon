@@ -30,28 +30,6 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>src/native/unix</directory>
-            <outputDirectory>bin/unix</outputDirectory>
-            <lineEnding>lf</lineEnding>
-            <excludes>
-                <exclude>**/*.sh</exclude>
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <directory>src/native/unix</directory>
-            <outputDirectory>bin/unix</outputDirectory>
-            <lineEnding>lf</lineEnding>
-            <fileMode>775</fileMode>
-            <includes>
-                <include>**/*.sh</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>src/native/nt/procrun</directory>
-            <outputDirectory>bin/windows</outputDirectory>
-            <lineEnding>crlf</lineEnding>
-        </fileSet>
-        <fileSet>
             <directory>target</directory>
             <outputDirectory></outputDirectory>
             <includes>
