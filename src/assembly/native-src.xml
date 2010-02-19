@@ -52,6 +52,19 @@
             <directory>src/native/nt/procrun</directory>
             <outputDirectory>windows</outputDirectory>
             <lineEnding>crlf</lineEnding>
+            <excludes>
+                <exclude>**/*.ico</exclude>
+                <exclude>**/*.bmp</exclude>
+            </excludes>
+            <fileMode>664</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/native/nt/procrun</directory>
+            <outputDirectory>windows</outputDirectory>
+            <includes>
+                <include>**/*.ico</include>
+                <include>**/*.bmp</include>
+            </includes>
             <fileMode>664</fileMode>
         </fileSet>
     </fileSets>
