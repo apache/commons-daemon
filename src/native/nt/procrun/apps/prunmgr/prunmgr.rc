@@ -17,7 +17,7 @@
 #include "apxwin.h"
 #include "prunmgr.h"
 
-#define RSTR_PSM        "Procrun Service Manager"
+#define RSTR_PSM        "Commons Daemon Service Manager"
 #define RSTR_SCMATS     "Service Manager is attempting to "
  
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico" 
@@ -42,7 +42,7 @@ BEGIN
                     ES_READONLY | WS_BORDER | WS_VSCROLL,0,31,335,115
     CONTROL         "BMP_JAKARTA",IDC_STATIC,"Static",SS_BITMAP|0x00000040L,0,0,337,30
     LTEXT           " ",IDC_ABOUTAPP,2,150,270,12
-    LTEXT           "Copyright © 2000-2009 The Apache Software Foundation.",IDC_STATIC,2,160,270,12
+    LTEXT           "Copyright © 2000-2010 The Apache Software Foundation.",IDC_STATIC,2,160,270,12
     LTEXT           "http://commons.apache.org",IDC_STATIC,2,170,270,12 
     PUSHBUTTON      "&System Info",IAB_SYSINF,285,170,50,14
 END
@@ -51,7 +51,7 @@ IDD_PROGRESS DIALOGEX 0, 0, 322, 92
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | 
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOPMOST
-CAPTION "Apache Service Manager"
+CAPTION "Apache Commons Daemon Service Manager"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Cl&ose",IDOK,261,73,50,14
@@ -225,10 +225,10 @@ END
 STRINGTABLE 
 BEGIN
     IDS_APPLICATION     RSTR_PSM
-    IDS_APPVERSION      "Version 2.0.7"
+    IDS_APPVERSION      "Version 1.0.2"
     IDS_APPFULLNAME     RSTR_PSM " Version " PRG_VERSION
     IDS_APPCOPYRIGHT    "Copyright © 2000-2010 The Apache Software Foundation"
-    IDS_APPDESCRIPTION  "Apache Procrun Service Management Tool"
+    IDS_APPDESCRIPTION  "Apache Commons Daemon Service Management Tool"
     IDS_ALREAY_RUNING   "An instance of '%S' application is already running"
     IDS_ERRORCMD        "Unknown command line option '%s'\nSee the manual for command line usage."
     IDS_HSSTART         RSTR_SCMATS "start the following service ..."
@@ -256,8 +256,8 @@ BEGIN
 END
 
 1 VERSIONINFO
- FILEVERSION 2,0,7,0
- PRODUCTVERSION 2,0,7,0
+ FILEVERSION 1,0,2,0
+ PRODUCTVERSION 1,0,2,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
@@ -272,7 +272,7 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "Comments", "Procrun Service Management Tool\0"
+      VALUE "Comments", "Commons Daemon Service Management Tool\0"
       VALUE "CompanyName", "Apache Software Foundation\0"
       VALUE "FileDescription", RSTR_PSM "\0"
       VALUE "FileVersion", PRG_VERSION

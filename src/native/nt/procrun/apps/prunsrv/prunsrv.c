@@ -341,7 +341,6 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 /* Debugging functions */
 static void printUsage(LPAPXCMDLINE lpCmdline)
 {
-#ifdef _DEBUG
     int i = 0;
     fwprintf(stderr, L"Usage: %s //CMD//Servce [--options]\n",
              lpCmdline->szExecutable);
@@ -351,15 +350,14 @@ static void printUsage(LPAPXCMDLINE lpCmdline)
     fwprintf(stderr, L"  //DS//ServiceName  Delete Service\n");
     fwprintf(stderr, L"  //RS//ServiceName  Run Service\n");
     fwprintf(stderr, L"  //SS//ServiceName  Stop Service\n");
-    fwprintf(stderr,
-             L"  //TS//ServiceName  Run Service as console application\n");
+    fwprintf(stderr, L"  //TS//ServiceName  Run Service as console application\n");
     fwprintf(stderr, L"  Options:\n");
     while (_options[i].szName) {
         fwprintf(stderr, L"  --%s\n", _options[i].szName);
         ++i;
     }
-#endif
 }
+
 /* Display configuration parameters */
 static void dumpCmdline()
 {
@@ -1380,8 +1378,8 @@ void __cdecl main(int argc, char **argv)
 
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
-    apxLogWrite(APXLOG_MARK_DEBUG "Procrun log initialized");
-    apxLogWrite(APXLOG_MARK_INFO "Procrun (%s) started", PRG_VERSION);
+    apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun log initialized");
+    apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun (%s) started", PRG_VERSION);
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
 
@@ -1426,7 +1424,7 @@ void __cdecl main(int argc, char **argv)
     }
 
 cleanup:
-    apxLogWrite(APXLOG_MARK_INFO "Procrun finished.");
+    apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun finished.");
     if (lpCmdline)
         apxCmdlineFree(lpCmdline);
     if (_service_status_handle)

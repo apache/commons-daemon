@@ -17,13 +17,13 @@
 #include "apxwin.h"
 #include "prunsrv.h"
 
-#define RSTR_PRUNSRV "Service Runner"
+#define RSTR_PRUNSRV "Commons Daemon Service Runner"
 
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico" 
 
 1 VERSIONINFO
- FILEVERSION 2,0,7,0
- PRODUCTVERSION 2,0,7,0
+ FILEVERSION 1,0,2,0
+ PRODUCTVERSION 1,0,2,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
