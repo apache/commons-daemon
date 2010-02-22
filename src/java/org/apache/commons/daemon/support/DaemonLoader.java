@@ -19,7 +19,6 @@
 
 package org.apache.commons.daemon.support;
 
-import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonController;
 
