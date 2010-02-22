@@ -21,7 +21,7 @@ To build the native part:
   nmake -f prunmgs.x86
   (It is also possible to use the MS development tools).
 
-To build the documentation: (See http://jakarta.apache.org/commons/building.html).
+To build the documentation: (See http://commons.apache.org/building.html).
 maven site:generate
 (Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/commons/proper/commons-build/trunk/ commons-build))
 
