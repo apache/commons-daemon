@@ -34,7 +34,7 @@ public class SimpleDaemon implements Daemon, Runnable {
     private ServerSocket server=null;
     private Thread thread=null;
     private DaemonController controller=null;
-    private boolean stopping=false;
+    private volatile boolean stopping=false;
     private String directory=null;
     private Vector handlers=null;
 
