@@ -21,12 +21,14 @@
 typedef struct home_jvm home_jvm;
 typedef struct home_data home_data;
 
-struct home_jvm {
+struct home_jvm
+{
     char *name;
     char *libr;
 };
 
-struct home_data {
+struct home_data
+{
     char *path;
     char *cfgf;
     home_jvm **jvms;

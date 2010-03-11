@@ -28,7 +28,7 @@
  * @param func The function to call on termination
  * @return Zero on success, a value less than 0 if an error was encountered
  */
-int SetTerm(void (*func)(void));
+int SetTerm(void (*func) (void));
 
 #endif
 #endif /* ifndef __JSVC_SIGNALS_H__ */
