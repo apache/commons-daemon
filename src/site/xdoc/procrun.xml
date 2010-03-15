@@ -93,11 +93,11 @@
     </tr>        
     <tr><th>//VS</th>
         <td>Version</td>
-        <td>Print version and exit</td>
+        <td>Print version and exit (since version 1.0.3)</td>
     </tr>        
     <tr><th>//?</th>
         <td>Help</td>
-        <td>Print usage and exit</td>
+        <td>Print usage and exit (since version 1.0.3)</td>
     </tr>        
     </table>
 </p> 

@@ -20,6 +20,7 @@ NEW FEATURES:
               logging. By default those messages were always logged. (1.0.3)
 * DAEMON-140: Add missing Java6 parameters -ea, da, -esa, -dsa, -showversion
               and their long name synonyms. (1.0.3)
+* DAEMON-142: Add option to display procrun version.
 
 * Add -wait and -stop parameters. (1.0.1).
   The -wait parameter is experimental: that a is loop testing for a
