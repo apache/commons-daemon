@@ -293,8 +293,9 @@
     </tr>
     <tr>
     <td>--LogPrefix</td>
-    <td>jakarta_service_</td>
-    <td>Defines the service log filename</td>
+    <td>commons-daemon</td>
+    <td>Defines the service log filename prefix. The log file is create inside LogPath with
+    <code>.YEAR-MONTH-DAY.log</code> suffix</td>
     </tr>
     <tr>
     <td>--LogLevel</td>
@@ -305,12 +306,19 @@
     <tr>
     <td>--StdOutput</td>
     <td></td>
-    <td>Redirected stdout filename</td>
+    <td>Redirected stdout filename. If named <b>auto</b> file is created
+    inside <b>LogPath</b> with <b>service-stdout.YEAR-MONTH-DAY.log</b> name.</td>
     </tr>
     <tr>
     <td>--StdError</td>
     <td></td>
-    <td>Redirected stderr filename</td>
+    <td>Redirected stderr filename. If named <b>auto</b> file is created
+    inside <b>LogPath</b> with <b>service-stderr.YEAR-MONTH-DAY.log</b> name.</td>
+    </tr>    
+    <td>--PidFile</td>
+    <td></td>
+    <td>Defines the file name for storing the running process id.
+    Actual file is created inside <b>LogPath</b></td>
     </tr>    
     </table>
 </p> 
