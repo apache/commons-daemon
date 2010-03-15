@@ -85,10 +85,12 @@ import java.util.StringTokenizer;
  * @author Pier Fumagalli
  * @version 1.0 <i>(CVS $Revision$)</i>
  */
-public final class DaemonPermission extends Permission {
+public final class DaemonPermission extends Permission
+{
 
-    /* ==================================================================== */
-    /* Constants. */
+    /* ====================================================================
+     * Constants.
+     */
 
     /**
      * The target name when associated with control actions
@@ -155,8 +157,9 @@ public final class DaemonPermission extends Permission {
      */
     protected static final String WILDCARD = "*";
 
-    /* ==================================================================== */
-    /* Instance variables */
+    /* ====================================================================
+     * Instance variables
+     */
 
     /** The type of this permission object. */
     private transient int type = 0;
@@ -165,8 +168,9 @@ public final class DaemonPermission extends Permission {
     /** The String representation of this permission object. */
     private transient String desc = null;
 
-    /* ==================================================================== */
-    /* Constructors */
+    /* ====================================================================
+     * Constructors
+     */
 
     /**
      * Create a new <code>DaemonPermission</code> instance with a specified
@@ -179,24 +183,25 @@ public final class DaemonPermission extends Permission {
      * @exception IllegalArgumentException If the specified target name is not
      *                supported.
      */
-    public DaemonPermission (String target)
-    throws IllegalArgumentException {
+    public DaemonPermission(String target)
+        throws IllegalArgumentException
+    {
         // Setup the target name of this permission object.
         super(target);
 
         // Check if the permission target name was specified
-        if (target==null)
+        if (target == null)
             throw new IllegalArgumentException("Null permission name");
 
         // Check if this is a "control" permission and set up accordingly.
         if (CONTROL.equalsIgnoreCase(target)) {
-            type=TYPE_CONTROL;
+            type = TYPE_CONTROL;
             return;
         }
 
         // If we got here, we have an invalid permission name.
-        throw new IllegalArgumentException("Invalid permission name \""+
-                                           target+"\" specified");
+        throw new IllegalArgumentException("Invalid permission name \"" +
+                                           target + "\" specified");
     }
 
     /**
@@ -212,19 +217,21 @@ public final class DaemonPermission extends Permission {
      *                invalid value.
      */
     public DaemonPermission(String target, String actions)
-    throws IllegalArgumentException {
+        throws IllegalArgumentException
+    {
         // Setup this instance's target name.
         this(target);
 
         // Create the appropriate mask if this is a control permission.
-        if (this.type==TYPE_CONTROL) {
-            this.mask=this.createControlMask(actions);
+        if (this.type == TYPE_CONTROL) {
+            this.mask = this.createControlMask(actions);
             return;
         }
     }
 
-    /* ==================================================================== */
-    /* Public methods */
+    /* ====================================================================
+     * Public methods
+     */
 
     /**
      * Return the list of actions permitted by this instance of
@@ -232,11 +239,12 @@ public final class DaemonPermission extends Permission {
      *
      * @return The canonicalized list of actions.
      */
-    public String getActions() {
-        if (this.type==TYPE_CONTROL) {
-            return(this.createControlActions(this.mask));
+    public String getActions()
+    {
+        if (this.type == TYPE_CONTROL) {
+            return this.createControlActions(this.mask);
         }
-        return("");
+        return "";
     }
 
     /**
@@ -244,9 +252,10 @@ public final class DaemonPermission extends Permission {
      *
      * @return An hash code value.
      */
-    public int hashCode() {
+    public int hashCode()
+    {
         this.setupDescription();
-        return(this.desc.hashCode());
+        return this.desc.hashCode();
     }
 
     /**
@@ -255,15 +264,19 @@ public final class DaemonPermission extends Permission {
      * @return <b>true</b> or <b>false</b> wether the specified object equals
      *         this <code>DaemonPermission</code> instance or not.
      */
-    public boolean equals(Object object) {
-        if (object == this) return(true);
+    public boolean equals(Object object)
+    {
+        if (object == this)
+            return true;
 
-        if (!(object instanceof DaemonPermission)) return false;
+        if (!(object instanceof DaemonPermission))
+            return false;
 
-        DaemonPermission that = (DaemonPermission)object;
+        DaemonPermission that = (DaemonPermission) object;
 
-        if (this.type!=that.type) return(false);
-        return(this.mask==that.mask);
+        if (this.type != that.type)
+            return false;
+        return this.mask == that.mask;
     }
 
     /**
@@ -274,15 +287,19 @@ public final class DaemonPermission extends Permission {
      *         is implied by this <code>DaemonPermission</code> instance or
      *         not.
      */
-    public boolean implies(Permission permission) {
-        if (permission == this) return(true);
+    public boolean implies(Permission permission)
+    {
+        if (permission == this)
+            return true;
 
-        if (!(permission instanceof DaemonPermission)) return false;
+        if (!(permission instanceof DaemonPermission))
+            return false;
 
-        DaemonPermission that = (DaemonPermission)permission;
+        DaemonPermission that = (DaemonPermission) permission;
 
-        if (this.type!=that.type) return(false);
-        return((this.mask&that.mask)==that.mask);
+        if (this.type != that.type)
+            return false;
+        return (this.mask & that.mask) == that.mask;
     }
 
     /**
@@ -291,95 +308,115 @@ public final class DaemonPermission extends Permission {
      * @return A <code>String</code> representing this
      *         <code>DaemonPermission</code> instance.
      */
-    public String toString() {
+    public String toString()
+    {
         this.setupDescription();
-        return(new String(this.desc));
+        return new String(this.desc);
     }
 
-    /* ==================================================================== */
-    /* Private methods */
+    /* ====================================================================
+     * Private methods
+     */
 
-    /** Create a String description for this permission instance. */
-    private void setupDescription() {
-        if (this.desc!=null) return;
+    /** Create a String description for this permission instance.
+     */
+    private void setupDescription()
+    {
+        if (this.desc != null)
+            return;
 
-        StringBuffer buf=new StringBuffer();
+        StringBuffer buf = new StringBuffer();
         buf.append(this.getClass().getName());
         buf.append('[');
         switch (this.type) {
-            case (TYPE_CONTROL): {
+            case TYPE_CONTROL:
                 buf.append(CONTROL);
-                break;
-            }
-            default: {
+            break;
+            default:
                 buf.append("UNKNOWN");
-                break;
-            }
+            break;
         }
         buf.append(':');
         buf.append(this.getActions());
         buf.append(']');
 
-        this.desc=buf.toString();
+        this.desc = buf.toString();
     }
 
-    /** Create a permission mask for a given control actions string. */
+    /** Create a permission mask for a given control actions string.
+     */
     private int createControlMask(String actions)
-    throws IllegalArgumentException {
-        if (actions==null) return(0);
+        throws IllegalArgumentException
+    {
+        if (actions == null)
+            return 0;
 
-        int mask=0;
-        StringTokenizer tok=new StringTokenizer(actions,",",false);
+        int mask = 0;
+        StringTokenizer tok = new StringTokenizer(actions, ",", false);
+
         while (tok.hasMoreTokens()) {
-            String val=tok.nextToken().trim();
+            String val = tok.nextToken().trim();
 
             if (WILDCARD.equals(val)) {
-                return(MASK_CONTROL_START|MASK_CONTROL_STOP|
-                       MASK_CONTROL_SHUTDOWN|MASK_CONTROL_RELOAD);
-            } else if (CONTROL_START.equalsIgnoreCase(val)) {
-                mask=mask|MASK_CONTROL_START;
-            } else if (CONTROL_STOP.equalsIgnoreCase(val)) {
-                mask=mask|MASK_CONTROL_STOP;
-            } else if (CONTROL_SHUTDOWN.equalsIgnoreCase(val)) {
-                mask=mask|MASK_CONTROL_SHUTDOWN;
-            } else if (CONTROL_RELOAD.equalsIgnoreCase(val)) {
-                mask=mask|MASK_CONTROL_RELOAD;
-            } else {
-                throw new IllegalArgumentException("Invalid action name \""+
-                                                   val+"\" specified");
+                return MASK_CONTROL_START | MASK_CONTROL_STOP |
+                       MASK_CONTROL_SHUTDOWN | MASK_CONTROL_RELOAD;
+            }
+            else if (CONTROL_START.equalsIgnoreCase(val)) {
+                mask = mask | MASK_CONTROL_START;
+            }
+            else if (CONTROL_STOP.equalsIgnoreCase(val)) {
+                mask = mask | MASK_CONTROL_STOP;
+            }
+            else if (CONTROL_SHUTDOWN.equalsIgnoreCase(val)) {
+                mask = mask | MASK_CONTROL_SHUTDOWN;
+            }
+            else if (CONTROL_RELOAD.equalsIgnoreCase(val)) {
+                mask = mask | MASK_CONTROL_RELOAD;
+            }
+            else {
+                throw new IllegalArgumentException("Invalid action name \"" +
+                                                   val + "\" specified");
             }
         }
-        return(mask);
+        return mask;
     }
 
     /** Create a actions list for a given control permission mask. */
-    private String createControlActions(int mask) {
-        StringBuffer buf=new StringBuffer();
-        boolean sep=false;
+    private String createControlActions(int mask)
+    {
+        StringBuffer buf = new StringBuffer();
+        boolean sep = false;
 
-        if ((mask&MASK_CONTROL_START)==MASK_CONTROL_START) {
-            sep=true;
+        if ((mask & MASK_CONTROL_START) == MASK_CONTROL_START) {
+            sep = true;
             buf.append(CONTROL_START);
         }
 
-        if ((mask&MASK_CONTROL_STOP)==MASK_CONTROL_STOP) {
-            if (sep) buf.append(",");
-            else sep=true;
+        if ((mask & MASK_CONTROL_STOP) == MASK_CONTROL_STOP) {
+            if (sep)
+                buf.append(",");
+            else
+                sep = true;
             buf.append(CONTROL_STOP);
         }
 
-        if ((mask&MASK_CONTROL_SHUTDOWN)==MASK_CONTROL_SHUTDOWN) {
-            if (sep) buf.append(",");
-            else sep=true;
+        if ((mask & MASK_CONTROL_SHUTDOWN) == MASK_CONTROL_SHUTDOWN) {
+            if (sep)
+                buf.append(",");
+            else
+                sep = true;
             buf.append(CONTROL_SHUTDOWN);
         }
 
-        if ((mask&MASK_CONTROL_RELOAD)==MASK_CONTROL_RELOAD) {
-            if (sep) buf.append(",");
-            else sep=true;
+        if ((mask & MASK_CONTROL_RELOAD) == MASK_CONTROL_RELOAD) {
+            if (sep)
+                buf.append(",");
+            else
+                sep = true;
             buf.append(CONTROL_RELOAD);
         }
 
         return buf.toString();
     }
 }
+

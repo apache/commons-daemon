@@ -23,42 +23,43 @@ package org.apache.commons.daemon;
  * @author Pier Fumagalli
  * @version 1.0 <i>(CVS $Revision$)</i>
  */
-public interface DaemonController {
+public interface DaemonController
+{
 
     /**
      *
      */
     public void shutdown()
-    throws IllegalStateException;
+        throws IllegalStateException;
 
     /**
      *
      */
     public void reload()
-    throws IllegalStateException;
+        throws IllegalStateException;
 
     /**
      *
      */
     public void fail()
-    throws IllegalStateException;
+        throws IllegalStateException;
 
     /**
      *
      */
     public void fail(String message)
-    throws IllegalStateException;
+        throws IllegalStateException;
 
     /**
      *
      */
     public void fail(Exception exception)
-    throws IllegalStateException;
+        throws IllegalStateException;
 
     /**
      *
      */
     public void fail(String message, Exception exception)
-    throws IllegalStateException;
+        throws IllegalStateException;
 
-}
+

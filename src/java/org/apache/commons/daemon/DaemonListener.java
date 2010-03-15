@@ -19,7 +19,8 @@ package org.apache.commons.daemon;
 
 import java.util.EventListener;
 
-public interface DaemonListener extends EventListener {
+public interface DaemonListener extends EventListener
+{
 
 }
 

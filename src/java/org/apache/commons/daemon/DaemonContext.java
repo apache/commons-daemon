@@ -25,7 +25,8 @@ package org.apache.commons.daemon;
  * @author Pier Fumagalli
  * @version 1.0 <i>(CVS $Revision$)</i>
  */
-public interface DaemonContext {
+public interface DaemonContext
+{
 
     /**
      * Returns  <code>DaemonController</code> object that can be used
@@ -43,3 +44,4 @@ public interface DaemonContext {
     public String[] getArguments();
 
 }
+

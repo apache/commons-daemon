@@ -31,7 +31,8 @@ package org.apache.commons.daemon;
  * @author Pier Fumagalli
  * @version 1.0 <i>(CVS $Revision$)</i>
  */
-public interface Daemon {
+public interface Daemon
+{
 
     /**
      * Initialize this <code>Daemon</code> instance.
@@ -62,12 +63,12 @@ public interface Daemon {
      *
      * @param context A <code>DaemonContext</code> object used to
      * communicate with the container.
-     * 
+     *
      * @exception Exception Any exception preventing a successful
      *                      initialization.
      */
     public void init(DaemonContext context)
-    throws Exception;
+        throws Exception;
 
     /**
      * Start the operation of this <code>Daemon</code> instance. This
@@ -79,7 +80,7 @@ public interface Daemon {
      * the stop()-method.
      */
     public void start()
-    throws Exception;
+        throws Exception;
 
     /**
      * Stop the operation of this <code>Daemon</code> instance. Note
@@ -89,7 +90,7 @@ public interface Daemon {
      * stop().
      */
     public void stop()
-    throws Exception;
+        throws Exception;
 
     /**
      * Free any resources allocated by this daemon such as file
@@ -100,3 +101,4 @@ public interface Daemon {
      */
     public void destroy();
 }
+
