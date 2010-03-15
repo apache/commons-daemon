@@ -25,7 +25,7 @@
     <body>
         <menu name="Daemon">
             <item name="Overview"                href="/index.html"/>
-            <item name="Download"                href="http://commons.apache.org/downloads/download_daemon.cgi"/>
+            <item name="Download"                href="/download_daemon.cgi"/>
             <item name="Procrun"                 href="/procrun.html"/>
             <item name="Jsvc"                    href="/jsvc.html"/>
             <item name="Native binaries"         href="/binaries.html"/>
