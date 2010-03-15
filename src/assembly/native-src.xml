@@ -36,6 +36,7 @@
             <excludes>
                 <exclude>**/*.sh</exclude>
                 <exclude>configure</exclude>
+                <exclude>autom4te.cache/**</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
@@ -49,10 +50,6 @@
                 <include>**/*.sh</include>
                 <include>configure</include>
             </includes>
-            <excludes>
-                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
-                <exclude>**/*.formatted</exclude>
-            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/native/nt/procrun</directory>
@@ -61,6 +58,7 @@
             <excludes>
                 <exclude>**/*.ico</exclude>
                 <exclude>**/*.bmp</exclude>
+                <exclude>**/*.rc</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
@@ -72,11 +70,8 @@
             <includes>
                 <include>**/*.ico</include>
                 <include>**/*.bmp</include>
+                <include>**/*.rc</include>
             </includes>
-            <excludes>
-                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
-                <exclude>**/*.formatted</exclude>
-            </excludes>
             <fileMode>664</fileMode>
         </fileSet>
     </fileSets>

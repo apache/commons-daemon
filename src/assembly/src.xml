@@ -36,6 +36,19 @@
         </fileSet>
         <fileSet>
             <directory>src</directory>
+            <excludes>
+                <exclude>**/*.sh</exclude>
+                <exclude>native/unix/configure</exclude>
+                <exclude>native/unix/autom4te.cache/**</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>src</directory>
+            <fileMode>775</fileMode>
+            <includes>
+                <include>**/*.sh</include>
+                <include>native/unix/configure</include>
+            </includes>
         </fileSet>
     </fileSets>
 </assembly>
