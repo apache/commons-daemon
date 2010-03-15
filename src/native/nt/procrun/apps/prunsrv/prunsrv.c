@@ -75,6 +75,7 @@ static LPCWSTR _commands[] = {
     L"IS",      /* 5 Install Service */
     L"DS",      /* 6 Delete Service */
     L"?",       /* 7 Help */
+    L"VS",      /* 8 Version */
     NULL
 };
 
@@ -307,11 +308,11 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
 {
     int i = 0;
-    fwprintf(stderr, L"Usage: %s //CMD//Servce [--options]\n",
+    fwprintf(stderr, L"Usage: %s //CMD//Service [--options]\n",
              lpCmdline->szExecutable);
     fwprintf(stderr, L"  Commands:\n");
     if (isHelp)
-        fwprintf(stderr, L"  //?                  This page\n");        
+        fwprintf(stderr, L"  //?                  This page\n");
     fwprintf(stderr, L"  //IS[//ServiceName]  Install Service\n");
     fwprintf(stderr, L"  //US[//ServiceName]  Update Service parameters\n");
     fwprintf(stderr, L"  //DS[//ServiceName]  Delete Service\n");
@@ -323,7 +324,17 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
         fwprintf(stderr, L"  --%s\n", _options[i].szName);
         ++i;
     }
-    fwprintf(stderr, L"\nCommons Daemon Service Runner version %S\n", PRG_VERSION);    
+}
+
+static void printVersion(void)
+{
+#ifdef _WIN64
+    int b = 64;
+#else
+    int b = 32;
+#endif
+    fwprintf(stderr, L"Commons Daemon Service Runner version %S/Win%d (%S)\n",
+            PRG_VERSION, b, __DATE__);
     fwprintf(stderr, L"Copyright (c) 2000-2010 The Apache Software Foundation.\n");
 }
 
@@ -1430,8 +1441,11 @@ void __cdecl main(int argc, char **argv)
             if (!docmdDeleteService(lpCmdline))
                 rv = 8;
         break;
-        case 7: /* Help. Print version and exit */
-            printUsage(lpCmdline, TRUE);            
+        case 7: /* Print Usage and exit */
+            printUsage(lpCmdline, TRUE);
+        break;
+        case 8: /* Print version and exit */
+            printVersion();
         break;
         default:
             /* Unknown command option */

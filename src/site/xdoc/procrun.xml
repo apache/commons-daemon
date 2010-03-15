@@ -57,35 +57,47 @@
 </section>
 <section name="Command line arguments">
 <p>
-    Each command line directive is in the form of <b>//XX//ServiceName</b>
+    Each command line directive is in the form of <b>//XX[//ServiceName]</b>
 </p>
     <p>The available command line options are:</p>
 <p> 
     <table>
-    <tr><th>//TS//</th>
+    <tr><th>//TS</th>
         <td>Run the service as console application</td>
         <td>This is the default operation. It is called if the no option is
             provided but the executable is renamed to <b>servicename.exe</b></td>
     </tr>
-    <tr><th>//RS//</th>
+    <tr><th>//RS</th>
         <td>Run the service</td>
         <td>Called only from ServiceManager</td>
     </tr>
-    <tr><th>//SS//</th>
+    <tr><th>//SS</th>
         <td>Stop the service</td>
         <td></td>
     </tr>
-    <tr><th>//US//</th>
+    <tr><th>//US</th>
         <td>Update service parameters</td>
         <td></td>
     </tr>
-    <tr><th>//IS//</th>
+    <tr><th>//IS</th>
         <td>Install service</td>
         <td></td>
     </tr>
-    <tr><th>//DS//</th>
+    <tr><th>//DS</th>
         <td>Delete service</td>
         <td>Stops the service if running</td>
+    </tr>        
+    <tr><th>//DS</th>
+        <td>Delete service</td>
+        <td>Stops the service if running</td>
+    </tr>        
+    <tr><th>//VS</th>
+        <td>Version</td>
+        <td>Print version and exit</td>
+    </tr>        
+    <tr><th>//?</th>
+        <td>Help</td>
+        <td>Print usage and exit</td>
     </tr>        
     </table>
 </p> 
