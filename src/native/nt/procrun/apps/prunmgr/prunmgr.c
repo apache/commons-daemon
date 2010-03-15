@@ -377,6 +377,8 @@ BOOL __generalLoggingSave(HWND hDlg)
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Path", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGPREFIX,  szB, SIZ_DESMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Prefix", szB);
+    GetDlgItemTextW(hDlg, IDC_PPLGPIDFILE,  szB, SIZ_DESMAX);
+    apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"PidFile", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGSTDOUT,  szB, SIZ_DESMAX);
     apxRegistrySetStrW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"StdOutput", szB);
     GetDlgItemTextW(hDlg, IDC_PPLGSTDERR,  szB, SIZ_DESMAX);
@@ -873,7 +875,12 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     apxFree(b);
                 }
                 else
-                    SetDlgItemTextW(hDlg, IDC_PPLGPREFIX, L"jakarta_service_");
+                    SetDlgItemTextW(hDlg, IDC_PPLGPREFIX, L"commons-daemon");
+                if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
+                                               _s_log, L"PidFile")) != NULL) {
+                    SetDlgItemTextW(hDlg, IDC_PPLGPIDFILE, b);
+                    apxFree(b);
+                }
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"StdOutput")) != NULL) {
                     SetDlgItemTextW(hDlg, IDC_PPLGSTDOUT, b);
@@ -901,6 +908,12 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     }
                 break;
                 case IDC_PPLGPREFIX:
+                    if (HIWORD(wParam) == EN_CHANGE) {
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 3);
+                    }
+                break;
+                case IDC_PPLGPIDFILE:
                     if (HIWORD(wParam) == EN_CHANGE) {
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 3);

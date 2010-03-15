@@ -18,6 +18,7 @@
 #include "private.h"
 
 #define LINE_SEP    "\n"
+#define LOGF_EXT    L".%04d-%02d-%02d.log"
 
 static LPCSTR _log_level[] = {
     "[debug] ",
@@ -32,7 +33,7 @@ typedef struct apx_logfile_st {
     DWORD       dwLogLevel;
     BOOL        bRotate;
     SYSTEMTIME  sysTime;
-    WCHAR       szPath[MAX_PATH + 1];
+    WCHAR       szPath[SIZ_PATHLEN];
     WCHAR       szPrefix[MAX_PATH];
 } apx_logfile_st;
 
@@ -46,11 +47,12 @@ LPWSTR apxLogFile(
     APXHANDLE hPool,
     LPCWSTR szPath,
     LPCWSTR szPrefix,
-    LPCWSTR szName)
+    LPCWSTR szName,
+    BOOL bTimeStamp)
 {
     LPWSTR sRet;
-    WCHAR sPath[MAX_PATH+1];
-    WCHAR sName[MAX_PATH+1];
+    WCHAR sPath[SIZ_PATHLEN];
+    WCHAR sName[SIZ_PATHLEN];
     SYSTEMTIME sysTime;
 
     GetLocalTime(&sysTime);
@@ -66,20 +68,26 @@ LPWSTR apxLogFile(
         szPrefix = L"";
     if (!szName)
         szName   = L"";
-    wsprintfW(sName,
-              L"\\%s%s%04d%02d%02d.log",
-              szPrefix,
-              szName,
-              sysTime.wYear,
-              sysTime.wMonth,
-              sysTime.wDay);
+    if (bTimeStamp)
+        wsprintfW(sName,
+                  L"\\%s%s" LOGF_EXT,
+                  szPrefix,
+                  szName,
+                  sysTime.wYear,
+                  sysTime.wMonth,
+                  sysTime.wDay);
+    else
+        wsprintfW(sName,
+                  L"\\%s%s",
+                  szPrefix,
+                  szName);
 
-    sRet = apxPoolAlloc(hPool, (MAX_PATH + 1) * sizeof(WCHAR));
+    sRet = apxPoolAlloc(hPool, (SIZ_PATHLEN) * sizeof(WCHAR));
     /* Set default level to info */
     CreateDirectoryW(sPath, NULL);
 
-    lstrlcpyW(sRet, MAX_PATH, sPath);
-    lstrlcatW(sRet, MAX_PATH, sName);
+    lstrlcpyW(sRet, SIZ_PATHMAX, sPath);
+    lstrlcatW(sRet, SIZ_PATHMAX, sName);
 
     return sRet;
 }
@@ -94,8 +102,8 @@ HANDLE apxLogOpen(
     LPCWSTR szPrefix)
 {
 
-    WCHAR sPath[MAX_PATH+1];
-    WCHAR sName[MAX_PATH+1];
+    WCHAR sPath[SIZ_PATHLEN];
+    WCHAR sName[SIZ_PATHLEN];
     SYSTEMTIME sysTime;
     apx_logfile_st *h;
 
@@ -109,8 +117,8 @@ HANDLE apxLogOpen(
         lstrlcpyW(sPath, MAX_PATH, szPath);
     }
     if (!szPrefix)
-        szPrefix = L"jakarta_service_";
-    wsprintfW(sName, L"\\%s%04d%02d%02d.log",
+        szPrefix = L"commons-daemon";
+    wsprintfW(sName, L"\\%s"  LOGF_EXT,
               szPrefix,
               sysTime.wYear,
               sysTime.wMonth,
@@ -184,7 +192,7 @@ void apxLogLevelSetW(HANDLE  hFile,
 static BOOL apx_log_rotate(apx_logfile_st *l,
                            LPSYSTEMTIME lpCtime)
 {
-    WCHAR sPath[MAX_PATH+1];
+    WCHAR sPath[SIZ_PATHLEN];
 
     /* rotate on daily basis */
     if (l->sysTime.wDay == lpCtime->wDay)
@@ -193,7 +201,7 @@ static BOOL apx_log_rotate(apx_logfile_st *l,
     CloseHandle(l->hFile);
     l->sysTime = *lpCtime;
 
-    wsprintfW(sPath, L"%s\\%s%04d%02d%02d.log",
+    wsprintfW(sPath, L"%s\\%s"  LOGF_EXT,
               l->szPath,
               l->szPrefix,
               l->sysTime.wYear,
@@ -226,7 +234,7 @@ apxLogWrite(
     LPSTR   szBp;
     int     len = 0;
     LPCSTR  f = szFile;
-    CHAR    sb[MAX_PATH+1];
+    CHAR    sb[SIZ_PATHLEN];
     DWORD   wr;
     DWORD   err;
     BOOL    dolock = TRUE;
@@ -345,8 +353,8 @@ apxDisplayError(
     ...)
 {
     va_list args;
-    CHAR    buffer[1024+32];
-    CHAR    sysbuf[2048];
+    CHAR    buffer[SIZ_HUGLEN];
+    CHAR    sysbuf[SIZ_HUGLEN];
     int     len = 0, nRet;
     LPCSTR  f = szFile;
     DWORD   err = GetLastError(); /* save the last Error code */
@@ -365,7 +373,7 @@ apxDisplayError(
                              err,
                              MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                              sysbuf,
-                             1000,
+                             SIZ_DESLEN,
                              NULL);
         sysbuf[len] = 0;
     }
@@ -374,12 +382,12 @@ apxDisplayError(
         wvsprintfA(buffer, szFormat, args);
         va_end(args);
         if (f) {
-            CHAR sb[MAX_PATH+1];
+            CHAR sb[SIZ_PATHLEN];
             wsprintfA(sb, "\n%s (%d)", f, dwLine);
             lstrcatA(sysbuf, sb);
         }
-        lstrlcatA(sysbuf, 2048, "\n");
-        lstrlcatA(sysbuf, 2048, buffer);
+        lstrlcatA(sysbuf, SIZ_HUGLEN, "\n");
+        lstrlcatA(sysbuf, SIZ_HUGLEN, buffer);
     }
     len = lstrlenA(sysbuf);
 #ifdef _DEBUG_FULL

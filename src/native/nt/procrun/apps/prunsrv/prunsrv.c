@@ -51,10 +51,8 @@ typedef struct APX_STDWRAP {
     LPCWSTR szLogPath;
     LPCWSTR szStdOutFilename;
     LPCWSTR szStdErrFilename;
-    HANDLE  hStdOutFile;
-    HANDLE  hStdErrFile;
-    int     fdStdOutFile;
-    int     fdStdErrFile;
+    FILE   *fpStdOutFile;
+    FILE   *fpStdErrFile;
 } APX_STDWRAP;
 
 /* Use static variables instead of #defines */
@@ -123,6 +121,8 @@ static APXCMDLINEOPT _options[] = {
 /* 33 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
 /* 34 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 35 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 36 */    { L"LogJniMessages",    L"LogJniMessages",  L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 1},
+/* 37 */    { L"PidFile",           L"PidFile",         L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
             /* NULL terminate the array */
             { NULL }
 };
@@ -182,6 +182,8 @@ static APXCMDLINEOPT _options[] = {
 
 #define SO_STDERROR         GET_OPT_V(34)
 #define SO_STDOUTPUT        GET_OPT_V(35)
+#define SO_JNIVFPRINTF      GET_OPT_I(36)
+#define SO_PIDFILE          GET_OPT_V(37)
 
 /* Main servic table entry
  * filled at run-time
@@ -222,6 +224,8 @@ static LPSTR    _jni_sclass               = NULL;    /* Shutdown class */
 static HANDLE gShutdownEvent = NULL;
 static HANDLE gSignalEvent   = NULL;
 static HANDLE gSignalThread  = NULL;
+static HANDLE gPidfileHandle = NULL;
+static LPWSTR gPidfileName   = NULL;
 static BOOL   gSignalValid   = TRUE;
 
 DWORD WINAPI eventThread(LPVOID lpParam)
@@ -250,91 +254,51 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     BOOL aErr = FALSE;
     BOOL aOut = FALSE;
 
+    if (lpWrapper->szStdOutFilename || lpWrapper->szStdErrFilename)
+        AllocConsole();
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
         if (lstrcmpiW(lpWrapper->szStdOutFilename, PRSRV_AUTO) == 0) {
             aOut = TRUE;
             lpWrapper->szStdOutFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
-                                                     L"stdout_",
-                                                     NULL);
+                                                     L"service-stdout",
+                                                     NULL, TRUE);
         }
         /* Delete the file if not in append mode
          * XXX: See if we can use the params instead of that.
          */
         if (!aOut)
             DeleteFileW(lpWrapper->szStdOutFilename);
-        lpWrapper->hStdOutFile = CreateFileW(lpWrapper->szStdOutFilename,
-                                             GENERIC_WRITE,
-                                             FILE_SHARE_READ | FILE_SHARE_WRITE,
-                                             NULL,
-                                             OPEN_ALWAYS,
-                                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH | FILE_FLAG_SEQUENTIAL_SCAN,
-                                             NULL);
-        if (IS_INVALID_HANDLE(lpWrapper->hStdOutFile))
-            return FALSE;
-        /* Allways move to the end of file */
-        SetFilePointer(lpWrapper->hStdOutFile, 0, NULL, FILE_END);
-    }
-    else {
-        lpWrapper->hStdOutFile = CreateFileW(L"CONOUT$",
-                                             GENERIC_WRITE,
-                                             FILE_SHARE_READ | FILE_SHARE_WRITE,
-                                             NULL,
-                                             OPEN_EXISTING,
-                                             0,
-                                             NULL);
-        if (IS_INVALID_HANDLE(lpWrapper->hStdOutFile))
-            return FALSE;
+        if ((lpWrapper->fpStdOutFile = _wfopen(lpWrapper->szStdOutFilename,
+                                               L"a"))) {
+            _dup2(_fileno(lpWrapper->fpStdOutFile), 1);
+            *stdout = *lpWrapper->fpStdOutFile;
+            setvbuf(stdout, NULL, _IONBF, 0);
+        }
     }
     if (lpWrapper->szStdErrFilename) {
         if (lstrcmpiW(lpWrapper->szStdErrFilename, PRSRV_AUTO) == 0) {
             aErr = TRUE;
             lpWrapper->szStdErrFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
-                                                     L"stderr_",
-                                                     NULL);
+                                                     L"service-stderr",
+                                                     NULL, TRUE);
         }
         if (!aErr)
             DeleteFileW(lpWrapper->szStdErrFilename);
-        lpWrapper->hStdErrFile = CreateFileW(lpWrapper->szStdErrFilename,
-                                             GENERIC_WRITE,
-                                             FILE_SHARE_READ | FILE_SHARE_WRITE,
-                                             NULL,
-                                             OPEN_ALWAYS,
-                                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH | FILE_FLAG_SEQUENTIAL_SCAN,
-                                             NULL);
-        if (IS_INVALID_HANDLE(lpWrapper->hStdErrFile))
-            return FALSE;
-        SetFilePointer(lpWrapper->hStdErrFile, 0, NULL, FILE_END);
-    }
-    else if (lpWrapper->szStdOutFilename) {
-        /* Use the same file handle for stderr as for stdout */
-        lpWrapper->szStdErrFilename = lpWrapper->szStdOutFilename;
-        lpWrapper->hStdErrFile = lpWrapper->hStdOutFile;
-    }
-    else {
-        lpWrapper->hStdErrFile = lpWrapper->hStdOutFile;
-    }
-    /* Open the stream buffers
-     * This will redirect all printf to go to the redirected files.
-     * It is used for JNI vprintf functionality.
-     */
-    lpWrapper->fdStdOutFile = _open_osfhandle((ptrdiff_t)lpWrapper->hStdOutFile,
-                                              _O_WRONLY | _O_TEXT);
-    if (lpWrapper->fdStdOutFile > 0) {
-        lpWrapper->fdStdOutFile = dup2(lpWrapper->fdStdOutFile, 1);
-        if (lpWrapper->fdStdOutFile > 0)
-            setvbuf(stdout, NULL, _IONBF, 0);
-    }
-    lpWrapper->fdStdErrFile = _open_osfhandle((ptrdiff_t)lpWrapper->hStdErrFile,
-                                              _O_WRONLY | _O_TEXT);
-    if (lpWrapper->fdStdErrFile > 0) {
-        lpWrapper->fdStdErrFile = dup2(lpWrapper->fdStdErrFile, 2);
-        if (lpWrapper->fdStdErrFile > 0)
+        if ((lpWrapper->fpStdErrFile = _wfopen(lpWrapper->szStdErrFilename,
+                                              L"a"))) {
+            _dup2(_fileno(lpWrapper->fpStdErrFile), 2);
+            *stderr = *lpWrapper->fpStdErrFile;
             setvbuf(stderr, NULL, _IONBF, 0);
+        }
     }
-
+    else if (lpWrapper->fpStdOutFile) {
+        _dup2(_fileno(lpWrapper->fpStdOutFile), 2);
+        *stderr = *lpWrapper->fpStdOutFile;
+         setvbuf(stderr, NULL, _IONBF, 0);
+    }
     return TRUE;
 }
 
@@ -818,7 +782,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             return 1;
         }
         if (!apxJavaInitialize(hWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
+                               SO_JVMMS, SO_JVMMX, SO_JVMSS, SO_JNIVFPRINTF)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
@@ -971,6 +935,14 @@ static DWORD serviceStart()
         apxLogWrite(APXLOG_MARK_INFO "Worker is not defined");
         return TRUE;    /* Nothing to do */
     }
+    if (SO_PIDFILE) {
+        gPidfileName = apxLogFile(gPool, SO_LOGPATH, SO_PIDFILE, NULL, FALSE);
+        if (GetFileAttributesW(gPidfileName) !=  INVALID_FILE_ATTRIBUTES) {
+            /* Pid file exists */
+            apxLogWrite(APXLOG_MARK_ERROR "Pid file '%S' exists", gPidfileName);
+            return 1;
+        }
+    }
     GetSystemTimeAsFileTime(&fts);
     if (_jni_startup) {
         if (SO_STARTPATH) {
@@ -986,7 +958,7 @@ static DWORD serviceStart()
             return 1;
         }
         if (!apxJavaInitialize(gWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS)) {
+                               SO_JVMMS, SO_JVMMX, SO_JVMSS, SO_JNIVFPRINTF)) {
             rv = 2;
             apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
             goto cleanup;
@@ -1060,6 +1032,27 @@ static DWORD serviceStart()
         FILETIME fte;
         ULARGE_INTEGER s, e;
         DWORD    nms;
+        /* Create pidfile */
+        if (gPidfileName) {
+            char pids[32];
+            gPidfileHandle = CreateFileW(gPidfileName,
+                                         GENERIC_READ | GENERIC_WRITE,
+                                         FILE_SHARE_READ,
+                                         NULL,
+                                         CREATE_NEW,
+                                         FILE_ATTRIBUTE_NORMAL,
+                                         NULL);
+
+            if (gPidfileHandle != INVALID_HANDLE_VALUE) {
+                DWORD wr = 0;
+                if (_jni_startup)
+                    _snprintf(pids, 32, "%d\r\n", GetCurrentProcessId());
+                else
+                    _snprintf(pids, 32, "%d\r\n", apxProcessGetPid(gWorker));
+                WriteFile(gPidfileHandle, pids, (DWORD)strlen(pids), &wr, NULL);
+                FlushFileBuffers(gPidfileName);
+            }
+        }
         GetSystemTimeAsFileTime(&fte);
         s.LowPart  = fts.dwLowDateTime;
         s.HighPart = fts.dwHighDateTime;
@@ -1322,7 +1315,9 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_INFO "Debugging Service...");
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished.");
-
+    SAFE_CLOSE_HANDLE(gPidfileHandle);
+    if (gPidfileName)
+        DeleteFileW(gPidfileName);
     return rv;
 }
 
@@ -1337,6 +1332,9 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     _service_table[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONW)serviceMain;
     rv = (StartServiceCtrlDispatcherW(_service_table) == FALSE);
     apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
+    SAFE_CLOSE_HANDLE(gPidfileHandle);
+    if (gPidfileName)
+        DeleteFileW(gPidfileName);
     return rv;
 }
 
@@ -1390,6 +1388,18 @@ void __cdecl main(int argc, char **argv)
         gStdwrap.szStdErrFilename = SO_STDERROR;
     }
     redirectStdStreams(&gStdwrap);
+    if (lpCmdline->dwCmdIndex == 2) {
+        SYSTEMTIME t;
+        GetLocalTime(&t);
+        fprintf(stdout, "\n%d-%02d-%02d %02d:%02d:%02d "
+                        "Commons Daemon procrun stdout initialized\n",
+                        t.wYear, t.wMonth, t.wDay,
+                        t.wHour, t.wMinute, t.wSecond);
+        fprintf(stderr, "\n%d-%02d-%02d %02d:%02d:%02d "
+                        "Commons Daemon procrun stderr initialized\n",
+                        t.wYear, t.wMonth, t.wDay,
+                        t.wHour, t.wMinute, t.wSecond);
+    }
     switch (lpCmdline->dwCmdIndex) {
         case 1: /* Run Service as console application */
             if (!docmdDebugService(lpCmdline))

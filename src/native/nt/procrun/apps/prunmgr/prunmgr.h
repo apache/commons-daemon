@@ -24,7 +24,7 @@
 #define _PRUNMGR_H
 
 #undef  PRG_VERSION
-#define PRG_VERSION    "1.0.2.0" 
+#define PRG_VERSION    "1.0.3.0" 
 #define PRG_REGROOT   L"Apache Software Foundation\\Procrun 2.0"
 
 #define IDM_TM_EXIT                     2000
@@ -73,10 +73,11 @@
 #define IDC_PPLGPATH                    2642
 #define IDC_PPLGBPATH                   2643
 #define IDC_PPLGPREFIX                  2644
-#define IDC_PPLGSTDOUT                  2645
-#define IDC_PPLGBSTDOUT                 2646
-#define IDC_PPLGSTDERR                  2647
-#define IDC_PPLGBSTDERR                 2648
+#define IDC_PPLGPIDFILE                 2645
+#define IDC_PPLGSTDOUT                  2646
+#define IDC_PPLGBSTDOUT                 2647
+#define IDC_PPLGSTDERR                  2648
+#define IDC_PPLGBSTDERR                 2649
 
 #define IDD_PROPPAGE_JVM                2660
 #define IDC_PPJAUTO                     2661

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "apxwin.h"
 #include "private.h"
 
@@ -24,7 +24,7 @@
 #define CHILD_TERMINATE_CODE        19640323 /* Could be any value like my birthday ;-)*/
 
 DYNOLAD_TYPE_DECLARE(CreateRemoteThread,
-                     __stdcall, HANDLE)(HANDLE, LPSECURITY_ATTRIBUTES, 
+                     __stdcall, HANDLE)(HANDLE, LPSECURITY_ATTRIBUTES,
                                         DWORD, LPTHREAD_START_ROUTINE,
                                         LPVOID, DWORD, LPDWORD);
 
@@ -83,13 +83,13 @@ typedef struct APXPROCESS {
     HANDLE                  hChildInpWr;
     HANDLE                  hChildOutRd;
     HANDLE                  hChildErrRd;
-    /* Saved console pipes */    
+    /* Saved console pipes */
     HANDLE                  hParentStdSave[3];
     HANDLE                  hWorkerThreads[3];
     HANDLE                  hUserToken;
     HANDLE                  hCurrentProcess;
     BOOL                    bSaveHandles;
-    /** callback function */ 
+    /** callback function */
     LPAPXFNCALLBACK         fnUserCallback;
     LPSECURITY_ATTRIBUTES   lpSA;
     LPVOID                  lpSD;
@@ -135,13 +135,13 @@ static DWORD WINAPI __apxProcStdoutThread(LPVOID lpParameter)
     LPAPXPROCESS lpProc;
     APXCALLHOOK *lpCall;
     INT ch;
-    DWORD dwReaded; 
+    DWORD dwReaded;
     lpProc = APXHANDLE_DATA(hProcess);
     while (lpProc->dwChildStatus & CHILD_RUNNING) {
         ch = 0;
         if (!ReadFile(lpProc->hChildOutRd, &ch, lpProc->chSize,
                       &dwReaded, NULL) || !dwReaded) {
-            
+
             break;
         }
         if (lpProc->fnUserCallback)
@@ -162,7 +162,7 @@ static DWORD WINAPI __apxProcStderrThread(LPVOID lpParameter)
     LPAPXPROCESS lpProc;
     APXCALLHOOK *lpCall;
     INT ch;
-    DWORD dwReaded; 
+    DWORD dwReaded;
     lpProc = APXHANDLE_DATA(hProcess);
     while (lpProc->dwChildStatus & CHILD_RUNNING) {
         if (!ReadFile(lpProc->hChildErrRd, &ch, lpProc->chSize,
@@ -193,7 +193,7 @@ static DWORD __apxProcessPutc(LPAPXPROCESS lpProc, INT ch, DWORD dwSize)
             return 1;
         }
     }
-    
+
     return 0;
 }
 
@@ -221,7 +221,7 @@ static DWORD __apxProcessPuts(LPAPXPROCESS lpProc, LPCTSTR szString)
                 break;
         }
     }
-    
+
     return n;
 }
 
@@ -231,7 +231,7 @@ static DWORD __apxProcessWrite(LPAPXPROCESS lpProc, LPCVOID lpData, DWORD dwLen)
     DWORD  n = 0;
     if (!lpData || !dwLen)
         return 0;
-    
+
     if (lpProc->dwChildStatus & CHILD_RUNNING) {
         DWORD wr = 0;
         while (lpProc->dwChildStatus & CHILD_RUNNING) {
@@ -249,7 +249,7 @@ static DWORD __apxProcessWrite(LPAPXPROCESS lpProc, LPCVOID lpData, DWORD dwLen)
                 break;
         }
     }
-    
+
     return n;
 }
 
@@ -316,33 +316,33 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
 
     lpProc = APXHANDLE_DATA(hProcess);
     CHECK_IF_ACTIVE(lpProc);
-    
+
     /* Try to close the child's stdin first */
     SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
-    /* Wait 1 sec for child process to 
+    /* Wait 1 sec for child process to
      * recognize that the stdin has been closed.
      */
     if (WaitForSingleObject(lpProc->stProcInfo.hProcess, 1000) == WAIT_OBJECT_0)
         goto cleanup;
 
     CHECK_IF_ACTIVE(lpProc);
-    
+
     /* Try to create the remote thread in the child address space */
     DYNLOAD_FPTR_ADDRESS(CreateRemoteThread, KERNEL32);
-    if (DuplicateHandle(lpProc->hCurrentProcess, 
-                        lpProc->stProcInfo.hProcess, 
-                        lpProc->hCurrentProcess, 
-                        &hDup, 
-                        PROCESS_ALL_ACCESS, 
+    if (DuplicateHandle(lpProc->hCurrentProcess,
+                        lpProc->stProcInfo.hProcess,
+                        lpProc->hCurrentProcess,
+                        &hDup,
+                        PROCESS_ALL_ACCESS,
                         FALSE, 0)) {
         DYNLOAD_FPTR_ADDRESS(ExitProcess, KERNEL32);
         /* Now call the ExitProcess from inside the client
          * This will safely unload all the dll's.
          */
-        hRemote = DYNLOAD_CALL(CreateRemoteThread)(hDup, 
-                                NULL, 0, 
+        hRemote = DYNLOAD_CALL(CreateRemoteThread)(hDup,
+                                NULL, 0,
                                 (LPTHREAD_START_ROUTINE)DYNLOAD_FPTR(ExitProcess),
-                                (PVOID)&uExitCode, 0, NULL); 
+                                (PVOID)&uExitCode, 0, NULL);
         if (!IS_INVALID_HANDLE(hRemote)) {
             if (WaitForSingleObject(lpProc->stProcInfo.hProcess,
                     2000) == WAIT_OBJECT_0) {
@@ -356,9 +356,9 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
         CloseHandle(hDup);
         goto cleanup;
     }
-  
+
     TerminateProcess(lpProc->stProcInfo.hProcess, CHILD_TERMINATE_CODE);
-    
+
 cleanup:
      /* Close the process handle */
     SAFE_CLOSE_HANDLE(lpProc->stProcInfo.hProcess);
@@ -384,8 +384,8 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
             }
             SAFE_CLOSE_HANDLE(lpProc->stProcInfo.hProcess);
 
-            /* Close parent side of the pipes */    
-            SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);  
+            /* Close parent side of the pipes */
+            SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
             SAFE_CLOSE_HANDLE(lpProc->hChildOutRd);
             SAFE_CLOSE_HANDLE(lpProc->hChildErrRd);
 
@@ -401,7 +401,7 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
             if (lpProc->lpEnvironment)
                 FreeEnvironmentStringsW(lpProc->lpEnvironment);
 
-        case WM_QUIT: 
+        case WM_QUIT:
             /* The process has finished
              * This is a WorkerThread message
              */
@@ -414,7 +414,7 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
             if (wParam)
                 __apxProcessWrite(lpProc, (LPCVOID)lParam, (DWORD)wParam);
             else
-                __apxProcessPuts(lpProc, (LPCTSTR)lParam);            
+                __apxProcessPuts(lpProc, (LPCTSTR)lParam);
         break;
         default:
         break;
@@ -439,8 +439,8 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
 #ifndef _UNICODE
         WCHAR wsUsername[256];
         WCHAR wsPassword[256];
-        AsciiToWide(szUsername, wsUsername); 
-        AsciiToWide(szPassword, wsPassword); 
+        AsciiToWide(szUsername, wsUsername);
+        AsciiToWide(szPassword, wsPassword);
 #else
         LPCWSTR wsUsername = szUsername;
         LPCWSTR wsPassword = szPassword;
@@ -459,8 +459,8 @@ apxCreateProcessA(APXHANDLE hPool, DWORD dwOptions,
     if (szUsername && szPassword) {
         WCHAR wsUsername[256];
         WCHAR wsPassword[256];
-        AsciiToWide(szUsername, wsUsername); 
-        AsciiToWide(szPassword, wsPassword); 
+        AsciiToWide(szUsername, wsUsername);
+        AsciiToWide(szPassword, wsPassword);
         return apxCreateProcessW(hPool, dwOptions, fnCallback,
                                  wsUsername, wsPassword, bLogonAsService);
     }
@@ -481,9 +481,9 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
     /* CreateProcessAsUser is supported only on NT */
     if (szUsername && (APX_GET_OSLEVEL() >= APX_WINVER_NT_4)) {
         HANDLE hUser;
-        if (!LogonUserW(szUsername, 
-                        NULL, 
-                        szPassword, 
+        if (!LogonUserW(szUsername,
+                        NULL,
+                        szPassword,
                         bLogonAsService ? LOGON32_LOGON_SERVICE : LOGON32_LOGON_NETWORK,
                         LOGON32_PROVIDER_DEFAULT,
                         &hUser)) {
@@ -491,8 +491,8 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
             ErrorMessage(NULL, TRUE);
             return NULL;
         }
-        if (!DuplicateTokenEx(hUser, 
-                              TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY, 
+        if (!DuplicateTokenEx(hUser,
+                              TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY,
                               NULL,
                               SecurityImpersonation,
                               TokenPrimary,
@@ -534,7 +534,7 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
                     &lpProc->hCurrentProcess,
                     PROCESS_ALL_ACCESS,
                     FALSE,
-                    0); 
+                    0);
 #else
     lpProc->hCurrentProcess = GetCurrentProcess();
 #endif
@@ -551,7 +551,7 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
     return hProcess;
 }
 
-static WCHAR _desktop_name[] = 
+static WCHAR _desktop_name[] =
     {'W', 'i', 'n', 's', 't', 'a', '0', '\\', 'D', 'e', 'f', 'a', 'u', 'l', 't', 0};
 
 BOOL
@@ -564,7 +564,7 @@ apxProcessExecute(APXHANDLE hProcess)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     /* don't allow multiple execute calls on the same object */
     if (lpProc->dwChildStatus & PROC_INITIALIZED)
@@ -582,7 +582,7 @@ apxProcessExecute(APXHANDLE hProcess)
     /* Set the redirected handles */
     si.hStdOutput = lpProc->hChildStdOut;
     si.hStdError  = lpProc->hChildStdErr;
-    si.hStdInput  = lpProc->hChildStdInp;  
+    si.hStdInput  = lpProc->hChildStdInp;
 
     if (lpProc->lpEnvironment)
         FreeEnvironmentStringsW(lpProc->lpEnvironment);
@@ -618,7 +618,7 @@ apxProcessExecute(APXHANDLE hProcess)
                             &(lpProc->stProcInfo));
     }
     /* Close unused sides of pipes */
-    SAFE_CLOSE_HANDLE(lpProc->hChildStdInp);  
+    SAFE_CLOSE_HANDLE(lpProc->hChildStdInp);
     SAFE_CLOSE_HANDLE(lpProc->hChildStdOut);
     SAFE_CLOSE_HANDLE(lpProc->hChildStdErr);
     if (!bS)
@@ -627,10 +627,10 @@ apxProcessExecute(APXHANDLE hProcess)
     lpProc->dwChildStatus |= (CHILD_RUNNING | PROC_INITIALIZED);
 
     lpProc->hWorkerThreads[0] = CreateThread(NULL, 0, __apxProcStdoutThread,
-                                             hProcess, 0, &id);     
+                                             hProcess, 0, &id);
     lpProc->hWorkerThreads[1] = CreateThread(NULL, 0, __apxProcStderrThread,
-                                             hProcess, 0, &id);     
-    ResumeThread(lpProc->stProcInfo.hThread);    
+                                             hProcess, 0, &id);
+    ResumeThread(lpProc->stProcInfo.hThread);
     lpProc->hWorkerThreads[2] = CreateThread(NULL, 0, __apxProcWorkerThread,
                                             hProcess, 0, &id);
 
@@ -638,8 +638,8 @@ apxProcessExecute(APXHANDLE hProcess)
     /* Close child handles first */
     return TRUE;
 cleanup:
-    /* Close parent side of the pipes */    
-    SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);  
+    /* Close parent side of the pipes */
+    SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
     SAFE_CLOSE_HANDLE(lpProc->hChildOutRd);
     SAFE_CLOSE_HANDLE(lpProc->hChildErrRd);
 
@@ -653,7 +653,7 @@ apxProcessSetExecutableA(APXHANDLE hProcess, LPCSTR szName)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szApplicationExec);
     lpProc->szApplicationExec = apxPoolWStrdupA(hProcess->hPool, szName);
@@ -668,7 +668,7 @@ apxProcessSetExecutableW(APXHANDLE hProcess, LPCWSTR szName)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szApplicationExec);
     lpProc->szApplicationExec = apxPoolStrdupW(hProcess->hPool, szName);
@@ -683,11 +683,11 @@ apxProcessSetCommandLineA(APXHANDLE hProcess, LPCSTR szCmdline)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szCommandLine);
     lpProc->szCommandLine = apxPoolWStrdupA(hProcess->hPool, szCmdline);
-    
+
     return lpProc->szCommandLine != NULL;
 }
 
@@ -698,11 +698,11 @@ apxProcessSetCommandLineW(APXHANDLE hProcess, LPCWSTR szCmdline)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szCommandLine);
     lpProc->szCommandLine = apxPoolStrdupW(hProcess->hPool, szCmdline);
-    
+
     return lpProc->szCommandLine != NULL;
 }
 
@@ -713,11 +713,11 @@ apxProcessSetWorkingPathA(APXHANDLE hProcess, LPCSTR szPath)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szWorkingPath);
     lpProc->szWorkingPath = apxPoolWStrdupA(hProcess->hPool, szPath);
-    
+
     return lpProc->szWorkingPath != NULL;
 }
 
@@ -728,7 +728,7 @@ apxProcessSetWorkingPathW(APXHANDLE hProcess, LPCWSTR szPath)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szWorkingPath);
     if (!szPath) {
@@ -737,7 +737,7 @@ apxProcessSetWorkingPathW(APXHANDLE hProcess, LPCWSTR szPath)
         return TRUE;
     }
     lpProc->szWorkingPath = apxPoolWStrdupW(hProcess->hPool, szPath);
-    
+
     return lpProc->szWorkingPath != NULL;
 }
 
@@ -748,7 +748,7 @@ apxProcessPutcA(APXHANDLE hProcess, INT ch)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return 0;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     return __apxProcessPutc(lpProc, ch, sizeof(CHAR));
 }
@@ -760,7 +760,7 @@ apxProcessPutcW(APXHANDLE hProcess, INT ch)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return 0;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     return __apxProcessPutc(lpProc, ch, sizeof(WCHAR));
 }
@@ -807,7 +807,7 @@ apxProcessWrite(APXHANDLE hProcess, LPCVOID lpData, DWORD dwLen)
     LPAPXPROCESS lpProc;
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return 0;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
 
     return __apxProcessWrite(lpProc, lpData, dwLen);
@@ -820,13 +820,13 @@ apxProcessFlushStdin(APXHANDLE hProcess)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
-    
+
     if (lpProc->dwChildStatus & CHILD_RUNNING) {
         return FlushFileBuffers(lpProc->hChildInpWr);
     }
-    
+
     return FALSE;
 }
 
@@ -847,9 +847,9 @@ apxProcessWait(APXHANDLE hProcess, DWORD dwMilliseconds, BOOL bKill)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return WAIT_ABANDONED;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
-    
+
     if (lpProc->dwChildStatus & CHILD_RUNNING) {
         DWORD rv = WaitForMultipleObjects(3, lpProc->hWorkerThreads,
                                           TRUE, dwMilliseconds);
@@ -869,10 +869,23 @@ apxProcessRunning(APXHANDLE hProcess)
 
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
-    
-    return (lpProc->dwChildStatus & CHILD_RUNNING);    
+
+    return (lpProc->dwChildStatus & CHILD_RUNNING);
+}
+
+DWORD
+apxProcessGetPid(APXHANDLE hProcess)
+{
+   LPAPXPROCESS lpProc;
+
+    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
+        return 0;
+
+    lpProc = APXHANDLE_DATA(hProcess);
+
+    return lpProc->stProcInfo.dwProcessId;
 }
 
 static LPWSTR __apxStrQuote(LPWSTR lpDest, LPCWSTR szSrc)
@@ -880,7 +893,7 @@ static LPWSTR __apxStrQuote(LPWSTR lpDest, LPCWSTR szSrc)
     LPWSTR p;
     BOOL   space = FALSE, quote = FALSE;
 
-    /* Find if string has embeded spaces, add quotes only if no quotes found 
+    /* Find if string has embeded spaces, add quotes only if no quotes found
      */
     for (p = (LPWSTR)szSrc; *p; p++) {
         if (*p == L' ' || *p == '\t') {
@@ -907,13 +920,13 @@ apxProcessSetCommandArgsW(APXHANDLE hProcess, LPCWSTR szTitle,
     LPWSTR p;
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return FALSE;
-    
+
     lpProc = APXHANDLE_DATA(hProcess);
     apxFree(lpProc->szCommandLine);
-    
+
     l = lstrlenW(szTitle) + 3;
     for (i = 0; i < dwArgc; i++) {
-        int x, q = 0;
+        int q = 0;
         l += (lstrlenW(lpArgs[i]) + 3);
         l += q;
     }

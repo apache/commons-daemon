@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-/* Logfile handling 
+
+/* Logfile handling
  * Use Systemdir/Logfiles/Apache as a default path
  */
 
@@ -54,7 +54,8 @@ LPWSTR apxLogFile(
     APXHANDLE hPool,
     LPCWSTR szPath,
     LPCWSTR szPrefix,
-    LPCWSTR szName
+    LPCWSTR szName,
+    BOOL bTimeStamp
 );
 
 HANDLE apxLogOpen(

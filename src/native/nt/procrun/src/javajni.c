@@ -183,10 +183,10 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
                                               LOAD_WITH_ALTERED_SEARCH_PATH);
 
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
-        WCHAR  jreBinPath[1024];
+        WCHAR  jreBinPath[SIZ_PATHLEN];
         DWORD  i, l = 0;
 
-        lstrlcpyW(jreBinPath, 1024, dllJvmPath);
+        lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
         DYNLOAD_FPTR_ADDRESS(SetDllDirectoryW, KERNEL32);
         for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
             if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
@@ -375,12 +375,12 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
 BOOL
 apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                   LPCVOID lpOptions, DWORD dwMs, DWORD dwMx,
-                  DWORD dwSs)
+                  DWORD dwSs, DWORD bJniVfprintf)
 {
     LPAPXJAVAVM     lpJava;
     JavaVMInitArgs  vmArgs;
     JavaVMOption    *lpJvmOptions;
-    DWORD           i, nOptions, sOptions = 2;
+    DWORD           i, nOptions, sOptions = 1;
     BOOL            rv = FALSE;
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         return FALSE;
@@ -408,6 +408,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         rv = TRUE;
     }
     else {
+        int   o = 0;
         CHAR  iB[3][64];
         LPSTR szCp;
         lpJava->iVersion = JNI_VERSION_DEFAULT;
@@ -417,6 +418,8 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (dwSs)
             ++sOptions;
+        if (bJniVfprintf)
+            ++sOptions;
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
         szCp = apxPoolAlloc(hJava->hPool, sizeof(JAVA_CLASSPATH) + lstrlenA(szClassPath));
@@ -424,27 +427,33 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         lstrcatA(szCp, szClassPath);
         lpJvmOptions[nOptions - sOptions].optionString = szCp;
         --sOptions;
-        /* default JNI error printer */
-        lpJvmOptions[nOptions - sOptions].optionString = "vfprintf";
-        lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniVfprintf;
-        --sOptions;
+        if (bJniVfprintf) {
+            /* default JNI error printer */
+            lpJvmOptions[nOptions - sOptions].optionString = "vfprintf";
+            lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniVfprintf;
+            --sOptions;
+            apxLogWrite(APXLOG_MARK_DEBUG "Adding JNI vfprintf hook");
+        }
         if (dwMs) {
             wsprintfA(iB[0], "-Xms%dm", dwMs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[0];
             --sOptions;
+            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++, iB[0]);
         }
         if (dwMx) {
             wsprintfA(iB[1], "-Xmx%dm", dwMx);
             lpJvmOptions[nOptions - sOptions].optionString = iB[1];
             --sOptions;
+            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++, iB[1]);
         }
         if (dwSs) {
             wsprintfA(iB[2], "-Xss%dk", dwSs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[2];
             --sOptions;
+            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++, iB[2]);
         }
         for (i = 0; i < nOptions; i++) {
-            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", i,
+            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++,
                         lpJvmOptions[i].optionString);
         }
         vmArgs.options  = lpJvmOptions;

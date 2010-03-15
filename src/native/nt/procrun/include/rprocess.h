@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _RPROCESS_H_INCLUDED_
 #define _RPROCESS_H_INCLUDED_
 
@@ -69,6 +69,7 @@ DWORD       apxProcessWait(APXHANDLE hProcess, DWORD dwMilliseconds,
                            BOOL bKill);
 
 BOOL        apxProcessRunning(APXHANDLE hProcess);
+DWORD       apxProcessGetPid(APXHANDLE hProcess);
 
 
 __APXEND_DECLS
