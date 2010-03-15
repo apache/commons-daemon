@@ -40,13 +40,26 @@ static jclass cls  = NULL;
 #define FALSE 0
 #define TRUE !FALSE
 
-static void shutdown(JNIEnv * env, jobject source, jboolean reload)
+static void shutdown(JNIEnv *env, jobject source, jboolean reload)
 {
     log_debug("Shutdown requested (reload is %d)", reload);
     if (reload == TRUE)
         main_reload();
     else
         main_shutdown();
+}
+
+static void failed(JNIEnv *env, jobject source, jstring message)
+{
+    if (message) {
+        const char *msg = (*env)->GetStringUTFChars(env, message, NULL);
+        log_error("Failed %s", msg ? msg : "(null)");
+        if (msg)
+            (*env)->ReleaseStringUTFChars(env, message, msg);
+    }
+    else
+        log_error("Failed requested");
+    main_shutdown();
 }
 
 /* Automatically restart when the JVM crashes */
@@ -98,7 +111,7 @@ bool java_init(arg_data *args, home_data *data)
     struct stat sb;
 #endif /* ifdef OS_DARWIN */
     jint(*symb) (JavaVM **, JNIEnv **, JavaVMInitArgs *);
-    JNINativeMethod nativemethod;
+    JNINativeMethod nativemethods[2];
     JavaVMOption *opt = NULL;
     dso_handle libh   = NULL;
     JavaVMInitArgs arg;
@@ -106,8 +119,10 @@ bool java_init(arg_data *args, home_data *data)
     jint ret;
     int x;
     char loaderclass[]    = LOADER;
-    char shutdownclass[]  = "shutdown";
+    char shutdownmethod[] = "shutdown";
     char shutdownparams[] = "(Z)V";
+    char failedmethod[]   = "failed";
+    char failedparams[]   = "(Ljava/lang/String;)V";
 
     /* Decide WHAT virtual machine we need to use */
     libf = java_library(args, data);
@@ -264,12 +279,18 @@ bool java_init(arg_data *args, home_data *data)
 #if defined(HAVE_SABLEVM)
     log_debug("sableVM doesn't support RegisterNatives");
 #else
-    jsvc_xlate_to_ascii(shutdownclass);
-    nativemethod.name = shutdownclass;
+    jsvc_xlate_to_ascii(shutdownmethod);
+    nativemethods[0].name = shutdownmethod;
     jsvc_xlate_to_ascii(shutdownparams);
-    nativemethod.signature = shutdownparams;
-    nativemethod.fnPtr = shutdown;
-    if ((*env)->RegisterNatives(env, cls, &nativemethod, 1) != 0) {
+    nativemethods[0].signature = shutdownparams;
+    nativemethods[0].fnPtr = shutdown;
+    jsvc_xlate_to_ascii(failedmethod);
+    nativemethods[1].name = failedmethod;
+    jsvc_xlate_to_ascii(failedparams);
+    nativemethods[1].signature = failedparams;
+    nativemethods[1].fnPtr = failed;
+
+    if ((*env)->RegisterNatives(env, cls, nativemethods, 2) != 0) {
         log_error("Cannot register native methods");
         return false;
     }

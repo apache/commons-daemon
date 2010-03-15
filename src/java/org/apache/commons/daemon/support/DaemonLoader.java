@@ -15,8 +15,6 @@
  *  limitations under the License.
  */
 
-/* @version $Id$ */
-
 package org.apache.commons.daemon.support;
 
 import org.apache.commons.daemon.DaemonContext;
@@ -24,6 +22,11 @@ import org.apache.commons.daemon.DaemonController;
 
 import java.lang.reflect.Method;
 
+/*
+ * Used by jsvc for Daemon management.
+ *
+ * @version 1.0 <i>(SVN $Revision$)</i>
+ */
 public final class DaemonLoader
 {
 
@@ -246,6 +249,7 @@ public final class DaemonLoader
     }
 
     private static native void shutdown(boolean reload);
+    private static native void failed(String message);
 
     public static class Controller
         implements DaemonController
@@ -304,21 +308,40 @@ public final class DaemonLoader
         public void fail()
             throws IllegalStateException
         {
+            fail(null, null);
         }
 
         public void fail(String message)
             throws IllegalStateException
         {
+            fail(message, null);
         }
 
         public void fail(Exception exception)
             throws IllegalStateException
         {
+            fail(null, exception);
         }
 
         public void fail(String message, Exception exception)
             throws IllegalStateException
         {
+            synchronized (this) {
+                if (!this.isAvailable()) {
+                    throw new IllegalStateException();
+                }
+                else {
+                    this.setAvailable(false);
+                    String msg = message;
+                    if (exception != null) {
+                        if (msg != null)
+                            msg = msg + ": " + exception.toString();
+                        else
+                            msg = exception.toString();
+                    }
+                    DaemonLoader.failed(msg);
+                }
+            }
         }
 
     }
