@@ -102,34 +102,37 @@ LPAPXCMDLINE apxCmdlineParse(
             *p = L'\0';
         }
     }
-    if (lpszCommands && _st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 5) {
-        if (_st_sys_argvw[1][0] == L'/' &&
-            _st_sys_argvw[1][1] == L'/' &&
-            _st_sys_argvw[1][5] == L'/') { /* allow max tree char command */
-            l = 2;
-            while (_st_sys_argvw[1][l] != L'/') {
-                cmd[l - 2] = _st_sys_argvw[1][l];
+    if (lpszCommands && _st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 2) {
+        LPWSTR ca = _st_sys_argvw[1];
+        if (ca[0] == L'/' && ca[1] == L'/') {
+            l   = 0;
+            ca += 2;
+            while (*ca && *ca != L'/') {
+                cmd[l] = *ca;
                 if (l++ > 3)
                     break;
+                ca++;
             }
-            cmd[l - 2] = L'\0';
+            cmd[l] = L'\0';
             while (lpszCommands[i]) {
                 if (lstrcmpW(lpszCommands[i++], cmd) == 0) {
                     lpCmdline->dwCmdIndex = i;
-                    s = 2;
                     break;
                 }
             }
             if (lpCmdline->dwCmdIndex) {
-                _st_sys_argvw[1][l+1] = L'\0';
-                lpCmdline->szApplication = &(_st_sys_argvw[1][l+2]);
-                if (!lstrlenW(lpCmdline->szApplication))
+                while (*ca == '/')
+                    *(ca++) = L'\0';
+                if (*ca == '\0')
                     lpCmdline->szApplication = _st_sys_argvw[0];
+                else
+                    lpCmdline->szApplication = ca;
             }
             else {
-                apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %s", cmd);
-                s = 2;
+                apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %S",
+                            _st_sys_argvw[1]);
             }
+            s = 2;
         }
     }
     else {

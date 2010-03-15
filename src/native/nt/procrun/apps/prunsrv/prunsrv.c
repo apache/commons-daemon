@@ -74,6 +74,7 @@ static LPCWSTR _commands[] = {
     L"US",      /* 4 Update Service parameters */
     L"IS",      /* 5 Install Service */
     L"DS",      /* 6 Delete Service */
+    L"?",       /* 7 Help */
     NULL
 };
 
@@ -303,23 +304,27 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
 }
 
 /* Debugging functions */
-static void printUsage(LPAPXCMDLINE lpCmdline)
+static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
 {
     int i = 0;
     fwprintf(stderr, L"Usage: %s //CMD//Servce [--options]\n",
              lpCmdline->szExecutable);
     fwprintf(stderr, L"  Commands:\n");
-    fwprintf(stderr, L"  //IS//ServiceName  Install Service\n");
-    fwprintf(stderr, L"  //US//ServiceName  Update Service parameters\n");
-    fwprintf(stderr, L"  //DS//ServiceName  Delete Service\n");
-    fwprintf(stderr, L"  //RS//ServiceName  Run Service\n");
-    fwprintf(stderr, L"  //SS//ServiceName  Stop Service\n");
-    fwprintf(stderr, L"  //TS//ServiceName  Run Service as console application\n");
+    if (isHelp)
+        fwprintf(stderr, L"  //?                  This page\n");        
+    fwprintf(stderr, L"  //IS[//ServiceName]  Install Service\n");
+    fwprintf(stderr, L"  //US[//ServiceName]  Update Service parameters\n");
+    fwprintf(stderr, L"  //DS[//ServiceName]  Delete Service\n");
+    fwprintf(stderr, L"  //RS[//ServiceName]  Run Service\n");
+    fwprintf(stderr, L"  //SS[//ServiceName]  Stop Service\n");
+    fwprintf(stderr, L"  //TS[//ServiceName]  Run Service as console application\n");
     fwprintf(stderr, L"  Options:\n");
     while (_options[i].szName) {
         fwprintf(stderr, L"  --%s\n", _options[i].szName);
         ++i;
     }
+    fwprintf(stderr, L"\nCommons Daemon Service Runner version %S\n", PRG_VERSION);    
+    fwprintf(stderr, L"Copyright (c) 2000-2010 The Apache Software Foundation.\n");
 }
 
 /* Display configuration parameters */
@@ -1425,10 +1430,13 @@ void __cdecl main(int argc, char **argv)
             if (!docmdDeleteService(lpCmdline))
                 rv = 8;
         break;
+        case 7: /* Help. Print version and exit */
+            printUsage(lpCmdline, TRUE);            
+        break;
         default:
             /* Unknown command option */
             apxLogWrite(APXLOG_MARK_ERROR "Unknown command line option");
-            printUsage(lpCmdline);
+            printUsage(lpCmdline, FALSE);
             rv = 99;
         break;
     }
