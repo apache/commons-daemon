@@ -1,6 +1,10 @@
 APACHE COMMONS DAEMON (UNIX) CHANGELOG:
 Last modified at [$Date$]
 
+Changes with 1.0.3
+  * Implement fail() method (DAEMON-128)
+  * Add missing Java6 parameters (DAEMON-140)
+
 Changes with 1.0.2
   * Allow support for OS/X 10.6 (DAEMON-129)
   * Prunmgr shows wrong default logging level (DAEMON-132)
