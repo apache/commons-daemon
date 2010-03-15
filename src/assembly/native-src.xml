@@ -36,6 +36,8 @@
             <excludes>
                 <exclude>**/*.sh</exclude>
                 <exclude>configure</exclude>
+                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <exclude>"**/*.formatted"</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -47,6 +49,10 @@
                 <include>**/*.sh</include>
                 <include>configure</include>
             </includes>
+            <excludes>
+                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <exclude>"**/*.formatted"</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/native/nt/procrun</directory>
@@ -55,6 +61,8 @@
             <excludes>
                 <exclude>**/*.ico</exclude>
                 <exclude>**/*.bmp</exclude>
+                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <exclude>"**/*.formatted"</exclude>
             </excludes>
             <fileMode>664</fileMode>
         </fileSet>
