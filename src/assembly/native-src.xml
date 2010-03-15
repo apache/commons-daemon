@@ -37,7 +37,7 @@
                 <exclude>**/*.sh</exclude>
                 <exclude>configure</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
-                <exclude>"**/*.formatted"</exclude>
+                <exclude>**/*.formatted</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -51,7 +51,7 @@
             </includes>
             <excludes>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
-                <exclude>"**/*.formatted"</exclude>
+                <exclude>**/*.formatted</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -62,7 +62,7 @@
                 <exclude>**/*.ico</exclude>
                 <exclude>**/*.bmp</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
-                <exclude>"**/*.formatted"</exclude>
+                <exclude>**/*.formatted</exclude>
             </excludes>
             <fileMode>664</fileMode>
         </fileSet>
@@ -73,6 +73,10 @@
                 <include>**/*.ico</include>
                 <include>**/*.bmp</include>
             </includes>
+            <excludes>
+                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <exclude>**/*.formatted</exclude>
+            </excludes>
             <fileMode>664</fileMode>
         </fileSet>
     </fileSets>
