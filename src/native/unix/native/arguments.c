@@ -43,27 +43,30 @@ static arg_data *parse(int argc, char *argv[])
     /* Create the default command line arguments */
     args = (arg_data *)malloc(sizeof(arg_data));
     args->pidf = "/var/run/jsvc.pid"; /* The default PID file */
-    args->user = NULL;            /* No user switching by default */
-    args->dtch = true;            /* Do detach from parent */
-    args->vers = false;           /* Don't display version */
-    args->help = false;           /* Don't display help */
-    args->chck = false;           /* Don't do a check-only startup */
-    args->stop = false;           /* Stop a running jsvc */
-    args->wait = 0;               /* Wait until jsvc has started the JVM */
+    args->user    = NULL;         /* No user switching by default */
+    args->dtch    = true;         /* Do detach from parent */
+    args->vers    = false;        /* Don't display version */
+    args->help    = false;        /* Don't display help */
+    args->chck    = false;        /* Don't do a check-only startup */
+    args->stop    = false;        /* Stop a running jsvc */
+    args->wait    = 0;            /* Wait until jsvc has started the JVM */
     args->install = false;        /* Don't install as a service */
     args->remove  = false;        /* Don't remove the installed service */
     args->service = false;        /* Don't run as a service */
     args->name    = NULL;         /* No VM version name */
     args->home    = NULL;         /* No default JAVA_HOME */
     args->onum    = 0;            /* Zero arguments, but let's have some room */
-    args->opts = (char **)malloc(argc * sizeof(char *));
     args->clas    = NULL;         /* No class predefined */
     args->anum    = 0;            /* Zero class specific arguments but make room*/
     args->outfile = "/dev/null";   /* Swallow by default */
     args->errfile = "/dev/null";   /* Swallow by default */
     args->redirectstdin = true;    /* Redirect stdin to /dev/null by default */
-    args->args = (char **)malloc(argc*sizeof(char *));
     args->procname = "jsvc.exec";
+
+    if (!(args->args = (char **)malloc(argc * sizeof(char *))))
+        return NULL;
+    if (!(args->opts = (char **)malloc(argc * sizeof(char *))))
+        return NULL;
 
     /* Set up the command name */
     cmnd = strrchr(argv[0],'/');
@@ -78,7 +81,7 @@ static arg_data *parse(int argc, char *argv[])
 
         if (!strcmp(argv[x], "-cp") ||
             !strcmp(argv[x], "-classpath")) {
-            temp = optional(argc,argv,x++);
+            temp = optional(argc, argv, x++);
             if (temp == NULL) {
                 log_error("Invalid classpath specified");
                 return NULL;
@@ -90,21 +93,21 @@ static arg_data *parse(int argc, char *argv[])
 
         }
         else if (!strcmp(argv[x], "-jvm")) {
-            args->name = optional(argc,argv,x++);
+            args->name = optional(argc, argv, x++);
             if (args->name == NULL) {
                 log_error("Invalid Java VM name specified");
                 return NULL;
             }
         }
         else if (!strcmp(argv[x], "-home")) {
-            args->home = optional(argc,argv,x++);
+            args->home = optional(argc, argv, x++);
             if (args->home == NULL) {
                 log_error("Invalid Java Home specified");
                 return NULL;
             }
         }
         else if (!strcmp(argv[x], "-user")) {
-            args->user = optional(argc,argv,x++);
+            args->user = optional(argc, argv, x++);
             if (args->user == NULL) {
                 log_error("Invalid user name specified");
                 return NULL;
@@ -113,6 +116,9 @@ static arg_data *parse(int argc, char *argv[])
         else if (!strcmp(argv[x], "-version")) {
             args->vers = true;
             args->dtch = false;
+        }
+        else if (!strcmp(argv[x], "-showversion")) {
+            args->vershow = true;
         }
         else if (!strcmp(argv[x], "-?") ||
                  !strcmp(argv[x], "-help") ||
@@ -160,7 +166,7 @@ static arg_data *parse(int argc, char *argv[])
             args->remove = true;
         }
         else if (!strcmp(argv[x], "-pidfile")) {
-            args->pidf = optional(argc,argv,x++);
+            args->pidf = optional(argc, argv, x++);
             if (args->pidf == NULL) {
                 log_error("Invalid PID file specified");
                 return NULL;
@@ -180,11 +186,11 @@ static arg_data *parse(int argc, char *argv[])
                 return NULL;
             }
         }
-        else if (strstr(argv[x], "-verbose") == argv[x]) {
+        else if (!strncmp(argv[x], "-verbose", 8)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
 #ifdef HAVE_KAFFEVM
-        else if (strstr(argv[x], "-vmdebug") == argv[x]) {
+        else if (!strncmp(argv[x], "-vmdebug", 8)) {
             args->opts[args->onum++] = strdup(argv[x]);
             temp = optional(argc,argv,x++);
             if (temp == NULL) {
@@ -198,7 +204,7 @@ static arg_data *parse(int argc, char *argv[])
             log_error("Parameter -D must be followed by <name>=<value>");
             return NULL;
         }
-        else if (strstr(argv[x], "-D") == argv[x]) {
+        else if (!strncmp(argv[x], "-D", 2)) {
             temp = strchr(argv[x], '=');
             if (temp == argv[x] + 2) {
                 log_error("A property name must be specified before '='");
@@ -206,10 +212,31 @@ static arg_data *parse(int argc, char *argv[])
             }
             args->opts[args->onum++] = strdup(argv[x]);
         }
-        else if (strstr(argv[x], "-X") == argv[x]) {
+        else if (!strncmp(argv[x], "-X", 2)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
-        else if (strstr(argv[x], "-ea") == argv[x]) {
+        else if (!strncmp(argv[x], "-ea", 3)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "-enableassertions", 17)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "-da", 3)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "-disableassertions", 18)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strcmp(argv[x], "-esa")) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strcmp(argv[x], "-enablesystemassertions")) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strcmp(argv[x], "-dsa")) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strcmp(argv[x], "-disablesystemassertions")) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
         else if (!strcmp(argv[x], "-procname")) {
@@ -219,13 +246,13 @@ static arg_data *parse(int argc, char *argv[])
               return NULL;
             }
         }
-        else if (strstr(argv[x], "-agentlib:") == argv[x]) {
+        else if (!strncmp(argv[x], "-agentlib:", 10)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
-        else if (strstr(argv[x], "-agentpath:") == argv[x]) {
+        else if (!strncmp(argv[x], "-agentpath:", 11)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
-        else if (strstr(argv[x], "-javaagent:") == argv[x]) {
+        else if (!strncmp(argv[x], "-javaagent:", 11)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
         else if (*argv[x] == '-') {

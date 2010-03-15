@@ -584,6 +584,12 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
         else
             return 0;
     }
+    /* Check wether we need to dump the VM version */
+    else if (args->vershow == true) {
+        if (java_version() != true) {
+            return 7;
+        }
+    }
 
     /* Do we have to do a "check-only" initialization? */
     if (args->chck == true) {

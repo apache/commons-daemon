@@ -49,6 +49,8 @@ typedef struct {
     bool dtch;
     /** Wether to print the VM version number or not. */
     bool vers;
+    /** Show the VM version and continue. */
+    bool vershow;
     /** Wether to display the help page or not. */
     bool help;
     /** Only check environment without running the service. */
