@@ -111,6 +111,8 @@ Usage: jsvc [-options] class [args...]
 
 Where options include:
 
+    -help | --help | -?
+        show this help page (implies -nodetach)
     -jvm &lt;JVM name&gt;
         use a specific Java Virtual Machine. Available JVMs:
             'client' 'server'
@@ -122,8 +124,9 @@ Where options include:
     -version
         show the current Java environment version (to check
         correctness of -home and -jvm. Implies -nodetach)
-    -help / -?
-        show this help page (implies -nodetach)
+    -showversion
+        show the current Java environment version (to check
+        correctness of -home and -jvm) and continue execution.
     -nodetach
         don't detach from parent process and become a daemon
     -debug
@@ -136,7 +139,7 @@ Where options include:
         enable verbose output
     -outfile &lt;/full/path/to/file&gt;
         Location for output from stdout (defaults to /dev/null)
-        Use the value '&amp;2' to simulate '1&gt;&amp;2'
+        Use the value '&amp;2' to simulate '1&gt;&mp;2'
     -errfile &lt;/full/path/to/file&gt;
         Location for output from stderr (defaults to /dev/null)
         Use the value '&amp;1' to simulate '2&gt;&amp;1'
@@ -147,13 +150,31 @@ Where options include:
         set a Java system property
     -X&lt;option&gt;
         set Virtual Machine specific option
-    -procname &lt;process name&gt;
-        Allows the process name to be configured on Linux
+    -ea[:&lt;packagename&gt;...|:&lt;classname&gt;]
+    -enableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+        enable assertions
+    -da[:&lt;packagename&gt;...|:&lt;classname&gt;]
+    -disableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+        disable assertions
+    -esa | -enablesystemassertions
+        enable system assertions
+    -dsa | -disablesystemassertions
+        disable system assertions
+    -agentlib:&lt;libname&gt;[=&lt;options&gt;]
+        load native agent library &lt;libname&gt;, e.g. -agentlib:hprof
+    -agentpath:&lt;pathname&gt;[=&lt;options&gt;]
+        load native agent library by full pathname
+    -javaagent:&lt;jarpath&gt;[=&lt;options&gt;]
+        load Java programming language agent, see java.lang.instrument
+    -procname &lt;procname&gt;
+        use the specified process name (works only for Linux)
     -wait &lt;waittime&gt;
         wait waittime seconds for the service to start
         waittime should multiple of 10 (min=10)
     -stop
         stop the service using the file given in the -pidfile option
+    -keepstdin
+        does not redirect stdin to /dev/null
 
 </source>
 </p>

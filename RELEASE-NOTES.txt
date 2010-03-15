@@ -18,6 +18,8 @@ NEW FEATURES:
 * DAEMON-138: Add --PidFile option to allow storing running process id. (1.0.3)
 * DAEMON-137: Add --LogJniMessages allowing to configure JNI verbose message
               logging. By default those messages were always logged. (1.0.3)
+* DAEMON-140: Add missing Java6 parameters -ea, da, -esa, -dsa, -showversion
+              and their long name synonyms. (1.0.3)
 
 * Add -wait and -stop parameters. (1.0.1).
   The -wait parameter is experimental: that a is loop testing for a
