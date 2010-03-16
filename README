@@ -11,17 +11,18 @@ To build the native part:
   There is a INSTALL.txt src/native/unix - please have a look at it.
 
   On Windows an additional step is needed:
-  cd src/native/nt; make
-  There is a README in src/native/nt - please have a look at it.
+  cd src/native/windows; make
+  There is a README in src/native/windows - please have a look at it.
   The exe files are created in dist.
 2 - procrun:
   procrun is only for windows
-  cd src\native\nt\procrun\apps
+  cd src\native\windows\procrun\apps
   cd prunsrv
   nmake -f prunsrv.x86 (prunsrv.amd64 | prunsrv.ia64)
   cd ..\prunmgr
   nmake -f prunmgs.x86
   (It is also possible to use the MS development tools).
+[Note: the directory in SVN is currently called src/native/nt, not src/native/windows]
 
 To build the documentation: (See http://commons.apache.org/building.html).
 maven site:generate
