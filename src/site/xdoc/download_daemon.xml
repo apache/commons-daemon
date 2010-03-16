@@ -108,6 +108,10 @@ limitations under the License.
               <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.3-bin.zip.md5">md5</a></td>
               <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.3-bin.zip.asc">pgp</a></td>
           </tr>
+          <tr>
+              <td><a href="[preferred]/commons/daemon/binaries/1.0.2/">commons-daemon-1.0.2-bin.zip</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/1.0.2/">md5</a></td>            
+          </tr>
         </table>
       </subsection>
       <subsection name="Source">
