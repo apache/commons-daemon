@@ -43,7 +43,7 @@ static BOOL __apxIsValidServiceName(LPCWSTR szServiceName)
 {
     do {
         if (!IsCharAlphaNumericW(*szServiceName)) {
-            apxDisplayError(TRUE, NULL, 0, "NonAlpha %d", *szServiceName);
+            apxDisplayError(FALSE, NULL, 0, "NonAlpha %d", *szServiceName);
             return FALSE;
         }
     } while( *(++szServiceName));
@@ -524,8 +524,6 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
 
     if (IS_INVALID_HANDLE(lpService->hService)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
-
-        ErrorMessage(NULL, FALSE);
         return FALSE;
     }
     else {
@@ -591,7 +589,6 @@ apxServiceBrowse(APXHANDLE hService,
     if (IS_INVALID_HANDLE(hLock)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
 
-        ErrorMessage(NULL, FALSE);
         return 0;
     }
     AplZeroMemory(&stEnum, sizeof(APXREGENUM));

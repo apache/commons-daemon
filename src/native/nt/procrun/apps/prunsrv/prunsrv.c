@@ -319,6 +319,8 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
     fwprintf(stderr, L"  //RS[//ServiceName]  Run Service\n");
     fwprintf(stderr, L"  //SS[//ServiceName]  Stop Service\n");
     fwprintf(stderr, L"  //TS[//ServiceName]  Run Service as console application\n");
+    fwprintf(stderr, L"  //PP[//Num Seconds]  Sleep for n Seconds (defaults to 60)\n");
+    fwprintf(stderr, L"  //VS                 Display version\n");
     fwprintf(stderr, L"  Options:\n");
     while (_options[i].szName) {
         fwprintf(stderr, L"  --%s\n", _options[i].szName);
@@ -608,7 +610,7 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
                     lpCmdline->szApplication);
     }
     else {
-        apxDisplayError(TRUE, NULL, 0, "Unable to delete %S service",
+        apxDisplayError(FALSE, NULL, 0, "Unable to delete %S service",
                         lpCmdline->szApplication);
     }
     apxCloseHandle(hService);
@@ -646,7 +648,7 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
 
     }
     else
-        apxDisplayError(TRUE, NULL, 0, "Unable to open %S service",
+        apxDisplayError(FALSE, NULL, 0, "Unable to open %S service",
                         lpCmdline->szApplication);
     apxCloseHandle(hService);
     apxLogWrite(APXLOG_MARK_INFO "Stop service finished.");
@@ -661,13 +663,23 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_INFO "Updating service...");
 
     hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
-    if (IS_INVALID_HANDLE(hService)) {
+    if (IS_INVALID_HANDLE(hService)) {        
         apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
         return FALSE;
     }
     SetLastError(0);
     /* Open the service */
-    if (apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
+    if (!apxServiceOpen(hService, lpCmdline->szApplication, SERVICE_ALL_ACCESS)) {
+        /* Close the existing manager handler.
+         * It will be reopened inside install.
+         */
+        apxCloseHandle(hService);
+        /* In case service doesn't exist try to install it.
+         * Install will fail if there is no minimum parameters required.
+         */
+        return docmdInstallService(lpCmdline);
+    }
+    else {
         DWORD dwStart = SERVICE_NO_CHANGE;
         DWORD dwType  = SERVICE_NO_CHANGE;
         LPCWSTR su = NULL;
@@ -708,11 +720,6 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
                     lpCmdline->szApplication);
 
         rv = (rv && saveConfiguration(lpCmdline));
-    }
-    else {
-        apxDisplayError(TRUE, NULL, 0, "Unable to open %S service",
-                        lpCmdline->szApplication);
-        rv = FALSE;
     }
     apxCloseHandle(hService);
     apxLogWrite(APXLOG_MARK_INFO "Update service finished.");
@@ -1360,10 +1367,10 @@ void __cdecl main(int argc, char **argv)
 
     LPAPXCMDLINE lpCmdline;
 
-    if (argc > 1 && strncmp(argv[1], "//PP//", 6) == 0) {
+    if (argc > 1 && strncmp(argv[1], "//PP", 4) == 0) {
         /* Handy sleep routine defaulting to 1 minute */
         DWORD ss = 60;
-        if (argv[1][6]) {
+        if (argv[1][4] && argv[1][5] && argv[1][6]) {
              int us = atoi(argv[1] + 6);
              if (us > 0)
                 ss = (DWORD)us;
@@ -1382,12 +1389,14 @@ void __cdecl main(int argc, char **argv)
         rv = 1;
         goto cleanup;
     }
-    apxCmdlineLoadEnvVars(lpCmdline);
-    if (lpCmdline->dwCmdIndex < 5 &&
-        !loadConfiguration(lpCmdline)) {
-        apxLogWrite(APXLOG_MARK_ERROR "Load configuration failed");
-        rv = 2;
-        goto cleanup;
+    apxCmdlineLoadEnvVars(lpCmdline);    
+    if (lpCmdline->dwCmdIndex < 5) {
+        if (!loadConfiguration(lpCmdline) &&
+            lpCmdline->dwCmdIndex < 4) {
+            apxLogWrite(APXLOG_MARK_ERROR "Load configuration failed");
+            rv = 2;
+            goto cleanup;
+        }
     }
 
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX);
@@ -1456,7 +1465,11 @@ void __cdecl main(int argc, char **argv)
     }
 
 cleanup:
-    apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun finished.");
+    if (rv)
+        apxLogWrite(APXLOG_MARK_ERROR "Commons Daemon procrun failed "
+                                      "with exit value: %d", rv);
+    else
+        apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun finished");
     if (lpCmdline)
         apxCmdlineFree(lpCmdline);
     if (_service_status_handle)

@@ -261,38 +261,38 @@ static BOOL __apxProcCreateChildPipes(LPAPXPROCESS lpProc)
     if (!CreatePipe(&(lpProc->hChildStdInp),
                     &(lpProc->hChildInpWr),
                     lpProc->lpSA, 0)) {
-        ErrorMessage(NULL, FALSE);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         goto cleanup;
     }
     if (!SetHandleInformation(lpProc->hChildInpWr,
                               HANDLE_FLAG_INHERIT, 0)) {
-        ErrorMessage(NULL, FALSE);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         goto cleanup;
     }
 
     if (!CreatePipe(&(lpProc->hChildOutRd),
                     &(lpProc->hChildStdOut),
                     lpProc->lpSA, 0)) {
-        ErrorMessage(NULL, FALSE);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         goto cleanup;
     }
 
     if (!SetHandleInformation(lpProc->hChildOutRd,
                               HANDLE_FLAG_INHERIT, 0)) {
-        ErrorMessage(NULL, FALSE);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         goto cleanup;
     }
 
     if (!CreatePipe(&(lpProc->hChildErrRd),
                     &(lpProc->hChildStdErr),
                     lpProc->lpSA, 0)) {
-        ErrorMessage(NULL, FALSE);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         goto cleanup;
     }
 
     if (!SetHandleInformation(lpProc->hChildErrRd,
                               HANDLE_FLAG_INHERIT, 0)) {
-        ErrorMessage(NULL, FALSE);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         goto cleanup;
     }
     rv = TRUE;
@@ -488,7 +488,7 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
                         LOGON32_PROVIDER_DEFAULT,
                         &hUser)) {
             /* Logon Failed */
-            ErrorMessage(NULL, TRUE);
+            apxLogWrite(APXLOG_MARK_SYSERR);
             return NULL;
         }
         if (!DuplicateTokenEx(hUser,
@@ -499,14 +499,14 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
                               &hUserToken)) {
             CloseHandle(hUser);
             /* Failed to duplicate the user token */
-                ErrorMessage(NULL, TRUE);
+            apxLogWrite(APXLOG_MARK_SYSERR);
             return NULL;
         }
         if (!ImpersonateLoggedOnUser(hUserToken)) {
             CloseHandle(hUser);
             CloseHandle(hUserToken);
             /* failed to impersonate the logged user */
-                ErrorMessage(NULL, TRUE);
+            apxLogWrite(APXLOG_MARK_SYSERR);
             return NULL;
         }
         CloseHandle(hUser);

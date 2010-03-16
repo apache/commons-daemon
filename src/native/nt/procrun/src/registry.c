@@ -454,7 +454,7 @@ apxRegistryGetBinaryA(APXHANDLE hRegistry, DWORD dwFrom,
         DWORD rc, dwType = REG_BINARY;
         rc = RegQueryValueExA(hKey, szValueName, NULL, &dwType, lpData, lpdwLength);
         if (rc != ERROR_SUCCESS || dwType != REG_BINARY) {
-            ErrorMessage(NULL, FALSE);
+            apxLogWrite(APXLOG_MARK_SYSERR);
             return NULL;
         }
         lpReg->pCurrVal = lpData;

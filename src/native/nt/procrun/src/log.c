@@ -16,6 +16,7 @@
 
 #include "apxwin.h"
 #include "private.h"
+#include <stdio.h>
 
 #define LINE_SEP    "\n"
 #define LOGF_EXT    L".%04d-%02d-%02d.log"
@@ -257,10 +258,7 @@ apxLogWrite(
         if(f != szFile)
             f++;
     }
-    lstrlcpyA(buffer, 1056, _log_level[dwLevel]);
-    if (!dolock)
-        lstrlcatA(buffer, 1056, "\n");
-    szBp = &buffer[lstrlenA(buffer)];
+    szBp = &buffer[0];
     if (!szFormat) {
         FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
                        FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -299,12 +297,14 @@ apxLogWrite(
                           t.wHour, t.wMinute, t.wSecond);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
-            if (f) {
-                wsprintfA(sb, "[%-4d %s] ", dwLine, f);
+            WriteFile(lf->hFile, _log_level[dwLevel],
+                          strlen(_log_level[dwLevel]), &wr, NULL);
+            if (f && lf->dwLogLevel == APXLOG_LEVEL_DEBUG) {
+                wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
-
             WriteFile(lf->hFile, buffer, len, &wr, NULL);
+            
             /* Terminate the line */
             WriteFile(lf->hFile, LINE_SEP, sizeof(LINE_SEP) - 1, &wr, NULL);
 #ifdef _DEBUG_FULL
@@ -375,7 +375,15 @@ apxDisplayError(
                              sysbuf,
                              SIZ_DESLEN,
                              NULL);
-        sysbuf[len] = 0;
+        if (len > 0) {
+            sysbuf[len] = '\0';
+            if (sysbuf[len - 1] == '\n') {
+                sysbuf[len - 1] = '\0';
+                --len;
+            }
+        }
+        else
+            sysbuf[0] = '\0';
     }
     if (szFormat) {
         va_start(args, szFormat);
@@ -383,7 +391,7 @@ apxDisplayError(
         va_end(args);
         if (f) {
             CHAR sb[SIZ_PATHLEN];
-            wsprintfA(sb, "\n%s (%d)", f, dwLine);
+            wsprintfA(sb, "%s (%d)", f, dwLine);
             lstrcatA(sysbuf, sb);
         }
         lstrlcatA(sysbuf, SIZ_HUGLEN, "\n");
@@ -393,10 +401,17 @@ apxDisplayError(
 #ifdef _DEBUG_FULL
     OutputDebugStringA(sysbuf);
 #endif
-    if (len > 0 && bDisplay) {
-        nRet = MessageBoxA(NULL, sysbuf,
-                           "Application System Error",
-                           MB_ICONERROR | MB_OK | MB_SYSTEMMODAL);
+    if (len > 0) {
+        if (bDisplay) {
+            nRet = MessageBoxA(NULL, sysbuf,
+                               "Application System Error",
+                               MB_ICONERROR | MB_OK | MB_SYSTEMMODAL);
+        }
+        else {
+            fputs(sysbuf, stderr);
+            fputc('\n', stderr);
+            fflush(stderr);
+        }
     }
     /* Restore the last Error code */
     SetLastError(err);

@@ -81,8 +81,8 @@ LPWSTR __apxGetEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName)
     if (!(wsRet = apxPoolAlloc(hPool, (rc + 1) * sizeof(WCHAR))))
         return NULL;
     if (!GetEnvironmentVariableW(wsName, wsRet, rc)) {
+        apxLogWrite(APXLOG_MARK_SYSERR);
         apxFree(wsRet);
-        ErrorMessage(NULL, FALSE);
         return NULL;
     }
     return wsRet;
@@ -100,8 +100,8 @@ LPSTR __apxGetEnvironmentVariableA(APXHANDLE hPool, LPCSTR szName)
     if (!(szRet = apxPoolAlloc(hPool, rc + 1)))
         return NULL;
     if (!GetEnvironmentVariableA(szName, szRet, rc)) {
+        apxLogWrite(APXLOG_MARK_SYSERR);
         apxFree(szRet);
-        ErrorMessage(NULL, FALSE);
         return NULL;
     }
     return szRet;
@@ -209,39 +209,6 @@ LPSTR MzWideToUTF8(LPCWSTR ws)
     *s = '\0';
     return str;
 }
-
-#ifdef _DEBUG
-
-void ErrorMessage(LPCTSTR szError, BOOL bFatal)
-{
-    LPVOID lpMsgBuf = NULL;
-    UINT   nType;
-    int    nRet;
-    DWORD  dwErr = GetLastError();
-    if (bFatal)
-        nType = MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_SYSTEMMODAL;
-    else
-        nType = MB_ICONEXCLAMATION | MB_OK;
-    if (szError) {
-        nRet = MessageBox(NULL, szError, TEXT("Application Error"), nType);
-    }
-    else {
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                      FORMAT_MESSAGE_FROM_SYSTEM |
-                      FORMAT_MESSAGE_IGNORE_INSERTS,
-                      NULL,
-                      dwErr,
-                      MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
-                      (LPTSTR) &lpMsgBuf, 0, NULL);
-        nRet = MessageBox(NULL, (LPCTSTR)lpMsgBuf,
-                          TEXT("Application System Error"), nType);
-        LocalFree(lpMsgBuf);
-    }
-    if (bFatal && (nRet == IDCANCEL || nRet == IDABORT)) {
-        ExitProcess(dwErr);
-    }
-}
-#endif /* _DEBUG */
 
 DWORD __apxGetMultiSzLengthA(LPCSTR lpStr, LPDWORD lpdwCount)
 {
