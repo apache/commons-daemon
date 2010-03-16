@@ -40,7 +40,16 @@
                 <exclude>**/*.sh</exclude>
                 <exclude>native/unix/configure</exclude>
                 <exclude>native/unix/autom4te.cache/**</exclude>
+                <exclude>native/nt/**</exclude>
+                <exclude>media/**</exclude>
+                <exclude>site/**</exclude>
             </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>src</directory>
+            <includes>
+                <include>native/nt/procrun/**</include>
+            </includes>
         </fileSet>
         <fileSet>
             <directory>src</directory>
