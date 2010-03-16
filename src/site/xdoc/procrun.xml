@@ -342,11 +342,13 @@ To install the service, you need to use the <b>//IS//</b> parameter.
 </p>
 <p>
 <screen>
-<note>Install the service named 'TestService'</note>
-<type>prunsrv //IS//TestService --DisplayName="Test Service" \</type>
-<type>--Install=prunsrv.exe --Jvm=auto --StartMode=jvm --StopMode=jvm \</type>
-<type>--StartClass=org.apache.SomeStartClass --StartParams=arg1;arg2;arg3 \</type>
-<type>--StopClass=org.apache.SomeStopClass --StopParams=arg1#arg2 \</type>
+<h3>Install the service named 'TestService'</h3>
+<source>
+prunsrv //IS//TestService --DisplayName="Test Service" \
+        --Install=prunsrv.exe --Jvm=auto --StartMode=jvm --StopMode=jvm \
+        --StartClass=org.apache.SomeStartClass --StartParams=arg1;arg2;arg3 \
+        --StopClass=org.apache.SomeStopClass --StopParams=arg1#arg2
+</source>
 </screen>
 </p>
 </section>
@@ -356,9 +358,11 @@ To update the service parameters, you need to use the <b>//US//</b> parameter.
 </p>
 <p>
 <screen>
-<note>Update the service named 'TestService'</note>
-<type>prunsrv //US//TestService --Description="Some Dummy Test Service" \</type>
-<type>--Startup=auto --Classpath=%CLASSPATH%;test.jar</type>
+<h3>Update the service named 'TestService'</h3>
+<source>
+prunsrv //US//TestService --Description="Some Dummy Test Service" \
+        --Startup=auto --Classpath=%CLASSPATH%;test.jar
+</source>
 </screen>
 </p>
 </section>
@@ -369,8 +373,8 @@ If the service is running it will be stopped and then deleted.
 </p>
 <p>
 <screen>
-<note>Remove the service named 'TestService'</note>
-<type>prunsrv //DS//TestService</type>
+<h3>Remove the service named 'TestService'</h3>
+<source>prunsrv //DS//TestService</source>
 </screen>
 </p>
 </section>
@@ -385,8 +389,8 @@ testservice.exe and this command mode will be executed by default.
 </p>
 <p>
 <screen>
-<note>Run the service named 'TestService' in console mode</note>
-<type>prunsrv //TS//TestService [additional arguments]</type>
+<h3>Run the service named 'TestService' in console mode</h3>
+<source>prunsrv //TS//TestService [additional arguments]</source>
 </screen>
 </p>
 </section>
