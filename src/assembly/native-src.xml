@@ -27,6 +27,8 @@
                 <include>LICENSE.txt</include>
                 <include>NOTICE.txt</include>
                 <include>RELEASE-NOTES.txt</include>
+                <!-- Includes build instructions -->
+                <include>README</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -34,7 +36,7 @@
             <outputDirectory>unix</outputDirectory>
             <lineEnding>lf</lineEnding>
             <excludes>
-                <exclude>**/*.sh</exclude>
+                <exclude>**/*.sh</exclude> <!-- Excluded here, because processed below -->
                 <exclude>configure</exclude>
                 <exclude>autom4te.cache/**</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
