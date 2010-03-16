@@ -126,6 +126,28 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
+      <!-- Temporary fix until commons-parent is updated -->
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <!-- Temporary fix until commons-parent is updated -->
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
