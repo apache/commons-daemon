@@ -63,7 +63,7 @@ the group "wheel" cannot be set on the moved files.
 </section>
 <section name="Runtime problems">
 <p>
-On linux 2.6.x jsvc does not start and write the following error:
+On Linux 2.6.x jsvc does not start and write the following error:
 <source>
 jsvc.exec error: syscall failed in set_caps
 jsvc.exec error: Service exit with a return value of 4
