@@ -109,8 +109,9 @@ limitations under the License.
               <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.3-bin.zip.asc">pgp</a></td>
           </tr>
           <tr>
-              <td><a href="[preferred]/commons/daemon/binaries/1.0.2/">commons-daemon-1.0.2-bin.zip</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/1.0.2/">md5</a></td>            
+              <td><a href="[preferred]/commons/daemon/binaries/1.0.3/">Browse native binaries download area...</a></td>
+              <td></td>
+              <td></td>
           </tr>
         </table>
       </subsection>
@@ -126,6 +127,16 @@ limitations under the License.
               <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.3-src.zip.md5">md5</a></td>
               <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.3-src.zip.asc">pgp</a></td>
           </tr>
+          <tr>
+              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.0.3-native-src.tar.gz">commons-daemon-1.0.3-native-src.tar.gz</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.3-native-src.tar.gz.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.3-native-src.tar.gz.asc">pgp</a></td>
+          </tr>
+          <tr>
+              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.0.3-native-src.zip">commons-daemon-1.0.3-native-src.zip</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.3-native-src.zip.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.3-native-src.zip.asc">pgp</a></td>
+          </tr>
         </table>
       </subsection>
     </section>
@@ -134,9 +145,10 @@ limitations under the License.
           Older releases can be obtained from the archives.
         </p>
         <ul>
-          <li class="download"><a href="[preferred]/commons/daemon/">browse download area</a></li>
-          <li><a href="http://archive.apache.org/dist/commons/daemon/">archives...</a></li>
+          <li class="download"><a href="[preferred]/commons/daemon/">Browse download area...</a></li>
+          <li><a href="http://archive.apache.org/dist/commons/daemon/">Archives...</a></li>
         </ul>
     </section>
   </body>
 </document>
+
