@@ -97,8 +97,8 @@
 
 <section name="Platforms">
 <p>
-      Both win32 and UNIX like platforms are supported.
-      For win32 platforms use <a href="procrun.html">procrun</a>.
+      Both Win32 and UNIX like platforms are supported.
+      For Win32 platforms use <a href="procrun.html">procrun</a>.
       For UNIX like platforms use <a href="jsvc.html">jsvc</a>.
 </p>
 </section>

@@ -27,10 +27,10 @@
 <section name="Introduction">
 <p>
       Jsvc is a set of libraries and applications for making Java
-      applications run on UNIX more easily. It can run on win32 via
-      the cygwin emulation layer (see 
-      <a href="http://www.cygwin.com/"> cygwin</a> for more information),
-      however win32 users may prefer to use <a href="procrun.html"> procrun</a>
+      applications run on UNIX more easily. It can run on Win32 via
+      the Cygwin emulation layer (see 
+      <a href="http://www.cygwin.com/"> Cygwin</a> for more information),
+      however Win32 users may prefer to use <a href="procrun.html"> procrun</a>
       instead.
 </p>
 <p>
