@@ -28,6 +28,11 @@
     Procrun is a set of libraries and applications for making Java
     applications run on WIN32 more easily.
 </p> 
+<p>
+For details on how to create Java applications to be used with Procrun, 
+see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
+
+</p>
 <subsection name="Procrun service application">
 <p>
     <b>Prunsrv</b> is a service application for running applications as services.

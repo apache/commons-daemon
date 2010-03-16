@@ -28,12 +28,13 @@
 <p>
 In the directory
 <a href="http://www.apache.org/dist/commons/daemon/binaries/">binaries</a>
-you will find subdirectories containing executables
+you will find subdirectories containing archives
 corresponding to your operating system. If your machine is not in the list,
 please mail us and we will try to make it available, or you can try to build it on your own.
-The files are compressed tar files. They are named <code>jvm_name-os_name</code>.
-For example: In the directory <code>freebsd</code> we have <code>jdk1.4.1-FreeBSD_4.9.tar.gz</code>
-That is a file built on FreeBSD 4.9 using the FreeBSD JVM 1.4.1.
+The non-Windows files are compressed tar files. They are named <code>commons-daemon-m.n.p-bin-os-hw.tar.gz</code>.
+For example: In the directory <code>linux</code> we have <code>commons-daemon-1.0.3-bin-linux-i686.tar.gz</code>
+That is a file suitable for a Linux system running on Intel hardware.
+Windows builds are provided as a zip file.
 </p>
 </section>
 
@@ -42,20 +43,27 @@ That is a file built on FreeBSD 4.9 using the FreeBSD JVM 1.4.1.
 <p>
 Do the following:
 <ul>
-  <li>Find the tar file corresponding to your configuration.</li>
+  <li>Find the tar.gz file corresponding to your configuration.</li>
   <li>Download it.</li>
-  <li>Uncompress the tar file and extract it (better with gnu tar).</li>
+  <li>Uncompress the tar file and extract the contents (better with gnu tar).
+  There should be an executable file called <code>jsvc</code> and some text files</li>
   <li>Copy the executable to the location where you want to run it.</li>
-  <li>Write an rc shell
+  <li>Write a suitable shell script
      (see in <code>src/samples</code> and <code>src/native/unix/native/Tomcat.sh</code>)
-     to get your java application started as a daemon.
+     to get your Java application started as a daemon.
   </li>
 </ul>
 </p>
 </subsection>
 <subsection name="procrun">
 <p>
-The <code>procrun.exe</code> has to be installed as a service
+The Windows archive contains 2 different executables:
+<ul>
+<li>prunsrv.exe - the service application</li>
+<li>prunmgr.exe - the manager application used to start/stop services etc.</li>
+</ul>
+The Windows application <code>prunsrv.exe</code> has to be installed as a service
+using the <code>prunmgr.exe</code> manager application.
 (see <a href="procrun.html">procrun</a> for more information).
 </p>
 </subsection>
