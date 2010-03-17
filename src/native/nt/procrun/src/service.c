@@ -130,13 +130,13 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
     if (!apxGetServiceDescriptionW(szServiceName,
                                    lpService->stServiceEntry.szServiceDescription,
                                    SIZ_DESLEN)) {
-        apxLogWrite(APXLOG_MARK_WARN "Failed obtaing service description");
+        apxLogWrite(APXLOG_MARK_WARN "Failed to obtain service description");
         lpService->stServiceEntry.szServiceDescription[0] = L'\0';
     }
     if (!apxGetServiceUserW(szServiceName,
                             lpService->stServiceEntry.szObjectName,
                             SIZ_RESLEN)) {
-        apxLogWrite(APXLOG_MARK_WARN "Failed obtaing service user name");
+        apxLogWrite(APXLOG_MARK_WARN "Failed to obtain service user name");
         lpService->stServiceEntry.szObjectName[0] = L'\0';
     }
     if (!QueryServiceConfigW(lpService->hService, NULL, 0, &dwNeeded)) {
