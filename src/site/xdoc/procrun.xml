@@ -28,11 +28,7 @@
     Procrun is a set of libraries and applications for making Java
     applications run on WIN32 more easily.
 </p> 
-<p>
-For details on how to create Java applications to be used with Procrun, 
-see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
 
-</p>
 <subsection name="Procrun service application">
 <p>
     <b>Prunsrv</b> is a service application for running applications as services.
@@ -117,7 +113,7 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
 <section name="Command line parameters">
 <p>
     Each command parameter is prefixed with <b>--</b>.
-    If the command line is prefixed with <b>++</b> then it's value will
+    If the command line is prefixed with <b>++</b> then its value will
     be appended to the existing option.
     If the environment variable with the same name as command line parameter but
     prefixed with <code>PR_</code> exists it will take precedence.
@@ -178,7 +174,7 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     <td>--User</td>
     <td></td>
     <td>User account used for running executable. It is used only for
-    	StartMode <b>java</b> or <b>exe</b> and enables running applications
+    	StartMode <b>Java</b> or <b>exe</b> and enables running applications
     	as service under account without LogonAsService privilege.</td>
     </tr>
     <tr>
@@ -203,7 +199,7 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     <tr>
     <td>--JavaHome</td>
     <td>JAVA_HOME</td>
-    <td>Set a different JAVA_HOME then defined by JAVA_HOME environment
+    <td>Set a different JAVA_HOME than defined by JAVA_HOME environment
         variable</td>
     </tr>
     <tr>
@@ -254,7 +250,7 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     <tr>
     <td>--StartClass</td>
     <td></td>
-    <td>Class that will be used for startup.</td>
+    <td>Class that contains the startup method.</td>
     </tr>
     <tr>
     <td>--StartParams</td>
@@ -265,13 +261,15 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     </tr>
     <tr>
     <td>--StartMethod</td>
-    <td>Main</td>
-    <td>Method name if differs then main</td>
+    <td>main</td>
+    <td>Name of method to be called when service is started.
+    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    </td>
     </tr>
     <tr>
     <td>--StartMode</td>
-    <td>executable</td>
-    <td>Can one of <b>jvm</b> <b>java</b> or <b>exe</b></td>
+    <td></td>
+    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b></td>
     </tr>
     <td>--StopImage</td>
     <td></td>
@@ -296,13 +294,15 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     </tr>
     <tr>
     <td>--StopMethod</td>
-    <td>Main</td>
-    <td>Method name if differs then main</td>
+    <td>main</td>
+    <td>Name of method to be called when service is stopped.
+    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    </td>
     </tr>
     <tr>
     <td>--StopMode</td>
-    <td>executable</td>
-    <td>Can one of <b>jvm</b> <b>java</b> or <b>exe</b></td>
+    <td></td>
+    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b></td>
     </tr>
     <tr>
     <td>--StopTimeout</td>
@@ -312,8 +312,8 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     </tr>
     <tr>
     <td>--LogPath</td>
-    <td>%SystemRoot%\System\LogFiles\Apache</td>
-    <td>Defines the path for logging</td>
+    <td>%SystemRoot%\System32\LogFiles\Apache</td>
+    <td>Defines the path for logging. Creates the directory if necessary.</td>
     </tr>
     <tr>
     <td>--LogPrefix</td>
@@ -350,7 +350,7 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
 </section>
 <section name="Installing services">
 <p>
-To install the service, you need to use the <b>//IS//</b> parameter.
+To install the service, you need to use the <b>//IS</b> parameter.
 </p>
 <p>
 <screen>
@@ -366,7 +366,7 @@ prunsrv //IS//TestService --DisplayName="Test Service" \
 </section>
 <section name="Updating services">
 <p>
-To update the service parameters, you need to use the <b>//US//</b> parameter.
+To update the service parameters, you need to use the <b>//US</b> parameter.
 </p>
 <p>
 <screen>
@@ -380,7 +380,7 @@ prunsrv //US//TestService --Description="Some Dummy Test Service" \
 </section>
 <section name="Removing services">
 <p>
-To remove the service, you need to use the <b>//DS//</b> parameter.
+To remove the service, you need to use the <b>//DS</b> parameter.
 If the service is running it will be stopped and then deleted.
 </p>
 <p>
@@ -393,7 +393,7 @@ If the service is running it will be stopped and then deleted.
 
 <section name="Debugging services">
 <p>
-To run the service in console mode, you need to use the <b>//TS//</b> parameter.
+To run the service in console mode, you need to use the <b>//TS</b> parameter.
 The service shutdown can be initiated by pressing <b>CTRL+C</b> or
 <b>CTRL+BREAK</b>.
 If you rename the prunsrv.exe to testservice.exe then you can just execute the
