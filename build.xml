@@ -82,10 +82,10 @@
   <!-- The pattern to be used to grab ant jars (usefull for non standard layout)  -->
   <property name="ant.jars.pattern"        value="*.jar"/>
 
-  <!-- Name of the native arctifacts  -->
+  <!-- Name of the native artifacts  -->
   <property name="native.name"             value="commons-${component.name}-${component.version}-native-src"/>
 
-  <!-- Path of the native arctifacts  -->
+  <!-- Path of the native artifacts  -->
   <property name="native.path"             value="${dist.home}/bin/native/${native.name}"/>
 
 
