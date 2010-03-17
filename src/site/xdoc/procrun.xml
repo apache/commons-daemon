@@ -47,14 +47,17 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     <p>The available command line options are:</p>
 <p> 
     <table>
-    <tr><th>//ES//</th>
+    <tr><th>//ES//[servicename]</th>
         <td>Edit service configuration</td>
         <td>This is the default operation. It is called if the no option is
-            provided but the executable is renamed to <b>servicenameW.exe</b></td>
+            provided but the executable is renamed to <b>servicename.exe</b>.
+        </td>
     </tr>
-    <tr><th>//MS//</th>
+    <tr><th>//MS//[servicename]</th>
         <td>Monitor service</td>
-        <td>Put the icon in the system try</td>
+        <td>Put the icon in the system tray. 
+            The default service name is taken from the name of the executable.
+        </td>
     </tr>
     </table>
 </p>
