@@ -4,7 +4,7 @@ jar file in ../../dist
 
 SimpleDaemon:
 
-SimpleDaemon demonstrates the feature of the daemon ofered by
+SimpleDaemon demonstrates the feature of the daemon offered by
 Apache Commons Daemon.
 To run it adapt the SimpleDaemon.sh file and connect to it using:
 telnet localhost 1200
