@@ -62,8 +62,9 @@ The Windows archive contains 2 different executables:
 <li>prunsrv.exe - service application for running applications as services.</li>
 <li>prunmgr.exe - the GUI manager application used to monitor and configure installed services.</li>
 </ul>
-These executables are available in 3 different versions for different architectures.
-The version in the top-level directory is for 32-bit architectures. 
+There is only one <code>prunmgr.exe</code> application for all architectures.
+The <code>prunsrv.exe</code> executable is available in 3 different versions for different architectures.
+The version in the top-level directory is for 32-bit (x86) architectures. 
 The lower level directories are for 64-bit systems:
 <ul>
 <li>amd64 - AMD 64-bit</li>
