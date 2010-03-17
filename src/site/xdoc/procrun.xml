@@ -44,16 +44,20 @@ see <a href="jsvc.html#Using_jsvc">Using jsvc</a>.
     <b>Prunmgr</b> is a GUI application for monitoring and configuring procrun
     services.
 </p>    
+<p>
+    Each command line directive is in the form of <b>//XX[//ServiceName]</b>
+</p>
     <p>The available command line options are:</p>
 <p> 
     <table>
-    <tr><th>//ES//[servicename]</th>
+    <tr><th>//ES</th>
         <td>Edit service configuration</td>
         <td>This is the default operation. It is called if the no option is
             provided but the executable is renamed to <b>servicename.exe</b>.
+            The default service name is taken from the name of the executable.
         </td>
     </tr>
-    <tr><th>//MS//[servicename]</th>
+    <tr><th>//MS</th>
         <td>Monitor service</td>
         <td>Put the icon in the system tray. 
             The default service name is taken from the name of the executable.
