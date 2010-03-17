@@ -25,10 +25,8 @@ To build the native part:
 [Note: the directory in SVN is currently called src/native/nt, not src/native/windows]
 
 To build the documentation: (See http://commons.apache.org/building.html).
-maven site:generate
+mvn site:generate
 (Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/commons/proper/commons-build/trunk/ commons-build))
 
 To deploy the documentation to the apache site:
-maven -Dmaven.username=${user.name} site:deploy
-(Check <siteAddress/> in project.xml).
-
+mvn -Dmaven.username=${user.name} site:deploy
