@@ -19,21 +19,30 @@
 
 <!-- ========== Initialize Properties ===================================== -->
   <property file="build.properties"/>
-  <property name="commons-daemon.jar"   value="../../dist/commons-daemon.jar"/>
   <property name="dist.home"   value="../../dist"/>
   <property name="build.home"  value="./build"/>
   <property name="source.home" value="."/>
-  <property name="commons-collections.jar" value="${user.home}/java/commons-collections-3.1/commons-collections-3.1.jar"/>
+
+  <property name="maven.repo.local" value="${user.home}/.m2/repository"/>
+  <property name="commons-collections.jar" value="${maven.repo.local}/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
 
   <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService"/>
 
+  <target name="clean" description="Remove output files">
+    <delete quiet="true">
+      <fileset dir="${build.home}"/>
+      <fileset dir="${dist.home}" includes="SimpleDaemon.jar service.jar aloneservice.jar"/>
+    </delete>
+  </target>
+  
   <target name="SimpleDaemon" depends="compile"
    description="Create SimpleDaemon.jar">
     <mkdir      dir="${dist.home}"/>
-    <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../../LICENSE"
-               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/SimpleDaemon.jar">
+      <metainf dir="../..">
+        <include name="NOTICE.txt"/>
+        <include name="LICENSE.txt"/>
+      </metainf>
       <fileset dir="${build.home}/classes">
         <include name="SimpleDaemon*.class" />
       </fileset>
@@ -43,10 +52,11 @@
   <target name="ServiceDaemon" depends="compile"
    description="Create ServiceDaemon.jar">
     <mkdir      dir="${dist.home}"/>
-    <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../../LICENSE"
-               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/service.jar">
+      <metainf dir="../..">
+        <include name="NOTICE.txt"/>
+        <include name="LICENSE.txt"/>
+      </metainf>
       <fileset dir="${build.home}/classes">
         <include name="ServiceDaemon*.class" />
       </fileset>
@@ -56,10 +66,11 @@
   <target name="AloneService" depends="compile"
    description="Create aloneservice.jar">
     <mkdir      dir="${dist.home}"/>
-    <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../../LICENSE"
-               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/aloneservice.jar">
+      <metainf dir="../..">
+        <include name="NOTICE.txt"/>
+        <include name="LICENSE.txt"/>
+      </metainf>
       <fileset dir="${build.home}/classes">
         <include name="AloneService*.class" />
         <include name="ServiceDaemonReadThread*.class" />
@@ -85,7 +96,8 @@
 
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
-    <pathelement location="${commons-daemon.jar}"/>
+  	<!-- output jar filename may vary between releases -->
+    <fileset dir="../../dist" includes="commons-daemon-*.jar"/>
     <pathelement location="${commons-collections.jar}"/>
   </path>
 
