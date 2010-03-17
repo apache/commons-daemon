@@ -624,7 +624,8 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
                                          szMethodName, "([Ljava/lang/String;)V");
     if (!lpJava->clWorker.jMethod) {
         JVM_EXCEPTION_CLEAR(lpJava);
-        apxLogWrite(APXLOG_MARK_ERROR "Static method 'void main(String[])' in Class %s not found", szClassName);
+        apxLogWrite(APXLOG_MARK_ERROR "Method 'static void %s(String[])' not found in Class %s",
+        		szMethodName, szClassName);
         return FALSE;
     }
     nArgs = apxMultiSzToArrayW(hJava->hPool, lpArguments, &lpArgs);
