@@ -59,12 +59,21 @@ Do the following:
 <p>
 The Windows archive contains 2 different executables:
 <ul>
-<li>prunsrv.exe - the service application</li>
-<li>prunmgr.exe - the manager application used to start/stop services etc.</li>
+<li>prunsrv.exe - service application for running applications as services.</li>
+<li>prunmgr.exe - the GUI manager application used to monitor and configure installed services.</li>
 </ul>
-The Windows application <code>prunsrv.exe</code> has to be installed as a service
-using the <code>prunmgr.exe</code> manager application.
+These executables are available in 3 different versions for different architectures.
+The version in the top-level directory is for 32-bit architectures. 
+The lower level directories are for 64-bit systems:
+<ul>
+<li>amd64 - AMD 64-bit</li>
+<li>ia64 - Intel 64-bit</li>
+</ul>
+The Windows application <code>prunsrv.exe</code> is used to install an application as a service.
+Once installed, <code>prunmgr.exe</code> can be used to monitor and reconfigure the service.
 (see <a href="procrun.html">procrun</a> for more information).
+The Windows binary zip archive should be unpacked into the location from which you wish to run it, for example:
+<code>%ProgramFiles%\Apache Commons Daemon</code>
 </p>
 </subsection>
 </section>
