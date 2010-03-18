@@ -285,7 +285,6 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Thread stack size in KB</td>
     </tr>
     <tr>
-    <tr>
     <td>--StartImage</td>
     <td></td>
     <td>Executable that will be run.</td>
@@ -319,6 +318,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td></td>
     <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b></td>
     </tr>
+    <tr>
     <td>--StopImage</td>
     <td></td>
     <td>Executable that will be run on Stop service signal.</td>
