@@ -113,17 +113,38 @@
 <section name="Command line parameters">
 <p>
     Each command parameter is prefixed with <b>--</b>.
-    If the command line is prefixed with <b>++</b> then its value will
-    be appended to the existing option.
-    If the environment variable with the same name as command line parameter but
-    prefixed with <code>PR_</code> exists it will take precedence.
+    If an environment variable exists with the same name as command line parameter but
+    prefixed with <code>PR_</code> it will take precedence.
     For example:
 <source>set PR_CLASSPATH=xx.jar</source>
 </p>    
 <p>is equivalent to providing
 <source>--Classpath=xx.jar</source>
 </p>
-<p> as command line parameter.</p>
+<p> as a command line parameter.</p>
+<p>
+If a parameter is repeated, then normally the last value takes precedence.
+However some parameters can take multiple values - for example StartParams and JvmOption.
+If these parameters are prefixed with <b>++</b>, then the value will be appended to the existing value.
+For example:
+<source>
+--Startup=manual --Startup=auto --JvmOption=-Done=1 ++JvmOption=-Dtwo=2
+</source>
+will result in the following values being used:
+<source>
+Startup:
+auto
+
+JvmOption:
+-Done=1
+-Dtwo=2
+</source>
+<br/>
+Only multi-valued parameters support this; they are indicated in the table below by <b><code>++</code></b>.
+<br></br>
+If <b><code>++</code></b> is used for a parameter that does not support multiple values,
+then it is treated the same as <b>--</b>. No error is reported.
+</p>
 <p> 
     <table>
     <tr>
@@ -158,13 +179,13 @@
     Use this option only with Local system accounts.</td>
     </tr>
     <tr>
-    <td>--DependsOn</td>
+    <td>++DependsOn</td>
     <td></td>
     <td>List of services that this service depend on. Dependent services
         are separated using either <b>#</b> or <b>;</b> characters</td>
     </tr>
     <tr>
-    <td>--Environment</td>
+    <td>++Environment</td>
     <td></td>
     <td>List of environment variables that will be provided to the service
         in the form <b>key=value</b>. They are separated using either
@@ -209,7 +230,7 @@
         You can use the environment variable expansion here.</td>
     </tr>
     <tr>
-    <td>--JvmOptions</td>
+    <td>++JvmOptions</td>
     <td>-Xrs</td>
     <td>List of options in the form of <b>-D</b> or <b>-X</b> that will be
         passed to the JVM. The options are separated using either
@@ -253,7 +274,7 @@
     <td>Class that contains the startup method.</td>
     </tr>
     <tr>
-    <td>--StartParams</td>
+    <td>++StartParams</td>
     <td></td>
     <td>List of parameters that will be passed to either StartImage or
         StartClass. Parameters are separated using either <b>#</b> or
@@ -286,7 +307,7 @@
     <td>Class that will be used on Stop service signal.</td>
     </tr>
     <tr>
-    <td>--StopParams</td>
+    <td>++StopParams</td>
     <td></td>
     <td>List of parameters that will be passed to either StopImage or
         StopClass. Parameters are separated using either <b>#</b> or
