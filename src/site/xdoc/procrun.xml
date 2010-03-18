@@ -285,19 +285,42 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Thread stack size in KB</td>
     </tr>
     <tr>
+    <td>--StartMode</td>
+    <td></td>
+    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b>.
+    The modes are:
+    <ul>
+    <li>jvm - start Java in-process</li>
+    <li>Java - same as exe, but automatically uses the default Java executable</li>
+    <li>exe - run the image as a separate process</li>
+    </ul>
+    </td>
+    </tr>
+    <tr>
+    <tr>
     <td>--StartImage</td>
     <td></td>
-    <td>Executable that will be run.</td>
+    <td>Executable that will be run. Only applies to <b>exe</b> mode.</td>
     </tr>
     <tr>
     <td>--StartPath</td>
     <td></td>
-    <td>Working path for the start image executable.</td>
+    <td>Working path for the start image executable. Does not apply to <b>jvm</b> mode.</td>
     </tr>
     <tr>
     <td>--StartClass</td>
     <td></td>
-    <td>Class that contains the startup method.</td>
+    <td>Class that contains the startup method.
+    Only applies to <b>jvm</b> mode.
+    </td>
+    </tr>
+    <tr>
+    <td>--StartMethod</td>
+    <td>main</td>
+    <td>Name of method to be called when service is started.
+    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    Only applies to <b>jvm</b> mode.
+    </td>
     </tr>
     <tr>
     <td>++StartParams</td>
@@ -307,31 +330,35 @@ then it is treated the same as <b>--</b>. No error is reported.
         <b>;</b> character.</td>
     </tr>
     <tr>
-    <td>--StartMethod</td>
-    <td>main</td>
-    <td>Name of method to be called when service is started.
-    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    <td>--StopMode</td>
+    <td></td>
+    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b>.
+    See <b>--StartMode</b> for further details.
     </td>
     </tr>
-    <tr>
-    <td>--StartMode</td>
-    <td></td>
-    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b></td>
-    </tr>
-    <tr>
     <td>--StopImage</td>
     <td></td>
-    <td>Executable that will be run on Stop service signal.</td>
+    <td>Executable that will be run on Stop service signal. Only applies to <b>exe</b> mode.</td>
     </tr>
     <tr>
     <td>--StopPath</td>
     <td></td>
-    <td>Working path for the stop image executable.</td>
+    <td>Working path for the stop image executable. Does not apply to <b>jvm</b> mode.</td>
     </tr>
     <tr>
     <td>--StopClass</td>
     <td></td>
-    <td>Class that will be used on Stop service signal.</td>
+    <td>Class that will be used on Stop service signal.
+    Only applies to <b>jvm</b> mode.
+    </td>
+    </tr>
+    <tr>
+    <td>--StopMethod</td>
+    <td>main</td>
+    <td>Name of method to be called when service is stopped.
+    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    Only applies to <b>jvm</b> mode.
+    </td>
     </tr>
     <tr>
     <td>++StopParams</td>
@@ -339,18 +366,6 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>List of parameters that will be passed to either StopImage or
         StopClass. Parameters are separated using either <b>#</b> or
         <b>;</b> character.</td>
-    </tr>
-    <tr>
-    <td>--StopMethod</td>
-    <td>main</td>
-    <td>Name of method to be called when service is stopped.
-    It must be <code>static void</code> and have argument <code>(String args[])</code>.
-    </td>
-    </tr>
-    <tr>
-    <td>--StopMode</td>
-    <td></td>
-    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b></td>
     </tr>
     <tr>
     <td>--StopTimeout</td>
@@ -391,7 +406,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--PidFile</td>
     <td></td>
     <td>Defines the file name for storing the running process id.
-    Actual file is created inside <b>LogPath</b></td>
+    Actual file is created in the <b>LogPath</b> directory</td>
     </tr>    
     </table>
 </p> 
