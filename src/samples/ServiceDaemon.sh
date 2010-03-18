@@ -37,4 +37,3 @@ $DAEMON_HOME_SH/dist/jsvc \
 #-verbose \
 # To get a debug of jsvc.
 #-debug \
-#    -user $TOMCAT_USER \
