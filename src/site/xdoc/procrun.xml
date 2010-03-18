@@ -366,26 +366,26 @@ then it is treated the same as <b>--</b>. No error is reported.
     <tr>
     <td>--LogPrefix</td>
     <td>commons-daemon</td>
-    <td>Defines the service log filename prefix. The log file is create inside LogPath with
+    <td>Defines the service log filename prefix. The log file is created in the LogPath directory with
     <code>.YEAR-MONTH-DAY.log</code> suffix</td>
     </tr>
     <tr>
     <td>--LogLevel</td>
-    <td>INFO</td>
-    <td>Defines the logging level and can be either <b>error</b>,
-        <b>info</b>, <b>warn</b> or <b>debug</b></td>
+    <td>Info</td>
+    <td>Defines the logging level and can be either <b>Error</b>,
+        <b>Info</b>, <b>Warn</b> or <b>Debug</b></td>. (Case insensitive).
     </tr>
     <tr>
     <td>--StdOutput</td>
     <td></td>
     <td>Redirected stdout filename. If named <b>auto</b> file is created
-    inside <b>LogPath</b> with <b>service-stdout.YEAR-MONTH-DAY.log</b> name.</td>
+    inside <b>LogPath</b> with the name <b>service-stdout.YEAR-MONTH-DAY.log</b>.</td>
     </tr>
     <tr>
     <td>--StdError</td>
     <td></td>
     <td>Redirected stderr filename. If named <b>auto</b> file is created
-    inside <b>LogPath</b> with <b>service-stderr.YEAR-MONTH-DAY.log</b> name.</td>
+    in the <b>LogPath</b> directory with the name <b>service-stderr.YEAR-MONTH-DAY.log</b>.</td>
     </tr>    
     <tr>
     <td>--PidFile</td>
