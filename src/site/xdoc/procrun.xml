@@ -254,7 +254,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--Jvm</td>
     <td>auto</td>
     <td>Use either <b>auto</b> or specify the full path to the <b>jvm.dll</b>.
-        You can use the environment variable expansion here.</td>
+        You can use environment variable expansion here.</td>
     </tr>
     <tr>
     <td>++JvmOptions</td>
@@ -459,7 +459,46 @@ testservice.exe and this command mode will be executed by default.
 
 <section name="Using Procrun in Java">
 <p>
-TBA
+To interface with the Procrun service application, you need to create a class with the appropriate method(s).
+For example:
+<source>
+class MyClass;
+// N.B. error handling not shown
+static void main(String [] args){
+    String mode = args[0];
+    if ("start".equals(mode){
+        // process service start function
+    }
+    etc.
+}
+</source>
+This should be configured as follows:
+<source>
+--Classpath MyClass.jar
+--StartMode jvm --StartClass MyClass --StartParams start
+--StopMode  jvm --StopClass  MyClass --StopParams  stop
+</source>
+The above example uses a single 'main' method, and uses a string parameter to specify whether the service function
+is start or stop.
+<br></br>
+Alternatively, you can use different method names for the service start and stop functions:
+<source>
+class MyClass;
+// N.B. error handling not shown
+static void start(String [] args){
+        // process service start function
+    }
+static void stop(String [] args){
+        // process service stop function
+    }
+}
+</source>
+This shwould be configured as follows:
+<source>
+--Classpath MyClass.jar
+--StartMode jvm --StartClass MyClass --StartMethod start
+--StopMode  jvm --StopClass  MyClass --StopMethod  stop
+</source>
 </p>
 </section>
 </body>
