@@ -15,7 +15,7 @@
  */
 
 /* ====================================================================
- * prunsrv -- Service Runner.
+ * prunmgr -- Service Manager Application.
  * Contributed by Mladen Turk <mturk@apache.org>
  * 05 Aug 2003
  * ====================================================================
@@ -80,7 +80,7 @@ static LPCWSTR  _s_java         = L"Java";
 static LPCWSTR  _s_start        = L"Start";
 static LPCWSTR  _s_stop         = L"Stop";
 
-/* Allowed procrun commands */
+/* Allowed prunmgr commands */
 static LPCWSTR _commands[] = {
     L"ES",      /* 1 Manage Service (default)*/
     L"MS",      /* 2 Monitor Service */
