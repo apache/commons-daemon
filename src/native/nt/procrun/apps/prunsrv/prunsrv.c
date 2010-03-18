@@ -1293,7 +1293,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         /* Service is started */
         DWORD rv;
         reportServiceStatus(SERVICE_RUNNING, NO_ERROR, 0);
-        apxLogWrite(APXLOG_MARK_DEBUG "Waiting worker to finish...");
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for worker to finish...");
         /* Set console handler to capture CTRL events */
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
 
