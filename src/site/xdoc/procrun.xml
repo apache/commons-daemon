@@ -493,7 +493,7 @@ static void stop(String [] args){
     }
 }
 </source>
-This shwould be configured as follows:
+This should be configured as follows:
 <source>
 --Classpath MyClass.jar
 --StartMode jvm --StartClass MyClass --StartMethod start
