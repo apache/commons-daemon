@@ -38,20 +38,43 @@
 <p>
     Each command line directive is in the form of <b>//XX[//ServiceName]</b>
 </p>
+<p>
+    If the <code>//ServiceName</code> parameter is omitted, then the service name is
+    assumed to be the name of the file. 
+    <br/>
+    The Prunsrv application behaves in the same way,
+    so to allow both applications to reside in the same directory, the Prunmgr application
+    will remove a trailing <b>w</b> (lower-case w) from the name.
+    <br/>
+    For example if the Prunmgr application is renamed as <code>TestService.exe</code>
+    - or as <code>TestServicew.exe</code> -
+    then the default service name is <code>TestService</code>.
+</p>
     <p>The available command line options are:</p>
 <p> 
     <table>
     <tr><th>//ES</th>
         <td>Edit service configuration</td>
         <td>This is the default operation. It is called if the no option is
-            provided but the executable is renamed to <b>servicename.exe</b>.
-            The default service name is taken from the name of the executable.
+            provided.
+            Starts the GUI application which allows the service configuration 
+            to be modified, started and stopped.
         </td>
     </tr>
     <tr><th>//MS</th>
         <td>Monitor service</td>
-        <td>Put the icon in the system tray. 
-            The default service name is taken from the name of the executable.
+        <td>Starts the GUI application and minimizes it to the system tray. 
+        </td>
+    </tr>
+    <tr><th>//MR</th>
+        <td>Monitor &amp; run service</td>
+        <td>Starts the GUI application and minimizes it to the system tray.
+            Start the service if it is not currently running. 
+        </td>
+    </tr>
+    <tr><th>//MQ</th>
+        <td>Monitor Quit</td>
+        <td>Stop any running monitor for the service. 
         </td>
     </tr>
     </table>
@@ -68,13 +91,20 @@
 <p>
     Each command line directive is in the form of <b>//XX[//ServiceName]</b>
 </p>
+<p>
+    If the <code>//ServiceName</code> parameter is omitted, then the service name is
+    assumed to be the name of the file.
+    <br/>
+    For example if the application is renamed as <code>TestService.exe</code>,
+    then the default service name is <code>TestService</code>.
+</p>
     <p>The available command line options are:</p>
 <p> 
     <table>
     <tr><th>//TS</th>
-        <td>Run the service as console application</td>
-        <td>This is the default operation. It is called if the no option is
-            provided but the executable is renamed to <b>servicename.exe</b></td>
+        <td>Run the service as a console application</td>
+        <td>This is the default operation. It is called if the no option is provided.
+        </td>
     </tr>
     <tr><th>//RS</th>
         <td>Run the service</td>
@@ -94,11 +124,7 @@
     </tr>
     <tr><th>//DS</th>
         <td>Delete service</td>
-        <td>Stops the service if running</td>
-    </tr>        
-    <tr><th>//DS</th>
-        <td>Delete service</td>
-        <td>Stops the service if running</td>
+        <td>Stops the service first if it is currently running</td>
     </tr>        
     <tr><th>//VS</th>
         <td>Version</td>
@@ -431,5 +457,10 @@ testservice.exe and this command mode will be executed by default.
 
 </section>
 
+<section name="Using Procrun in Java">
+<p>
+TBA
+</p>
+</section>
 </body>
 </document> 
