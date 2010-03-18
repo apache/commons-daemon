@@ -28,14 +28,9 @@
     Procrun is a set of libraries and applications for making Java
     applications run on WIN32 more easily.
 </p> 
+</section>
 
-<subsection name="Procrun service application">
-<p>
-    <b>Prunsrv</b> is a service application for running applications as services.
-    It can convert any application to run as a service.
-</p>
-</subsection>
-<subsection name="Procrun monitor application">
+<section name="Procrun monitor application">
 <p>
     <b>Prunmgr</b> is a GUI application for monitoring and configuring procrun
     services.
@@ -61,9 +56,15 @@
     </tr>
     </table>
 </p>
-</subsection>
 </section>
-<section name="Command line arguments">
+
+<section name="Procrun service application">
+<p>
+    <b>Prunsrv</b> is a service application for running applications as services.
+    It can convert any application to run as a service.
+</p>
+
+<subsection name="Command line arguments">
 <p>
     Each command line directive is in the form of <b>//XX[//ServiceName]</b>
 </p>
@@ -109,8 +110,8 @@
     </tr>        
     </table>
 </p> 
-</section>
-<section name="Command line parameters">
+</subsection>
+<subsection name="Command line parameters">
 <p>
     Each command parameter is prefixed with <b>--</b>.
     If an environment variable exists with the same name as command line parameter but
@@ -368,14 +369,14 @@ then it is treated the same as <b>--</b>. No error is reported.
     </tr>    
     </table>
 </p> 
-</section>
-<section name="Installing services">
+</subsection>
+<subsection name="Installing services">
 <p>
 To install the service, you need to use the <b>//IS</b> parameter.
 </p>
 <p>
 <screen>
-<h3>Install the service named 'TestService'</h3>
+<h4>Install the service named 'TestService'</h4>
 <source>
 prunsrv //IS//TestService --DisplayName="Test Service" \
         --Install=prunsrv.exe --Jvm=auto --StartMode=jvm --StopMode=jvm \
@@ -384,35 +385,35 @@ prunsrv //IS//TestService --DisplayName="Test Service" \
 </source>
 </screen>
 </p>
-</section>
-<section name="Updating services">
+</subsection>
+<subsection name="Updating services">
 <p>
 To update the service parameters, you need to use the <b>//US</b> parameter.
 </p>
 <p>
 <screen>
-<h3>Update the service named 'TestService'</h3>
+<h4>Update the service named 'TestService'</h4>
 <source>
 prunsrv //US//TestService --Description="Some Dummy Test Service" \
         --Startup=auto --Classpath=%CLASSPATH%;test.jar
 </source>
 </screen>
 </p>
-</section>
-<section name="Removing services">
+</subsection>
+<subsection name="Removing services">
 <p>
 To remove the service, you need to use the <b>//DS</b> parameter.
 If the service is running it will be stopped and then deleted.
 </p>
 <p>
 <screen>
-<h3>Remove the service named 'TestService'</h3>
+<h4>Remove the service named 'TestService'</h4>
 <source>prunsrv //DS//TestService</source>
 </screen>
 </p>
-</section>
+</subsection>
 
-<section name="Debugging services">
+<subsection name="Debugging services">
 <p>
 To run the service in console mode, you need to use the <b>//TS</b> parameter.
 The service shutdown can be initiated by pressing <b>CTRL+C</b> or
@@ -422,10 +423,12 @@ testservice.exe and this command mode will be executed by default.
 </p>
 <p>
 <screen>
-<h3>Run the service named 'TestService' in console mode</h3>
+<h4>Run the service named 'TestService' in console mode</h4>
 <source>prunsrv //TS//TestService [additional arguments]</source>
 </screen>
 </p>
+</subsection>
+
 </section>
 
 </body>
