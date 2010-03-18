@@ -213,7 +213,7 @@ Write a Class (MyClass) that implements the following methods:
 </ul>
 Store it in a jarfile and use as above:
 <source>
-./jsvc -cp commons-daemon.jar:my.jar MyClass
+./jsvc -cp my.jar MyClass
 </source>
 </p>
 </subsection>
