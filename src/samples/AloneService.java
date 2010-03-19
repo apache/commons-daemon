@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /*
- * That is like the ServiceDaemon but it does used the interface.
+ * That is like the ServiceDaemon but it does not use the Daemon interface.
  */
 public class AloneService {
 
