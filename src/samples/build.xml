@@ -26,7 +26,7 @@
   <property name="maven.repo.local" value="${user.home}/.m2/repository"/>
   <property name="commons-collections.jar" value="${maven.repo.local}/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
 
-  <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService"/>
+  <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService,ProcrunService"/>
 
   <target name="clean" description="Remove output files">
     <delete quiet="true">
@@ -74,6 +74,20 @@
       <fileset dir="${build.home}/classes">
         <include name="AloneService*.class" />
         <include name="ServiceDaemonReadThread*.class" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="ProcrunService" depends="compile"
+   description="Create ProcrunService.jar">
+    <mkdir      dir="${dist.home}"/>
+    <jar    jarfile="${dist.home}/ProcrunService.jar">
+      <metainf dir="../..">
+        <include name="NOTICE.txt"/>
+        <include name="LICENSE.txt"/>
+      </metainf>
+      <fileset dir="${build.home}/classes">
+        <include name="ProcrunService.class" />
       </fileset>
     </jar>
   </target>
