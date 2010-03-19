@@ -40,6 +40,7 @@ echo Installing %SERVICE% if necessary
 echo Setting the parameters for %SERVICE%
 %PRUNSRV% //US//%SERVICE% --Jvm=auto --StdOutput auto --StdError auto ^
 --Classpath=%PATH_JAR%ProcrunService.jar ^
---StartMode=jvm --StopMode=jvm --StartClass=ProcrunService --StartParams=start --StopClass=ProcrunService
+--StartMode=jvm --StartClass=ProcrunService --StartParams=start ^
+ --StopMode=jvm  --StopClass=ProcrunService  --StopParams=stop
 
 echo Installation of %SERVICE% is complete
