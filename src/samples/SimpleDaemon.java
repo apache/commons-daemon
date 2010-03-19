@@ -32,9 +32,9 @@ public class SimpleDaemon implements Daemon, Runnable {
     private ServerSocket server=null;
     private Thread thread=null;
     private DaemonController controller=null;
-    private boolean stopping=false;
+    private volatile boolean stopping=false;
     private String directory=null;
-    private Vector handlers=null;
+    private final Vector handlers;
 
     public static native void toto();
 
@@ -146,11 +146,11 @@ public class SimpleDaemon implements Daemon, Runnable {
 
     public static class Handler implements Runnable {
 
-        private DaemonController controller=null;
-        private SimpleDaemon parent=null;
-        private String directory=null;
-        private Socket socket=null;
-        private int number=0;
+        private final DaemonController controller;
+        private final SimpleDaemon parent;
+        private String directory=null; // Only set before thread is started
+        private final Socket socket;
+        private int number=0; // Only set before thread is started
 
         public Handler(Socket s, SimpleDaemon p, DaemonController c) {
             super();
