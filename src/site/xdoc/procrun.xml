@@ -87,7 +87,7 @@
 <section name="Procrun service application">
 <p>
     <b>Prunsrv</b> is a service application for running applications as services.
-    It can convert any application to run as a service.
+    It can convert any application (not just Java applications) to run as a service.
 </p>
 
 <subsection name="Command line arguments">
@@ -209,13 +209,13 @@ then it is treated the same as <b>--</b>. No error is reported.
     <tr>
     <td>--Type</td>
     <td></td>
-    <td>Service type can be <b>interactive</b> to Allow service to interact with desktop.
+    <td>Service type can be <b>interactive</b> to allow the service to interact with the desktop.
     Use this option only with Local system accounts.</td>
     </tr>
     <tr>
     <td>++DependsOn</td>
     <td></td>
-    <td>List of services that this service depend on. Dependent services
+    <td>List of services that this service depends on. Dependent services
         are separated using either <b>#</b> or <b>;</b> characters</td>
     </tr>
     <tr>
@@ -230,7 +230,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td></td>
     <td>User account used for running executable. It is used only for
         StartMode <b>Java</b> or <b>exe</b> and enables running applications
-        as service under account without LogonAsService privilege.</td>
+        as a service under an account without the LogonAsService privilege.</td>
     </tr>
     <tr>
     <td>--Password</td>
@@ -297,7 +297,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b>.
     The modes are:
     <ul>
-    <li>jvm - start Java in-process</li>
+    <li>jvm - start Java in-process. Depends on jvm.dll, see <b>--Jvm</b>.</li>
     <li>Java - same as exe, but automatically uses the default Java executable</li>
     <li>exe - run the image as a separate process</li>
     </ul>
@@ -402,7 +402,11 @@ then it is treated the same as <b>--</b>. No error is reported.
     <tr>
     <td>--LogJniMessages</td>
     <td>0</td>
-    <td>TBA</td>
+    <td>Set this non-zero (e.g. 1) to capture JVM jni debug messages in the procrun log file.
+    Is not needed if stdout/stderr redirection is being used.
+    <!-- TODO: what if only one of stdout/stderr is being redirected? -->
+    Only applies to <b>jvm</b> mode.
+    </td>
     </tr>
     <tr>
     <td>--StdOutput</td>
@@ -488,7 +492,8 @@ testservice.exe and this command mode will be executed by default.
 
 <section name="Using Procrun in Java">
 <p>
-To interface with the Procrun service application, you need to create a class with the appropriate method(s).
+To interface with the Procrun service application using the <b>jvm</b> mode,
+you need to create a class with the appropriate method(s).
 For example:
 <source>
 class MyClass;
@@ -528,6 +533,9 @@ This should be configured as follows:
 --StartMode jvm --StartClass MyClass --StartMethod start
 --StopMode  jvm --StopClass  MyClass --StopMethod  stop
 </source>
+Note that the method handling service start should create and start a separate thread
+to carry out the processing, and then return.
+The start and stop methods are called from different threads.
 </p>
 </section>
 <section name="Windows Registry Usage">
