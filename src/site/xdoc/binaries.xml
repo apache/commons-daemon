@@ -57,7 +57,7 @@ Do the following:
 </subsection>
 <subsection name="procrun">
 <p>
-The Windows archive contains 2 different executables:
+The Windows archive (e.g. commons-daemon-1.0.3-bin-windows.zip) contains 2 different executables:
 <ul>
 <li>prunsrv.exe - service application for running applications as services.</li>
 <li>prunmgr.exe - the GUI manager application used to monitor and configure installed services.</li>
