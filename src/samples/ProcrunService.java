@@ -67,6 +67,8 @@ public class ProcrunService implements Runnable {
                 if (thrd != null) {
                     log("Interrupting the thread");
                     thrd.interrupt();
+                } else {
+                    log("No thread to interrupt");
                 }
             } else {
                 usage();
@@ -96,5 +98,9 @@ public class ProcrunService implements Runnable {
     private static void log(String msg){
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
         System.out.println(df.format(new Date())+msg);
+    }
+    
+    protected void finalize(){
+        log("Finalize called from thread "+Thread.currentThread());
     }
 }
