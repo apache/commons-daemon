@@ -350,17 +350,18 @@ public final class DaemonLoader
         implements DaemonContext
     {
 
-        DaemonController controller = null;
+        DaemonController daemonController = null;
+
         String[] args = null;
 
         public DaemonController getController()
         {
-            return controller;
+            return daemonController;
         }
 
         public void setController(DaemonController controller)
         {
-            this.controller = controller;
+            this.daemonController = controller;
         }
 
         public String[] getArguments()
