@@ -19,9 +19,9 @@ package org.apache.commons.daemon;
 
 /**
  * This interface provides support for native daemon invocation. Using
- * a platform dependant helper program classes that implement the
+ * a platform dependant helper program, classes that implement the
  * <code>Daemon</code> interface can be initialized, started and
- * stopped according to the convensions of the underlying operating
+ * stopped according to the conventions of the underlying operating
  * system.
  * <p>
  * Implementors of this interface must also provide a public constructor
