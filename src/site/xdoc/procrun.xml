@@ -129,6 +129,10 @@
         <td>Delete service</td>
         <td>Stops the service first if it is currently running</td>
     </tr>        
+    <tr><th>//PP[//seconds]</th>
+        <td>Pause</td>
+        <td>Default is 60 seconds</td>
+    </tr>        
     <tr><th>//VS</th>
         <td>Version</td>
         <td>Print version and exit (since version 1.0.3)</td>
@@ -394,6 +398,11 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Info</td>
     <td>Defines the logging level and can be either <b>Error</b>,
         <b>Info</b>, <b>Warn</b> or <b>Debug</b></td>. (Case insensitive).
+    </tr>
+    <tr>
+    <td>--LogJniMessages</td>
+    <td>0</td>
+    <td>TBA</td>
     </tr>
     <tr>
     <td>--StdOutput</td>
