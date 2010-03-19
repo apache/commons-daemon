@@ -27,6 +27,8 @@
 <p>
     Procrun is a set of libraries and applications for making Java
     applications run on WIN32 more easily.
+    Note that the Java API is completely different from the Jsrv Java API,
+    as it is designed for use with the Windows Service Control Manager.
 </p> 
 </section>
 
@@ -311,7 +313,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--StartClass</td>
     <td></td>
     <td>Class that contains the startup method.
-    Only applies to <b>jvm</b> mode.
+    Applies to the <b>jvm</b> and <b>Java</b> modes.
     </td>
     </tr>
     <tr>
@@ -349,7 +351,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--StopClass</td>
     <td></td>
     <td>Class that will be used on Stop service signal.
-    Only applies to <b>jvm</b> mode.
+    Applies to the <b>jvm</b> and <b>Java</b> modes.
     </td>
     </tr>
     <tr>
