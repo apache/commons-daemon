@@ -518,5 +518,13 @@ This should be configured as follows:
 </source>
 </p>
 </section>
+<section name="Windows Registry Usage">
+<p>
+The basic Service definitions are maintained under the registry key:
+<source>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\&lt;ServiceName&gt;</source>
+Additional parameters are stored in the registry at:
+<source>HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\ProcRun 2.0\&lt;ServiceName&gt;\Parameters</source> 
+</p>
+</section>
 </body>
 </document> 
