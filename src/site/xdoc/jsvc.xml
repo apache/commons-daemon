@@ -27,11 +27,15 @@
 <section name="Introduction">
 <p>
       Jsvc is a set of libraries and applications for making Java
-      applications run on UNIX more easily. It can run on Win32 via
-      the Cygwin emulation layer (see 
+      applications run on UNIX more easily.
+      <br/>
+      Jsvc allows the application (e.g. Tomcat) to perform some privileged operations as root 
+      (e.g. bind to a port &lt; 1024), and then switch identity to a non-privileged user.
+      <br/>
+      It can run on Win32 via the Cygwin emulation layer (see 
       <a href="http://www.cygwin.com/"> Cygwin</a> for more information),
       however Win32 users may prefer to use <a href="procrun.html"> procrun</a>
-      instead.
+      instead, which allows the application to run as a Windows Service.
 </p>
 <p>
       The sources are located in the src/native/unix subdirectory.

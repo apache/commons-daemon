@@ -25,10 +25,11 @@
 <body>
 <section name="Introduction">
 <p>
-    Procrun is a set of libraries and applications for making Java
-    applications run on WIN32 more easily.
-    Note that the Java API is completely different from the Jsrv Java API,
-    as it is designed for use with the Windows Service Control Manager.
+    Procrun is a set of applications that allow Windows users to wrap 
+    (mostly) Java applications (e.g. Tomcat) as a Windows service.
+    <br></br>
+    The service can be set to automatically start when the machine boots 
+    and will continue to run with no user logged onto the machine.
 </p> 
 </section>
 
@@ -264,27 +265,27 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>List of options in the form of <b>-D</b> or <b>-X</b> that will be
         passed to the JVM. The options are separated using either
         <b>#</b> or <b>;</b> characters. if you need to embed either # or ;
-        character put them inside single quotes.</td>
+        character put them inside single quotes. (Not used in <b>exe</b> mode.)</td>
     </tr>
     <tr>
     <td>--Classpath</td>
     <td></td>
-    <td>Set the Java classpath</td>
+    <td>Set the Java classpath. (Not used in <b>exe</b> mode.)</td>
     </tr>
     <tr>
     <td>--JvmMs</td>
     <td></td>
-    <td>Initial memory pool size in MB</td>
+    <td>Initial memory pool size in MB. (Not used in <b>exe</b> mode.)</td>
     </tr>
     <tr>
     <td>--JvmMx</td>
     <td></td>
-    <td>Maximum memory pool size in MB</td>
+    <td>Maximum memory pool size in MB. (Not used in <b>exe</b> mode.)</td>
     </tr>
     <tr>
     <td>--JvmSs</td>
     <td></td>
-    <td>Thread stack size in KB</td>
+    <td>Thread stack size in KB. (Not used in <b>exe</b> mode.)</td>
     </tr>
     <tr>
     <td>--StartMode</td>
@@ -313,7 +314,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--StartClass</td>
     <td></td>
     <td>Class that contains the startup method.
-    Applies to the <b>jvm</b> and <b>Java</b> modes.
+    Applies to the <b>jvm</b> and <b>Java</b> modes.  (Not used in <b>exe</b> mode.)
     </td>
     </tr>
     <tr>
@@ -322,6 +323,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Name of method to be called when service is started.
     It must be <code>static void</code> and have argument <code>(String args[])</code>.
     Only applies to <b>jvm</b> mode.
+    In <b>Java</b> mode, the <b>main</b> method is always used.
     </td>
     </tr>
     <tr>
@@ -360,6 +362,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Name of method to be called when service is stopped.
     It must be <code>static void</code> and have argument <code>(String args[])</code>.
     Only applies to <b>jvm</b> mode.
+    In <b>Java</b> mode, the <b>main</b> method is always used.
     </td>
     </tr>
     <tr>
