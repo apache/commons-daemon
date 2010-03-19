@@ -2,7 +2,8 @@ The directory contains examples of Java daemons.
 The examples are compiled using Ant (just type ant). Each example creates a
 jar file in ../../dist
 
-SimpleDaemon:
+SimpleDaemon
+------------
 
 SimpleDaemon demonstrates the feature of the daemon offered by
 Apache Commons Daemon.
@@ -10,7 +11,8 @@ To run it adapt the SimpleDaemon.sh file and connect to it using:
 telnet localhost 1200
 Additional information in ../native/unix/INSTALL.txt
 
-ServiceDaemon:
+ServiceDaemon
+-------------
 
 ServiceDaemon allows to start programs using the Commons Daemon.
 
@@ -35,6 +37,12 @@ socks5=/usr/local/bin/socks5 -f
 
 To run it adapt the ServiceDaemon.sh file.
 
-AloneService:
+AloneService
+------------
 
 AloneService is like ServiceDaemon except it does not use the Daemon interface.
+
+ProcrunService
+--------------
+This is a simple Windows Service application.
+See ProcrunService.cmd for a sample installation script.
