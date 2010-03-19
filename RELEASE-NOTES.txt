@@ -1,8 +1,8 @@
 $Id$
 
-			Commons Daemon Package
-			   Version 1.0.3
-			    Release Notes
+            Commons Daemon Package
+               Version 1.0.3
+                Release Notes
 
 
 INTRODUCTION:

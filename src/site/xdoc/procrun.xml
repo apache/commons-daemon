@@ -176,9 +176,9 @@ then it is treated the same as <b>--</b>. No error is reported.
     <table>
     <tr>
     <th>ParameterName</th>
-	<th>Default</th>
-	<th>Description</th>
-	</tr> 
+    <th>Default</th>
+    <th>Description</th>
+    </tr> 
     <tr>
     <td>--Description</td>
     <td></td>
@@ -222,8 +222,8 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--User</td>
     <td></td>
     <td>User account used for running executable. It is used only for
-    	StartMode <b>Java</b> or <b>exe</b> and enables running applications
-    	as service under account without LogonAsService privilege.</td>
+        StartMode <b>Java</b> or <b>exe</b> and enables running applications
+        as service under account without LogonAsService privilege.</td>
     </tr>
     <tr>
     <td>--Password</td>

@@ -96,7 +96,7 @@
 
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
-  	<!-- output jar filename may vary between releases -->
+    <!-- output jar filename may vary between releases -->
     <fileset dir="../../dist" includes="commons-daemon-*.jar"/>
     <pathelement location="${commons-collections.jar}"/>
   </path>
