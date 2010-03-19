@@ -30,14 +30,14 @@ import java.lang.reflect.Method;
 public final class DaemonLoader
 {
 
-    private static Controller controller = null;
-    private static Context context  = null;
-    private static Object daemon    = null;
+    // N.B. These static mutable variables need to be accessed using synch.
+    private static Controller controller = null; //@GuardedBy("this")
+    private static Object daemon    = null; //@GuardedBy("this")
     /* Methods to call */
-    private static Method init      = null;
-    private static Method start     = null;
-    private static Method stop      = null;
-    private static Method destroy   = null;
+    private static Method init      = null; //@GuardedBy("this")
+    private static Method start     = null; //@GuardedBy("this")
+    private static Method stop      = null; //@GuardedBy("this")
+    private static Method destroy   = null; //@GuardedBy("this")
 
     public static void version()
     {
@@ -154,7 +154,7 @@ public final class DaemonLoader
                 controller.setAvailable(false);
 
                 /* Create context */
-                context = new Context();
+                Context context = new Context();
                 context.setArguments(ar);
                 context.setController(controller);
 
