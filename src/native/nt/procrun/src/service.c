@@ -353,7 +353,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     /* Manager mode cannot handle services */
     if (lpService->bManagerMode)
         return FALSE;
-    /* Check if the ServixeOpen has been called */
+    /* Check if the ServiceOpen has been called */
     if (IS_INVALID_HANDLE(lpService->hService))
         return FALSE;
     switch (dwControl) {
