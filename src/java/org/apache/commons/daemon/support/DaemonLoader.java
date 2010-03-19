@@ -74,7 +74,7 @@ public final class DaemonLoader
                 throw new ClassNotFoundException(cn);
 
             /* Create a new instance of the daemon */
-            Object s = c.newInstance();
+            c.newInstance();
 
         } catch (Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
@@ -255,7 +255,7 @@ public final class DaemonLoader
         implements DaemonController
     {
 
-        boolean available = false;
+        private boolean available = false;
 
         private Controller()
         {
@@ -350,9 +350,9 @@ public final class DaemonLoader
         implements DaemonContext
     {
 
-        DaemonController daemonController = null;
+        private DaemonController daemonController = null;
 
-        String[] args = null;
+        private String[] args = null;
 
         public DaemonController getController()
         {
