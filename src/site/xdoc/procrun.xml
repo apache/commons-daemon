@@ -490,9 +490,9 @@ testservice.exe and this command mode will be executed by default.
 
 </section>
 
-<section name="Using Procrun in Java">
+<section name="Using Procrun in jvm mode">
 <p>
-To interface with the Procrun service application using the <b>jvm</b> mode,
+To interface with the Procrun service application (prunsrv) using the <b>jvm</b> mode,
 you need to create a class with the appropriate method(s).
 For example:
 <source>
@@ -538,6 +538,16 @@ to carry out the processing, and then return.
 The start and stop methods are called from different threads.
 </p>
 </section>
+
+<section name="Using Procrun in Java or exe mode">
+<p>
+When using the <b>Java</b> or <b>exe</b> modes, the Procrun service application (prunsrv)
+launches the target application in a separate process.
+The "stop" application needs to communicate somehow with the "start" application to tell it to stop.
+For example, using RPC.
+</p>
+</section>
+
 <section name="Windows Registry Usage">
 <p>
 The basic Service definitions are maintained under the registry key:
