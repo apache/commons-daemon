@@ -889,7 +889,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             apxLogWrite(APXLOG_MARK_ERROR "Failed executing process");
             goto cleanup;
         } else {
-            apxLogWrite(APXLOG_MARK_DEBUG "Waiting stop worker to finish...");
+            apxLogWrite(APXLOG_MARK_DEBUG "Waiting for stop worker to finish...");
             apxHandleWait(hWorker, INFINITE, FALSE);
             apxLogWrite(APXLOG_MARK_DEBUG "Stop worker finished.");
         }
@@ -1003,7 +1003,7 @@ static DWORD serviceStart()
         apxJavaSetOut(gWorker, FALSE, gStdwrap.szStdOutFilename);
         if (!apxJavaStart(gWorker)) {
             rv = 4;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed starting Java");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to start Java");
             goto cleanup;
         }
         apxLogWrite(APXLOG_MARK_DEBUG "Java started %s", _jni_rclass);
@@ -1017,7 +1017,7 @@ static DWORD serviceStart()
                                     SO_PASSWORD,
                                     FALSE);
         if (IS_INVALID_HANDLE(gWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed creating process");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to create process");
             return 1;
         }
         if (!apxProcessSetExecutableW(gWorker, SO_STARTIMAGE)) {
@@ -1055,7 +1055,7 @@ static DWORD serviceStart()
          */
         if (!apxProcessExecute(gWorker)) {
             rv = 5;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed executing process");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to execute process");
             goto cleanup;
         }
     }
