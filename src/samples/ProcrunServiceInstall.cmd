@@ -35,7 +35,7 @@ set PATH_JAR=%MYPATH%
 
 set PRUNSRV=%PATH_PRUNSRV%prunsrv
 echo Installing %SERVICE% if necessary
-%PRUNSRV% //IS//%SERVICE% --Install %PATH_PRUNSRV%prunsrv.exe
+%PRUNSRV% //IS//%SERVICE% --Install
 
 echo Setting the parameters for %SERVICE%
 %PRUNSRV% //US//%SERVICE% --Jvm=auto --StdOutput auto --StdError auto ^
