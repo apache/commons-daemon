@@ -15,6 +15,7 @@ follow the release early/release often mentality.
 
 NEW FEATURES:
 
+* DAEMON-155: BOOL docmdRunService(LPAPXCMDLINE lpCmdline) has strange check for StartServiceCtrlDispatcherW return
 * DAEMON-138: Add --PidFile option to allow storing running process id. (1.0.3)
 * DAEMON-137: Add --LogJniMessages allowing to configure JNI verbose message
               logging. By default those messages were always logged. (1.0.3)
