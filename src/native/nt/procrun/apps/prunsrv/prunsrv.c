@@ -1361,7 +1361,7 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_INFO "Running '%S' Service...", _service_name);
     _service_table[0].lpServiceName = lpCmdline->szApplication;
     _service_table[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONW)serviceMain;
-    rv = (StartServiceCtrlDispatcherW(_service_table) == FALSE);
+    rv = (StartServiceCtrlDispatcherW(_service_table) != 0);
     apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
     SAFE_CLOSE_HANDLE(gPidfileHandle);
     if (gPidfileName)
