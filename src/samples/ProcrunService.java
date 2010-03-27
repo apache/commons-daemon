@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +24,9 @@ import java.util.Date;
 
 /**
  * Sample service implementation for use with Windows Procrun.
+ * <p>
+ * Use the main() method for running as a Java (external) service.
+ * Use the start() and stop() methods for running as a jvm (in-process) service 
  */
 public class ProcrunService implements Runnable {
 
@@ -32,8 +37,22 @@ public class ProcrunService implements Runnable {
     
     private final long pause; // How long to pause in service loop
 
-    private ProcrunService(long wait){
+    private final File stopFile;
+    
+    /**
+     * 
+     * @param wait seconds to wait in loop
+     * @param filename optional filename - if non-null, run loop will stop when it disappears
+     * @throws IOException 
+     */
+    private ProcrunService(long wait, File file) {
         pause=wait;
+        stopFile = file;
+    }
+
+    private static File tmpFile(String filename) {
+        return new File(System.getProperty("java.io.tmpdir"),
+                filename != null ? filename : "ProcrunService.tmp");
     }
 
     private static void usage(){
@@ -41,50 +60,87 @@ public class ProcrunService implements Runnable {
     }
 
     /**
+     * Helper method for process args with defaults.
+     * 
+     * @param args array of string arguments, not null, may be empty
+     * @param argnum which argument to extract
+     * @return the argument or null
+     */
+    private static String getArg(String[] args, int argnum){
+        if (args.length > argnum) {
+            return args[argnum];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Common entry point for start and stop service functions.
      * 
      * @param args [start [pause time] | stop]
+     * @throws IOException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final int argc = args.length;
         log("ProcrunService called with "+argc+" arguments from thread: "+Thread.currentThread());
         for(int i=0; i < argc; i++) {
             System.out.println("["+i+"] "+args[i]);
         }
-        String mode=null;
-        if (argc > 0) {
-            mode = args[0];
-            if ("start".equals(mode)){
-                long wait = DEFAULT_PAUSE;
-                if (argc > 1) {
-                    wait = Integer.valueOf(args[1]).intValue();
-                }
-                log("Starting the thread, wait(seconds): "+wait);
-                thrd = new Thread(new ProcrunService(wait*MS_PER_SEC));
-                thrd.start();
-            } else 
-            if ("stop".equals(mode)) {
-                if (thrd != null) {
-                    log("Interrupting the thread");
-                    thrd.interrupt();
-                } else {
-                    log("No thread to interrupt");
-                }
-            } else {
-                usage();
-            }
+        String mode=getArg(args, 0);
+        if ("start".equals(mode)){
+            File f = tmpFile(getArg(args, 2));
+            log("Creating file: "+f.getPath());
+            f.createNewFile();
+            startThread(getArg(args, 1), f);
+        } else 
+        if ("stop".equals(mode)) {
+            final File tmpFile = tmpFile(getArg(args, 1));
+            log("Deleting file: "+tmpFile.getPath());
+            tmpFile.delete();
         } else {
             usage();
         }
     }
-    
+
+    /**
+     * Start the jvm version of the service.
+     * @param args optional, arg[0] = timeout (seconds)
+     */
+    public static void start(String [] args) {
+        startThread(getArg(args, 0), null);
+    }
+
+    private static void startThread(String waitParam, File file) {
+        long wait = DEFAULT_PAUSE;
+        if (waitParam != null) {
+            wait = Integer.valueOf(waitParam).intValue();
+        }
+        log("Starting the thread, wait(seconds): "+wait);
+        thrd = new Thread(new ProcrunService(wait*MS_PER_SEC,file));
+        thrd.start();        
+    }
+
+    /**
+     * Stop the JVM version of the service.
+     * 
+     * @param args ignored
+     */
+    public static void stop(String [] args){
+        if (thrd != null) {
+            log("Interrupting the thread");
+            thrd.interrupt();
+        } else {
+            log("No thread to interrupt");
+        }        
+    }
+
     /**
      * This method performs the work of the service.
      * In this case, it just logs a message every so often.
      */
     public void run() {
         log("Started thread in "+System.getProperty("user.dir"));
-        while(true){
+        while(stopFile == null || stopFile.exists()){
             try {
                 log("pausing...");
                 Thread.sleep(pause);

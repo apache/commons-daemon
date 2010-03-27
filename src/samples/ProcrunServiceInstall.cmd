@@ -21,8 +21,9 @@ rem Copy this file and ProcrunService.jar into the same directory as prunsrv (or
 
 setlocal
 
-rem The service name (make sure it does not clash with an existing service)
-set SERVICE=ProcrunService
+rem The service names (make sure they does not clash with an existing service)
+set SERVICE_JVM=ProcrunServiceJvm
+set SERVICE_JAVA=ProcrunServiceJava
 
 rem my location
 set MYPATH=%~dp0
@@ -33,14 +34,31 @@ set PATH_PRUNSRV=%MYPATH%
 rem location of jarfile
 set PATH_JAR=%MYPATH%
 
-set PRUNSRV=%PATH_PRUNSRV%prunsrv
-echo Installing %SERVICE% if necessary
-%PRUNSRV% //IS//%SERVICE% --Install
+rem Allow prunsrv to be overridden
+if "%PRUNSRV%" == "" set PRUNSRV=%PATH_PRUNSRV%prunsrv
 
-echo Setting the parameters for %SERVICE%
-%PRUNSRV% //US//%SERVICE% --Jvm=auto --StdOutput auto --StdError auto ^
+rem Install the 2 services
+
+echo Installing %SERVICE_JVM%
+%PRUNSRV% //DS//%SERVICE_JVM%
+%PRUNSRV% //IS//%SERVICE_JVM% --Install
+
+echo Setting the parameters for %SERVICE_JVM%
+%PRUNSRV% //US//%SERVICE_JVM% --Jvm=auto --StdOutput auto --StdError auto ^
 --Classpath=%PATH_JAR%ProcrunService.jar ^
---StartMode=jvm --StartClass=ProcrunService --StartParams=start ^
- --StopMode=jvm  --StopClass=ProcrunService  --StopParams=stop
+--StartMode=jvm --StartClass=ProcrunService --StartMethod=start ^
+ --StopMode=jvm  --StopClass=ProcrunService  --StopMethod=stop
 
-echo Installation of %SERVICE% is complete
+echo Installation of %SERVICE_JVM% is complete
+
+echo Installing %SERVICE_JAVA%
+%PRUNSRV% //DS//%SERVICE_JAVA%
+%PRUNSRV% //IS//%SERVICE_JAVA% --Install
+
+echo Setting the parameters for %SERVICE_JAVA%
+%PRUNSRV% //US//%SERVICE_JAVA% --Jvm=auto --StdOutput auto --StdError auto ^
+--Classpath=%PATH_JAR%ProcrunService.jar ^
+--StartMode=java --StartClass=ProcrunService --StartParams=start ^
+ --StopMode=java  --StopClass=ProcrunService  --StopParams=stop
+
+echo Installation of %SERVICE_JAVA% is complete
