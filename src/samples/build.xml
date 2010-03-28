@@ -31,7 +31,7 @@
   <target name="clean" description="Remove output files">
     <delete quiet="true">
       <fileset dir="${build.home}"/>
-      <fileset dir="${dist.home}" includes="SimpleDaemon.jar service.jar aloneservice.jar"/>
+      <fileset dir="${dist.home}" includes="SimpleDaemon.jar service.jar aloneservice.jar ProcrunService.jar"/>
     </delete>
   </target>
   
@@ -85,6 +85,9 @@
       <metainf dir="../..">
         <include name="NOTICE.txt"/>
         <include name="LICENSE.txt"/>
+        <manifest>
+           <attribute name="Main-Class" value="ProcrunService"/>
+        </manifest>
       </metainf>
       <fileset dir="${build.home}/classes">
         <include name="ProcrunService.class" />
