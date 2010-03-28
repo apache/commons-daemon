@@ -45,4 +45,5 @@ AloneService is like ServiceDaemon except it does not use the Daemon interface.
 ProcrunService
 --------------
 This is a simple Windows Service application.
-See ProcrunService.cmd for a sample installation script.
+It can be run either in Jvm or Java modes.
+See ProcrunServiceInstall.cmd for a sample installation script.
