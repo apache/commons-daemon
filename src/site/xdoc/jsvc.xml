@@ -262,7 +262,7 @@ In child(): controlled process.
   load_service().
   start_service().
   say "I am ready"
-  wait for signal or pool for stop
+  wait for signal or poll for stop
   stop_service().
   destroy_service().
   destroy_JVM().
