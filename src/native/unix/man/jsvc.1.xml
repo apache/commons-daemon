@@ -23,7 +23,7 @@
     <manvolnum>1</manvolnum>
     <refmiscinfo class='date'>May 2005</refmiscinfo>
     <refmiscinfo class='source'>Jsvc version 1.0.1</refmiscinfo>
-    <refmiscinfo class='manual'>Jakarta project</refmiscinfo>
+    <refmiscinfo class='manual'>Apache Commons project</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>jsvc</refname>
