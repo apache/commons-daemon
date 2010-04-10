@@ -85,10 +85,10 @@
       <metainf dir="../..">
         <include name="NOTICE.txt"/>
         <include name="LICENSE.txt"/>
-        <manifest>
-           <attribute name="Main-Class" value="ProcrunService"/>
-        </manifest>
       </metainf>
+      <manifest>
+         <attribute name="Main-Class" value="ProcrunService"/>
+      </manifest>
       <fileset dir="${build.home}/classes">
         <include name="ProcrunService.class" />
       </fileset>
