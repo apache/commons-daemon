@@ -62,12 +62,12 @@ public class ProcrunService implements Runnable {
     /**
      * Helper method for process args with defaults.
      * 
-     * @param args array of string arguments, not null, may be empty
+     * @param args array of string arguments, may be null or empty
      * @param argnum which argument to extract
      * @return the argument or null
      */
     private static String getArg(String[] args, int argnum){
-        if (args.length > argnum) {
+        if (args != null && args.length > argnum) {
             return args[argnum];
         } else {
             return null;
@@ -76,12 +76,14 @@ public class ProcrunService implements Runnable {
 
     /**
      * Common entry point for start and stop service functions.
+     * To allow for use with Java mode, a temporary file is created
+     * by the start service, and a deleted by the stop service.
      * 
      * @param args [start [pause time] | stop]
-     * @throws IOException 
+     * @throws IOException if there are problems creating or deleting the temporary file 
      */
     public static void main(String[] args) throws IOException {
-        final int argc = args.length;
+        final int argc = (args == null) ? -0 : args.length;
         log("ProcrunService called with "+argc+" arguments from thread: "+Thread.currentThread());
         for(int i=0; i < argc; i++) {
             System.out.println("["+i+"] "+args[i]);
@@ -92,8 +94,7 @@ public class ProcrunService implements Runnable {
             log("Creating file: "+f.getPath());
             f.createNewFile();
             startThread(getArg(args, 1), f);
-        } else 
-        if ("stop".equals(mode)) {
+        } else if ("stop".equals(mode)) {
             final File tmpFile = tmpFile(getArg(args, 1));
             log("Deleting file: "+tmpFile.getPath());
             tmpFile.delete();
@@ -117,12 +118,12 @@ public class ProcrunService implements Runnable {
         }
         log("Starting the thread, wait(seconds): "+wait);
         thrd = new Thread(new ProcrunService(wait*MS_PER_SEC,file));
-        thrd.start();        
+        thrd.start();
     }
 
     /**
      * Stop the JVM version of the service.
-     * 
+     *
      * @param args ignored
      */
     public static void stop(String [] args){
