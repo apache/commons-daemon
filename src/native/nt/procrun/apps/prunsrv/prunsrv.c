@@ -218,8 +218,8 @@ static LPSTR    _jni_jvmoptions           = NULL;   /* Path to jvm options */
 static LPSTR    _jni_classpath            = NULL;
 static LPCWSTR  _jni_rparam               = NULL;    /* Startup  arguments */
 static LPCWSTR  _jni_sparam               = NULL;    /* Shutdown arguments */
-static LPSTR    _jni_rmethod              = NULL;    /* Startup  arguments */
-static LPSTR    _jni_smethod              = NULL;    /* Shutdown arguments */
+static LPSTR    _jni_rmethod              = NULL;    /* Startup  method */
+static LPSTR    _jni_smethod              = NULL;    /* Shutdown method */
 static LPSTR    _jni_rclass               = NULL;    /* Startup  class */
 static LPSTR    _jni_sclass               = NULL;    /* Shutdown class */
 
