@@ -53,9 +53,9 @@ static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
 
 #define JVM_DELETE_CLAZZ(jvm, cl)                                               \
     APXMACRO_BEGIN                                                              \
-    if ((jvm)->lpEnv && (jvm)->##cl.jClazz) {                                   \
-        (*((jvm)->lpEnv))->DeleteGlobalRef((jvm)->lpEnv, (jvm)->##cl.jClazz);   \
-        (jvm)->##cl.jClazz = NULL;                                              \
+    if ((jvm)->lpEnv && (jvm)->cl.jClazz) {                                   \
+        (*((jvm)->lpEnv))->DeleteGlobalRef((jvm)->lpEnv, (jvm)->cl.jClazz);   \
+        (jvm)->cl.jClazz = NULL;                                              \
     } APXMACRO_END
 
 #define JVM_EXCEPTION_CHECK(jvm) \
@@ -84,19 +84,19 @@ static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
         (*(lpJava->lpEnv))->DeleteLocalRef(lpJava->lpEnv, obj)
 
 #define JNICALL_0(fName)  \
-        ((*(lpJava->lpEnv))->##fName(lpJava->lpEnv))
+        ((*(lpJava->lpEnv))->fName(lpJava->lpEnv))
 
 #define JNICALL_1(fName, a1)  \
-        ((*(lpJava->lpEnv))->##fName(lpJava->lpEnv, (a1)))
+        ((*(lpJava->lpEnv))->fName(lpJava->lpEnv, (a1)))
 
 #define JNICALL_2(fName, a1, a2)  \
-        ((*(lpJava->lpEnv))->##fName(lpJava->lpEnv, (a1), (a2)))
+        ((*(lpJava->lpEnv))->fName(lpJava->lpEnv, (a1), (a2)))
 
 #define JNICALL_3(fName, a1, a2, a3)  \
-        ((*(lpJava->lpEnv))->##fName(lpJava->lpEnv, (a1), (a2), (a3)))
+        ((*(lpJava->lpEnv))->fName(lpJava->lpEnv, (a1), (a2), (a3)))
 
 #define JNICALL_4(fName, a1, a2, a3, a4)  \
-        ((*(lpJava->lpEnv))->##fName(lpJava->lpEnv, (a1), (a2), (a3), (a4)))
+        ((*(lpJava->lpEnv))->fName(lpJava->lpEnv, (a1), (a2), (a3), (a4)))
 
 typedef struct APXJAVASTDCLAZZ {
     CHAR        sClazz[1024];
