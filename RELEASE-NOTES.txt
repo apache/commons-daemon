@@ -34,6 +34,8 @@ NEW FEATURES:
 
 * Switch to JIRA bug tracking sytem.
 
+* Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
+
 BUG FIXES:
 
 1.0.3: DAEMON-108, DAEMON-128, DAEMON-139, DAEMON-143, DAEMON-155
