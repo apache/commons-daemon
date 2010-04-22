@@ -326,8 +326,10 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>main</td>
     <td>Name of method to be called when service is started.
     It must be <code>static void</code> and have argument <code>(String args[])</code>.
-    Only applies to <b>jvm</b> mode.
-    In <b>Java</b> mode, the <b>main</b> method is always used.
+    Only applies to <b>jvm</b> mode - in <b>Java</b> mode, the <b>main</b> method is always used.
+    <br />
+    <b>Note:</b> in <code>jvm</code> mode, the start method should not return until the stop method
+    has been called.
     </td>
     </tr>
     <tr>
