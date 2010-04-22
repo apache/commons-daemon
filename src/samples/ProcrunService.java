@@ -104,11 +104,19 @@ public class ProcrunService implements Runnable {
     }
 
     /**
-     * Start the jvm version of the service.
+     * Start the jvm version of the service, and waits for it to complete.
+     * 
      * @param args optional, arg[0] = timeout (seconds)
      */
     public static void start(String [] args) {
         startThread(getArg(args, 0), null);
+        while(thrd.isAlive()){
+            try {
+                thrd.join();
+            } catch (InterruptedException ie){
+                // Ignored
+            }
+        }
     }
 
     private static void startThread(String waitParam, File file) {
