@@ -62,12 +62,12 @@ public class ProcrunService implements Runnable {
     /**
      * Helper method for process args with defaults.
      * 
-     * @param args array of string arguments, may be null or empty
+     * @param args array of string arguments, may be empty
      * @param argnum which argument to extract
      * @return the argument or null
      */
     private static String getArg(String[] args, int argnum){
-        if (args != null && args.length > argnum) {
+        if (args.length > argnum) {
             return args[argnum];
         } else {
             return null;
@@ -83,7 +83,7 @@ public class ProcrunService implements Runnable {
      * @throws IOException if there are problems creating or deleting the temporary file 
      */
     public static void main(String[] args) throws IOException {
-        final int argc = (args == null) ? -0 : args.length;
+        final int argc = args.length;
         log("ProcrunService called with "+argc+" arguments from thread: "+Thread.currentThread());
         for(int i=0; i < argc; i++) {
             System.out.println("["+i+"] "+args[i]);
