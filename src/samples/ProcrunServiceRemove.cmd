@@ -23,6 +23,14 @@ rem The service names (make sure they does not clash with an existing service)
 set SERVICE_JVM=ProcrunServiceJvm
 set SERVICE_JAVA=ProcrunServiceJava
 
+rem my location
+set MYPATH=%~dp0
+
+rem location of Prunsrv
+set PATH_PRUNSRV=%MYPATH%
+set PR_LOGPATH=%PATH_PRUNSRV%
+rem Allow prunsrv to be overridden
+if "%PRUNSRV%" == "" set PRUNSRV=%PATH_PRUNSRV%prunsrv
 
 echo Removing %SERVICE_JVM%
 %PRUNSRV% //DS//%SERVICE_JVM%
