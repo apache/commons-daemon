@@ -17,15 +17,13 @@
 
 /* @version $Id$ */
 
-import java.io.*;
-import java.net.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Iterator;
 
 import org.apache.commons.collections.ExtendedProperties;
-import java.io.IOException;
-import java.util.Iterator;
 
 /*
  * That is like the ServiceDaemon but it does not use the Daemon interface.

@@ -17,18 +17,15 @@
 
 /* @version $Id$ */
 
-import java.io.*;
-import java.net.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import org.apache.commons.daemon.Daemon;
-import org.apache.commons.daemon.DaemonController;
-import org.apache.commons.daemon.DaemonContext;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Iterator;
 
 import org.apache.commons.collections.ExtendedProperties;
-import java.io.IOException;
-import java.util.Iterator;
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
 
 public class ServiceDaemon implements Daemon {
 
