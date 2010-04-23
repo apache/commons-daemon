@@ -629,10 +629,10 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
         return FALSE;
     }
     nArgs = apxMultiSzToArrayW(hJava->hPool, lpArguments, &lpArgs);
+    lpJava->clWorker.jArgs = JNICALL_3(NewObjectArray, nArgs,
+                                       lpJava->clString.jClazz, NULL);
     if (nArgs) {
         DWORD i;
-        lpJava->clWorker.jArgs = JNICALL_3(NewObjectArray, nArgs,
-                                           lpJava->clString.jClazz, NULL);
         for (i = 0; i < nArgs; i++) {
             jstring arg = JNICALL_2(NewString, lpArgs[i], lstrlenW(lpArgs[i]));
             JNICALL_3(SetObjectArrayElement, lpJava->clWorker.jArgs, i, arg);
