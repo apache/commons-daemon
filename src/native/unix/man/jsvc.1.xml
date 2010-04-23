@@ -82,7 +82,7 @@
         <term><option>-home</option> directory</term>
         <listitem>
           <para>set the path of your JDK or JRE installation (or set
-        				the JAVA_HOME environment variable)
+                the JAVA_HOME environment variable)
           </para>
         </listitem>
       </varlistentry>
@@ -90,7 +90,7 @@
         <term><option>-version</option></term>
         <listitem>
           <para>show the current Java environment version (to check
-        				correctness of -home and -jvm. Implies -nodetach)</para>
+                correctness of -home and -jvm. Implies -nodetach)</para>
         </listitem>
       </varlistentry>
       <varlistentry>

@@ -98,8 +98,8 @@
   <target name="compile" depends="prepare"
    description="Create class files">
        <javac  srcdir="${source.home}"
-       	    source="1.3"
-       	    target="1.3"
+            source="1.3"
+            target="1.3"
            destdir="${build.home}/classes"
              debug="${compile.debug}"
        deprecation="${compile.deprecation}"
