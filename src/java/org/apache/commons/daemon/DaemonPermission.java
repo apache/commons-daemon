@@ -311,7 +311,7 @@ public final class DaemonPermission extends Permission
     public String toString()
     {
         this.setupDescription();
-        return new String(this.desc);
+        return this.desc;
     }
 
     /* ====================================================================
