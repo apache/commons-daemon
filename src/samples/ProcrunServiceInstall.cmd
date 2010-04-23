@@ -30,7 +30,7 @@ set MYPATH=%~dp0
 
 rem location of Prunsrv
 set PATH_PRUNSRV=%MYPATH%
-
+set PR_LOGPATH=%PATH_PRUNSRV%
 rem location of jarfile
 set PATH_JAR=%MYPATH%
 
@@ -41,7 +41,7 @@ rem Install the 2 services
 
 echo Installing %SERVICE_JVM%
 %PRUNSRV% //DS//%SERVICE_JVM%
-%PRUNSRV% //IS//%SERVICE_JVM% --Install
+%PRUNSRV% //IS//%SERVICE_JVM%
 
 echo Setting the parameters for %SERVICE_JVM%
 %PRUNSRV% //US//%SERVICE_JVM% --Jvm=auto --StdOutput auto --StdError auto ^
@@ -53,7 +53,7 @@ echo Installation of %SERVICE_JVM% is complete
 
 echo Installing %SERVICE_JAVA%
 %PRUNSRV% //DS//%SERVICE_JAVA%
-%PRUNSRV% //IS//%SERVICE_JAVA% --Install
+%PRUNSRV% //IS//%SERVICE_JAVA%
 
 echo Setting the parameters for %SERVICE_JAVA%
 %PRUNSRV% //US//%SERVICE_JAVA% --Jvm=auto --StdOutput auto --StdError auto ^

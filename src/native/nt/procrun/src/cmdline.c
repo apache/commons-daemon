@@ -131,6 +131,7 @@ LPAPXCMDLINE apxCmdlineParse(
             else {
                 apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %S",
                             _st_sys_argvw[1]);
+                return NULL;
             }
             s = 2;
         }
@@ -220,6 +221,14 @@ LPAPXCMDLINE apxCmdlineParse(
                 match = l + 1;
                 break;
             }
+        }
+        if (match == 0) {
+            /* --unknown option
+             *
+             */
+            apxLogWrite(APXLOG_MARK_ERROR "Unrecognized program option %S",
+                        _st_sys_argvw[i]);
+            return NULL;
         }
     }
     if (i < (DWORD)_st_sys_argc) {
