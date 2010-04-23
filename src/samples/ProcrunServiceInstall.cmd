@@ -62,3 +62,4 @@ echo Setting the parameters for %SERVICE_JAVA%
  --StopMode=java  --StopClass=ProcrunService  --StopParams=stop
 
 echo Installation of %SERVICE_JAVA% is complete
+echo Finished
