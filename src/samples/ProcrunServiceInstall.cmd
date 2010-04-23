@@ -15,7 +15,7 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
-rem Batch script for defining the ProcrunService
+rem Batch script for defining the ProcrunService (JVM and Java versions)
 
 rem Copy this file and ProcrunService.jar into the same directory as prunsrv (or adjust the paths below)
 
