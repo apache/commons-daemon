@@ -149,6 +149,8 @@ public class ProcrunService implements Runnable {
      */
     public void run() {
         log("Started thread in "+System.getProperty("user.dir"));
+        log("user.name="+System.getProperty("user.name"));
+        log("user.home="+System.getProperty("user.home"));
         while(stopFile == null || stopFile.exists()){
             try {
                 log("pausing...");
