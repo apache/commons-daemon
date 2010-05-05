@@ -19,7 +19,6 @@
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Iterator;
 
@@ -98,8 +97,7 @@ public class AloneService {
         }
     }
 
-    public void stop()
-    throws IOException, InterruptedException {
+    public void stop() {
         /* Dump a message */
         System.err.println("ServiceDaemon: stopping");
 
