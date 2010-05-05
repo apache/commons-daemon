@@ -628,7 +628,7 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
     BOOL  rv = FALSE;
 
     apxLogWrite(APXLOG_MARK_INFO "Stopping service '%S' ...",
-    		lpCmdline->szApplication);
+                lpCmdline->szApplication);
     hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
         apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
