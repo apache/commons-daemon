@@ -187,7 +187,7 @@ static APXCMDLINEOPT _options[] = {
 #define SO_JNIVFPRINTF      GET_OPT_I(36)
 #define SO_PIDFILE          GET_OPT_V(37)
 
-/* Main servic table entry
+/* Main service table entry
  * filled at run-time
  */
 static SERVICE_TABLE_ENTRYW _service_table[] = {
