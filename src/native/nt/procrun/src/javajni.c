@@ -449,7 +449,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             --sOptions;
         }
         for (i = 0; i < nOptions; i++) {
-            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", i++,
+            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", i,
                         lpJvmOptions[i].optionString);
         }
         vmArgs.options  = lpJvmOptions;
