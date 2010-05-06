@@ -408,7 +408,6 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         rv = TRUE;
     }
     else {
-        int   o = 0;
         CHAR  iB[3][64];
         LPSTR szCp;
         lpJava->iVersion = JNI_VERSION_DEFAULT;
