@@ -432,28 +432,24 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             lpJvmOptions[nOptions - sOptions].optionString = "vfprintf";
             lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniVfprintf;
             --sOptions;
-            apxLogWrite(APXLOG_MARK_DEBUG "Adding JNI vfprintf hook");
         }
         if (dwMs) {
             wsprintfA(iB[0], "-Xms%dm", dwMs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[0];
             --sOptions;
-            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++, iB[0]);
         }
         if (dwMx) {
             wsprintfA(iB[1], "-Xmx%dm", dwMx);
             lpJvmOptions[nOptions - sOptions].optionString = iB[1];
             --sOptions;
-            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++, iB[1]);
         }
         if (dwSs) {
             wsprintfA(iB[2], "-Xss%dk", dwSs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[2];
             --sOptions;
-            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++, iB[2]);
         }
         for (i = 0; i < nOptions; i++) {
-            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", o++,
+            apxLogWrite(APXLOG_MARK_DEBUG "Jvm Option[%d] %s", i++,
                         lpJvmOptions[i].optionString);
         }
         vmArgs.options  = lpJvmOptions;
