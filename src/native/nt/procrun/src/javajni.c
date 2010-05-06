@@ -380,7 +380,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
     LPAPXJAVAVM     lpJava;
     JavaVMInitArgs  vmArgs;
     JavaVMOption    *lpJvmOptions;
-    DWORD           i, nOptions, sOptions = 1;
+    DWORD           i, nOptions, sOptions = 0;
     BOOL            rv = FALSE;
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         return FALSE;
@@ -419,13 +419,17 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (bJniVfprintf)
             ++sOptions;
+        if (szClassPath && *szClassPath)
+            ++sOptions;
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
-        szCp = apxPoolAlloc(hJava->hPool, sizeof(JAVA_CLASSPATH) + lstrlenA(szClassPath));
-        lstrcpyA(szCp, JAVA_CLASSPATH);
-        lstrcatA(szCp, szClassPath);
-        lpJvmOptions[nOptions - sOptions].optionString = szCp;
-        --sOptions;
+        if (szClassPath && *szClassPath) {
+            szCp = apxPoolAlloc(hJava->hPool, sizeof(JAVA_CLASSPATH) + lstrlenA(szClassPath));
+            lstrcpyA(szCp, JAVA_CLASSPATH);
+            lstrcatA(szCp, szClassPath);
+            lpJvmOptions[nOptions - sOptions].optionString = szCp;
+            --sOptions;
+        }
         if (bJniVfprintf) {
             /* default JNI error printer */
             lpJvmOptions[nOptions - sOptions].optionString = "vfprintf";
