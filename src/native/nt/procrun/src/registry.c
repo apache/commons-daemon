@@ -705,7 +705,7 @@ apxRegistrySetStrA(APXHANDLE hRegistry, DWORD dwFrom,
             return FALSE;
     }
     else if (RegSetValueExA(hKey, szValueName, 0, dwType,
-                       (LPBYTE)szValue, lstrlenA(szValue)) != ERROR_SUCCESS)
+                       (LPBYTE)szValue, lstrlenA(szValue) + 1) != ERROR_SUCCESS)
         return FALSE;
 
     return TRUE;
@@ -743,7 +743,7 @@ apxRegistrySetStrW(APXHANDLE hRegistry, DWORD dwFrom,
     }
     else if (RegSetValueExW(hKey, szValueName, 0, dwType,
                        (LPBYTE)szValue,
-                       lstrlenW(szValue) * sizeof(WCHAR)) != ERROR_SUCCESS)
+                       (lstrlenW(szValue) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
         return FALSE;
 
     return TRUE;
@@ -836,8 +836,8 @@ LONG apxDeleteRegistryRecursive(HKEY hKeyRoot, LPCWSTR szSubKey) {
     while (rc == ERROR_SUCCESS) {
         dwSize = SIZ_BUFLEN;
         rc = RegEnumKeyExW(hKey, 0, szName, &dwSize, NULL, NULL, NULL, NULL );
-       
-        if (rc == ERROR_NO_MORE_ITEMS) {           
+
+        if (rc == ERROR_NO_MORE_ITEMS) {
             rc = RegDeleteKeyW(hKeyRoot, szSubKey);
             break;
         } else {
@@ -846,7 +846,7 @@ LONG apxDeleteRegistryRecursive(HKEY hKeyRoot, LPCWSTR szSubKey) {
                 break;   // abort when we start failing
             }
         }
-    }    
+    }
     RegCloseKey(hKey);
     return rc;
 }
@@ -889,12 +889,12 @@ apxDeleteRegistryW(LPCWSTR szRoot,
                 hKey = NULL;
                 rv |= (rc == ERROR_SUCCESS);
             }
-            if (bDeleteEmptyRoot) {  
+            if (bDeleteEmptyRoot) {
                 // will fail if there are subkeys, just like we want
                 RegDeleteKeyW(hkeySoftware, buff);
             }
             RegCloseKey(hkeySoftware);
-        } 
+        }
     }
     return rv;
 }
@@ -1078,7 +1078,7 @@ BOOL apxSetServiceDescriptionW(LPCWSTR szServiceName, LPCWSTR szDescription)
     }
 
     rc = RegSetValueExW(hKey, REGDESCRIPTION, 0, REG_SZ, (CONST BYTE *)szDescription,
-                        lstrlenW(szDescription) * sizeof(WCHAR));
+                        (lstrlenW(szDescription) + 1) * sizeof(WCHAR));
     SAFE_CLOSE_KEY(hKey);
 
     return rc == ERROR_SUCCESS;
