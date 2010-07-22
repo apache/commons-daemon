@@ -821,7 +821,7 @@ LONG apxDeleteRegistryRecursive(HKEY hKeyRoot, LPCWSTR szSubKey) {
     WCHAR szName[SIZ_BUFLEN];
     HKEY hKey = NULL;
 
-    if (ERROR_SUCCESS == RegDeleteKey(hKeyRoot, szSubKey)) {
+    if (ERROR_SUCCESS == RegDeleteKeyW(hKeyRoot, szSubKey)) {
         return ERROR_SUCCESS;
     }
 
