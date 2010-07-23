@@ -81,6 +81,7 @@ static char* eval_ppath(char *strcp, const char *pattern)
     return strcp;
 }
 
+#define JAVA_CLASSPATH      "-Djava.class.path="
 /**
  * Call glob on each PATH like string path.
  * Glob is called only if the part ends with asterisk in which
@@ -88,35 +89,38 @@ static char* eval_ppath(char *strcp, const char *pattern)
  */
 static char* eval_cpath(const char *cp)
 {
-    char *cpy = memstrcat(NULL, "-Djava.class.path=", cp);
+    char *cpy = memstrcat(NULL, JAVA_CLASSPATH, cp);
     char *gcp = NULL;
     char *pos;
     char *ptr;
 
     if (!cpy)
         return NULL;
-    ptr = cpy;
+    ptr = cpy + sizeof(JAVA_CLASSPATH) - 1;;
     while ((pos = strchr(ptr, ':'))) {
         *pos = '\0';
+        if (gcp)
+            gcp = memstrcat(gcp, ":", NULL);
+        else
+            gcp = memstrcat(NULL, JAVA_CLASSPATH, NULL);
         if ((pos > ptr) && (*(pos - 1) == '*')) {
-            if (gcp) {
-                /* Add path separator to the previous glob
-                */
-                gcp = memstrcat(gcp, ":", NULL);
-            }
             if (!(gcp = eval_ppath(gcp, ptr))) {
                 /* Error.
                 * Return the original string processed so far.
                 */
                 return cpy;
             }
-            ptr = pos + 1;
         }
+        else
+            gcp = memstrcat(gcp, ptr, NULL);
+        ptr = pos + 1;
     }
     if (*ptr) {
         size_t end = strlen(ptr);
         if (gcp)
             gcp = memstrcat(gcp, ":", NULL);
+        else
+            gcp = memstrcat(NULL, JAVA_CLASSPATH, NULL);
         if (end > 0 && ptr[end - 1] == '*') {
             /* Last path elemet ends with star
             * Do a globbing.
@@ -143,7 +147,6 @@ static arg_data *parse(int argc, char *argv[])
     arg_data *args = NULL;
     char *temp     = NULL;
     char *cmnd     = NULL;
-    int tlen       = 0;
     int x          = 0;
 
     /* Create the default command line arguments */
