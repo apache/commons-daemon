@@ -16,6 +16,8 @@
 
 /* @version $Id$ */
 #include "jsvc.h"
+#include <limits.h>
+#include <glob.h>
 
 /* Return the argument of a command line option */
 static char *optional(int argc, char *argv[], int argi)
@@ -29,6 +31,110 @@ static char *optional(int argc, char *argv[], int argi)
     if (argv[argi][0] == '-')
         return NULL;
     return strdup(argv[argi]);
+}
+
+static char *memstrcat(char *ptr, const char *str, const char *add)
+{
+    size_t nl = 1;
+    int   nas = ptr == NULL;
+    if (ptr)
+        nl += strlen(ptr);
+    if (str)
+        nl += strlen(str);
+    if (add)
+        nl += strlen(add);
+    ptr = (char *)realloc(ptr, nl);
+    if (ptr) {
+        if (nas)
+            *ptr = '\0';
+        if (str)
+            strcat(ptr, str);
+        if (add)
+            strcat(ptr, add);
+    }
+    return ptr;
+}
+
+static char* eval_ppath(char *strcp, const char *pattern)
+{
+    glob_t globbuf;
+    char   jars[PATH_MAX + 1];
+
+    if (strlen(pattern) > (sizeof(jars) - 5)) {
+        return memstrcat(strcp, pattern, NULL);
+    }
+    strcpy(jars, pattern);
+    strcat(jars, ".jar");
+    memset(&globbuf, 0, sizeof(glob_t));
+    if (glob(jars, GLOB_ERR, NULL, &globbuf) == 0) {
+        size_t n;
+        for (n = 0; n < globbuf.gl_pathc - 1; n++) {
+            strcp = memstrcat(strcp, globbuf.gl_pathv[n], ":");
+            if (strcp == NULL) {
+                globfree(&globbuf);
+                return NULL;
+            }
+        }
+        strcp = memstrcat(strcp, globbuf.gl_pathv[n], NULL);
+        globfree(&globbuf);
+    }
+    return strcp;
+}
+
+/**
+ * Call glob on each PATH like string path.
+ * Glob is called only if the part ends with asterisk in which
+ * case asterisk is replaced by *.jar when searching
+ */
+static char* eval_cpath(const char *cp)
+{
+    char *cpy = memstrcat(NULL, "-Djava.class.path=", cp);
+    char *gcp = NULL;
+    char *pos;
+    char *ptr;
+
+    if (!cpy)
+        return NULL;
+    ptr = cpy;
+    while ((pos = strchr(ptr, ':'))) {
+        *pos = '\0';
+        if ((pos > ptr) && (*(pos - 1) == '*')) {
+            if (gcp) {
+                /* Add path separator to the previous glob
+                */
+                gcp = memstrcat(gcp, ":", NULL);
+            }
+            if (!(gcp = eval_ppath(gcp, ptr))) {
+                /* Error.
+                * Return the original string processed so far.
+                */
+                return cpy;
+            }
+            ptr = pos + 1;
+        }
+    }
+    if (*ptr) {
+        size_t end = strlen(ptr);
+        if (gcp)
+            gcp = memstrcat(gcp, ":", NULL);
+        if (end > 0 && ptr[end - 1] == '*') {
+            /* Last path elemet ends with star
+            * Do a globbing.
+            */
+            gcp = eval_ppath(gcp, ptr);
+        }
+        else {
+            /* Just add the part */
+            gcp = memstrcat(gcp, ptr, NULL);
+        }
+    }
+    /* Free the allocated copy */
+    if (gcp) {
+        free(cpy);
+        return gcp;
+    }
+    else
+        return cpy;
 }
 
 /* Parse command line arguments */
@@ -86,9 +192,12 @@ static arg_data *parse(int argc, char *argv[])
                 log_error("Invalid classpath specified");
                 return NULL;
             }
-            tlen = strlen(temp) + 20;
-            args->opts[args->onum] = (char *)malloc(tlen * sizeof(char));
-            sprintf(args->opts[args->onum], "-Djava.class.path=%s", temp);
+            args->opts[args->onum] = eval_cpath(temp);
+            if (args->opts[args->onum] == NULL) {
+                log_error("Invalid classpath specified");
+                return NULL;
+            }
+            free(temp);
             args->onum++;
 
         }
