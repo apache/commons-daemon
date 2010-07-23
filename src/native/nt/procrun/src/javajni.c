@@ -370,6 +370,141 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
     return rv;
 }
 
+static LPSTR __apxStrIndexA(LPCSTR szStr, int nCh)
+{
+    LPSTR pStr;
+
+    for (pStr = (LPSTR)szStr; *pStr; pStr++) {
+        if (*pStr == nCh)
+            return pStr;
+    }
+    return NULL;
+}
+
+static LPSTR __apxStrnCatA(APXHANDLE hPool, LPSTR pOrg, LPCSTR szStr, LPCSTR szAdd)
+{
+    DWORD len = 1;
+    DWORD nas = pOrg == NULL;
+    if (pOrg)
+        len += lstrlenA(pOrg);
+    if (szStr)
+        len += lstrlenA(szStr);
+    if (szAdd)
+        len += lstrlenA(szAdd);
+    pOrg = (LPSTR)apxPoolRealloc(hPool, pOrg, len);
+    if (pOrg) {
+        if (nas)
+            *pOrg = '\0';
+        if (szStr)
+            lstrcatA(pOrg, szStr);
+        if (szAdd)
+            lstrcatA(pOrg, szAdd);
+    }
+    return pOrg;
+}
+
+static LPSTR __apxEvalPathPart(APXHANDLE hPool, LPSTR pStr, LPCSTR szPattern)
+{
+    HANDLE           hFind;
+    WIN32_FIND_DATAA stGlob;
+    char       szJars[MAX_PATH + 1];
+    char       szPath[MAX_PATH + 1];
+
+    if (lstrlenA(szPattern) > (sizeof(szJars) - 5)) {
+        return __apxStrnCatA(hPool, pStr, szPattern, NULL);
+    }
+    lstrcpyA(szJars, szPattern);
+    szPath[0] = ';';
+    szPath[1] = '\0';
+    lstrcatA(szPath, szPattern);
+    lstrcatA(szJars, ".jar");
+    /* Remove the trailing asterisk
+     */
+    szPath[lstrlenA(szPath) - 1] = '\0';
+    if ((hFind = FindFirstFileA(szJars, &stGlob)) == INVALID_HANDLE_VALUE) {
+        /* Find failed
+         */
+        return pStr;
+    }
+    pStr = __apxStrnCatA(hPool, pStr, &szPath[1], stGlob.cFileName);
+    if (pStr == NULL) {
+        FindClose(hFind);
+        return NULL;
+    }
+    while (FindNextFileA(hFind, &stGlob) != 0) {
+        pStr = __apxStrnCatA(hPool, pStr, szPath, stGlob.cFileName);
+        if (pStr == NULL)
+            break;
+    }
+    FindClose(hFind);
+    return pStr;
+}
+
+/**
+ * Call glob on each PATH like string path.
+ * Glob is called only if the part ends with asterisk in which
+ * case asterisk is replaced by *.jar when searching
+ */
+static LPSTR __apxEvalClasspath(APXHANDLE hPool, LPCSTR szCp)
+{
+    LPSTR pCpy = __apxStrnCatA(hPool, NULL, JAVA_CLASSPATH, szCp);
+    LPSTR pGcp = NULL;
+    LPSTR pPos;
+    LPSTR pPtr;
+
+    if (!pCpy)
+        return NULL;
+    pPtr = pCpy + sizeof(JAVA_CLASSPATH) - 1;
+    while ((pPos = __apxStrIndexA(pPtr, ';'))) {
+        *pPos = '\0';
+        if (pGcp)
+            pGcp = __apxStrnCatA(hPool, pGcp, ";", NULL);
+        else
+            pGcp = __apxStrnCatA(hPool, NULL, JAVA_CLASSPATH, NULL);
+        if ((pPos > pPtr) && (*(pPos - 1) == '*')) {
+            if (!(pGcp = __apxEvalPathPart(hPool, pGcp, pPtr))) {
+                /* Error.
+                * Return the original string processed so far.
+                */
+                return pCpy;
+            }
+        }
+        else {
+            /* Standard path element */
+            if (!(pGcp = __apxStrnCatA(hPool, pGcp, pPtr, NULL))) {
+                /* Error.
+                * Return the original string processed so far.
+                */
+                return pCpy;
+            }
+        }
+        pPtr = pPos + 1;
+    }
+    if (*pPtr) {
+        int end = lstrlenA(pPtr);
+        if (pGcp)
+            pGcp = __apxStrnCatA(hPool, pGcp, ";", NULL);
+        else
+            pGcp = __apxStrnCatA(hPool, NULL, JAVA_CLASSPATH, NULL);
+        if (end > 0 && pPtr[end - 1] == '*') {
+            /* Last path elemet ends with star
+             * Do a globbing.
+             */
+            pGcp = __apxEvalPathPart(hPool, pGcp, pPtr);
+        }
+        else {
+            /* Just add the part */
+            pGcp = __apxStrnCatA(hPool, pGcp, pPtr, NULL);
+        }
+    }
+    /* Free the allocated copy */
+    if (pGcp) {
+        apxFree(pCpy);
+        return pGcp;
+    }
+    else
+        return pCpy;
+}
 
 /* ANSI version only */
 BOOL
@@ -409,7 +544,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
     }
     else {
         CHAR  iB[3][64];
-        LPSTR szCp;
+        LPSTR szCp = NULL;
         lpJava->iVersion = JNI_VERSION_DEFAULT;
         if (dwMs)
             ++sOptions;
@@ -424,9 +559,11 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
         if (szClassPath && *szClassPath) {
-            szCp = apxPoolAlloc(hJava->hPool, sizeof(JAVA_CLASSPATH) + lstrlenA(szClassPath));
-            lstrcpyA(szCp, JAVA_CLASSPATH);
-            lstrcatA(szCp, szClassPath);
+            szCp = __apxEvalClasspath(hJava->hPool, szClassPath);
+            if (szCp == NULL) {
+                apxLogWrite(APXLOG_MARK_ERROR "Invalid classpath %s", szClassPath);
+                return FALSE;
+            }
             lpJvmOptions[nOptions - sOptions].optionString = szCp;
             --sOptions;
         }
