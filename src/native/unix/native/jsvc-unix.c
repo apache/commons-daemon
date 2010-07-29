@@ -156,7 +156,8 @@ static cap_value_t caps_std[] = {
     CAP_NET_BIND_SERVICE,
     CAP_SETUID,
     CAP_SETGID,
-    CAP_DAC_READ_SEARCH
+    CAP_DAC_READ_SEARCH,
+    CAP_DAC_OVERRIDE
 };
 
 static cap_value_t caps_min[] = {
@@ -188,10 +189,15 @@ static int set_caps(int cap_type)
     cap_set_flag(c, CAP_INHERITABLE, ncap, caps, CAP_SET);
     cap_set_flag(c, CAP_PERMITTED,   ncap, caps, CAP_SET);
     if (cap_set_proc(c) != 0) {
-        log_error("failed setting capabilities in set_caps");
+        log_error("failed setting %s capabilities.",
+                  cap_type == CAPS ? "default" : "min");
         return -1;
     }
     cap_free(c);
+    if (cap_type == CAPS)
+        log_debug("increased capability set.");
+    else
+        log_debug("decreased capability set to min required.");
     return 0;
 }
 
