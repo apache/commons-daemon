@@ -31,6 +31,9 @@
 #include <sys/syscall.h>
 #define _LINUX_FS_H
 #include <linux/capability.h>
+#ifdef HAVE_LIBCAP
+#include <sys/capability.h>
+#endif
 #endif
 #include <time.h>
 
@@ -148,6 +151,51 @@ static int set_user_group(char *user, int uid, int gid)
 
 /* Set linux capability, user and group */
 #ifdef OS_LINUX
+#ifdef HAVE_LIBCAP
+static cap_value_t caps_std[] = {
+    CAP_NET_BIND_SERVICE,
+    CAP_SETUID,
+    CAP_SETGID,
+    CAP_DAC_READ_SEARCH
+};
+
+static cap_value_t caps_min[] = {
+    CAP_NET_BIND_SERVICE,
+    CAP_DAC_READ_SEARCH,
+    CAP_DAC_OVERRIDE
+};
+
+#define CAPS     1
+#define CAPSMIN  2
+
+static int set_caps(int cap_type)
+{
+    cap_t c;
+    int ncap;
+    cap_value_t *caps;
+
+    if (cap_type == CAPS) {
+        ncap = sizeof(caps_std)/sizeof(cap_value_t);
+        caps = caps_std;
+    }
+    else {
+        ncap = sizeof(caps_min)/sizeof(cap_value_t);
+        caps = caps_min;
+    }
+    c = cap_init();
+    cap_clear(c);
+    cap_set_flag(c, CAP_EFFECTIVE,   ncap, caps, CAP_SET);
+    cap_set_flag(c, CAP_INHERITABLE, ncap, caps, CAP_SET);
+    cap_set_flag(c, CAP_PERMITTED,   ncap, caps, CAP_SET);
+    if (cap_set_proc(c) != 0) {
+        log_error("failed setting capabilities in set_caps");
+        return -1;
+    }
+    cap_free(c);
+    return 0;
+}
+
+#else /* !HAVE_LIBCAP */
 /* CAPSALL is to allow to read/write at any location */
 #define CAPSALL (1 << CAP_NET_BIND_SERVICE) +   \
                 (1 << CAP_SETUID) +             \
@@ -169,24 +217,27 @@ static int set_user_group(char *user, int uid, int gid)
 #define CAPSMIN (1 << CAP_NET_BIND_SERVICE) +   \
                 (1 << CAP_DAC_READ_SEARCH)
 
+#define LEGACY_CAP_VERSION  0x19980330
 static int set_caps(int caps)
 {
     struct __user_cap_header_struct caphead;
     struct __user_cap_data_struct   cap;
 
     memset(&caphead, 0, sizeof caphead);
-    caphead.version = _LINUX_CAPABILITY_VERSION;
+    caphead.version = LEGACY_CAP_VERSION;
     caphead.pid = 0;
     memset(&cap, 0, sizeof cap);
     cap.effective = caps;
     cap.permitted = caps;
     cap.inheritable = caps;
     if (syscall(__NR_capset, &caphead, &cap) < 0) {
-        log_error("syscall failed in set_caps");
+        log_error("set_caps: failed to set capabilities");
+        log_error("check that your kernel supports capabilities");
         return -1;
     }
     return 0;
 }
+#endif
 
 static int linuxset_user_group(char *user, int uid, int gid)
 {
