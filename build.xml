@@ -59,7 +59,7 @@
   <property name="component.title"         value="Java Daemons"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.0.3-dev"/>
+  <property name="component.version"       value="1.0.3"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -177,7 +177,7 @@
     <javac  srcdir="${test.home}"
            destdir="${build.home}/tests"
              debug="${compile.debug}"
-            source="${compile.source}" 
+            source="${compile.source}"
             target="${compile.target}"
        deprecation="${compile.deprecation}"
           optimize="${compile.optimize}">
@@ -290,7 +290,7 @@
             <attribute name="Specification-Version" value="${component.version}"/>
             <attribute name="Specification-Vendor" value="Apache Software Foundation"/>
             <attribute name="Implementation-Title" value="Commons Daemon"/>
-            <attribute name="Implementation-Version" value="${component.version}"/> 
+            <attribute name="Implementation-Version" value="${component.version}"/>
             <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
             <attribute name="Implementation-Vendor-Id" value="org.apache"/>
             <attribute name="X-Compile-Source-JDK" value="${compile.source}"/>
