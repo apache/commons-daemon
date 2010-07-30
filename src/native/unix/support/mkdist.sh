@@ -28,7 +28,7 @@ for i in $extfiles
 do
   cp ../../../$i .
 done
-tar cfz $verdst.tar.gz $extfiles
+tar cfz $verdst.tar.gz jsvc $extfiles
 md5sum --binary $verdst.tar.gz > $verdst.tar.gz.md5
 sha1sum --binary $verdst.tar.gz > $verdst.tar.gz.sha1
 rm $extfiles
