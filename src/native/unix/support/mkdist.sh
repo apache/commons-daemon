@@ -22,7 +22,8 @@ patch_sed='/#define.*JSVC_PATCH_VERSION/s/^[^0-9]*\([0-9]*\).*$/\1/p'
 vmajor="`sed -n $major_sed $topdir/native/version.h`"
 vminor="`sed -n $minor_sed $topdir/native/version.h`"
 vpatch="`sed -n $patch_sed $topdir/native/version.h`"
-verdst="commons-daemon-$vmajor.$vminor.$vpatch"
+osname="`uname -s | tr [A-Z] [a-z]`"
+verdst="commons-daemon-$vmajor.$vminor.$vpatch-bin-$osname-$1"
 extfiles="LICENSE.txt NOTICE.txt RELEASE-NOTES.txt"
 for i in $extfiles
 do
