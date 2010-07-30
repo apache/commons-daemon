@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: jsvc-unix.c 980512 2010-07-29 17:10:17Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 #include <signal.h>

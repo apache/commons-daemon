@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: home.c 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 /* Check if a path is a directory */

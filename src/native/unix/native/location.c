@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: location.c 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since

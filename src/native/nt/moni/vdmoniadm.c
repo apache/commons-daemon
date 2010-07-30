@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: vdmoniadm.c 909069 2010-02-11 16:43:36Z mturk $ */
+/* @version $Id$ */
 
 #include <windows.h>       /* required for all Windows applications */
 #include <stdio.h>         /* for sprintf                           */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: signals.c 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 
 /*
  * as Windows does not support signal, jsvc uses events to emulate them.

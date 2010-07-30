@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: jsvc.h 921756 2010-03-11 09:38:58Z mturk $ */
+/* @version $Id$ */
 #ifndef __JSVC_H__
 #define __JSVC_H__
 

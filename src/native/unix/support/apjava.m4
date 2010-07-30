@@ -17,7 +17,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apjava.m4 480469 2006-11-29 08:22:04Z bayard $
+dnl Version $Id$
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN([AP_PROG_JAVAC_WORKS],[

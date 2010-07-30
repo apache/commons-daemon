@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: arguments.c 967041 2010-07-23 10:59:51Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 #include <limits.h>
 #include <glob.h>

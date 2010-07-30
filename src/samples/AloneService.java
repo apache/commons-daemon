@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: AloneService.java 941216 2010-05-05 09:21:53Z sebb $ */
+/* @version $Id$ */
 
 import java.io.File;
 import java.io.FileOutputStream;

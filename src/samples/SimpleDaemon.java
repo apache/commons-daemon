@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleDaemon.java 937350 2010-04-23 16:03:39Z sebb $ */
+/* @version $Id$ */
 
 import java.io.File;
 import java.io.FileOutputStream;

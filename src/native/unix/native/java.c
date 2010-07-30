@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: java.c 923123 2010-03-15 09:20:00Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 #ifdef OS_CYGWIN

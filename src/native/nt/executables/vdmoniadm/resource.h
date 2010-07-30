@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: resource.h 480469 2006-11-29 08:22:04Z bayard $ */
+/* @version $Id$ */
 /* Used by vdmoniadm.rc */
 #define NO_ACCESS                       1
 #define NO_ACCESS_MONI                  2

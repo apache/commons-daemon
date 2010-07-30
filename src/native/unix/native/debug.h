@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: debug.h 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #ifndef __JSVC_DEBUG_H__
 #define __JSVC_DEBUG_H__
 

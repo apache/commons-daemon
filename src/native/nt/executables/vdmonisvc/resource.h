@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: resource.h 480469 2006-11-29 08:22:04Z bayard $ */
+/* @version $Id$ */
 /* Used by vdmonisvc.rc */
 
 /* Next default values for new objects */

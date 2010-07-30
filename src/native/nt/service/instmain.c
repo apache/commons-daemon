@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: instmain.c 480469 2006-11-29 08:22:04Z bayard $ */
+/* @version $Id$ */
 
 /*
  * jsvc.exe install program, create the service JavaService

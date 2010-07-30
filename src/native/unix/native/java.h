@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: java.h 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #ifndef __JSVC_JAVA_H__
 #define __JSVC_JAVA_H__
 

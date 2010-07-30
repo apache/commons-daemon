@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt 980519 2010-07-29 17:32:38Z mturk $
+$Id$
 
             Commons Daemon Package
                Version 1.0.3

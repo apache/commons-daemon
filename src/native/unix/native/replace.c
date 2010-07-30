@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: replace.c 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 /* Replace all occurrences of a string in another */

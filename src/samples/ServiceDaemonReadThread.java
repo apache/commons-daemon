@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: ServiceDaemonReadThread.java 480469 2006-11-29 08:22:04Z bayard $ */
+/* @version $Id$ */
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.Thread;

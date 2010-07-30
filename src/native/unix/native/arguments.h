@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: arguments.h 923078 2010-03-15 06:35:01Z mturk $ */
+/* @version $Id$ */
 #ifndef __JSVC_ARGUMENTS_H__
 #define __JSVC_ARGUMENTS_H__
 

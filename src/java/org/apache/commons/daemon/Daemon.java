@@ -29,7 +29,7 @@ package org.apache.commons.daemon;
  * fashion.
  * </p>
  * @author Pier Fumagalli
- * @version 1.0 <i>(CVS $Revision: 925054 $)</i>
+ * @version 1.0 <i>(CVS $Revision$)</i>
  */
 public interface Daemon
 {

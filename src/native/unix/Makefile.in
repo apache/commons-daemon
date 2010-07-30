@@ -16,7 +16,7 @@
 #
 
 # @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-# @version $Id: Makefile.in 480475 2006-11-29 08:31:47Z bayard $
+# @version $Id$
 
 SUBDIRS = native
 

@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id: dso-dyld.c 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 #ifdef DSO_DYLD

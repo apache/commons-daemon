@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 /*
  * Used by jsvc for Daemon management.
  *
- * @version 1.0 <i>(SVN $Revision: 925053 $)</i>
+ * @version 1.0 <i>(SVN $Revision$)</i>
  */
 public final class DaemonLoader
 {

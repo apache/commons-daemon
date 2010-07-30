@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 # @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-# @version $Id: Makefile.in 909069 2010-02-11 16:43:36Z mturk $
+# @version $Id$
 
 include ../Makedefs
 

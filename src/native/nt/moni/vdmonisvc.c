@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: vdmonisvc.c 909069 2010-02-11 16:43:36Z mturk $ */
+/* @version $Id$ */
 
 /* jsvc monitor service module:
  * Implements the body of the service.

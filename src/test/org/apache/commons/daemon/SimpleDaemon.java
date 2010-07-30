@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleDaemon.java 914997 2010-02-22 18:08:51Z sebb $ */
+/* @version $Id$ */
 
 package org.apache.commons.daemon;
 

@@ -17,7 +17,7 @@ dnl
 
 dnl -------------------------------------------------------------------------
 dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-dnl Version $Id: apsupport.m4 751284 2009-03-07 15:41:45Z markt $
+dnl Version $Id$
 dnl -------------------------------------------------------------------------
 
 AC_DEFUN(AP_SUPPORTED_HOST,[

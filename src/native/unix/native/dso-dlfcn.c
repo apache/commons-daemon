@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: dso-dlfcn.c 921765 2010-03-11 10:03:32Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 #ifdef DSO_DLFCN

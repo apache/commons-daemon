@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* @version $Id: help.c 923087 2010-03-15 07:00:01Z mturk $ */
+/* @version $Id$ */
 #include "jsvc.h"
 
 void help(home_data *data)
