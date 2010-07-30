@@ -1,0 +1,562 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<document>
+ <properties>
+  <title>Daemon : Procrun</title>
+  <author email="mturk@apache.org">Mladen Turk</author>
+ </properties>
+
+<body>
+<section name="Introduction">
+<p>
+    Procrun is a set of applications that allow Windows users to wrap 
+    (mostly) Java applications (e.g. Tomcat) as a Windows service.
+    <br></br>
+    The service can be set to automatically start when the machine boots 
+    and will continue to run with no user logged onto the machine.
+</p> 
+</section>
+
+<section name="Procrun monitor application">
+<p>
+    <b>Prunmgr</b> is a GUI application for monitoring and configuring procrun
+    services.
+</p>    
+<p>
+    Each command line directive is in the form of <b>//XX[//ServiceName]</b>
+</p>
+<p>
+    If the <code>//ServiceName</code> parameter is omitted, then the service name is
+    assumed to be the name of the file. 
+    <br/>
+    The Prunsrv application behaves in the same way,
+    so to allow both applications to reside in the same directory, the Prunmgr application
+    will remove a trailing <b>w</b> (lower-case w) from the name.
+    <br/>
+    For example if the Prunmgr application is renamed as <code>TestService.exe</code>
+    - or as <code>TestServicew.exe</code> -
+    then the default service name is <code>TestService</code>.
+</p>
+    <p>The available command line options are:</p>
+<p> 
+    <table>
+    <tr><th>//ES</th>
+        <td>Edit service configuration</td>
+        <td>This is the default operation. It is called if the no option is
+            provided.
+            Starts the GUI application which allows the service configuration 
+            to be modified, started and stopped.
+        </td>
+    </tr>
+    <tr><th>//MS</th>
+        <td>Monitor service</td>
+        <td>Starts the GUI application and minimizes it to the system tray. 
+        </td>
+    </tr>
+    <tr><th>//MR</th>
+        <td>Monitor &amp; run service</td>
+        <td>Starts the GUI application and minimizes it to the system tray.
+            Start the service if it is not currently running. 
+        </td>
+    </tr>
+    <tr><th>//MQ</th>
+        <td>Monitor Quit</td>
+        <td>Stop any running monitor for the service. 
+        </td>
+    </tr>
+    </table>
+</p>
+</section>
+
+<section name="Procrun service application">
+<p>
+    <b>Prunsrv</b> is a service application for running applications as services.
+    It can convert any application (not just Java applications) to run as a service.
+</p>
+
+<subsection name="Command line arguments">
+<p>
+    Each command line directive is in the form of <b>//XX[//ServiceName]</b>
+</p>
+<p>
+    If the <code>//ServiceName</code> parameter is omitted, then the service name is
+    assumed to be the name of the file.
+    <br/>
+    For example if the application is renamed as <code>TestService.exe</code>,
+    then the default service name is <code>TestService</code>.
+</p>
+    <p>The available command line options are:</p>
+<p> 
+    <table>
+    <tr><th>//TS</th>
+        <td>Run the service as a console application</td>
+        <td>This is the default operation. It is called if the no option is provided.
+        </td>
+    </tr>
+    <tr><th>//RS</th>
+        <td>Run the service</td>
+        <td>Called only from ServiceManager</td>
+    </tr>
+    <tr><th>//SS</th>
+        <td>Stop the service</td>
+        <td></td>
+    </tr>
+    <tr><th>//US</th>
+        <td>Update service parameters</td>
+        <td></td>
+    </tr>
+    <tr><th>//IS</th>
+        <td>Install service</td>
+        <td></td>
+    </tr>
+    <tr><th>//DS</th>
+        <td>Delete service</td>
+        <td>Stops the service first if it is currently running</td>
+    </tr>        
+    <tr><th>//PP[//seconds]</th>
+        <td>Pause</td>
+        <td>Default is 60 seconds</td>
+    </tr>        
+    <tr><th>//VS</th>
+        <td>Version</td>
+        <td>Print version and exit (since version 1.0.3)</td>
+    </tr>        
+    <tr><th>//?</th>
+        <td>Help</td>
+        <td>Print usage and exit (since version 1.0.3)</td>
+    </tr>        
+    </table>
+</p> 
+</subsection>
+<subsection name="Command line parameters">
+<p>
+    Each command parameter is prefixed with <b>--</b>.
+    If an environment variable exists with the same name as command line parameter but
+    prefixed with <code>PR_</code> it will take precedence.
+    For example:
+<source>set PR_CLASSPATH=xx.jar</source>
+</p>    
+<p>is equivalent to providing
+<source>--Classpath=xx.jar</source>
+</p>
+<p> as a command line parameter.</p>
+<p>
+If a parameter is repeated, then normally the last value takes precedence.
+However some parameters can take multiple values - for example StartParams and JvmOption.
+If these parameters are prefixed with <b>++</b>, then the value will be appended to the existing value.
+For example:
+<source>
+--Startup=manual --Startup=auto --JvmOption=-Done=1 ++JvmOption=-Dtwo=2
+</source>
+will result in the following values being used:
+<source>
+Startup:
+auto
+
+JvmOption:
+-Done=1
+-Dtwo=2
+</source>
+<br/>
+Only multi-valued parameters support this; they are indicated in the table below by <b><code>++</code></b>.
+<br></br>
+If <b><code>++</code></b> is used for a parameter that does not support multiple values,
+then it is treated the same as <b>--</b>. No error is reported.
+</p>
+<p> 
+    <table>
+    <tr>
+    <th>ParameterName</th>
+    <th>Default</th>
+    <th>Description</th>
+    </tr> 
+    <tr>
+    <td>--Description</td>
+    <td></td>
+    <td>Service name description (maximum 1024 characters)</td>
+    </tr>
+    <tr>
+    <td>--DisplayName</td>
+    <td>ServiceName</td>
+    <td>Service display name</td>
+    </tr>
+    <tr>
+    <td>--Install</td>
+    <td>procrun.exe //RS//ServiceName</td>
+    <td>Install image</td>
+    </tr>
+    <tr>
+    <td>--Startup</td>
+    <td>manual</td>
+    <td>Service startup mode can be either <b>auto</b> or <b>manual</b></td>
+    </tr>
+    <tr>
+    <td>--Type</td>
+    <td></td>
+    <td>Service type can be <b>interactive</b> to allow the service to interact with the desktop.
+    Use this option only with Local system accounts.</td>
+    </tr>
+    <tr>
+    <td>++DependsOn</td>
+    <td></td>
+    <td>List of services that this service depends on. Dependent services
+        are separated using either <b>#</b> or <b>;</b> characters</td>
+    </tr>
+    <tr>
+    <td>++Environment</td>
+    <td></td>
+    <td>List of environment variables that will be provided to the service
+        in the form <b>key=value</b>. They are separated using either
+        <b>#</b> or <b>;</b> characters</td>
+    </tr>
+    <tr>
+    <td>--User</td>
+    <td></td>
+    <td>User account used for running executable. It is used only for
+        StartMode <b>Java</b> or <b>exe</b> and enables running applications
+        as a service under an account without the LogonAsService privilege.</td>
+    </tr>
+    <tr>
+    <td>--Password</td>
+    <td></td>
+    <td>Password for user account set by --User parameter</td>
+    </tr>
+    <tr>
+    <td>--ServiceUser</td>
+    <td></td>
+    <td>Specifies the name of the account under which the service should run.
+        Use an account name in the form <i>DomainName\UserName</i>.
+        The service process will be logged on as this user.
+        if the account belongs to the built-in domain, you can specify <i>.\UserName</i> 
+    </td>
+    </tr>
+    <tr>
+    <td>--ServicePassword</td>
+    <td></td>
+    <td>Password for user account set by --ServiceUser parameter</td>
+    </tr>
+    <tr>
+    <td>--JavaHome</td>
+    <td>JAVA_HOME</td>
+    <td>Set a different JAVA_HOME than defined by JAVA_HOME environment
+        variable</td>
+    </tr>
+    <tr>
+    <td>--Jvm</td>
+    <td>auto</td>
+    <td>Use either <b>auto</b> or specify the full path to the <b>jvm.dll</b>.
+        You can use environment variable expansion here.</td>
+    </tr>
+    <tr>
+    <td>++JvmOptions</td>
+    <td>-Xrs</td>
+    <td>List of options in the form of <b>-D</b> or <b>-X</b> that will be
+        passed to the JVM. The options are separated using either
+        <b>#</b> or <b>;</b> characters. if you need to embed either # or ;
+        character put them inside single quotes. (Not used in <b>exe</b> mode.)</td>
+    </tr>
+    <tr>
+    <td>--Classpath</td>
+    <td></td>
+    <td>Set the Java classpath. (Not used in <b>exe</b> mode.)</td>
+    </tr>
+    <tr>
+    <td>--JvmMs</td>
+    <td></td>
+    <td>Initial memory pool size in MB. (Not used in <b>exe</b> mode.)</td>
+    </tr>
+    <tr>
+    <td>--JvmMx</td>
+    <td></td>
+    <td>Maximum memory pool size in MB. (Not used in <b>exe</b> mode.)</td>
+    </tr>
+    <tr>
+    <td>--JvmSs</td>
+    <td></td>
+    <td>Thread stack size in KB. (Not used in <b>exe</b> mode.)</td>
+    </tr>
+    <tr>
+    <td>--StartMode</td>
+    <td></td>
+    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b>.
+    The modes are:
+    <ul>
+    <li>jvm - start Java in-process. Depends on jvm.dll, see <b>--Jvm</b>.</li>
+    <li>Java - same as exe, but automatically uses the default Java executable</li>
+    <li>exe - run the image as a separate process</li>
+    </ul>
+    </td>
+    </tr>
+    <tr>
+    <tr>
+    <td>--StartImage</td>
+    <td></td>
+    <td>Executable that will be run. Only applies to <b>exe</b> mode.</td>
+    </tr>
+    <tr>
+    <td>--StartPath</td>
+    <td></td>
+    <td>Working path for the start image executable. Does not apply to <b>jvm</b> mode.</td>
+    </tr>
+    <tr>
+    <td>--StartClass</td>
+    <td></td>
+    <td>Class that contains the startup method.
+    Applies to the <b>jvm</b> and <b>Java</b> modes.  (Not used in <b>exe</b> mode.)
+    </td>
+    </tr>
+    <tr>
+    <td>--StartMethod</td>
+    <td>main</td>
+    <td>Name of method to be called when service is started.
+    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    Only applies to <b>jvm</b> mode - in <b>Java</b> mode, the <b>main</b> method is always used.
+    <br />
+    <b>Note:</b> in <code>jvm</code> mode, the start method should not return until the stop method
+    has been called.
+    </td>
+    </tr>
+    <tr>
+    <td>++StartParams</td>
+    <td></td>
+    <td>List of parameters that will be passed to either StartImage or
+        StartClass. Parameters are separated using either <b>#</b> or
+        <b>;</b> character.</td>
+    </tr>
+    <tr>
+    <td>--StopMode</td>
+    <td></td>
+    <td>One of <b>jvm</b>, <b>Java</b> or <b>exe</b>.
+    See <b>--StartMode</b> for further details.
+    </td>
+    </tr>
+    <td>--StopImage</td>
+    <td></td>
+    <td>Executable that will be run on Stop service signal. Only applies to <b>exe</b> mode.</td>
+    </tr>
+    <tr>
+    <td>--StopPath</td>
+    <td></td>
+    <td>Working path for the stop image executable. Does not apply to <b>jvm</b> mode.</td>
+    </tr>
+    <tr>
+    <td>--StopClass</td>
+    <td></td>
+    <td>Class that will be used on Stop service signal.
+    Applies to the <b>jvm</b> and <b>Java</b> modes.
+    </td>
+    </tr>
+    <tr>
+    <td>--StopMethod</td>
+    <td>main</td>
+    <td>Name of method to be called when service is stopped.
+    It must be <code>static void</code> and have argument <code>(String args[])</code>.
+    Only applies to <b>jvm</b> mode.
+    In <b>Java</b> mode, the <b>main</b> method is always used.
+    </td>
+    </tr>
+    <tr>
+    <td>++StopParams</td>
+    <td></td>
+    <td>List of parameters that will be passed to either StopImage or
+        StopClass. Parameters are separated using either <b>#</b> or
+        <b>;</b> character.</td>
+    </tr>
+    <tr>
+    <td>--StopTimeout</td>
+    <td>No Timeout</td>
+    <td>Defines the timeout in seconds that procrun waits for service to
+        exit gracefully.</td>
+    </tr>
+    <tr>
+    <td>--LogPath</td>
+    <td>%SystemRoot%\System32\LogFiles\Apache</td>
+    <td>Defines the path for logging. Creates the directory if necessary.</td>
+    </tr>
+    <tr>
+    <td>--LogPrefix</td>
+    <td>commons-daemon</td>
+    <td>Defines the service log filename prefix. The log file is created in the LogPath directory with
+    <code>.YEAR-MONTH-DAY.log</code> suffix</td>
+    </tr>
+    <tr>
+    <td>--LogLevel</td>
+    <td>Info</td>
+    <td>Defines the logging level and can be either <b>Error</b>,
+        <b>Info</b>, <b>Warn</b> or <b>Debug</b></td>. (Case insensitive).
+    </tr>
+    <tr>
+    <td>--LogJniMessages</td>
+    <td>0</td>
+    <td>Set this non-zero (e.g. 1) to capture JVM jni debug messages in the procrun log file.
+    Is not needed if stdout/stderr redirection is being used.
+    <!-- TODO: what if only one of stdout/stderr is being redirected? -->
+    Only applies to <b>jvm</b> mode.
+    </td>
+    </tr>
+    <tr>
+    <td>--StdOutput</td>
+    <td></td>
+    <td>Redirected stdout filename. If named <b>auto</b> file is created
+    inside <b>LogPath</b> with the name <b>service-stdout.YEAR-MONTH-DAY.log</b>.</td>
+    </tr>
+    <tr>
+    <td>--StdError</td>
+    <td></td>
+    <td>Redirected stderr filename. If named <b>auto</b> file is created
+    in the <b>LogPath</b> directory with the name <b>service-stderr.YEAR-MONTH-DAY.log</b>.</td>
+    </tr>    
+    <tr>
+    <td>--PidFile</td>
+    <td></td>
+    <td>Defines the file name for storing the running process id.
+    Actual file is created in the <b>LogPath</b> directory</td>
+    </tr>    
+    </table>
+</p> 
+</subsection>
+<subsection name="Installing services">
+<p>
+To install the service, you need to use the <b>//IS</b> parameter.
+</p>
+<p>
+<screen>
+<h4>Install the service named 'TestService'</h4>
+<source>
+prunsrv //IS//TestService --DisplayName="Test Service" \
+        --Install=prunsrv.exe --Jvm=auto --StartMode=jvm --StopMode=jvm \
+        --StartClass=org.apache.SomeStartClass --StartParams=arg1;arg2;arg3 \
+        --StopClass=org.apache.SomeStopClass --StopParams=arg1#arg2
+</source>
+</screen>
+</p>
+</subsection>
+<subsection name="Updating services">
+<p>
+To update the service parameters, you need to use the <b>//US</b> parameter.
+</p>
+<p>
+<screen>
+<h4>Update the service named 'TestService'</h4>
+<source>
+prunsrv //US//TestService --Description="Some Dummy Test Service" \
+        --Startup=auto --Classpath=%CLASSPATH%;test.jar
+</source>
+</screen>
+</p>
+</subsection>
+<subsection name="Removing services">
+<p>
+To remove the service, you need to use the <b>//DS</b> parameter.
+If the service is running it will be stopped and then deleted.
+</p>
+<p>
+<screen>
+<h4>Remove the service named 'TestService'</h4>
+<source>prunsrv //DS//TestService</source>
+</screen>
+</p>
+</subsection>
+
+<subsection name="Debugging services">
+<p>
+To run the service in console mode, you need to use the <b>//TS</b> parameter.
+The service shutdown can be initiated by pressing <b>CTRL+C</b> or
+<b>CTRL+BREAK</b>.
+If you rename the prunsrv.exe to testservice.exe then you can just execute the
+testservice.exe and this command mode will be executed by default.
+</p>
+<p>
+<screen>
+<h4>Run the service named 'TestService' in console mode</h4>
+<source>prunsrv //TS//TestService [additional arguments]</source>
+</screen>
+</p>
+</subsection>
+
+</section>
+
+<section name="Using Procrun in jvm mode">
+<p>
+To interface with the Procrun service application (prunsrv) using the <b>jvm</b> mode,
+you need to create a class with the appropriate method(s).
+For example:
+<source>
+class MyClass;
+// N.B. error handling not shown
+static void main(String [] args){
+    String mode = args[0];
+    if ("start".equals(mode){
+        // process service start function
+    }
+    etc.
+}
+</source>
+This should be configured as follows:
+<source>
+--Classpath MyClass.jar
+--StartMode jvm --StartClass MyClass --StartParams start
+--StopMode  jvm --StopClass  MyClass --StopParams  stop
+</source>
+The above example uses a single 'main' method, and uses a string parameter to specify whether the service function
+is start or stop.
+<br></br>
+Alternatively, you can use different method names for the service start and stop functions:
+<source>
+class MyClass;
+// N.B. error handling not shown
+static void start(String [] args){
+        // process service start function
+    }
+static void stop(String [] args){
+        // process service stop function
+    }
+}
+</source>
+This should be configured as follows:
+<source>
+--Classpath MyClass.jar
+--StartMode jvm --StartClass MyClass --StartMethod start
+--StopMode  jvm --StopClass  MyClass --StopMethod  stop
+</source>
+Note that the method handling service start should create and start a separate thread
+to carry out the processing, and then return.
+The start and stop methods are called from different threads.
+</p>
+</section>
+
+<section name="Using Procrun in Java or exe mode">
+<p>
+When using the <b>Java</b> or <b>exe</b> modes, the Procrun service application (prunsrv)
+launches the target application in a separate process.
+The "stop" application needs to communicate somehow with the "start" application to tell it to stop.
+For example, using RPC.
+</p>
+</section>
+
+<section name="Windows Registry Usage">
+<p>
+The basic Service definitions are maintained under the registry key:
+<source>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\&lt;ServiceName&gt;</source>
+Additional parameters are stored in the registry at:
+<source>HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\ProcRun 2.0\&lt;ServiceName&gt;\Parameters</source> 
+</p>
+</section>
+</body>
+</document> 

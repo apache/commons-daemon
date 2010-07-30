@@ -1,0 +1,69 @@
+To build the service libraries and binary under an UNIX operating
+system you will need:
+
+  An ANSI-C compliant compiler (GCC is good)
+  A Java Platform 2 compliant SDK
+  GNU AutoConf (when building for SVN).
+
+When building from SVN sources you need to build the "configure" program with:
+
+   sh support/buildconf.sh
+(Note it is possible to replace sh by any compatible shell like bash, ksh).
+
+Once the configure script is generated, run it (remember to specify
+either the --with-java=<dir> parameter or set the JAVA_HOME environment
+to point to your JDK installation. For example:
+
+  ./configure --with-java=/usr/java
+
+or
+
+  JAVA_HOME=/usr/java
+  export JAVA_HOME
+  ./configure
+
+or (when using gcj (use fastjar for jar))
+  JAVAC=gcj; export JAVAC
+  JAVACFLAGS=-c; export JAVACFLAGS
+  ./configure
+
+Note: On Mac OS X <dir> is /System/Library/Frameworks/JavaVM.framework/Home.
+
+If your operating system is supported, configure will go thru cleanly,
+otherwise it will report an error (please send us the details of your
+OS/JDK, or a patch against the sources). To build the binaries and
+libraries simply do:
+
+  make
+
+This will generate the file:  ./jsvc.
+It should be straightforward from here on. To check the allowed parameters
+for the jsvc binary simply do
+
+  ./native/jsvc -help
+
+Note: On Linux the module capabilities should be loaded, when using -user root
+make sure you REALLY understand what capabilities does (for example for
+files access: the downgraded root may not be able to read some files!).
+
+Making 64-bit binaries
+
+To be able to build the 64-binaries for supported platforms enter the
+specific parameters before calling configure
+
+   export CFLAGS=-m64
+   export LDFLAGS=-m64
+   ./configure
+   make
+
+Making Universal binaries
+
+Some platforms like Mac OSX allow universal or fat binaries that allow
+both 32 and 64 binaries inside the same executable. To be able to build
+the fat binaries enter the specific parameters before calling configure
+
+   export CFLAGS="-arch i386 -arch x86_64"
+   export LDFLAGS="-arch i386 -arch x86_64"
+   ./configure
+   make
+

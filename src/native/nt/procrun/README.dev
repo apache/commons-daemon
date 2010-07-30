@@ -1,0 +1,25 @@
+Apache Commons Daemon
+=====================
+
+
+Configuring and Building Commons Daemon on Windows
+==================================================
+
+Using Visual Studio, you can build the Commons Daemon.
+The Makefile make file has a bunch of documentation about it's
+options, but a trivial build is simply;
+
+  nmake CPU=X86
+  nmake CPU=X86 PREFIX=c:\desired\path\of\daemon install
+
+
+Needed Tools
+============
+
+Commons Daemon needs the Microsoft Visual C 6/SP5 to
+build the x86 binaries. This is because this compiler
+doesn't create MSVCRTnn.DLL dependecies which will
+be loaded inside running JVM if used.
+For building AMD64/EMT64 binaries use the Platform SDK
+for Windows Server 2003R2.
+
