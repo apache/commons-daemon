@@ -1,7 +1,7 @@
 $Id$
 
             Commons Daemon Package
-               Version 1.0.3
+               Version 1.0.4
                 Release Notes
 
 
@@ -40,6 +40,8 @@ NEW FEATURES:
 * Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
 
 BUG FIXES:
+
+1.0.4:
 
 1.0.3: DAEMON-108, DAEMON-128, DAEMON-139, DAEMON-143, DAEMON-148,
        DAEMON-135, DAEMON-155, DAEMON-159, DAEMON-161, DAEMON-145, DAEMON-146,

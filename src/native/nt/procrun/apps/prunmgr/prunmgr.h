@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /* ====================================================================
  * Contributed by Mladen Turk <mturk@apache.org>
  * 05 Aug 2003
- * ==================================================================== 
+ * ====================================================================
  */
 
 #ifndef _PRUNMGR_H
 #define _PRUNMGR_H
 
 #undef  PRG_VERSION
-#define PRG_VERSION    "1.0.3.0" 
+#define PRG_VERSION    "1.0.4.0"
 #define PRG_REGROOT   L"Apache Software Foundation\\Procrun 2.0"
 
 #define IDM_TM_EXIT                     2000
@@ -136,6 +136,6 @@
 #define IDS_ERRSREG                     3122
 
 #define IDS_NOTIMPLEMENTED              3199
- 
+
 #endif /* _PRUNMGR_H */
 
