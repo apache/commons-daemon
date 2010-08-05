@@ -99,5 +99,7 @@ int SetTerm(void (*func) (void))
     CloseHandle(hthread);       /* not needed */
     return 0;
 }
+#else
+const char __unused_signals_c[] = __FILE__;
 #endif
 
