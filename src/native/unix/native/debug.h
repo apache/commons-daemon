@@ -26,6 +26,12 @@ extern "C" {
  */
 extern bool log_debug_flag;
 
+/* Wether SYSLOG logging (for stderr) is enable or not. */
+extern bool log_stderr_syslog_flag;
+
+/* Wether SYSLOG logging (for stdout) is enable or not. */
+extern bool log_stdout_syslog_flag;
+
 /**
  * The name of the jsvc binary.
  */

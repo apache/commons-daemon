@@ -24,8 +24,11 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 #include <pwd.h>
 #include <grp.h>
+#include <syslog.h>
+#include <errno.h>
 #ifdef OS_LINUX
 #include <sys/prctl.h>
 #include <sys/syscall.h>
@@ -48,11 +51,15 @@ extern char **environ;
 static mode_t envmask;          /* mask to create the files */
 
 pid_t controlled = 0;           /* the child process pid */
+pid_t logger_pid = 0;           /* the logger process pid */
 static bool stopping = false;
 static bool doreload = false;
 static void (*handler_int) (int) = NULL;
 static void (*handler_hup) (int) = NULL;
 static void (*handler_trm) (int) = NULL;
+
+static int run_controller(arg_data *args, home_data *data, uid_t uid,
+                          gid_t gid);
 
 #ifdef OS_CYGWIN
 /*
@@ -741,11 +748,63 @@ static FILE *loc_freopen(char *outfile, char *mode, FILE * stream)
     return freopen(outfile, mode, stream);
 }
 
+#define LOGBUF_SIZE 1024
+
+/* Read from file descriptors. Log to syslog. */
+static int logger_child(int out_fd, int err_fd, char *procname)
+{
+    fd_set rfds;
+    struct timeval tv;
+    int retval, n;
+    char buf[LOGBUF_SIZE];
+
+    if (out_fd > err_fd) {
+        n = out_fd + 1;
+    } else {
+        n = err_fd + 1;
+    }
+
+    openlog(procname, LOG_PID, LOG_DAEMON);
+
+    while (1) {
+        FD_ZERO(&rfds);
+        FD_SET(out_fd, &rfds);
+        FD_SET(err_fd, &rfds);
+        tv.tv_sec = 60;
+        tv.tv_usec = 0;
+        retval = select(n, &rfds, NULL, NULL, &tv);
+        if (retval == -1)
+            syslog(LOG_ERR, "select: %s", strerror(errno));
+        else if (retval) {
+            if (FD_ISSET(out_fd, &rfds)) {
+                ssize_t n = read(out_fd, buf, LOGBUF_SIZE-1);
+                if (n < 0) {
+                    syslog(LOG_ERR, "read: %s", strerror(errno));
+                } else if (n > 0 && buf[0] != '\n') {
+                    buf[n] = 0;
+                    syslog(LOG_INFO, "%s", buf);
+                }
+            }
+            if (FD_ISSET(err_fd, &rfds)) {
+                ssize_t n = read(err_fd, buf, LOGBUF_SIZE-1);
+                if (n < 0) {
+                    syslog(LOG_ERR, "read: %s", strerror(errno));
+                } else if (n > 0 && buf[0] != '\n') {
+                    buf[n] = 0;
+                    syslog(LOG_ERR, "%s", buf);
+                }
+            }
+        }
+    }
+}
+
 /**
  *  Redirect stdin, stdout, stderr.
  */
-static void set_output(char *outfile, char *errfile, bool redirectstdin)
+static void set_output(char *outfile, char *errfile, bool redirectstdin, char *procname)
 {
+    int out_pipe[2] = {0, 0}, err_pipe[2] = {0, 0}, fork_needed = 0;
+
     if (redirectstdin == true) {
         freopen("/dev/null", "r", stdin);
     }
@@ -760,11 +819,31 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin)
     if (strcmp(outfile, "&2") == 0 && strcmp(errfile, "&1") == 0) {
         outfile = "/dev/null";
     }
-    if (strcmp(outfile, "&2") != 0) {
+    if (strcmp(outfile, "SYSLOG") == 0) {
+        freopen("/dev/null", "a", stdout);
+        /* Send stdout to syslog through a logger process */
+        if (pipe(out_pipe) == -1) {
+            log_error("cannot create stdout pipe: %s",
+                      strerror(errno));
+        } else {
+            fork_needed = 1;
+            log_stdout_syslog_flag = true;
+        }
+    } else if (strcmp(outfile, "&2") != 0) {
         loc_freopen(outfile, "a", stdout);
     }
 
-    if (strcmp(errfile, "&1") != 0) {
+    if (strcmp(errfile, "SYSLOG") == 0) {
+        freopen("/dev/null", "a", stderr);
+        /* Send stderr to syslog through a logger process */
+        if (pipe(err_pipe) == -1) {
+            log_error("cannot create stderr pipe: %s",
+                      strerror(errno));
+        } else {
+            fork_needed = 1;
+            log_stderr_syslog_flag = true;
+        }
+    } else if (strcmp(errfile, "&1") != 0) {
         loc_freopen(errfile, "a", stderr);
     }
     else {
@@ -775,17 +854,43 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin)
         close(1);
         dup(2);
     }
+
+    if (fork_needed) {
+        pid_t pid = fork();
+        if (pid == -1) {
+            log_error("cannot create logger process: %s", strerror(errno));
+        } else {
+            if (pid) {
+                logger_pid = pid;
+                if (out_pipe[0] != 0) {
+                    close(out_pipe[0]);
+                    if (dup2(out_pipe[1], 1) == -1) {
+                        log_error("cannot redirect stdout to pipe for syslog: %s",
+                                  strerror(errno));
+                    }
+                }
+                if (err_pipe[0] != 0) {
+                    close(err_pipe[0]);
+                    if (dup2(err_pipe[1], 2) == -1) {
+                        log_error("cannot redirect stderr to pipe for syslog: %s",
+                                  strerror(errno));
+                    }
+                }
+            } else {
+                exit(logger_child(out_pipe[0], err_pipe[0], procname));
+            }
+        }
+    }
 }
 
 int main(int argc, char *argv[])
 {
     arg_data *args  = NULL;
     home_data *data = NULL;
-    int status = 0;
     pid_t pid  = 0;
     uid_t uid  = 0;
     gid_t gid  = 0;
-    time_t laststart;
+    int res;
 
     /* Parse command line arguments */
     args = arguments(argc, argv);
@@ -890,11 +995,27 @@ int main(int argc, char *argv[])
     }
 
     envmask = umask(0077);
-    set_output(args->outfile, args->errfile, args->redirectstdin);
+    set_output(args->outfile, args->errfile, args->redirectstdin, args->procname);
+
+    res = run_controller(args, data, uid, gid);
+    if (logger_pid != 0) {
+        kill(logger_pid, SIGTERM);
+    }
+
+    return res;
+}
+
+static int run_controller(arg_data *args, home_data *data, uid_t uid,
+                          gid_t gid)
+{
+    pid_t pid = 0;
+
 
     /* We have to fork: this process will become the controller and the other
        will be the child */
     while ((pid = fork()) != -1) {
+        time_t laststart;
+        int status = 0;
         /* We forked (again), if this is the child, we go on normally */
         if (pid == 0)
             exit(child(args, data, uid, gid));
@@ -975,4 +1096,3 @@ void main_shutdown(void)
     log_debug("Killing self with TERM signal");
     kill(controlled, SIGTERM);
 }
-
