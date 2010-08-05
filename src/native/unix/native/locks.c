@@ -46,6 +46,7 @@ int lockf(int fildes, int function, off_t size)
 
     return fcntl(fildes, F_SETLK, &buf);
 }
-
+#else
+const char __unused_locks_c[] = __FILE__;
 #endif
 
