@@ -102,6 +102,8 @@ char *java_library(arg_data *args, home_data *data)
     return libf;
 }
 
+typedef jint (*jvm_create_t)(JavaVM **, JNIEnv **, JavaVMInitArgs *);
+
 /* Initialize the JVM and its environment, loading libraries and all */
 bool java_init(arg_data *args, home_data *data)
 {
@@ -110,7 +112,7 @@ bool java_init(arg_data *args, home_data *data)
     char appf[1024];
     struct stat sb;
 #endif /* ifdef OS_DARWIN */
-    jint(*symb) (JavaVM **, JNIEnv **, JavaVMInitArgs *);
+    jvm_create_t symb = NULL;
     JNINativeMethod nativemethods[2];
     JavaVMOption *opt = NULL;
     dso_handle libh   = NULL;
@@ -186,10 +188,10 @@ bool java_init(arg_data *args, home_data *data)
 #if defined(OSD_POSIX) || defined(HAVE_KAFFEVM)
     /* BS2000 and kaffe does not allow to call JNI_CreateJavaVM indirectly */
 #else
-    symb = dso_symbol(libh, "JNI_CreateJavaVM");
+    symb = (jvm_create_t)dso_symbol(libh, "JNI_CreateJavaVM");
     if (symb == NULL) {
 #ifdef OS_DARWIN
-        symb = dso_symbol(apph, "JNI_CreateJavaVM");
+        symb = (jvm_create_t)dso_symbol(apph, "JNI_CreateJavaVM");
         if (symb == NULL) {
 #endif /* ifdef OS_DARWIN */
             log_error("Cannot find JVM library entry point");
@@ -235,7 +237,7 @@ bool java_init(arg_data *args, home_data *data)
     }
     opt[x].optionString = strdup("abort");
     jsvc_xlate_to_ascii(opt[x].optionString);
-    opt[x].extraInfo = java_abort123;
+    opt[x].extraInfo = (void *)java_abort123;
     arg.options = opt;
 
     /* Do some debugging */
@@ -283,12 +285,12 @@ bool java_init(arg_data *args, home_data *data)
     nativemethods[0].name = shutdownmethod;
     jsvc_xlate_to_ascii(shutdownparams);
     nativemethods[0].signature = shutdownparams;
-    nativemethods[0].fnPtr = shutdown;
+    nativemethods[0].fnPtr = (void *)shutdown;
     jsvc_xlate_to_ascii(failedmethod);
     nativemethods[1].name = failedmethod;
     jsvc_xlate_to_ascii(failedparams);
     nativemethods[1].signature = failedparams;
-    nativemethods[1].fnPtr = failed;
+    nativemethods[1].fnPtr = (void *)failed;
 
     if ((*env)->RegisterNatives(env, cls, nativemethods, 2) != 0) {
         log_error("Cannot register native methods");
