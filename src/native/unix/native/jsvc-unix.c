@@ -54,9 +54,10 @@ pid_t controlled = 0;           /* the child process pid */
 pid_t logger_pid = 0;           /* the logger process pid */
 static bool stopping = false;
 static bool doreload = false;
-static void (*handler_int) (int) = NULL;
-static void (*handler_hup) (int) = NULL;
-static void (*handler_trm) (int) = NULL;
+typedef void (*sighandler_t)(int);
+static sighandler_t handler_int = NULL;
+static sighandler_t handler_hup = NULL;
+static sighandler_t handler_trm = NULL;
 
 static int run_controller(arg_data *args, home_data *data, uid_t uid,
                           gid_t gid);
@@ -372,9 +373,9 @@ static void controller(int sig)
 /*
  * Return the address of the current signal handler and set the new one.
  */
-static void *signal_set(int sig, void *newHandler)
+static sighandler_t signal_set(int sig, sighandler_t newHandler)
 {
-    void *hand;
+    sighandler_t hand;
 
     hand = signal(sig, newHandler);
 #ifdef SIG_ERR
@@ -383,7 +384,7 @@ static void *signal_set(int sig, void *newHandler)
 #endif
     if (hand == handler || hand == controller)
         hand = NULL;
-    return (hand);
+    return hand;
 }
 
 /*
