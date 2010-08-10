@@ -223,7 +223,9 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td></td>
     <td>List of environment variables that will be provided to the service
         in the form <b>key=value</b>. They are separated using either
-        <b>#</b> or <b>;</b> characters</td>
+        <b>#</b> or <b>;</b> characters.
+        If you need to embed either # or ; character within a value put them inside single quotes.
+    </td>
     </tr>
     <tr>
     <td>--User</td>
