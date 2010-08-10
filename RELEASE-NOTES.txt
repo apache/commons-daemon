@@ -20,7 +20,7 @@ NEW FEATURES:
               logging. By default those messages were always logged. (1.0.3)
 * DAEMON-140: Add missing Java6 parameters -ea, da, -esa, -dsa, -showversion
               and their long name synonyms. (1.0.3)
-* DAEMON-142: Add option to display procrun version.
+* DAEMON-142: Add option to display procrun version. (1.0.3)
 * DAEMON-166: Add classpath .jar expansion. If the classpath
               element ends with asterisk it will evaluate to all .jar files
               found in the path. (1.0.3)
@@ -45,7 +45,7 @@ BUG FIXES:
 
 1.0.3: DAEMON-108, DAEMON-128, DAEMON-139, DAEMON-143, DAEMON-148,
        DAEMON-135, DAEMON-155, DAEMON-159, DAEMON-161, DAEMON-145, DAEMON-146,
-       DAEMON-167, DAEMON-168
+       DAEMON-167, DAEMON-168, DAEMON-154, DAEMON-149
 
 1.0.2: DAEMON-16, DAEMON-31, DAEMON-40, DAEMON-45, DAEMON-49, DAEMON-60,
        DAEMON-84, DAEMON-90, DAEMON-91, DAEMON-92, DAEMON-93, DAEMON-94,
