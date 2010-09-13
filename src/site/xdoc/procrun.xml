@@ -262,7 +262,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <tr>
     <td>--Jvm</td>
     <td>auto</td>
-    <td>Use either <b>auto</b> or specify the full path to the <b>jvm.dll</b>.
+    <td>Use either <b>auto</b> (i.e. find the JVM from the Windows registry) or specify the full path to the <b>jvm.dll</b>.
         You can use environment variable expansion here.</td>
     </tr>
     <tr>
@@ -300,7 +300,8 @@ then it is treated the same as <b>--</b>. No error is reported.
     The modes are:
     <ul>
     <li>jvm - start Java in-process. Depends on jvm.dll, see <b>--Jvm</b>.</li>
-    <li>Java - same as exe, but automatically uses the default Java executable</li>
+    <li>Java - same as exe, but automatically uses the default Java executable, i.e. %JAVA_HOME%\bin\java.exe.
+    Make sure JAVA_HOME is set correctly, or use --JavaHome to provide the correct location.</li>
     <li>exe - run the image as a separate process</li>
     </ul>
     </td>
