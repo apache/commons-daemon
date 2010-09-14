@@ -3,17 +3,14 @@ ant dist
 
 The Java portion of Commons Daemon requires Java 1.3 or later to build
 
-To build the native part:
+To build the native parts:
 1 - jsvc:
+  jsvc is only for Un*x systems
   cd src/native/unix; configure; make
   You need a gnu make.
   The jsvc executable is created in the dist directory.
-  There is a INSTALL.txt src/native/unix - please have a look at it.
+  There is a INSTALL.txt in src/native/unix - please have a look at it.
 
-  On Windows an additional step is needed:
-  cd src/native/windows; make
-  There is a README in src/native/windows - please have a look at it.
-  The exe files are created in dist.
 2 - procrun:
   procrun is only for windows
   cd src\native\windows\apps
