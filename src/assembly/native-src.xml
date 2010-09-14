@@ -54,7 +54,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>src/native/nt/procrun</directory>
+            <directory>src/native/windows/procrun</directory>
             <outputDirectory>windows</outputDirectory>
             <lineEnding>crlf</lineEnding>
             <excludes>
@@ -67,7 +67,7 @@
             <fileMode>664</fileMode>
         </fileSet>
         <fileSet>
-            <directory>src/native/nt/procrun</directory>
+            <directory>src/native/windows/procrun</directory>
             <outputDirectory>windows</outputDirectory>
             <includes>
                 <include>**/*.ico</include>
