@@ -238,7 +238,7 @@
       <fileset dir="src/native/unix" />
     </copy>
     <copy todir="${native.path}/windows">
-      <fileset dir="src/native/windows/procrun" />
+      <fileset dir="src/native/windows" />
     </copy>
     <copy file="LICENSE.txt"
           todir="${native.path}"/>

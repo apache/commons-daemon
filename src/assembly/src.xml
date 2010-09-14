@@ -48,7 +48,7 @@
         <fileSet>
             <directory>src</directory>
             <includes>
-                <include>native/windows/procrun/**</include>
+                <include>native/windows/**</include>
             </includes>
         </fileSet>
         <fileSet>
