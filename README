@@ -16,13 +16,12 @@ To build the native part:
   The exe files are created in dist.
 2 - procrun:
   procrun is only for windows
-  cd src\native\windows\procrun\apps
+  cd src\native\windows\apps
   cd prunsrv
   nmake -f prunsrv.x86 (prunsrv.amd64 | prunsrv.ia64)
   cd ..\prunmgr
   nmake -f prunmgs.x86
   (It is also possible to use the MS development tools).
-[Note: the directory in SVN is currently called src/native/nt, not src/native/windows]
 
 To build the documentation: (See http://commons.apache.org/building.html).
 mvn site:generate

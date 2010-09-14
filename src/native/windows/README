@@ -1,6 +1,3 @@
-(Please have a look to procrun (subdirectory), procrun is
-probably what you have to use).
-
 Note: MAKE SURE you first build the java part (using Ant) otherwise the dist
 directory is not created).
 
@@ -9,16 +6,16 @@ To build the service utilities for windows you will need:
 - CYGWIN to build the jsvc.exe.
 - A Java Platform 2 compliant SDK to run the service.
 
-The Windows 'procrun' applications are found in:
+The Windows applications are found in:
 
-procrun/apps/prunmgr
-procrun/apps/prunsrv
+apps/prunmgr
+apps/prunsrv
 
 The common source files are in
 
-procrun/src
-procrun/include
-procrun/resources
+src
+include
+resources
 
 The Makefiles in the apps/ directories can be used with MS Visual C++ 5.0.
 They will not work with earlier versions of nmake
