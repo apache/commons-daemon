@@ -15,6 +15,7 @@ follow the release early/release often mentality.
 
 NEW FEATURES:
 
+* DAEMON-160: Remove obsolete code; rename native/nt as native/windows (1.0.4)
 * DAEMON-95:  Support log rotation using SIGUSR1 (1.0.4)
 * DAEMON-138: Add --PidFile option to allow storing running process id. (1.0.3)
 * DAEMON-137: Add --LogJniMessages allowing to configure JNI verbose message
