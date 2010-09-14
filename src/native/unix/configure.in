@@ -101,7 +101,7 @@ then
    LDCMD="$CC"
 fi
 AC_SUBST(LDCMD)
-if test "$supported_os" == "linux"
+if test "$supported_os" = "linux"
 then
 AC_CHECK_LIB([cap], [cap_init], [CFLAGS="$CFLAGS -DHAVE_LIBCAP" ; LIBS="$LIBS -lcap"])
 fi

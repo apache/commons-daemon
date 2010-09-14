@@ -84,7 +84,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   i?86)
     CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
     HOST_CPU=i386;;
-  x86_64)
+  x86_64 | amd64)
     CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\""
     HOST_CPU=amd64;;
   bs2000)
