@@ -29,7 +29,7 @@ SRCDIR = .\..\..
 !ENDIF
 
 !IF "$(CPU)" == "X86"
-LFLAGS = $(LFLAGS) /stack:0x50000
+LFLAGS = $(LFLAGS) /stack:0x64000
 !ENDIF
 
 LFLAGS = $(LFLAGS) /version:1.0
