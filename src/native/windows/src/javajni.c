@@ -119,12 +119,32 @@ typedef struct APXJAVAVM {
     HANDLE          hWorkerThread;
     DWORD           iWorkerThread;
     DWORD           dwWorkerStatus;
-
+    SIZE_T          szStackSize;
 } APXJAVAVM, *LPAPXJAVAVM;
+
+/* This is no longer exported in jni.h
+ * However java uses it internally to get
+ * the default stack size
+ */
+typedef struct APX_JDK1_1InitArgs {
+    jint version;
+
+    char **properties;
+    jint checkSource;
+    jint nativeStackSize;
+    jint javaStackSize;
+    jint minHeapSize;
+    jint maxHeapSize;
+    jint verifyMode;
+    char *classpath;
+
+    char padding[128];
+} APX_JDK1_1InitArgs;
 
 #define JAVA_CLASSPATH      "-Djava.class.path="
 #define JAVA_CLASSPATH_W    L"-Djava.class.path="
 #define JAVA_CLASSSTRING    "java/lang/String"
+#define MSVCRT71_DLLNAME    L"\\msvcrt71.dll"
 
 static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
 {
@@ -177,6 +197,30 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
     _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
+    if (GetFileAttributesW(szJvmDllPath) != INVALID_FILE_ATTRIBUTES) {
+        /* Try to load the MSVCRTxx.dll before JVM.dll
+         */
+        WCHAR  jreBinPath[SIZ_PATHLEN];
+        WCHAR  crtBinPath[SIZ_PATHLEN];
+        DWORD  i, l = 0;
+
+        lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
+        for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
+            if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
+                jreBinPath[i] = L'\0';
+                lstrlcpyW(crtBinPath, SIZ_PATHLEN, jreBinPath);
+                lstrlcatW(crtBinPath, SIZ_PATHLEN, MSVCRT71_DLLNAME);
+                if (GetFileAttributesW(crtBinPath) != INVALID_FILE_ATTRIBUTES) {
+                    if (LoadLibraryW(crtBinPath)) {
+                        /* Found MSVCRTxx.dll
+                         */
+                        break;
+                    }
+                }
+                l++;
+            }
+        }
+    }
     /* This shuldn't happen, but try to search in %PATH% */
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
         _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL,
@@ -267,9 +311,12 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     LPAPXJAVAVM  lpJava;
     jsize        iVmCount;
     JavaVM       *lpJvm = NULL;
+    struct       APX_JDK1_1InitArgs jArgs1_1;
 
     if (!__apxLoadJvmDll(szJvmDllPath))
         return NULL;
+
+
     /*
      */
     if (DYNLOAD_FPTR(JNI_GetCreatedJavaVMs)(&lpJvm, 1, &iVmCount) != JNI_OK) {
@@ -287,6 +334,14 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     lpJava = APXHANDLE_DATA(hJava);
     lpJava->lpJvm = lpJvm;
     lpJava->iVmCount = iVmCount;
+    
+    /* Guess the stack size
+     */
+    AplZeroMemory(&jArgs1_1, sizeof(jArgs1_1));
+    jArgs1_1.version = JNI_VERSION_1_1;
+    DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&jArgs1_1);
+    lpJava->szStackSize = (SIZE_T)jArgs1_1.javaStackSize;
+
     if (!_st_sys_jvm)
         _st_sys_jvm = lpJvm;
     return hJava;
@@ -830,7 +885,9 @@ apxJavaStart(APXHANDLE hJava)
         return FALSE;
     lpJava = APXHANDLE_DATA(hJava);
 
-    lpJava->hWorkerThread = CreateThread(NULL, 0, __apxJavaWorkerThread,
+    lpJava->hWorkerThread = CreateThread(NULL,
+                                         lpJava->szStackSize,
+                                         __apxJavaWorkerThread,
                                          hJava, CREATE_SUSPENDED,
                                          &lpJava->iWorkerThread);
     if (IS_INVALID_HANDLE(lpJava->hWorkerThread)) {
