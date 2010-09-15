@@ -15,6 +15,8 @@ follow the release early/release often mentality.
 
 NEW FEATURES:
 
+* DAEMON-173: Allow --JavaHome=jdk and --JavaHome=jre options that
+              will guess default JavaHome from the registry. (1.0.4)
 * DAEMON-160: Remove obsolete code; rename native/nt as native/windows (1.0.4)
 * DAEMON-95:  Support log rotation using SIGUSR1 (1.0.4)
 * DAEMON-138: Add --PidFile option to allow storing running process id. (1.0.3)
@@ -43,7 +45,7 @@ NEW FEATURES:
 
 BUG FIXES:
 
-1.0.4: DAEMON-95
+1.0.4: DAEMON-95, DAEMON-171
 
 1.0.3: DAEMON-108, DAEMON-128, DAEMON-139, DAEMON-143, DAEMON-148,
        DAEMON-135, DAEMON-155, DAEMON-159, DAEMON-161, DAEMON-145, DAEMON-146,
