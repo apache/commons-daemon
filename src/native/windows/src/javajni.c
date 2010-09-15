@@ -334,12 +334,14 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     lpJava = APXHANDLE_DATA(hJava);
     lpJava->lpJvm = lpJvm;
     lpJava->iVmCount = iVmCount;
-    
+
     /* Guess the stack size
      */
     AplZeroMemory(&jArgs1_1, sizeof(jArgs1_1));
     jArgs1_1.version = JNI_VERSION_1_1;
     DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&jArgs1_1);
+    if (jArgs1_1.javaStackSize < 0 || jArgs1_1.javaStackSize > (2048 * 1024))
+        jArgs1_1.javaStackSize = 0;
     lpJava->szStackSize = (SIZE_T)jArgs1_1.javaStackSize;
 
     if (!_st_sys_jvm)
