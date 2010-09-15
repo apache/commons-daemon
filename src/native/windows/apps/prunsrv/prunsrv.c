@@ -59,6 +59,8 @@ typedef struct APX_STDWRAP {
 static LPCWSTR      PRSRV_AUTO   = L"auto";
 static LPCWSTR      PRSRV_JAVA   = L"java";
 static LPCWSTR      PRSRV_JVM    = L"jvm";
+static LPCWSTR      PRSRV_JDK    = L"jdk";
+static LPCWSTR      PRSRV_JRE    = L"jre";
 static LPCWSTR      PRSRV_MANUAL = L"manual";
 static LPCWSTR      PRSRV_JBIN   = L"\\bin\\java.exe";
 static LPCWSTR      PRSRV_SIGNAL = L"SIGNAL";
@@ -1221,6 +1223,14 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             LPWSTR jx = NULL, szJH = SO_JAVAHOME;
             if (!szJH)
                 szJH = apxGetJavaSoftHome(gPool, FALSE);
+            else if (!lstrcmpiW(szJH, PRSRV_JDK)) {
+                /* Figure out the JDK JavaHome */
+                szJH = apxGetJavaSoftHome(gPool, FALSE);
+            }
+            else if (!lstrcmpiW(szJH, PRSRV_JRE)) {
+                /* Figure out the JRE JavaHome */
+                szJH = apxGetJavaSoftHome(gPool, TRUE);
+            }
             if (szJH) {
                 jx = apxPoolAlloc(gPool, (lstrlenW(szJH) + 16) * sizeof(WCHAR));
                 lstrcpyW(jx, szJH);
@@ -1248,6 +1258,14 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             LPWSTR jx = NULL, szJH = SO_JAVAHOME;
             if (!szJH)
                 szJH = apxGetJavaSoftHome(gPool, FALSE);
+            else if (!lstrcmpiW(szJH, PRSRV_JDK)) {
+                /* Figure out the JDK JavaHome */
+                szJH = apxGetJavaSoftHome(gPool, FALSE);
+            }
+            else if (!lstrcmpiW(szJH, PRSRV_JRE)) {
+                /* Figure out the JRE JavaHome */
+                szJH = apxGetJavaSoftHome(gPool, TRUE);
+            }
             if (szJH) {
                 jx = apxPoolAlloc(gPool, (lstrlenW(szJH) + 16) * sizeof(WCHAR));
                 lstrcpyW(jx, szJH);
