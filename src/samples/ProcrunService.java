@@ -86,6 +86,11 @@ public class ProcrunService implements Runnable {
 
     private static void logSystemEnvironment()
     {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null)
+            log("Missing currentThread context ClassLoader");
+        else
+            log("Using context ClassLoader : " + cl.toString());
         log("Program environment: ");
 
         Map        em = System.getenv();
