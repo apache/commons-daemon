@@ -52,8 +52,7 @@ BOOL        apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
                                  LPCSTR szMethodName,
                                  LPCVOID lpArguments);
 
-BOOL        apxJavaStart(APXHANDLE hJava);
-BOOL        apxJavaStartThread(LPAPXJAVA_THREADARGS pArgs);
+BOOL        apxJavaStart(LPAPXJAVA_THREADARGS pArgs);
 
 DWORD       apxJavaWait(APXHANDLE hJava, DWORD dwMilliseconds, BOOL bKill);
 

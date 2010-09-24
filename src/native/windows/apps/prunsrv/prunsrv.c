@@ -232,6 +232,7 @@ static HANDLE gPidfileHandle = NULL;
 static LPWSTR gPidfileName   = NULL;
 static BOOL   gSignalValid   = TRUE;
 static APXJAVA_THREADARGS gRargs;
+static APXJAVA_THREADARGS gSargs;
 
 
 DWORD WINAPI eventThread(LPVOID lpParam)
@@ -817,21 +818,22 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
             return 1;
         }
-        if (!apxJavaInitialize(hWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS, SO_JNIVFPRINTF)) {
-            rv = 2;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
-            goto cleanup;
-        }
-        if (!apxJavaLoadMainClass(hWorker, _jni_sclass, _jni_smethod, _jni_sparam)) {
-            rv = 2;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed loading main %s class %s",
-                        _jni_rclass, _jni_classpath);
-            goto cleanup;
-        }
+        gSargs.hJava            = hWorker;
+        gSargs.szClassPath      = _jni_classpath;
+        gSargs.lpOptions        = _jni_jvmoptions;
+        gSargs.dwMs             = SO_JVMMS;
+        gSargs.dwMx             = SO_JVMMX;
+        gSargs.dwSs             = SO_JVMSS;
+        gSargs.bJniVfprintf     = SO_JNIVFPRINTF;        
+        gSargs.szClassName      = _jni_sclass;
+        gSargs.szMethodName     = _jni_smethod;
+        gSargs.lpArguments      = _jni_sparam;
+        gSargs.szStdErrFilename = NULL;
+        gSargs.szStdOutFilename = NULL;
+        
         /* Create sutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-        if (!apxJavaStart(hWorker)) {
+        if (!apxJavaStart(&gSargs)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
             rv = 3;
         }
@@ -1006,7 +1008,7 @@ static DWORD serviceStart()
         gRargs.szStdErrFilename = gStdwrap.szStdErrFilename;
         gRargs.szStdOutFilename = gStdwrap.szStdOutFilename;
 
-        if (!apxJavaStartThread(&gRargs)) {
+        if (!apxJavaStart(&gRargs)) {
             rv = 4;
             apxLogWrite(APXLOG_MARK_ERROR "Failed to start Java");
             goto cleanup;

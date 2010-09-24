@@ -841,42 +841,6 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
 #define WORKER_EXIT(x)  { rv = x; goto finished; }
     DWORD rv = 0;
     LPAPXJAVAVM lpJava;
-    APXHANDLE   hJava = (APXHANDLE)lpParameter;
-    /* This shouldn't happen */
-    if (hJava->dwType != APXHANDLE_TYPE_JVM)
-        WORKER_EXIT(0);
-    lpJava = APXHANDLE_DATA(hJava);
-    /* Check if we have a class and a method */
-    if (!lpJava->clWorker.jClazz || !lpJava->clWorker.jMethod)
-        WORKER_EXIT(2);
-    if (!__apxJvmAttach(lpJava))
-        WORKER_EXIT(3);
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
-                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
-    lpJava->dwWorkerStatus = 1;
-    JNICALL_3(CallStaticVoidMethod,
-              lpJava->clWorker.jClazz,
-              lpJava->clWorker.jMethod,
-              lpJava->clWorker.jArgs);
-
-    JVM_EXCEPTION_CLEAR(lpJava);
-    __apxJvmDetach(lpJava);
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread %s:%s finished",
-                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
-finished:
-    lpJava->dwWorkerStatus = 0;
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s",
-                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
-    ExitThread(rv);
-    /* never gets here but keep the compiler happy */
-    return 0;
-}
-
-static DWORD WINAPI __apxJavaWorkerThread2(LPVOID lpParameter)
-{
-#define WORKER_EXIT(x)  { rv = x; goto finished; }
-    DWORD rv = 0;
-    LPAPXJAVAVM lpJava;
     LPAPXJAVA_THREADARGS pArgs = (LPAPXJAVA_THREADARGS)lpParameter;
     APXHANDLE hJava;
     
@@ -928,40 +892,14 @@ finished:
     return 0;
 }
 
-
-BOOL
-apxJavaStart(APXHANDLE hJava)
-{
-
-    LPAPXJAVAVM lpJava;
-
-    if (hJava->dwType != APXHANDLE_TYPE_JVM)
-        return FALSE;
-    lpJava = APXHANDLE_DATA(hJava);
-
-    lpJava->hWorkerThread = CreateThread(NULL,
-                                         lpJava->szStackSize,
-                                         __apxJavaWorkerThread,
-                                         hJava, CREATE_SUSPENDED,
-                                         &lpJava->iWorkerThread);
-    if (IS_INVALID_HANDLE(lpJava->hWorkerThread)) {
-        apxLogWrite(APXLOG_MARK_SYSERR);
-        return FALSE;
-    }
-    ResumeThread(lpJava->hWorkerThread);
-    /* Give some time to initialize the thread */
-    Sleep(1000);
-    return TRUE;
-}
-
-apxJavaStartThread(LPAPXJAVA_THREADARGS pArgs)
+apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
 {
 
     LPAPXJAVAVM lpJava;
     lpJava = APXHANDLE_DATA(pArgs->hJava);
     lpJava->hWorkerThread = CreateThread(NULL,
                                          lpJava->szStackSize,
-                                         __apxJavaWorkerThread2,
+                                         __apxJavaWorkerThread,
                                          pArgs, CREATE_SUSPENDED,
                                          &lpJava->iWorkerThread);
     if (IS_INVALID_HANDLE(lpJava->hWorkerThread)) {
