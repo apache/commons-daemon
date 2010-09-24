@@ -123,7 +123,7 @@ public class ProcrunService implements Runnable {
                     flags[3] = 'x';
                 if (n.isUp())
                     flags[4] = 'x';
-                String neti = new String(flags) + "\t" + n.getName() + "\t";
+                String neti = new String(flags) + "   " + n.getName() + "\t";
                 for (Enumeration i = n.getSubInterfaces(); i.hasMoreElements();) {
                     NetworkInterface s = (NetworkInterface)i.nextElement();
                     neti += " [" + s.getName() + "]";
@@ -133,7 +133,7 @@ public class ProcrunService implements Runnable {
                 if (!i.isEmpty()) {
                     for (int x = 0; x < i.size(); x++) {
                         InterfaceAddress a = (InterfaceAddress)i.get(x);
-                        log("\t" + a.toString());
+                        log("        " + a.toString());
                     }
                 }
             }
