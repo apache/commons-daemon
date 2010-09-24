@@ -3,6 +3,16 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeSet;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,14 +29,14 @@ import java.util.Date;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 /**
  * Sample service implementation for use with Windows Procrun.
  * <p>
  * Use the main() method for running as a Java (external) service.
- * Use the start() and stop() methods for running as a jvm (in-process) service 
+ * Use the start() and stop() methods for running as a jvm (in-process) service
  */
 public class ProcrunService implements Runnable {
 
@@ -34,16 +44,16 @@ public class ProcrunService implements Runnable {
     private static final long MS_PER_SEC = 1000L; // Milliseconds in a second
 
     private static volatile Thread thrd; // start and stop are called from different threads
-    
+
     private final long pause; // How long to pause in service loop
 
     private final File stopFile;
-    
+
     /**
-     * 
+     *
      * @param wait seconds to wait in loop
      * @param filename optional filename - if non-null, run loop will stop when it disappears
-     * @throws IOException 
+     * @throws IOException
      */
     private ProcrunService(long wait, File file) {
         pause=wait;
@@ -56,12 +66,12 @@ public class ProcrunService implements Runnable {
     }
 
     private static void usage(){
-        System.err.println("Must supply the argument 'start' or 'stop'");        
+        System.err.println("Must supply the argument 'start' or 'stop'");
     }
 
     /**
      * Helper method for process args with defaults.
-     * 
+     *
      * @param args array of string arguments, may be empty
      * @param argnum which argument to extract
      * @return the argument or null
@@ -74,13 +84,66 @@ public class ProcrunService implements Runnable {
         }
     }
 
+    private static void logSystemEnvironment()
+    {
+        log("Program environment: ");
+
+        Map        em = System.getenv();
+        TreeSet    es = new TreeSet(em.keySet());
+        for (Iterator i = es.iterator(); i.hasNext();) {
+            String n = (String)i.next();
+            log(n + " ->  " + em.get(n));
+        }
+
+        log("System properties: ");
+        Properties ps = System.getProperties();
+        TreeSet    ts = new TreeSet(ps.keySet());
+        for (Iterator i = ts.iterator(); i.hasNext();) {
+            String n = (String)i.next();
+            log(n + " ->  " + ps.get(n));
+        }
+        log("Network interfaces: ");
+        log("LVPMU (L)oopback (V)irtual (P)ointToPoint (M)multicastSupport (U)p");
+        try {
+            for (Enumeration e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
+                NetworkInterface n = (NetworkInterface)e.nextElement();
+                char [] flags = { '-', '-', '-', '-', '-'};
+                if (n.isLoopback())
+                    flags[0] = 'x';
+                if (n.isVirtual())
+                    flags[1] = 'x';
+                if (n.isPointToPoint())
+                    flags[2] = 'x';
+                if (n.supportsMulticast())
+                    flags[3] = 'x';
+                if (n.isUp())
+                    flags[4] = 'x';
+                String neti = new String(flags) + "\t" + n.getName() + "\t";
+                for (Enumeration i = n.getSubInterfaces(); i.hasMoreElements();) {
+                    NetworkInterface s = (NetworkInterface)i.nextElement();
+                    neti += " [" + s.getName() + "]";
+                }
+                log(neti + " -> " + n.getDisplayName());
+                List i = n.getInterfaceAddresses();
+                if (!i.isEmpty()) {
+                    for (int x = 0; x < i.size(); x++) {
+                        InterfaceAddress a = (InterfaceAddress)i.get(x);
+                        log("\t" + a.toString());
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            // Ignore
+        }
+    }
+
     /**
      * Common entry point for start and stop service functions.
      * To allow for use with Java mode, a temporary file is created
      * by the start service, and a deleted by the stop service.
-     * 
+     *
      * @param args [start [pause time] | stop]
-     * @throws IOException if there are problems creating or deleting the temporary file 
+     * @throws IOException if there are problems creating or deleting the temporary file
      */
     public static void main(String[] args) throws IOException {
         final int argc = args.length;
@@ -105,7 +168,7 @@ public class ProcrunService implements Runnable {
 
     /**
      * Start the jvm version of the service, and waits for it to complete.
-     * 
+     *
      * @param args optional, arg[0] = timeout (seconds)
      */
     public static void start(String [] args) {
@@ -140,7 +203,7 @@ public class ProcrunService implements Runnable {
             thrd.interrupt();
         } else {
             log("No thread to interrupt");
-        }        
+        }
     }
 
     /**
@@ -149,8 +212,7 @@ public class ProcrunService implements Runnable {
      */
     public void run() {
         log("Started thread in "+System.getProperty("user.dir"));
-        log("user.name="+System.getProperty("user.name"));
-        log("user.home="+System.getProperty("user.home"));
+        logSystemEnvironment();
         while(stopFile == null || stopFile.exists()){
             try {
                 log("pausing...");
@@ -166,7 +228,7 @@ public class ProcrunService implements Runnable {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
         System.out.println(df.format(new Date())+msg);
     }
-    
+
     protected void finalize(){
         log("Finalize called from thread "+Thread.currentThread());
     }
