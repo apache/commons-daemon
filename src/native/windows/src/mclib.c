@@ -311,7 +311,7 @@ lstrlcatA(LPSTR dst, int siz, LPCSTR src)
     /* Find the end of dst and adjust bytes left but don't go past end */
     while (n-- != 0 && *d != '\0')
         d++;
-    dlen = d - dst;
+    dlen = (int)(d - dst);
     n = siz - dlen;
 
     if (n == 0)
@@ -339,7 +339,7 @@ lstrlcatW(LPWSTR dst, int siz, LPCWSTR src)
     /* Find the end of dst and adjust bytes left but don't go past end */
     while (n-- != 0 && *d != '\0')
         d++;
-    dlen = d - dst;
+    dlen = (int)(d - dst);
     n = siz - dlen;
 
     if (n == 0)
