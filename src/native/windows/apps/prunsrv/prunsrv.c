@@ -231,6 +231,8 @@ static HANDLE gSignalThread  = NULL;
 static HANDLE gPidfileHandle = NULL;
 static LPWSTR gPidfileName   = NULL;
 static BOOL   gSignalValid   = TRUE;
+static APXJAVA_THREADARGS gRargs;
+
 
 DWORD WINAPI eventThread(LPVOID lpParam)
 {
@@ -991,20 +993,20 @@ static DWORD serviceStart()
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
             return 1;
         }
-        if (!apxJavaInitialize(gWorker, _jni_classpath, _jni_jvmoptions,
-                               SO_JVMMS, SO_JVMMX, SO_JVMSS, SO_JNIVFPRINTF)) {
-            rv = 2;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed initializing java %s", _jni_classpath);
-            goto cleanup;
-        }
-        if (!apxJavaLoadMainClass(gWorker, _jni_rclass, _jni_rmethod, _jni_rparam)) {
-            rv = 3;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed loading main %s class %s", _jni_rclass, _jni_classpath);
-            goto cleanup;
-        }
-        apxJavaSetOut(gWorker, TRUE,  gStdwrap.szStdErrFilename);
-        apxJavaSetOut(gWorker, FALSE, gStdwrap.szStdOutFilename);
-        if (!apxJavaStart(gWorker)) {
+        gRargs.hJava            = gWorker;
+        gRargs.szClassPath      = _jni_classpath;
+        gRargs.lpOptions        = _jni_jvmoptions;
+        gRargs.dwMs             = SO_JVMMS;
+        gRargs.dwMx             = SO_JVMMX;
+        gRargs.dwSs             = SO_JVMSS;
+        gRargs.bJniVfprintf     = SO_JNIVFPRINTF;        
+        gRargs.szClassName      = _jni_rclass;
+        gRargs.szMethodName     = _jni_rmethod;
+        gRargs.lpArguments      = _jni_rparam;
+        gRargs.szStdErrFilename = gStdwrap.szStdErrFilename;
+        gRargs.szStdOutFilename = gStdwrap.szStdOutFilename;
+
+        if (!apxJavaStartThread(&gRargs)) {
             rv = 4;
             apxLogWrite(APXLOG_MARK_ERROR "Failed to start Java");
             goto cleanup;

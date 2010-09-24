@@ -21,6 +21,23 @@ __APXBEGIN_DECLS
 
 #define     APX_JVM_DESTROY 0x00000001
 
+typedef struct stAPXJAVA_THREADARGS
+{
+    LPVOID      hJava;
+    LPCSTR      szClassPath;
+    LPCVOID     lpOptions;
+    DWORD       dwMs;
+    DWORD       dwMx;
+    DWORD       dwSs;
+    DWORD       bJniVfprintf;
+    LPCSTR      szClassName;
+    LPCSTR      szMethodName;
+    LPCVOID     lpArguments;    
+    BOOL        setErrorOrOut;
+    LPCWSTR     szStdErrFilename;
+    LPCWSTR     szStdOutFilename;
+} APXJAVA_THREADARGS, *LPAPXJAVA_THREADARGS;
+
 APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath);
 
 BOOL        apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
@@ -36,6 +53,7 @@ BOOL        apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
                                  LPCVOID lpArguments);
 
 BOOL        apxJavaStart(APXHANDLE hJava);
+BOOL        apxJavaStartThread(LPAPXJAVA_THREADARGS pArgs);
 
 DWORD       apxJavaWait(APXHANDLE hJava, DWORD dwMilliseconds, BOOL bKill);
 

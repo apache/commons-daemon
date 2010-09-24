@@ -24,7 +24,7 @@
   <property name="source.home" value="."/>
 
   <property name="maven.repo.local" value="${user.home}/.m2/repository"/>
-  <property name="commons-collections.jar" value="${maven.repo.local}/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
+  <property name="commons-collections.jar" value="commons-collections-3.2.1.jar"/>
 
   <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService,ProcrunService"/>
 
@@ -117,7 +117,7 @@
   <path id="compile.classpath">
     <!-- output jar filename may vary between releases -->
     <fileset dir="../../dist" includes="commons-daemon-*.jar"/>
-    <pathelement location="${commons-collections.jar}"/>
+    <fileset dir="." includes="${commons-collections.jar}"/>
   </path>
 
 </project>
