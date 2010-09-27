@@ -22,13 +22,15 @@
 #                 This file defines CPU architecture and basic compiler
 #                 and linker parameters.
 # Common params:
-#                 CPU       Compile for specified CPU. Supported CPU's are:
+#                 CPU       Compile for specified CPU. Supported CPUs are:
 #                           X86 (Common x86 architecture)
 #                           X64 (AMD64/EMT64 architecture)
 #                           I64 (Intel IA64 architecture)
 #                           If not specified it will default to the
-#                           PROCESSOR_ARCHITECTURE environment variable
-#                           or to the X86 if not specified.
+#                           BUILD_CPU environment variable, failing that
+#                           It will default to the
+#                           PROCESSOR_ARCHITECTURE/ARCHITEW6432 environment variables
+#                           or failing that it will default to X86.
 #                 WINVER    Compile for specified Windows version
 #                           WINNT   for Windows 2000 and up(default)
 #                           WINXP   for Windows XP and up
@@ -92,20 +94,13 @@ RC = rc.exe
 MT = mt.exe
 !ENDIF
 
-# Use BUILD_CPU if CPU was not set
+# If CPU is not defined, apply defaults
 !IF !DEFINED(CPU) || "$(CPU)" == ""
-!IF "$(BUILD_CPU)" == "i386" || "$(BUILD_CPU)" == "x86" || "$(BUILD_CPU)" == "i686"
-CPU=X86
-!ENDIF
-!IF "$(BUILD_CPU)" == "amd64" || "$(BUILD_CPU)" == "x86_64" || "$(BUILD_CPU)" == "x64"
-CPU=X64
-!ENDIF
-!IF "$(BUILD_CPU)" == "ia64" || "$(BUILD_CPU)" == "i64"
-CPU=I64
-!ENDIF
-!ELSE
+# Set BUILD_CPU if it is not yet set
+!IF !DEFINED(BUILD_CPU) || "$(BUILD_CPU)" == ""
 !IF "$(PROCESSOR_ARCHITECTURE)" == ""
 !IF "$(PROCESSOR_ARCHITEW6432)" == ""
+# Default to X86
 BUILD_CPU=X86
 !ELSE
 BUILD_CPU=$(PROCESSOR_ARCHITEW6432)
@@ -113,6 +108,8 @@ BUILD_CPU=$(PROCESSOR_ARCHITEW6432)
 !ELSE
 BUILD_CPU=$(PROCESSOR_ARCHITECTURE)
 !ENDIF
+!ENDIF
+# Check BUILD_CPU and reset value if necessary
 !IF "$(BUILD_CPU)" == "i386" || "$(BUILD_CPU)" == "x86" || "$(BUILD_CPU)" == "i686"
 CPU=X86
 !ENDIF
@@ -121,6 +118,10 @@ CPU=X64
 !ENDIF
 !IF "$(BUILD_CPU)" == "ia64" || "$(BUILD_CPU)" == "i64"
 CPU=I64
+!ENDIF
+# did we manage to set CPU?
+!IF !DEFINED(CPU) || "$(CPU)" == ""
+!ERROR Unexpected value of BUILD_CPU: $(BUILD_CPU) or PROCESSOR_ARCHITECTURE=$(PROCESSOR_ARCHITECTURE) or PROCESSOR_ARCHITEW6432=$(PROCESSOR_ARCHITEW6432).
 !ENDIF
 !ENDIF
 
