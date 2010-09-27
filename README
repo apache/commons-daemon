@@ -15,10 +15,12 @@ To build the native parts:
   procrun is only for windows
   cd src\native\windows\apps
   cd prunsrv
-  nmake -f prunsrv.x86 (prunsrv.amd64 | prunsrv.ia64)
+  nmake [CPU=(X86|X64|I64)]
   cd ..\prunmgr
-  nmake -f prunmgs.x86
+  nmake [CPU=(X86|X64|I64)]
   (It is also possible to use the MS development tools).
+
+  See also the README files in src\native\windows
 
 To build the documentation: (See http://commons.apache.org/building.html).
 mvn site:generate
