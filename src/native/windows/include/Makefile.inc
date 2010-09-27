@@ -100,8 +100,8 @@ MT = mt.exe
 !IF !DEFINED(BUILD_CPU) || "$(BUILD_CPU)" == ""
 !IF "$(PROCESSOR_ARCHITECTURE)" == ""
 !IF "$(PROCESSOR_ARCHITEW6432)" == ""
-# Default to X86
-BUILD_CPU=X86
+# Default to x86, will be upcased later
+BUILD_CPU=x86
 !ELSE
 BUILD_CPU=$(PROCESSOR_ARCHITEW6432)
 !ENDIF
