@@ -207,7 +207,8 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
                     if (LoadLibraryW(crtBinPath)) {
                         /* Found MSVCRTxx.dll
                          */
-                        apxLogWrite(APXLOG_MARK_DEBUG "preloaded '%S'", crtBinPath);
+                        apxLogWrite(APXLOG_MARK_DEBUG "preloaded '%S'",
+                                    crtBinPath);
                         break;
                     }
                 }
@@ -230,6 +231,8 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
             if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
                 jreBinPath[i] = L'\0';
                 DYNLOAD_CALL(SetDllDirectoryW)(jreBinPath);
+                apxLogWrite(APXLOG_MARK_DEBUG "seting DLL search path to '%S'",
+                            jreBinPath);
                 l++;
             }
         }
