@@ -385,6 +385,11 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
     APXHANDLE hRegistry;
     int i = 0;
 
+    if (!lpCmdline->szApplication) {
+        /* Handle empty service names */
+        apxLogWrite(APXLOG_MARK_WARN "No service name provided");
+        return FALSE;           
+    }
     SetLastError(ERROR_SUCCESS);
     hRegistry = apxCreateRegistryW(gPool, KEY_READ | KREG_WOW6432,
                                    PRG_REGROOT,

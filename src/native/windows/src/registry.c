@@ -236,10 +236,14 @@ apxCreateRegistryW(APXHANDLE hPool, REGSAM samDesired,
     HKEY      hSparamKey = NULL;
     HKEY      hUparamKey = NULL;
 
-    if (!szKeyName || lstrlenW(szKeyName) > SIZ_RESMAX)
+    if (!szKeyName || lstrlenW(szKeyName) > SIZ_RESMAX) {
+        SetLastError(ERROR_INVALID_PARAMETER);
         return NULL;
-    if (szRoot && lstrlenW(szRoot) > SIZ_RESMAX)
+    }
+    if (szRoot && lstrlenW(szRoot) > SIZ_RESMAX) {
+        SetLastError(ERROR_INVALID_PARAMETER);
         return NULL;
+    }
 
     /* make the HKLM\\SOFTWARE key */
     lstrcpyW(buff, REGSOFTWARE_ROOT);
