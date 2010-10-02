@@ -41,12 +41,16 @@ typedef struct APXSERVICE {
 
 static BOOL __apxIsValidServiceName(LPCWSTR szServiceName)
 {
-    do {
-        if (!IsCharAlphaNumericW(*szServiceName)) {
-            apxDisplayError(FALSE, NULL, 0, "NonAlpha %d", *szServiceName);
+    WCHAR ch;
+    int   i = 0;
+    while ((ch = szServiceName[i++])) {
+        if (ch == L'/' || ch == '\\' ||
+            ch == L' ') {
+            apxDisplayError(FALSE, NULL, 0, "Invalid service (%S) char '%C' detected",
+                            szServiceName, ch);
             return FALSE;
         }
-    } while( *(++szServiceName));
+    }
     return TRUE;
 }
 
