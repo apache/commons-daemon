@@ -153,6 +153,8 @@ HANDLE apxLogOpen(
     if (h->hFile == INVALID_HANDLE_VALUE) {
         /* Make sure we write somewhere */
         h->hFile = GetStdHandle(STD_ERROR_HANDLE);
+        apxDisplayError(FALSE, NULL, 0,
+                        "Unable to create logger at '%S'\n", sPath);        
     }
     /* Set this file as system log file */
     if (!_st_sys_loghandle)
