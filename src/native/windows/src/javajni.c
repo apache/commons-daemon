@@ -63,7 +63,6 @@ static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
 #define JVM_EXCEPTION_CHECK(jvm) \
     ((*((jvm)->lpEnv))->ExceptionCheck((jvm)->lpEnv) != JNI_OK)
 
-#ifdef _DEBUG
 #define JVM_EXCEPTION_CLEAR(jvm) \
     APXMACRO_BEGIN                                              \
     if ((jvm)->lpEnv) {                                         \
@@ -72,15 +71,6 @@ static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
             (*((jvm)->lpEnv))->ExceptionClear((jvm)->lpEnv);    \
         }                                                       \
     } APXMACRO_END
-#else
-#define JVM_EXCEPTION_CLEAR(jvm) \
-    APXMACRO_BEGIN                                              \
-    if ((jvm)->lpEnv) {                                         \
-        if ((*((jvm)->lpEnv))->ExceptionCheck((jvm)->lpEnv)) {  \
-            (*((jvm)->lpEnv))->ExceptionClear((jvm)->lpEnv);    \
-        }                                                       \
-    } APXMACRO_END
-#endif
 
 #define JNI_LOCAL_UNREF(obj) \
         (*(lpJava->lpEnv))->DeleteLocalRef(lpJava->lpEnv, obj)
@@ -843,10 +833,10 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     LPAPXJAVAVM lpJava;
     LPAPXJAVA_THREADARGS pArgs = (LPAPXJAVA_THREADARGS)lpParameter;
     APXHANDLE hJava;
-    
+
     hJava = (APXHANDLE)pArgs->hJava;
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
-        WORKER_EXIT(0);
+        WORKER_EXIT(1);
 
     if (!apxJavaInitialize(pArgs->hJava,
                            pArgs->szClassPath,
@@ -878,15 +868,16 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
               lpJava->clWorker.jClazz,
               lpJava->clWorker.jMethod,
               lpJava->clWorker.jArgs);
-
-    JVM_EXCEPTION_CLEAR(lpJava);
-    __apxJvmDetach(lpJava);
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread %s:%s finished",
-                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
+    if (JVM_EXCEPTION_CHECK(lpJava)) {
+        WORKER_EXIT(4);
+    }
+    else {
+        __apxJvmDetach(lpJava);
+    }
 finished:
     lpJava->dwWorkerStatus = 0;
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s",
-                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
+    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
+                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
     return 0;
