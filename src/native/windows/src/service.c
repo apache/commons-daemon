@@ -39,7 +39,7 @@ typedef struct APXSERVICE {
 
 } APXSERVICE, *LPAPXSERVICE;
 
-static WCHAR __invalidPathChars[] = L" <>:\"/\\:|?*";
+static WCHAR __invalidPathChars[] = L"<>:\"/\\:|?*";
 static BOOL __apxIsValidServiceName(LPCWSTR szServiceName)
 {
     WCHAR ch;
