@@ -152,9 +152,10 @@ HANDLE apxLogOpen(
                       NULL);
     if (h->hFile == INVALID_HANDLE_VALUE) {
         /* Make sure we write somewhere */
-        h->hFile = GetStdHandle(STD_ERROR_HANDLE);
+        h = &_st_sys_errhandle;
         apxDisplayError(FALSE, NULL, 0,
-                        "Unable to create logger at '%S'\n", sPath);        
+                        "Unable to create logger at '%S'\n", sPath);
+        return (HANDLE)h;
     }
     /* Set this file as system log file */
     if (!_st_sys_loghandle)
@@ -279,7 +280,7 @@ apxLogWrite(
             lstrcpyA(szBp, "Unknown error code");
             if (dwLevel == APXLOG_LEVEL_ERROR) {
                 szBp += 18;
-                wsprintfA(szBp, " occured in (%s:%d) ", f, dwLine);                
+                wsprintfA(szBp, " occured in (%s:%d) ", f, dwLine);
             }
         }
         else
@@ -327,7 +328,7 @@ apxLogWrite(
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
             WriteFile(lf->hFile, buffer, len, &wr, NULL);
-            
+
             /* Terminate the line */
             WriteFile(lf->hFile, LINE_SEP, sizeof(LINE_SEP) - 1, &wr, NULL);
 #ifdef _DEBUG_FULL

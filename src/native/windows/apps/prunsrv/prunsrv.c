@@ -285,6 +285,8 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
             *stdout = *lpWrapper->fpStdOutFile;
             setvbuf(stdout, NULL, _IONBF, 0);
         }
+        else
+            lpWrapper->szStdOutFilename = NULL;
     }
     if (lpWrapper->szStdErrFilename) {
         if (lstrcmpiW(lpWrapper->szStdErrFilename, PRSRV_AUTO) == 0) {
@@ -302,6 +304,8 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
             *stderr = *lpWrapper->fpStdErrFile;
             setvbuf(stderr, NULL, _IONBF, 0);
         }
+        else
+            lpWrapper->szStdOutFilename = NULL;        
     }
     else if (lpWrapper->fpStdOutFile) {
         _dup2(_fileno(lpWrapper->fpStdOutFile), 2);
