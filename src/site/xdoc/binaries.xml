@@ -64,7 +64,7 @@ The Windows archive (e.g. commons-daemon-1.0.3-bin-windows.zip) contains 2 diffe
 </ul>
 There is only one <code>prunmgr.exe</code> application for all architectures.
 The <code>prunsrv.exe</code> executable is available in 3 different versions for different architectures.
-The version in the top-level directory is for 32-bit (x86) architectures. 
+The version in the top-level directory is for 32-bit (x86) architectures.
 The lower level directories are for 64-bit systems:
 <ul>
 <li>amd64 - AMD 64-bit</li>

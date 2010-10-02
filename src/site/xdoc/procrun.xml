@@ -25,25 +25,25 @@
 <body>
 <section name="Introduction">
 <p>
-    Procrun is a set of applications that allow Windows users to wrap 
+    Procrun is a set of applications that allow Windows users to wrap
     (mostly) Java applications (e.g. Tomcat) as a Windows service.
     <br></br>
-    The service can be set to automatically start when the machine boots 
+    The service can be set to automatically start when the machine boots
     and will continue to run with no user logged onto the machine.
-</p> 
+</p>
 </section>
 
 <section name="Procrun monitor application">
 <p>
     <b>Prunmgr</b> is a GUI application for monitoring and configuring procrun
     services.
-</p>    
+</p>
 <p>
     Each command line directive is in the form of <b>//XX[//ServiceName]</b>
 </p>
 <p>
     If the <code>//ServiceName</code> parameter is omitted, then the service name is
-    assumed to be the name of the file. 
+    assumed to be the name of the file.
     <br/>
     The Prunsrv application behaves in the same way,
     so to allow both applications to reside in the same directory, the Prunmgr application
@@ -54,30 +54,30 @@
     then the default service name is <code>TestService</code>.
 </p>
     <p>The available command line options are:</p>
-<p> 
+<p>
     <table>
     <tr><th>//ES</th>
         <td>Edit service configuration</td>
         <td>This is the default operation. It is called if the no option is
             provided.
-            Starts the GUI application which allows the service configuration 
+            Starts the GUI application which allows the service configuration
             to be modified, started and stopped.
         </td>
     </tr>
     <tr><th>//MS</th>
         <td>Monitor service</td>
-        <td>Starts the GUI application and minimizes it to the system tray. 
+        <td>Starts the GUI application and minimizes it to the system tray.
         </td>
     </tr>
     <tr><th>//MR</th>
         <td>Monitor &amp; run service</td>
         <td>Starts the GUI application and minimizes it to the system tray.
-            Start the service if it is not currently running. 
+            Start the service if it is not currently running.
         </td>
     </tr>
     <tr><th>//MQ</th>
         <td>Monitor Quit</td>
-        <td>Stop any running monitor for the service. 
+        <td>Stop any running monitor for the service.
         </td>
     </tr>
     </table>
@@ -102,7 +102,7 @@
     then the default service name is <code>TestService</code>.
 </p>
     <p>The available command line options are:</p>
-<p> 
+<p>
     <table>
     <tr><th>//TS</th>
         <td>Run the service as a console application</td>
@@ -128,21 +128,21 @@
     <tr><th>//DS</th>
         <td>Delete service</td>
         <td>Stops the service first if it is currently running</td>
-    </tr>        
+    </tr>
     <tr><th>//PP[//seconds]</th>
         <td>Pause</td>
         <td>Default is 60 seconds</td>
-    </tr>        
+    </tr>
     <tr><th>//VS</th>
         <td>Version</td>
         <td>Print version and exit (since version 1.0.3)</td>
-    </tr>        
+    </tr>
     <tr><th>//?</th>
         <td>Help</td>
         <td>Print usage and exit (since version 1.0.3)</td>
-    </tr>        
+    </tr>
     </table>
-</p> 
+</p>
 </subsection>
 <subsection name="Command line parameters">
 <p>
@@ -151,7 +151,7 @@
     prefixed with <code>PR_</code> it will take precedence.
     For example:
 <source>set PR_CLASSPATH=xx.jar</source>
-</p>    
+</p>
 <p>is equivalent to providing
 <source>--Classpath=xx.jar</source>
 </p>
@@ -179,13 +179,13 @@ Only multi-valued parameters support this; they are indicated in the table below
 If <b><code>++</code></b> is used for a parameter that does not support multiple values,
 then it is treated the same as <b>--</b>. No error is reported.
 </p>
-<p> 
+<p>
     <table>
     <tr>
     <th>ParameterName</th>
     <th>Default</th>
     <th>Description</th>
-    </tr> 
+    </tr>
     <tr>
     <td>--Description</td>
     <td></td>
@@ -245,7 +245,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Specifies the name of the account under which the service should run.
         Use an account name in the form <i>DomainName\UserName</i>.
         The service process will be logged on as this user.
-        if the account belongs to the built-in domain, you can specify <i>.\UserName</i> 
+        if the account belongs to the built-in domain, you can specify <i>.\UserName</i>
     </td>
     </tr>
     <tr>
@@ -425,15 +425,15 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td></td>
     <td>Redirected stderr filename. If named <b>auto</b> file is created
     in the <b>LogPath</b> directory with the name <b>service-stderr.YEAR-MONTH-DAY.log</b>.</td>
-    </tr>    
+    </tr>
     <tr>
     <td>--PidFile</td>
     <td></td>
     <td>Defines the file name for storing the running process id.
     Actual file is created in the <b>LogPath</b> directory</td>
-    </tr>    
+    </tr>
     </table>
-</p> 
+</p>
 </subsection>
 <subsection name="Installing services">
 <p>
@@ -559,8 +559,8 @@ For example, using RPC.
 The basic Service definitions are maintained under the registry key:
 <source>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\&lt;ServiceName&gt;</source>
 Additional parameters are stored in the registry at:
-<source>HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\ProcRun 2.0\&lt;ServiceName&gt;\Parameters</source> 
+<source>HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\ProcRun 2.0\&lt;ServiceName&gt;\Parameters</source>
 </p>
 </section>
 </body>
-</document> 
+</document>

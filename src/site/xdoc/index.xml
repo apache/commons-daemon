@@ -15,9 +15,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
- 
+
 <document>
- 
+
  <properties>
   <title>Daemon : Java based daemons or services</title>
   <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
@@ -27,7 +27,7 @@
 <section name="Introduction">
 <p>
       Since 1994, the Java programming language evolved and became a
-      valid tool to develop reliable and performant server applications as 
+      valid tool to develop reliable and performant server applications as
       opposed to just applets and client applications. The major disadvantage of
       the Java platform is that still today the only portable way to
       start a Java application relies on a single point of entry: the
@@ -65,7 +65,7 @@
       server application.
       </li>
       <li>
-      If an attacker finds out the shutdown message to send to the server 
+      If an attacker finds out the shutdown message to send to the server
       and discovers a way to send this message, he can easily interrupt
       the server's operation, bypassing all the security restrictions
       implemented in the operating system.
@@ -90,7 +90,7 @@
 <section name="Structure">
 <p>
       Daemon is made of 2 parts. One written in C that makes the interface to
-      the operating system and the other in Java that provides the 
+      the operating system and the other in Java that provides the
       Daemon API.
 </p>
 </section>
