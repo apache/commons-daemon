@@ -32,6 +32,10 @@ sinclude(./support/apsupport.m4)dnl
 AC_INIT(configure.in)
 AC_CONFIG_AUX_DIR(./support)
 
+dnl Generate ./config.nice for reproducing runs of configure
+dnl
+AP_CONFIG_NICE(config.nice)
+
 dnl -------------------------------------------------------------------------
 dnl Check current host (forget about cross compilation) and validate it
 dnl against the cache (fail if the cache differs)
@@ -46,6 +50,7 @@ dnl -------------------------------------------------------------------------
 AP_MSG_HEADER([C-Language compilation tools])
 AC_PROG_CC()
 AC_CHECK_TOOL(RANLIB, ranlib, :)
+AC_CHECK_TOOL(STRIP, strip, :)
 
 dnl -------------------------------------------------------------------------
 dnl Check if this host is supported
@@ -66,7 +71,7 @@ then
   else
     cd /System/Library/Frameworks/JavaVM.framework/Headers
   fi
-  CFLAGS="$CFLAGS -I`/bin/pwd -P`"
+  INCLUDES="$INCLUDES -I`/bin/pwd -P`"
   cd $_prevdir
   unset _prevdir
 fi
@@ -82,7 +87,7 @@ AP_PROG_JAVAC()
 AP_PROG_JAR()
 if test "$supported_os" != "darwin"
 then
-  CFLAGS="$CFLAGS -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
+  INCLUDES="$INCLUDES -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
 fi
 
 dnl -------------------------------------------------------------------------
@@ -106,6 +111,14 @@ then
 AC_CHECK_LIB([cap], [cap_init], [CFLAGS="$CFLAGS -DHAVE_LIBCAP" ; LIBS="$LIBS -lcap"])
 fi
 
+if test -z "$STRIPFLAGS"
+then
+   STRIP="@: "
+else
+   STRIP="$STRIP $STRIPFLAGS"
+fi
+
+AC_SUBST(INCLUDES)
 dnl -------------------------------------------------------------------------
 dnl Random programs we need to compile locally
 dnl -------------------------------------------------------------------------

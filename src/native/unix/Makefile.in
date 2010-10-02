@@ -32,9 +32,11 @@ distclean: clean
 	rm -f config.cache
 	rm -f config.log
 	rm -f config.status
+	rm -f config.nice
 	rm -f native/Makefile
 	rm -f Makefile
 	rm -f Makedefs
+	rm -rf autom4te.cache
 
 realclean: distclean
 	rm -f configure

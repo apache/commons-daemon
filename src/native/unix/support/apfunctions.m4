@@ -38,3 +38,73 @@ AC_DEFUN(AP_CANONICAL_HOST_CHECK,[
   fi
   AC_PROVIDE([$0])
 ])
+
+dnl Iteratively interpolate the contents of the second argument
+dnl until interpolation offers no new result. Then assign the
+dnl final result to $1.
+dnl
+dnl Example:
+dnl
+dnl foo=1
+dnl bar='${foo}/2'
+dnl baz='${bar}/3'
+dnl AP_EXPAND_VAR(fraz, $baz)
+dnl   $fraz is now "1/2/3"
+dnl
+AC_DEFUN([AP_EXPAND_VAR], [
+ap_last=
+ap_cur="$2"
+while test "x${ap_cur}" != "x${ap_last}";
+do
+  ap_last="${ap_cur}"
+  ap_cur=`eval "echo ${ap_cur}"`
+done
+$1="${ap_cur}"
+])
+
+dnl
+dnl AP_CONFIG_NICE(filename)
+dnl
+dnl Saves a snapshot of the configure command-line for later reuse
+dnl
+AC_DEFUN([AP_CONFIG_NICE], [
+  rm -f $1
+  cat >$1<<EOF
+#! /bin/sh
+#
+# Created by configure
+
+EOF
+  if test -n "$CC"; then
+    echo "CC=\"$CC\"; export CC" >> $1
+  fi
+  if test -n "$CFLAGS"; then
+    echo "CFLAGS=\"$CFLAGS\"; export CFLAGS" >> $1
+  fi
+  if test -n "$CPPFLAGS"; then
+    echo "CPPFLAGS=\"$CPPFLAGS\"; export CPPFLAGS" >> $1
+  fi
+  if test -n "$LDFLAGS"; then
+    echo "LDFLAGS=\"$LDFLAGS\"; export LDFLAGS" >> $1
+  fi
+  if test -n "$LIBS"; then
+    echo "LIBS=\"$LIBS\"; export LIBS" >> $1
+  fi
+  if test -n "$STRIPFLAGS"; then
+    echo "STRIPFLAGS=\"$STRIPFLAGS\"; export STRIPFLAGS" >> $1
+  fi
+  if test -n "$INCLUDES"; then
+    echo "INCLUDES=\"$INCLUDES\"; export INCLUDES" >> $1
+  fi
+# Retrieve command-line arguments.
+  eval "set x $[0] $ac_configure_args"
+  shift
+
+  for arg
+  do
+    AP_EXPAND_VAR(arg, $arg)
+    echo "\"[$]arg\" \\" >> $1
+  done
+  echo '"[$]@"' >> $1
+  chmod +x $1
+])dnl

@@ -39,6 +39,7 @@ libservice.a: $(OBJS)
 
 jsvc: jsvc-unix.o libservice.a
 	$(LDCMD) $(LDFLAGS) jsvc-unix.o libservice.a $(LIBS) -o ../jsvc
+	$(STRIP) ../jsvc
 
 clean:
 	rm -f $(OBJS) ../jsvc jsvc-unix.o libservice.a
