@@ -231,7 +231,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
             if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
                 jreBinPath[i] = L'\0';
                 DYNLOAD_CALL(SetDllDirectoryW)(jreBinPath);
-                apxLogWrite(APXLOG_MARK_DEBUG "seting DLL search path to '%S'",
+                apxLogWrite(APXLOG_MARK_DEBUG "Setting DLL search path to '%S'",
                             jreBinPath);
                 l++;
             }
