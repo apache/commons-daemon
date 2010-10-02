@@ -72,7 +72,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-cp/ -classpath</option> directory and zip/jar 
+        <term><option>-cp/ -classpath</option> directory and zip/jar
           files</term>
         <listitem>
           <para>set search path for service classes and resouces</para>
@@ -164,7 +164,7 @@
       <varlistentry>
         <term><option>-pidfile</option> /full/path/to/file</term>
         <listitem>
-          <para>Location for output from the file containing the pid of jsvc 
+          <para>Location for output from the file containing the pid of jsvc
             (defaults to /var/run/jsvc.pid)</para>
         </listitem>
       </varlistentry>
@@ -184,8 +184,8 @@
   </refsect1>
 
   <refsect1 id='author'><title>AUTHOR</title>
-    <para>JSVC is part of the Apache Commons Daemon project. Authors are 
-      Jean-Frederic Clere, Remy Maucherat, Yoav Shapira, Bill Barker. JSVC is 
+    <para>JSVC is part of the Apache Commons Daemon project. Authors are
+      Jean-Frederic Clere, Remy Maucherat, Yoav Shapira, Bill Barker. JSVC is
       under the Apache License Version 2.0.</para>
   </refsect1>
 
