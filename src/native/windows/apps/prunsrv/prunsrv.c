@@ -41,7 +41,7 @@
 #define STDERR_FILENO 2
 #define ONE_MINUTE    (60 * 1000)
 
-#ifdef WIN64
+#ifdef _WIN64
 #define KREG_WOW6432  KEY_WOW64_32KEY
 #define PRG_BITS      64
 #else
@@ -337,14 +337,11 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
 
 static void printVersion(void)
 {
-#ifdef _WIN64
-    int b = 64;
-#else
-    int b = 32;
-#endif
     fwprintf(stderr, L"Commons Daemon Service Runner version %S/Win%d (%S)\n",
-            PRG_VERSION, b, __DATE__);
-    fwprintf(stderr, L"Copyright (c) 2000-2010 The Apache Software Foundation.\n");
+            PRG_VERSION, PRG_BITS, __DATE__);
+    fwprintf(stderr, L"Copyright (c) 2000-2010 The Apache Software Foundation.\n\n"
+                     L"For bug reporting instructions, please see:\n"
+                     L"<URL:https://issues.apache.org/jira/browse/DAEMON>.");
 }
 
 /* Display configuration parameters */
@@ -1519,7 +1516,7 @@ cleanup:
         apxLogWrite(APXLOG_MARK_ERROR "Commons Daemon procrun failed "
                                       "with exit value: %d (Failed to %s)",
                                       rv, gSzProc[ipx]);
-        if (ipx && !_service_mode) {
+        if (ipx > 2 && !_service_mode) {
             /* Print something to the user console */
             apxDisplayError(FALSE, NULL, 0, "Failed to %s", gSzProc[ipx]);
         }

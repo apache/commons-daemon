@@ -23,8 +23,8 @@
 
 static LPCSTR _log_level[] = {
     "[debug] ",
-    "[info] ",
-    "[warn] ",
+    "[info]  ",
+    "[warn]  ",
     "[error] ",
     NULL
 };
@@ -260,14 +260,22 @@ apxLogWrite(
     }
     szBp = &buffer[0];
     if (!szFormat) {
-        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
-                       FORMAT_MESSAGE_IGNORE_INSERTS,
-                       NULL,
-                       err,
-                       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                       szBp,
-                       1000,
-                       NULL);
+        if (err == 0) {
+            lstrcpyA(szBp, "Unknown error code");
+            if (dwLevel == APXLOG_LEVEL_ERROR) {
+                szBp += 18;
+                wsprintfA(szBp, " occured in (%s:%d) ", f, dwLine);                
+            }
+        }
+        else
+            FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
+                           FORMAT_MESSAGE_IGNORE_INSERTS,
+                           NULL,
+                           err,
+                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                           szBp,
+                           1000,
+                           NULL);
     }
     else {
         va_start(args, szFormat);
