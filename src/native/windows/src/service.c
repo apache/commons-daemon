@@ -39,16 +39,19 @@ typedef struct APXSERVICE {
 
 } APXSERVICE, *LPAPXSERVICE;
 
+static WCHAR __invalidPathChars[] = L" <>:\"/\\:|?*";
 static BOOL __apxIsValidServiceName(LPCWSTR szServiceName)
 {
     WCHAR ch;
     int   i = 0;
     while ((ch = szServiceName[i++])) {
-        if (ch == L'/' || ch == '\\' ||
-            ch == L' ') {
-            apxDisplayError(FALSE, NULL, 0, "Invalid service (%S) char '%C' detected",
-                            szServiceName, ch);
-            return FALSE;
+        int j = 0;
+        while (__invalidPathChars[j]) {
+            if (ch < 30 || ch == __invalidPathChars[j++]) {
+                apxDisplayError(FALSE, NULL, 0, "Service '%S' contains invalid character '%C'",
+                                szServiceName, ch);
+                return FALSE;
+            }
         }
     }
     return TRUE;
