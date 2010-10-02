@@ -18,7 +18,7 @@
  * Native routine to core JVM
  */
 #include <jni.h>
- 
+
 #ifndef _Included_Native
 #define _Included_Native
 #ifdef __cplusplus
@@ -36,7 +36,7 @@ JNIEXPORT void JNICALL Java_SimpleDaemon_toto
     memcpy(&i, &i, i);
     memset(&i, ' ', 1024);
 }
- 
+
 #ifdef __cplusplus
 }
 #endif

@@ -34,7 +34,7 @@
       <fileset dir="${dist.home}" includes="SimpleDaemon.jar service.jar aloneservice.jar ProcrunService.jar"/>
     </delete>
   </target>
-  
+
   <target name="SimpleDaemon" depends="compile"
    description="Create SimpleDaemon.jar">
     <mkdir      dir="${dist.home}"/>
