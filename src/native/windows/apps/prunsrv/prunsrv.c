@@ -43,8 +43,10 @@
 
 #ifdef WIN64
 #define KREG_WOW6432  KEY_WOW64_32KEY
+#define PRG_BITS      64
 #else
 #define KREG_WOW6432  0
+#define PRG_BITS      32
 #endif
 
 typedef struct APX_STDWRAP {
@@ -824,13 +826,13 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         gSargs.dwMs             = SO_JVMMS;
         gSargs.dwMx             = SO_JVMMX;
         gSargs.dwSs             = SO_JVMSS;
-        gSargs.bJniVfprintf     = SO_JNIVFPRINTF;        
+        gSargs.bJniVfprintf     = SO_JNIVFPRINTF;
         gSargs.szClassName      = _jni_sclass;
         gSargs.szMethodName     = _jni_smethod;
         gSargs.lpArguments      = _jni_sparam;
         gSargs.szStdErrFilename = NULL;
         gSargs.szStdOutFilename = NULL;
-        
+
         /* Create sutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(&gSargs)) {
@@ -1001,7 +1003,7 @@ static DWORD serviceStart()
         gRargs.dwMs             = SO_JVMMS;
         gRargs.dwMx             = SO_JVMMX;
         gRargs.dwSs             = SO_JVMSS;
-        gRargs.bJniVfprintf     = SO_JNIVFPRINTF;        
+        gRargs.bJniVfprintf     = SO_JNIVFPRINTF;
         gRargs.szClassName      = _jni_rclass;
         gRargs.szMethodName     = _jni_rmethod;
         gRargs.lpArguments      = _jni_rparam;
@@ -1433,7 +1435,8 @@ void __cdecl main(int argc, char **argv)
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
     apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun log initialized");
-    apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun (%s) started", PRG_VERSION);
+    apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun (%s %d-bit) started",
+                PRG_VERSION, PRG_BITS);
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
 
