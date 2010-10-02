@@ -1394,6 +1394,19 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     return rv;
 }
 
+static const char *gSzProc[] = {
+    "",
+    "parse command line arguments",
+    "load configuration",
+    "run service as console application",
+    "run service",
+    "stop service",
+    "update service parameters",
+    "install service",
+    "delete service",
+    NULL
+};
+
 void __cdecl main(int argc, char **argv)
 {
     UINT rv = 0;
@@ -1499,9 +1512,18 @@ void __cdecl main(int argc, char **argv)
     }
 
 cleanup:
-    if (rv)
+    if (rv) {
+        int ipx = 0;
+        if (rv > 0 && rv < 7)
+            ipx = rv;
         apxLogWrite(APXLOG_MARK_ERROR "Commons Daemon procrun failed "
-                                      "with exit value: %d", rv);
+                                      "with exit value: %d (Failed to %s)",
+                                      rv, gSzProc[ipx]);
+        if (ipx && !_service_mode) {
+            /* Print something to the user console */
+            apxDisplayError(FALSE, NULL, 0, "Failed to %s", gSzProc[ipx]);
+        }
+    }
     else
         apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun finished");
     if (lpCmdline)
