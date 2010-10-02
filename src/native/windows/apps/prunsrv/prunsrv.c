@@ -1381,7 +1381,7 @@ cleanup:
 /* Run the service in the debug mode */
 BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 {
-    BOOL rv = FALSE;
+    BOOL rv = TRUE;
 
     _service_mode = FALSE;
     _service_name = lpCmdline->szApplication;

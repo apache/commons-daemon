@@ -134,7 +134,7 @@ HANDLE apxLogOpen(
               sysTime.wMonth,
               sysTime.wDay);
     if (!(h = (apx_logfile_st *)apxPoolCalloc(hPool, sizeof(apx_logfile_st))))
-        return NULL;
+        return INVALID_HANDLE_VALUE;
     /* Set default level to info */
     h->dwLogLevel = APXLOG_LEVEL_INFO;
     CreateDirectoryW(sPath, NULL);
@@ -150,6 +150,10 @@ HANDLE apxLogOpen(
                       OPEN_ALWAYS,
                       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH | FILE_FLAG_SEQUENTIAL_SCAN,
                       NULL);
+    if (h->hFile == INVALID_HANDLE_VALUE) {
+        /* Make sure we write somewhere */
+        h->hFile = GetStdHandle(STD_ERROR_HANDLE);
+    }
     /* Set this file as system log file */
     if (!_st_sys_loghandle)
         _st_sys_loghandle = h;
