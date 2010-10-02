@@ -305,7 +305,7 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
             setvbuf(stderr, NULL, _IONBF, 0);
         }
         else
-            lpWrapper->szStdOutFilename = NULL;        
+            lpWrapper->szStdOutFilename = NULL;
     }
     else if (lpWrapper->fpStdOutFile) {
         _dup2(_fileno(lpWrapper->fpStdOutFile), 2);
@@ -392,7 +392,7 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
     if (!lpCmdline->szApplication) {
         /* Handle empty service names */
         apxLogWrite(APXLOG_MARK_WARN "No service name provided");
-        return FALSE;           
+        return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
     hRegistry = apxCreateRegistryW(gPool, KEY_READ | KREG_WOW6432,
@@ -855,13 +855,13 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
     else if (SO_STOPMODE) { /* Only in case we have a stop mode */
         DWORD nArgs;
         LPWSTR *pArgs;
-        
+
         if (!SO_STOPIMAGE) {
             apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
             if (!_service_mode)
                 apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
                                 _service_name ? _service_name : L"unknown");
-            return 1;                        
+            return 1;
         }
         /* Redirect process */
         hWorker = apxCreateProcessW(gPool,
@@ -1037,7 +1037,7 @@ static DWORD serviceStart()
             if (!_service_mode)
                 apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
                                 _service_name ? _service_name : L"unknown");
-            return 1;                        
+            return 1;
         }
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,
