@@ -188,6 +188,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     /* Suppress the not found system popup message */
     errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
+    apxLogWrite(APXLOG_MARK_DEBUG "loading jvm '%S'", dllJvmPath);
     _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
     if (GetFileAttributesW(szJvmDllPath) != INVALID_FILE_ATTRIBUTES) {
         /* Try to load the MSVCRTxx.dll before JVM.dll
@@ -206,6 +207,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
                     if (LoadLibraryW(crtBinPath)) {
                         /* Found MSVCRTxx.dll
                          */
+                        apxLogWrite(APXLOG_MARK_DEBUG "preloaded '%S'", crtBinPath);
                         break;
                     }
                 }
