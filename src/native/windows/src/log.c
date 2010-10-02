@@ -426,7 +426,8 @@ apxDisplayError(
         }
         else {
             fputs(sysbuf, stderr);
-            fputc('\n', stderr);
+            if (!szFormat)
+                fputc('\n', stderr);
             fflush(stderr);
         }
     }

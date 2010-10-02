@@ -851,6 +851,14 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
     else if (SO_STOPMODE) { /* Only in case we have a stop mode */
         DWORD nArgs;
         LPWSTR *pArgs;
+        
+        if (!SO_STOPIMAGE) {
+            apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
+            if (!_service_mode)
+                apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
+                                _service_name ? _service_name : L"unknown");
+            return 1;                        
+        }
         /* Redirect process */
         hWorker = apxCreateProcessW(gPool,
                                     0,
@@ -1020,6 +1028,13 @@ static DWORD serviceStart()
         apxLogWrite(APXLOG_MARK_DEBUG "Java started %s", _jni_rclass);
     }
     else {
+        if (!SO_STARTIMAGE) {
+            apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
+            if (!_service_mode)
+                apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
+                                _service_name ? _service_name : L"unknown");
+            return 1;                        
+        }
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,
                                     0,
