@@ -15,12 +15,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# Create Commons Daemon native package distribution on UNIX systems.
+# You should execute this script from the src/native/unix directory
+#
+# support/mkdist.sh <arch> [os]
+#
+# This will create something like commons-daemon-1.2.3-bin-os-arch.tar.gz
+# The version numbers are parsed from the native/version.h file.
+# If the os argument is not provided current os name will be used.
+#
+#
 if [ ".$1" = . ];then
   arch="`uname -m`"
   echo "No architecture provided. Using $arch"
 else
   arch=$1
 fi
+osname=$2
 topdir=.
 major_sed='/#define.*JSVC_MAJOR_VERSION/s/^[^0-9]*\([0-9]*\).*$/\1/p'
 minor_sed='/#define.*JSVC_MINOR_VERSION/s/^[^0-9]*\([0-9]*\).*$/\1/p'
@@ -28,13 +39,14 @@ patch_sed='/#define.*JSVC_PATCH_VERSION/s/^[^0-9]*\([0-9]*\).*$/\1/p'
 vmajor="`sed -n $major_sed $topdir/native/version.h`"
 vminor="`sed -n $minor_sed $topdir/native/version.h`"
 vpatch="`sed -n $patch_sed $topdir/native/version.h`"
-osname="`uname -s | tr [A-Z] [a-z]`"
+test ".$osname" = . && osname="`uname -s | tr [A-Z] [a-z]`"
 verdst="commons-daemon-$vmajor.$vminor.$vpatch-bin-$osname-$arch"
 extfiles="LICENSE.txt NOTICE.txt RELEASE-NOTES.txt"
 for i in $extfiles
 do
   cp ../../../$i .
 done
+echo "Creating $verdst.tar.gz ..."
 tar cfz $verdst.tar.gz jsvc $extfiles
 if [ ".$?" = .0 ]; then
   md5sum --binary $verdst.tar.gz > $verdst.tar.gz.md5
