@@ -15,6 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+if [ ".$1" = . ];then
+  arch="`uname -m`"
+  echo "No architecture provided. Using $arch"
+else
+  arch=$1
+fi
 topdir=.
 major_sed='/#define.*JSVC_MAJOR_VERSION/s/^[^0-9]*\([0-9]*\).*$/\1/p'
 minor_sed='/#define.*JSVC_MINOR_VERSION/s/^[^0-9]*\([0-9]*\).*$/\1/p'
@@ -23,13 +29,17 @@ vmajor="`sed -n $major_sed $topdir/native/version.h`"
 vminor="`sed -n $minor_sed $topdir/native/version.h`"
 vpatch="`sed -n $patch_sed $topdir/native/version.h`"
 osname="`uname -s | tr [A-Z] [a-z]`"
-verdst="commons-daemon-$vmajor.$vminor.$vpatch-bin-$osname-$1"
+verdst="commons-daemon-$vmajor.$vminor.$vpatch-bin-$osname-$arch"
 extfiles="LICENSE.txt NOTICE.txt RELEASE-NOTES.txt"
 for i in $extfiles
 do
   cp ../../../$i .
 done
 tar cfz $verdst.tar.gz jsvc $extfiles
-md5sum --binary $verdst.tar.gz > $verdst.tar.gz.md5
-sha1sum --binary $verdst.tar.gz > $verdst.tar.gz.sha1
+if [ ".$?" = .0 ]; then
+  md5sum --binary $verdst.tar.gz > $verdst.tar.gz.md5
+  sha1sum --binary $verdst.tar.gz > $verdst.tar.gz.sha1
+else
+  rm $verdst.tar.gz >/dev/null 2>&1
+fi
 rm $extfiles
