@@ -211,7 +211,8 @@ static arg_data *parse(int argc, char *argv[])
                 return NULL;
             }
         }
-        else if (!strcmp(argv[x], "-home")) {
+        else if (!strcmp(argv[x], "-home") ||
+                 !strcmp(argv[x], "-java-home")) {
             args->home = optional(argc, argv, x++);
             if (args->home == NULL) {
                 log_error("Invalid Java Home specified");
