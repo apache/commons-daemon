@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.text.ParseException;
 
@@ -188,7 +189,7 @@ public final class DaemonConfiguration
         while ((args = getProperty(name + "[" + list.size() + "]")) != null) {
             list.add(args);
         }
-        return (String[])list.toArray();
+        return Arrays.copyOf(list.toArray(), list.size(), String[].class);
     }
 
 }
