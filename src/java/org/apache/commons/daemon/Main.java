@@ -185,12 +185,19 @@ public class Main implements Daemon
         protected void invoke()
             throws Exception
         {
-            Object obj   = claz.newInstance();
-            Object arg[] = new Object[1];
+            if (name.equals("System.exit")) {
+                // Just call a System.exit()
+                // The start method was probably installed
+                // a shutdown hook.
+                System.exit(0);
+            }
+            else {
+                Object obj   = claz.newInstance();
+                Object arg[] = new Object[1];
 
-            arg[0] = args;
-            inst.invoke(obj, arg);
-
+                arg[0] = args;
+                inst.invoke(obj, arg);
+            }
         }
         // Load the class using reflection
         protected void validate()
@@ -199,6 +206,8 @@ public class Main implements Daemon
             /* Check the class name */
             if (name == null)
                 throw new NullPointerException("Null class name specified");
+            else if (name.equals("System.exit"))
+                return;
             if (args == null)
                 args = new String[0];
             if (main == null)
