@@ -39,6 +39,11 @@ public class Main implements Daemon
 {
 
     private final static String ARGS            = "args";
+    private final static String START_CLASS     = "start";
+    private final static String START_METHOD    = "start.method";
+    private final static String STOP_CLASS      = "stop";
+    private final static String STOP_METHOD     = "stop.method";
+    private final static String STOP_ARGS       = "stop.args";
     private String              configFileName  = null;
     private DaemonConfiguration config;
 
@@ -59,7 +64,6 @@ public class Main implements Daemon
     public void init(DaemonContext context)
         throws Exception
     {
-        ArrayList  sa = new ArrayList();
         String[] args = context.getArguments();
 
         if (args != null) {
@@ -100,9 +104,9 @@ public class Main implements Daemon
                 else if (args[i].equals("-stop-argument")) {
                     if (++i == args.length)
                         throw new IllegalArgumentException(args[i - 1]);
-                    ArrayList aa = new ArrayList();
-                    aa.add(args[i]);
-                    shutdown.setArguments(aa);
+                    String[] aa = new String[1];
+                    aa[0] = args[i];
+                    shutdown.addArguments(aa);
                 }
                 else {
                     // This is not our option.
@@ -111,20 +115,19 @@ public class Main implements Daemon
                 }
             }
             String[] copy = new String[args.length - i];
-            System.arraycopy(args, i, copy, 0, copy.length);
-            sa.addAll(Arrays.asList(copy));
+            startup.addArguments(copy);
         }
         if (config.load(configFileName)) {
+            // Setup params if not set via cmdline.
+            startup.setClassName(config.getProperty(START_CLASS));
+            startup.setMethodName(config.getProperty(START_METHOD));
             // Merge the config with command line arguments
-            //
-            args = config.getPropertyArray(ARGS);
-            if (args != null) {
-                // Add daemon.args[0] ... daemon.args[n]
-                // To the end of command line arguments
-                sa.addAll(Arrays.asList(args));
-            }
+            startup.addArguments(config.getPropertyArray(ARGS));
+
+            shutdown.setClassName(config.getProperty(STOP_CLASS));
+            shutdown.setMethodName(config.getProperty(STOP_METHOD));
+            shutdown.addArguments(config.getPropertyArray(STOP_ARGS));
         }
-        startup.setArguments(sa);
         startup.validate();
         shutdown.validate();
     }
@@ -157,10 +160,10 @@ public class Main implements Daemon
     class Invoker
     {
         private String      name = null;
-        private String      main = null;
+        private String      call = null;
         private String[]    args = null;
         private Method      inst = null;
-        private Class       claz = null;
+        private Class       main = null;
 
         protected Invoker()
         {
@@ -168,31 +171,36 @@ public class Main implements Daemon
 
         protected void setClassName(String name)
         {
-            this.name = name;
+            if (this.name == null)
+                this.name = name;
         }
         protected void setMethodName(String name)
         {
-            this.main = name;
+            if (this.call == null)
+                this.call = name;
         }
-
-        protected void setArguments(ArrayList args)
+        protected void addArguments(String[] args)
         {
             if (args != null) {
-                this.args = Arrays.copyOf(args.toArray(), args.size(), String[].class);
+                ArrayList aa = new ArrayList();
+                if (this.args != null)
+                    aa.addAll(Arrays.asList(this.args));
+                aa.addAll(Arrays.asList(args));
+                this.args = Arrays.copyOf(aa.toArray(), aa.size(), String[].class);
             }
         }
 
         protected void invoke()
             throws Exception
         {
-            if (name.equals("System.exit")) {
+            if (name.equals("System") && call.equals("exit")) {
                 // Just call a System.exit()
                 // The start method was probably installed
                 // a shutdown hook.
                 System.exit(0);
             }
             else {
-                Object obj   = claz.newInstance();
+                Object obj   = main.newInstance();
                 Object arg[] = new Object[1];
 
                 arg[0] = args;
@@ -204,14 +212,15 @@ public class Main implements Daemon
             throws Exception
         {
             /* Check the class name */
-            if (name == null)
-                throw new NullPointerException("Null class name specified");
-            else if (name.equals("System.exit"))
+            if (name == null) {
+                name = "System";
+                call = "exit";
                 return;
+            }
             if (args == null)
                 args = new String[0];
-            if (main == null)
-                main = "main";
+            if (call == null)
+                call = "main";
 
             // Get the ClassLoader loading this class
             ClassLoader cl = Main.class.getClassLoader();
@@ -220,13 +229,13 @@ public class Main implements Daemon
             Class[] ca = new Class[1];
             ca[0]      = args.getClass();
             // Find the required class
-            claz = cl.loadClass(name);
-            if (claz == null)
+            main = cl.loadClass(name);
+            if (main == null)
                 throw new ClassNotFoundException(name);
             // Find the required method.
             // NoSuchMethodException will be thrown if matching method
             // is not found.
-            inst = claz.getMethod(main, ca);
+            inst = main.getMethod(call, ca);
         }
     }
 }
