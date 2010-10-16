@@ -28,6 +28,39 @@ while [ -h "$ARG0" ]; do
 done
 DIRNAME="`dirname $ARG0`"
 PROGRAM="`basename $ARG0`"
+for o
+do
+  case "$o" in
+    --java-home )
+        JAVA_HOME="$2"
+        shift; shift;
+        continue
+    ;;
+    --catalina-home )
+        CATALINA_HOME="$2"
+        shift; shift;
+        continue
+    ;;
+    --catalina-base )
+        CATALINA_BASE="$2"
+        shift; shift;
+        continue
+    ;;
+    --catalina-pid )
+        CATALINA_PID="$2"
+        shift; shift;
+        continue
+    ;;
+    --tomcat-user )
+        TOMCAT_USER="$2"
+        shift; shift;
+        continue
+    ;;
+    * )
+        break
+    ;;
+  esac
+done
 
 # Setup parameters for running the jsvc
 #
@@ -157,6 +190,7 @@ case "$1" in
       exit $?
     ;;
     *       )
+      echo "Unkown command: \`$1'"
       echo "Usage: $PROGRAM ( commands ... )"
       echo "commands:"
       echo "  run               Start Catalina without detaching from console"
