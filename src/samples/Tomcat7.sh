@@ -153,7 +153,7 @@ case "$1" in
       -check \
       $CATALINA_MAIN
       if [ "$?" = 0 ]; then
-        "$JAVA_HOME/bin/java" \
+        "$JAVA_BIN" \
         -classpath "$CATALINA_HOME/lib/catalina.jar" \
         org.apache.catalina.util.ServerInfo
       fi
