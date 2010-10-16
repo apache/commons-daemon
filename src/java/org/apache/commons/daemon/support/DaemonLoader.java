@@ -19,7 +19,9 @@ package org.apache.commons.daemon.support;
 
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonController;
+import org.apache.commons.daemon.DaemonInitException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /*
@@ -169,6 +171,15 @@ public final class DaemonLoader
                 init.invoke(daemon, arg);
             }
 
+        } catch (InvocationTargetException e) {
+          Throwable thrown = e.getCause();
+          /* DaemonInitExceptions can fail with a nicer message */
+          if (thrown instanceof DaemonInitException) {
+            failed(((DaemonInitException) thrown).getMessageWithCause());
+          } else {
+            thrown.printStackTrace(System.err);
+          }
+          return false;
         } catch (Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
@@ -306,41 +317,32 @@ public final class DaemonLoader
         }
 
         public void fail()
-            throws IllegalStateException
         {
             fail(null, null);
         }
 
         public void fail(String message)
-            throws IllegalStateException
         {
             fail(message, null);
         }
 
         public void fail(Exception exception)
-            throws IllegalStateException
         {
             fail(null, exception);
         }
 
         public void fail(String message, Exception exception)
-            throws IllegalStateException
         {
             synchronized (this) {
-                if (!this.isAvailable()) {
-                    throw new IllegalStateException();
+                this.setAvailable(false);
+                String msg = message;
+                if (exception != null) {
+                    if (msg != null)
+                        msg = msg + ": " + exception.toString();
+                    else
+                        msg = exception.toString();
                 }
-                else {
-                    this.setAvailable(false);
-                    String msg = message;
-                    if (exception != null) {
-                        if (msg != null)
-                            msg = msg + ": " + exception.toString();
-                        else
-                            msg = exception.toString();
-                    }
-                    DaemonLoader.failed(msg);
-                }
+                DaemonLoader.failed(msg);
             }
         }
 

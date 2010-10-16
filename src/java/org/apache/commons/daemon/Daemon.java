@@ -63,12 +63,14 @@ public interface Daemon
      *
      * @param context A <code>DaemonContext</code> object used to
      * communicate with the container.
-     *
+     * @exception DaemonInitException An exception that prevented 
+     * initialization where you want to display a nice message to the user,
+     * rather than a stack trace.
      * @exception Exception Any exception preventing a successful
      *                      initialization.
      */
     public void init(DaemonContext context)
-        throws Exception;
+        throws DaemonInitException, Exception;
 
     /**
      * Start the operation of this <code>Daemon</code> instance. This
