@@ -81,9 +81,11 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/lib/" CPU "/libkaffevm.so",         /* kaffe */
 #endif
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so",     /* Sun JDK 1.2 */
+    "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.so",      /* Sun JDK 1.4 */
     "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",      /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/lib/" CPU "/libjvm.so",             /* Sun JDK */
     "$JAVA_HOME/lib/" CPU "/classic/libjvm.so",         /* Sun JRE 1.2 */
+    "$JAVA_HOME/lib/" CPU "/server/libjvm.so",          /* Sun JRE 1.4 */
     "$JAVA_HOME/lib/" CPU "/client/libjvm.so",          /* Sun JRE 1.3 */
     "$JAVA_HOME/lib/" CPU "/libjvm.so",                 /* Sun JRE */
     "$JAVA_HOME/jre/bin/" CPU "/classic/libjvm.so",     /* IBM JDK 1.3 */
