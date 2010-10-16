@@ -45,7 +45,7 @@ public class AloneService {
     public void init(String[] arguments)
     throws Exception {
         /* Set the err */
-        System.setErr(new PrintStream(new FileOutputStream(new File("/ServiceDaemon.err"),true)));
+        System.setErr(new PrintStream(new FileOutputStream("/ServiceDaemon.err",true)));
         System.err.println("ServiceDaemon: instance "+this.hashCode()+
                            " init");
 
