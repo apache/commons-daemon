@@ -1035,7 +1035,7 @@ int main(int argc, char *argv[])
     }
     envmask = umask(JSVC_UMASK);
     set_output(args->outfile, args->errfile, args->redirectstdin, args->procname);
-
+    log_debug("Switching umask back to %03o from %03o", envmask, JSVC_UMASK);
     res = run_controller(args, data, uid, gid);
     if (logger_pid != 0) {
         kill(logger_pid, SIGTERM);
