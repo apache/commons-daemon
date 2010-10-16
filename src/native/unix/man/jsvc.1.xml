@@ -21,8 +21,8 @@
   <refmeta>
     <refentrytitle>JSVC</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='date'>May 2005</refmiscinfo>
-    <refmiscinfo class='source'>Jsvc version 1.0.1</refmiscinfo>
+    <refmiscinfo class='date'>October 2010</refmiscinfo>
+    <refmiscinfo class='source'>Jsvc version 1.0.4</refmiscinfo>
     <refmiscinfo class='manual'>Apache Commons project</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
@@ -36,7 +36,7 @@
       <arg choice='opt'>-jvm <replaceable>JVM name</replaceable></arg>
       <arg choice='opt'>-classpath <replaceable>path</replaceable></arg>
       <arg choice='opt'>-cp <replaceable>path</replaceable></arg>
-      <arg choice='opt'>-home <replaceable>directory</replaceable></arg>
+      <arg choice='opt'>-java-home <replaceable>directory</replaceable></arg>
       <arg choice='opt'>-version</arg>
       <arg choice='opt'>-help</arg>
       <arg choice='opt'>-?</arg>
@@ -79,7 +79,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-home</option> directory</term>
+        <term><option>-java-home</option> directory</term>
         <listitem>
           <para>set the path of your JDK or JRE installation (or set
                 the JAVA_HOME environment variable)

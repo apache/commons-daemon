@@ -37,7 +37,7 @@ void help(home_data *data)
 
     printf("    -cp | -classpath <directories and zip/jar files>\n");
     printf("        set search path for service classes and resouces\n");
-    printf("    -home <directory>\n");
+    printf("    -java-home | -home <directory>\n");
     printf("        set the path of your JDK or JRE installation (or set\n");
     printf("        the JAVA_HOME environment variable)\n");
 
