@@ -17,7 +17,6 @@
 
 /* @version $Id$ */
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
