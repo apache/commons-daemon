@@ -97,9 +97,9 @@ test ".$CATALINA_PID" = . && CATALINA_PID="$CATALINA_BASE/logs/catalina-daemon.p
 # ----- Execute The Requested Command -----------------------------------------
 case "$1" in
     run     )
-      "$JSVC" \
+      shift
+      "$JSVC" $* \
       -java-home "$JAVA_HOME" \
-      -user $TOMCAT_USER \
       -pidfile "$CATALINA_PID" \
       -wait 10 \
       -nodetach \
