@@ -45,10 +45,10 @@ public class Main implements Daemon
     private final static String STOP_METHOD     = "stop.method";
     private final static String STOP_ARGS       = "stop.args";
     private String              configFileName  = null;
-    private DaemonConfiguration config;
+    private final DaemonConfiguration config;
 
-    private Invoker             startup         = null;
-    private Invoker             shutdown        = null;
+    private final Invoker             startup;
+    private final Invoker             shutdown;
 
     public Main()
     {

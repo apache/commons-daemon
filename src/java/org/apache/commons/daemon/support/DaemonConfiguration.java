@@ -63,8 +63,8 @@ public final class DaemonConfiguration
     private   final static String ETOKEN                = "}";
 
 
-    private Properties configurationProperties;
-    private Properties systemProperties;
+    private final Properties configurationProperties;
+    private final Properties systemProperties;
 
     /**
      * Default constructor
