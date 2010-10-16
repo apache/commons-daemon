@@ -491,7 +491,7 @@ bool java_version(void)
 {
     jmethodID method;
     char version[] = "version";
-    char versionparams[] = "()Z";
+    char versionparams[] = "()V";
 
     jsvc_xlate_to_ascii(version);
     jsvc_xlate_to_ascii(versionparams);
