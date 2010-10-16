@@ -238,7 +238,7 @@ public class SimpleApplication implements Runnable {
             try {
                 out=new PrintStream(os, true, "US-ASCII");
             } catch (UnsupportedEncodingException ex) {
-                out=new PrintStream(os);
+                out=new PrintStream(os, true);
             }
 
             while(true) {
