@@ -137,7 +137,7 @@ static void handler(int sig)
 }
 
 /* user and group */
-static int set_user_group(char *user, int uid, int gid)
+static int set_user_group(const char *user, int uid, int gid)
 {
     if (user != NULL) {
         if (setgid(gid) != 0) {
@@ -263,21 +263,24 @@ static int set_caps(int caps)
 }
 #endif
 
-static int linuxset_user_group(char *user, int uid, int gid)
+static int linuxset_user_group(const char *user, int uid, int gid)
 {
     int caps_set = 0;
+
+    if (user == NULL)
+        return 0;
     /* set capabilities enough for binding port 80 setuid/getuid */
     if (getuid() == 0) {
         if (set_caps(CAPS) != 0) {
             if (getuid() != uid) {
-                log_error("set_caps(CAPS) failed");
+                log_error("set_caps(CAPS) failed for user '%s'", user);
                 return -1;
             }
-            log_debug("set_caps(CAPS) failed");
+            log_debug("set_caps(CAPS) failed for user '%s'", user);
         }
         /* make sure they are kept after setuid */
         if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) < 0) {
-            log_error("prctl failed in linuxset_user_group");
+            log_error("prctl failed in for user '%s'", user);
             return -1;
         }
         caps_set = 1;
@@ -285,7 +288,7 @@ static int linuxset_user_group(char *user, int uid, int gid)
 
     /* set setuid/getuid */
     if (set_user_group(user, uid, gid) != 0) {
-        log_error("set_user_group failed in linuxset_user_group");
+        log_error("set_user_group failed for user '%s'", user);
         return -1;
     }
 
@@ -293,10 +296,10 @@ static int linuxset_user_group(char *user, int uid, int gid)
         /* set capability to binding port 80 read conf */
         if (set_caps(CAPSMIN) != 0) {
             if (getuid() != uid) {
-                log_error("set_caps(CAPSMIN) failed");
+                log_error("set_caps(CAPSMIN) failed for user '%s'", user);
                 return -1;
             }
-            log_debug("set_caps(CAPSMIN) failed");
+            log_debug("set_caps(CAPSMIN) failed for user '%s'", user);
         }
     }
 
@@ -685,7 +688,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
 
     /* Downgrade user */
 #ifdef OS_LINUX
-    if (set_caps(0) != 0) {
+    if (args->user && set_caps(0) != 0) {
         log_debug("set_caps (0) failed");
         return 4;
     }
