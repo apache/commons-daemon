@@ -86,7 +86,7 @@ public class Main implements Daemon
                         throw new IllegalArgumentException(args[i - 1]);
                     startup.setClassName(args[i]);
                 }
-                else if (args[i].equals("-start-mehod")) {
+                else if (args[i].equals("-start-method")) {
                     if (++i == args.length)
                         throw new IllegalArgumentException(args[i - 1]);
                     startup.setMethodName(args[i]);
@@ -114,8 +114,11 @@ public class Main implements Daemon
                     break;
                 }
             }
-            String[] copy = new String[args.length - i];
-            startup.addArguments(copy);
+            if (args.length > i) {
+                String[] copy = new String[args.length - i];
+                System.arraycopy(args, i, copy, 0, copy.length);
+                startup.addArguments(copy);
+            }
         }
         if (config.load(configFileName)) {
             // Setup params if not set via cmdline.
