@@ -25,10 +25,11 @@ package org.apache.commons.daemon;
 public class DaemonInitException extends Exception {
 
   //don't rely on Throwable#getCause (jdk1.4)
-  private Throwable cause;
+  private final Throwable cause;
 
   public DaemonInitException(String message) {
     super(message);
+    this.cause = null;
   }
 
   public DaemonInitException(String message, Throwable cause) {
