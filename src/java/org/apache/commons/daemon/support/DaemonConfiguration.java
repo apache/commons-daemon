@@ -189,7 +189,7 @@ public final class DaemonConfiguration
         while ((args = getProperty(name + "[" + list.size() + "]")) != null) {
             list.add(args);
         }
-        return Arrays.copyOf(list.toArray(), list.size(), String[].class);
+        return (String[])list.toArray(new String[list.size()]);
     }
 
 }

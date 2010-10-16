@@ -189,7 +189,7 @@ public class Main implements Daemon
                 if (this.args != null)
                     aa.addAll(Arrays.asList(this.args));
                 aa.addAll(Arrays.asList(args));
-                this.args = Arrays.copyOf(aa.toArray(), aa.size(), String[].class);
+                this.args = (String[])aa.toArray(new String[aa.size()]);
             }
         }
 
