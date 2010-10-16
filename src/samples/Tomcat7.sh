@@ -31,7 +31,7 @@ PROGRAM="`basename $ARG0`"
 
 # Setup parameters for running the jsvc
 #
-test ".$TOMCAT_USER" = . && TOMCAT_USER=mturk
+test ".$TOMCAT_USER" = . && TOMCAT_USER=tomcat
 # Set JAVA_HOME to working JDK or JRE
 # JAVA_HOME=/opt/jdk-1.6.0.22
 # If not set we'll try to guess the JAVA_HOME
