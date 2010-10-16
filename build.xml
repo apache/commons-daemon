@@ -237,6 +237,10 @@
         -->
       <fileset dir="src/native/unix" />
     </copy>
+    <copy file="src/samples/Tomcat5.sh"
+          todir="${native.path}/unix/samples"/>
+    <copy file="src/samples/Tomcat7.sh"
+          todir="${native.path}/unix/samples"/>
     <copy todir="${native.path}/windows">
       <fileset dir="src/native/windows" />
     </copy>
@@ -252,10 +256,12 @@
         <include name="${native.name}/**" />
         <exclude name="${native.name}/unix/configure" />
         <exclude name="${native.name}/unix/support/*.sh" />
+        <exclude name="${native.name}/unix/samples/*.sh" />
       </tarfileset>
       <tarfileset dir="${dist.home}/bin/native" mode="755">
         <include name="${native.name}/unix/configure" />
         <include name="${native.name}/unix/support/*.sh" />
+        <include name="${native.name}/unix/samples/*.sh" />
       </tarfileset>
     </tar>
     <zip zipfile="${dist.home}/bin/${native.name}.zip">
@@ -263,10 +269,12 @@
         <include name="${native.name}/**" />
         <exclude name="${native.name}/unix/configure" />
         <exclude name="${native.name}/unix/support/*.sh" />
+        <exclude name="${native.name}/unix/samples/*.sh" />
       </zipfileset>
       <zipfileset dir="${dist.home}/bin/native" filemode="755">
         <include name="${native.name}/unix/configure" />
         <include name="${native.name}/unix/support/*.sh" />
+        <include name="${native.name}/unix/samples/*.sh" />
       </zipfileset>
     </zip>
 
