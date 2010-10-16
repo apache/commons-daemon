@@ -65,8 +65,8 @@ fi
 test ".$CLASSPATH" != . && CLASSPATH="${CLASSPATH}:"
 CLASSPATH="$CLASSPATH$CATALINA_HOME/bin/bootstrap.jar:$CATALINA_HOME/bin/commons-daemon.jar"
 
-test ".$CATALINA_OUT" && CATALINA_OUT="$CATALINA_BASE/logs/catalina-daemon.out"
-test ".$CATALINA_TMP" && CATALINA_TMP="$CATALINA_BASE/temp"
+test ".$CATALINA_OUT" = . && CATALINA_OUT="$CATALINA_BASE/logs/catalina-daemon.out"
+test ".$CATALINA_TMP" = . && CATALINA_TMP="$CATALINA_BASE/temp"
 
 # Add tomcat-juli.jar to classpath
 # tomcat-juli.jar can be over-ridden per instance
@@ -85,11 +85,8 @@ if [ -z "$LOGGING_CONFIG" ]; then
   fi
 fi
 
-if [ -z "$LOGGING_MANAGER" ]; then
-  JAVA_OPTS="$JAVA_OPTS -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
-else
-  JAVA_OPTS="$JAVA_OPTS $LOGGING_MANAGER"
-fi
+test ".$LOGGING_MANAGER" = . && LOGGING_MANAGER="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+JAVA_OPTS="$JAVA_OPTS $LOGGING_MANAGER"
 
 # Set -pidfile
 test ".$CATALINA_PID" = . && CATALINA_PID="$CATALINA_BASE/logs/catalina-daemon.pid"
@@ -160,7 +157,7 @@ case "$1" in
       exit $?
     ;;
     *       )
-      echo "Usage: Tomcat.sh ( commands ... )"
+      echo "Usage: $PROGRAM ( commands ... )"
       echo "commands:"
       echo "  run               Start Catalina without detaching from console"
       echo "  start             Start Catalina"
