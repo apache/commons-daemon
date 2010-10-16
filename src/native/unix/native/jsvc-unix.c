@@ -829,23 +829,25 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
     /* make sure the debug goes out */
     if (log_debug_flag == true && strcmp(errfile, "/dev/null") == 0)
         return;
-
-    /* Handle malicious case here */
-    if (strcmp(outfile, "&2") == 0 && strcmp(errfile, "&1") == 0) {
-        outfile = "/dev/null";
-    }
+    if (strcmp(outfile, "&1") == 0 && strcmp(errfile, "&2") == 0)
+        return;
     if (strcmp(outfile, "SYSLOG") == 0) {
         freopen("/dev/null", "a", stdout);
         /* Send stdout to syslog through a logger process */
         if (pipe(out_pipe) == -1) {
             log_error("cannot create stdout pipe: %s",
                       strerror(errno));
-        } else {
+        }
+        else {
             fork_needed = 1;
             log_stdout_syslog_flag = true;
         }
-    } else if (strcmp(outfile, "&2") != 0) {
-        loc_freopen(outfile, "a", stdout);
+    }
+    else if (strcmp(outfile, "&2")) {
+        if (strcmp(outfile, "&1")) {
+            /* Redirect stdout to a file */
+            loc_freopen(outfile, "a", stdout);
+        }
     }
 
     if (strcmp(errfile, "SYSLOG") == 0) {
@@ -854,20 +856,33 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
         if (pipe(err_pipe) == -1) {
             log_error("cannot create stderr pipe: %s",
                       strerror(errno));
-        } else {
+        }
+        else {
             fork_needed = 1;
             log_stderr_syslog_flag = true;
         }
-    } else if (strcmp(errfile, "&1") != 0) {
-        loc_freopen(errfile, "a", stderr);
     }
-    else {
+    else if (strcmp(errfile, "&1")) {
+        if (strcmp(errfile, "&2")) {
+            /* Redirect stderr to a file */
+            loc_freopen(errfile, "a", stderr);
+        }
+    }
+    if (strcmp(errfile, "&1") == 0 && strcmp(outfile, "&1")) {
+        /*
+         * -errfile &1 -outfile foo
+         * Redirect stderr to stdout
+         */
         close(2);
-        dup(1);
+        dup2(1, 2);
     }
-    if (strcmp(outfile, "&2") == 0) {
+    if (strcmp(outfile, "&2") == 0 && strcmp(errfile, "&2")) {
+        /*
+         * -outfile &2 -errfile foo
+         * Redirect stdout to stderr
+         */
         close(1);
-        dup(2);
+        dup2(2, 1);
     }
 
     if (fork_needed) {
