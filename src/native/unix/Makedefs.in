@@ -31,4 +31,4 @@ LDCMD = @LDCMD@
 STRIP = @STRIP@
 
 .c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(INCLUDES) -c $< -o $@
