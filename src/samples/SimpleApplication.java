@@ -79,7 +79,7 @@ public class SimpleApplication implements Runnable {
 
         /* Dump a message */
         System.err.println("SimpleApplication: loading on port "+port);
-
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(app));
         /* Set up this simple daemon */
         app.server = new ServerSocket(port);
         app.thread = new Thread(app);
@@ -156,6 +156,26 @@ public class SimpleApplication implements Runnable {
     protected void removeHandler(Handler handler) {
         synchronized (handler) {
             this.handlers.remove(handler);
+        }
+    }
+
+    public static class ShutdownHook extends Thread
+    {
+        private final SimpleApplication instance;
+
+        public ShutdownHook(SimpleApplication instance)
+        {
+            this.instance = instance;
+        }
+        public void run()
+        {
+            System.out.println("Shutting down");
+            try {
+                instance.stop();
+            }
+            catch (Exception e) {
+                e.printStackTrace(System.err);
+            }
         }
     }
 
