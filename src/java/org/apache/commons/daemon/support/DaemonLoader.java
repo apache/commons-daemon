@@ -190,7 +190,7 @@ public final class DaemonLoader
 
         }
         catch (InvocationTargetException e) {
-            Throwable thrown = e.getCause();
+            Throwable thrown = e.getTargetException();
             /* DaemonInitExceptions can fail with a nicer message */
             if (thrown instanceof DaemonInitException) {
                 failed(((DaemonInitException) thrown).getMessageWithCause());
