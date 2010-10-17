@@ -34,6 +34,7 @@ import java.util.Vector;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonController;
+import org.apache.commons.daemon.DaemonInitException;
 
 public class SimpleDaemon implements Daemon, Runnable {
 
@@ -69,8 +70,13 @@ public class SimpleDaemon implements Daemon, Runnable {
         int port=1200;
 
         String[] a = context.getArguments();
-
-        if (a.length>0) port=Integer.parseInt(a[0]);
+        try {
+            if ( a.length > 0)
+                port=Integer.parseInt(a[0]);
+        }
+        catch (NumberFormatException ex) {
+            throw new DaemonInitException("You must provide a number for port");
+        }
         if (a.length>1) this.directory=a[1];
         else this.directory="/tmp";
 
