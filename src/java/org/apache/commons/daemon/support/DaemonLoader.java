@@ -52,6 +52,12 @@ public final class DaemonLoader
                            " (build " +
                            System.getProperty("java.vm.version") +
                            ", " + System.getProperty("java.vm.info") + ")");
+        System.err.println("commons daemon version \"" +
+                System.getProperty("commons.daemon.version") + "\"");
+        System.err.println("commons daemon process (id: " +
+                           System.getProperty("commons.daemon.process.id") +
+                           ", parent: " +
+                           System.getProperty("commons.daemon.process.parent") + ")");
     }
 
     public static boolean check(String cn)

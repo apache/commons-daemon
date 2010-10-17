@@ -20,6 +20,7 @@
 #ifdef OS_CYGWIN
 typedef long long __int64;
 #endif
+#include <unistd.h>
 #include <jni.h>
 
 #ifdef CHARSET_EBCDIC
@@ -125,7 +126,7 @@ bool java_init(arg_data *args, home_data *data)
     char shutdownparams[] = "(Z)V";
     char failedmethod[]   = "failed";
     char failedparams[]   = "(Ljava/lang/String;)V";
-
+    char daemonprocid[64];
     /* Decide WHAT virtual machine we need to use */
     libf = java_library(args, data);
     if (libf == NULL) {
@@ -227,14 +228,29 @@ bool java_init(arg_data *args, home_data *data)
     }
 #endif
     arg.ignoreUnrecognized = FALSE;
-    arg.nOptions = args->onum;
-    arg.nOptions++;             /* Add abort code */
+    arg.nOptions = args->onum + 4; /* pid, ppid and abort */
     opt = (JavaVMOption *) malloc(arg.nOptions * sizeof(JavaVMOption));
     for (x = 0; x < args->onum; x++) {
         opt[x].optionString = strdup(args->opts[x]);
         jsvc_xlate_to_ascii(opt[x].optionString);
         opt[x].extraInfo = NULL;
     }
+    /* Add our daemon process id */
+    snprintf(daemonprocid, sizeof(daemonprocid),
+             "-Dcommons.daemon.process.id=%d", (int)getpid());
+    opt[x].optionString = strdup(daemonprocid);
+    jsvc_xlate_to_ascii(opt[x].optionString);
+    opt[x++].extraInfo  = NULL;
+    snprintf(daemonprocid, sizeof(daemonprocid),
+             "-Dcommons.daemon.process.parent=%d", (int)getppid());
+    opt[x].optionString = strdup(daemonprocid);
+    jsvc_xlate_to_ascii(opt[x].optionString);
+    opt[x++].extraInfo  = NULL;
+    snprintf(daemonprocid, sizeof(daemonprocid),
+             "-Dcommons.daemon.version=%s", JSVC_VERSION_STRING);
+    opt[x].optionString = strdup(daemonprocid);
+    jsvc_xlate_to_ascii(opt[x].optionString);
+    opt[x++].extraInfo  = NULL;
     opt[x].optionString = strdup("abort");
     jsvc_xlate_to_ascii(opt[x].optionString);
     opt[x].extraInfo = (void *)java_abort123;
@@ -246,9 +262,18 @@ bool java_init(arg_data *args, home_data *data)
         log_debug("| Version:                       %#08x", arg.version);
         log_debug("| Ignore Unrecognized Arguments: %s",
                   arg.ignoreUnrecognized == TRUE ? "True" : "False");
-        log_debug("| Extra options:                 %d", arg.nOptions);
+        log_debug("| Extra options:                 %d", args->onum);
 
         for (x = 0; x < args->onum; x++) {
+            jsvc_xlate_from_ascii(opt[x].optionString);
+            log_debug("|   \"%s\" (0x%08x)", opt[x].optionString,
+                      opt[x].extraInfo);
+            jsvc_xlate_to_ascii(opt[x].optionString);
+        }
+        log_debug("+-------------------------------------------------------");
+        log_debug("| Internal options:              %d", arg.nOptions - args->onum);
+
+        for (; x < arg.nOptions; x++) {
             jsvc_xlate_from_ascii(opt[x].optionString);
             log_debug("|   \"%s\" (0x%08x)", opt[x].optionString,
                       opt[x].extraInfo);
@@ -362,7 +387,6 @@ bool java_load(arg_data *args)
 
     jsvc_xlate_to_ascii(lang);
     stringClass = (*env)->FindClass(env, lang);
-    jsvc_xlate_from_ascii(lang);
     if (stringClass == NULL) {
         log_error("Cannot find class java/lang/String");
         return false;
@@ -377,8 +401,8 @@ bool java_load(arg_data *args)
     for (x = 0; x < args->anum; x++) {
         jsvc_xlate_to_ascii(args->args[x]);
         currentArgument = (*env)->NewStringUTF(env, args->args[x]);
-        jsvc_xlate_from_ascii(args->args[x]);
         if (currentArgument == NULL) {
+            jsvc_xlate_from_ascii(args->args[x]);
             log_error("Cannot create string for argument %s", args->args[x]);
             return false;
         }
