@@ -75,7 +75,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                 port=Integer.parseInt(a[0]);
         }
         catch (NumberFormatException ex) {
-            throw new DaemonInitException("You must provide a number for port");
+            throw new DaemonInitException("parsing port", ex);
         }
         if (a.length>1) this.directory=a[1];
         else this.directory="/tmp";
