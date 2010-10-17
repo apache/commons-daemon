@@ -17,12 +17,13 @@
 
 /* @version $Id: Main.java 937350 2010-04-23 16:03:39Z mturk $ */
 
-package org.apache.commons.daemon;
+package org.apache.commons.daemon.support;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.apache.commons.daemon.support.DaemonConfiguration;
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
 
 /**
  * Implementation of the Daemon that allows running
@@ -33,7 +34,7 @@ import org.apache.commons.daemon.support.DaemonConfiguration;
  * @version 1.0 <i>(SVN $Revision: 925053 $)</i>
  * @author Mladen Turk
  */
-public class Main implements Daemon
+public class DaemonWrapper implements Daemon
 {
 
     private final static String ARGS            = "args";
@@ -48,7 +49,7 @@ public class Main implements Daemon
     private final Invoker             startup;
     private final Invoker             shutdown;
 
-    public Main()
+    public DaemonWrapper()
     {
         super();
         config   = new DaemonConfiguration();
@@ -154,7 +155,7 @@ public class Main implements Daemon
     public void destroy()
     {
         // Nothing for the moment
-        System.err.println("Main: instance " + this.hashCode() + " destroy");
+        System.err.println("DaemonWrapper: instance " + this.hashCode() + " destroy");
     }
 
     // Internal class for wrapping the start/stop methods
@@ -224,7 +225,7 @@ public class Main implements Daemon
                 call = "main";
 
             // Get the ClassLoader loading this class
-            ClassLoader cl = Main.class.getClassLoader();
+            ClassLoader cl = DaemonWrapper.class.getClassLoader();
             if (cl == null)
                 throw new NullPointerException("Cannot retrieve ClassLoader instance");
             Class[] ca = new Class[1];

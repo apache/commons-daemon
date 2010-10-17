@@ -31,7 +31,7 @@ case "$1" in
         -nodetach \
         -errfile "&2" \
         -pidfile `pwd`/$PROGRAM.pid \
-        org.apache.commons.daemon.Main \
+        org.apache.commons.daemon.support.DaemonWrapper \
         -start $PROGRAM \
         -start-method main \
         $*
@@ -46,7 +46,7 @@ case "$1" in
         -nodetach \
         -errfile "&2" \
         -pidfile `pwd`/$PROGRAM.pid \
-        org.apache.commons.daemon.Main \
+        org.apache.commons.daemon.support.DaemonWrapper \
         -start $PROGRAM \
         -start-method main \
         $*
