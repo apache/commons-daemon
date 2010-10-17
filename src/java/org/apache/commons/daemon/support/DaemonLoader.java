@@ -96,7 +96,7 @@ public final class DaemonLoader
         return true;
     }
 
-    public static boolean load(String cn, String ar[])
+    public static boolean load(String className, String args[])
     {
         try {
             /* Make sure any previous instance is garbage collected */
@@ -104,11 +104,11 @@ public final class DaemonLoader
 
             /* Check if the underlying libray supplied a valid list of
                arguments */
-            if (ar == null)
-                ar = new String[0];
+            if (args == null)
+                args = new String[0];
 
             /* Check the class name */
-            if (cn == null)
+            if (className == null)
                 throw new NullPointerException("Null class name specified");
 
             /* Get the ClassLoader loading this class */
@@ -117,31 +117,42 @@ public final class DaemonLoader
                 System.err.println("Cannot retrieve ClassLoader instance");
                 return false;
             }
-
-            /* Find the required class */
-            Class c = cl.loadClass(cn);
-
+            Class c;
+            if (className.charAt(0) == '@') {
+                /* Wrapp the class with DaemonWrapper
+                 * and modify arguments to include the real class name.
+                 */
+                c = DaemonWrapper.class;
+                String[] a = new String[args.length + 2];
+                a[0] = "-start";
+                a[1] = className.substring(1);
+                System.arraycopy(args, 0, a, 2, args.length);
+                args = a;
+            }
+            else
+                c = cl.loadClass(className);
             /* This should _never_ happen, but doublechecking doesn't harm */
             if (c == null)
-                throw new ClassNotFoundException(cn);
-
-            /* Check interface */
+                throw new ClassNotFoundException(className);
+            /* Check interfaces */
             boolean isdaemon = false;
+
             try {
                 Class dclass =
                     cl.loadClass("org.apache.commons.daemon.Daemon");
                 isdaemon = dclass.isAssignableFrom(c);
-            } catch (Exception cnfex) {
+            }
+            catch (Exception cnfex) {
                 // Swallow if Daemon not found.
             }
 
             /* Check methods */
-            Class[]myclass = new Class[1];
+            Class[] myclass = new Class[1];
             if (isdaemon) {
                 myclass[0] = DaemonContext.class;
             }
             else {
-                myclass[0] = ar.getClass();
+                myclass[0] = args.getClass();
             }
 
             init    = c.getMethod("init", myclass);
@@ -163,7 +174,7 @@ public final class DaemonLoader
 
                 /* Create context */
                 Context context = new Context();
-                context.setArguments(ar);
+                context.setArguments(args);
                 context.setController(controller);
 
                 /* Now we want to call the init method in the class */
@@ -173,20 +184,23 @@ public final class DaemonLoader
             }
             else {
                 Object arg[] = new Object[1];
-                arg[0] = ar;
+                arg[0] = args;
                 init.invoke(daemon, arg);
             }
 
-        } catch (InvocationTargetException e) {
-          Throwable thrown = e.getCause();
-          /* DaemonInitExceptions can fail with a nicer message */
-          if (thrown instanceof DaemonInitException) {
-            failed(((DaemonInitException) thrown).getMessageWithCause());
-          } else {
-            thrown.printStackTrace(System.err);
-          }
-          return false;
-        } catch (Throwable t) {
+        }
+        catch (InvocationTargetException e) {
+            Throwable thrown = e.getCause();
+            /* DaemonInitExceptions can fail with a nicer message */
+            if (thrown instanceof DaemonInitException) {
+                failed(((DaemonInitException) thrown).getMessageWithCause());
+            }
+            else {
+                thrown.printStackTrace(System.err);
+            }
+            return false;
+        }
+        catch (Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
              */

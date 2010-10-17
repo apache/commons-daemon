@@ -19,7 +19,7 @@
 #
 # Adapt the following lines to your configuration
 JAVA_HOME=/opt/java6
-PROGRAM=SampleApplication
+PROGRAM=SimpleApplication
 CLASSPATH=`pwd`/$PROGRAM.jar:`pwd`/commons-daemon-1.0.4-dev.jar
 
 case "$1" in
@@ -31,8 +31,7 @@ case "$1" in
         -nodetach \
         -errfile "&2" \
         -pidfile `pwd`/$PROGRAM.pid \
-        org.apache.commons.daemon.support.DaemonWrapper \
-        -start $PROGRAM \
+        @$PROGRAM \
         -start-method main \
         $*
     exit $?
@@ -46,8 +45,7 @@ case "$1" in
         -nodetach \
         -errfile "&2" \
         -pidfile `pwd`/$PROGRAM.pid \
-        org.apache.commons.daemon.support.DaemonWrapper \
-        -start $PROGRAM \
+        @$PROGRAM \
         -start-method main \
         $*
     exit $?
