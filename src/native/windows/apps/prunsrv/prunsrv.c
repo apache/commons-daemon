@@ -799,6 +799,14 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
     return TRUE;
 }
 
+static int onExitHook(void)
+{
+    apxLogWrite(APXLOG_MARK_DEBUG "On exit hook called ...");
+    reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    Sleep(1000);
+    return 0;    
+}
+
 /* Executed when the service receives stop event */
 static DWORD WINAPI serviceStop(LPVOID lpParameter)
 {
@@ -839,11 +847,18 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         gSargs.szStdErrFilename = NULL;
         gSargs.szStdOutFilename = NULL;
 
+        if (lstrcmpA(_jni_sclass, "java/lang/System") == 0)
+            _onexit(onExitHook);
         /* Create sutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(&gSargs)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
             rv = 3;
+        }
+        else if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
+            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 5000);
+            apxLogWrite(APXLOG_MARK_DEBUG "Forcing java jni System.exit worker to finish...");
+            return 0;
         }
         else {
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java jni stop worker to finish...");
