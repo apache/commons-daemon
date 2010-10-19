@@ -773,6 +773,7 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     DWORD       nArgs;
     LPAPXJAVAVM lpJava;
     jclass      jClazz;
+    LPCSTR      szSignature = "([Ljava/lang/String;)V";
 
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         return FALSE;
@@ -801,29 +802,36 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
 
     if (!szMethodName)
         szMethodName = "main";
+    if (lstrcmpA(szClassName, "java/lang/System") == 0) {
+        /* Usable only for exit method, so force */
+        szSignature  = "(I)V";
+        szMethodName = "exit";
+    }
     lstrlcpyA(lpJava->clWorker.sClazz, 1024, szClassName);
     lstrlcpyA(lpJava->clWorker.sMethod, 512, szMethodName);
     lpJava->clWorker.jMethod = JNICALL_3(GetStaticMethodID,
                                          lpJava->clWorker.jClazz,
-                                         szMethodName, "([Ljava/lang/String;)V");
+                                         szMethodName, szSignature);
     if (!lpJava->clWorker.jMethod) {
         JVM_EXCEPTION_CLEAR(lpJava);
         apxLogWrite(APXLOG_MARK_ERROR "Method 'static void %s(String[])' not found in Class %s",
                 szMethodName, szClassName);
         return FALSE;
     }
-    nArgs = apxMultiSzToArrayW(hJava->hPool, lpArguments, &lpArgs);
-    lpJava->clWorker.jArgs = JNICALL_3(NewObjectArray, nArgs,
-                                       lpJava->clString.jClazz, NULL);
-    if (nArgs) {
-        DWORD i;
-        for (i = 0; i < nArgs; i++) {
-            jstring arg = JNICALL_2(NewString, lpArgs[i], lstrlenW(lpArgs[i]));
-            JNICALL_3(SetObjectArrayElement, lpJava->clWorker.jArgs, i, arg);
-            apxLogWrite(APXLOG_MARK_DEBUG "argv[%d] = %S", i, lpArgs[i]);
+    if (lstrcmpA(szClassName, "java/lang/System")) {
+        nArgs = apxMultiSzToArrayW(hJava->hPool, lpArguments, &lpArgs);
+        lpJava->clWorker.jArgs = JNICALL_3(NewObjectArray, nArgs,
+                                           lpJava->clString.jClazz, NULL);
+        if (nArgs) {
+            DWORD i;
+            for (i = 0; i < nArgs; i++) {
+                jstring arg = JNICALL_2(NewString, lpArgs[i], lstrlenW(lpArgs[i]));
+                JNICALL_3(SetObjectArrayElement, lpJava->clWorker.jArgs, i, arg);
+                apxLogWrite(APXLOG_MARK_DEBUG "argv[%d] = %S", i, lpArgs[i]);
+            }
         }
+        apxFree(lpArgs);
     }
-    apxFree(lpArgs);
     return TRUE;
 }
 
