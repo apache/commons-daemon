@@ -911,8 +911,13 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
         return FALSE;
     }
     ResumeThread(lpJava->hWorkerThread);
-    /* Give some time to initialize the thread */
-    Sleep(1000);
+    if (lstrcmpA(lpJava->clWorker.sClazz, "java/lang/System")) {
+        /* Give some time to initialize the thread
+         * Unless we are calling System.exit(0).
+         * This will be hanled by _onexit hook. 
+         */
+        Sleep(1000);
+    }
     return TRUE;
 }
 
