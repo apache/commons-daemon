@@ -146,7 +146,8 @@ BOOL apxCenterWindow(HWND hwndChild, HWND hwndParent)
     GetWindowRect(hwndChild, &rChild);
     wChild = rChild.right - rChild.left;
     hChild = rChild.bottom - rChild.top;
-
+    if (hwndParent == NULL)
+        hwndParent = GetDesktopWindow();
     /* Get the Height and Width of the parent window */
     GetWindowRect(hwndParent, &rParent);
     wParent = rParent.right - rParent.left;
