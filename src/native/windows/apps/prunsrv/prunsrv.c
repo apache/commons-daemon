@@ -803,7 +803,6 @@ static int onExitHook(void)
 {
     apxLogWrite(APXLOG_MARK_DEBUG "On exit hook called ...");
     reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
-    Sleep(1000);
     return 0;    
 }
 
