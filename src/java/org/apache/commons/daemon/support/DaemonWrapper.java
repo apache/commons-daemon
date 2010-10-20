@@ -59,6 +59,30 @@ public class DaemonWrapper implements Daemon
 
     /**
      * Called from DaemonLoader on init stage.
+     * <p>
+     * Accepts the following configuration arguments:
+     * <ul>
+     * <li>-daemon-properties: - load DaemonConfiguration properties from the specified file to act as defaults</li>
+     * <li>-start: set start class name</li>
+     * <li>-start-method: set start method name</li>
+     * <li>-stop: set stop class name</li>
+     * <li>-stop-method: set stop method name</li>
+     * <li>-stop-argument: set optional argument to stop method</li>
+     * <li>Anything else is treated as a startup argument</li>
+     * </ul>
+     * <p>
+     * The following "-daemon-properties" are recognised:
+     * <ul>
+     * <li>args (startup argument)</li>
+     * <li>start</li>
+     * <li>start.method</li>
+     * <li>stop</li>
+     * <li>stop.method</li>
+     * <li>stop.args</li>
+     * </ul>
+     * These are used to set the corresponding item if it has not already been
+     * set by the command arguments. <b>However, note that args and stop.args are
+     * appended to any existing values.</b>
      */
     public void init(DaemonContext context)
         throws Exception
