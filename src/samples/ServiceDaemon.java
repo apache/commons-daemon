@@ -18,18 +18,19 @@
 /* @version $Id$ */
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Iterator;
+import java.util.Enumeration;
+import java.util.Properties;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 
 public class ServiceDaemon implements Daemon {
 
-    private ExtendedProperties prop = null;
+    private Properties prop = null;
     private Process proc[] = null;
     private ServiceDaemonReadThread readout[] = null;
     private ServiceDaemonReadThread readerr[] = null;
@@ -56,12 +57,18 @@ public class ServiceDaemon implements Daemon {
                            " init");
 
         /* read the properties file */
-        prop = new ExtendedProperties("startfile");
-
+        prop = new Properties();
+        try {
+            prop.load(new FileInputStream("startfile"));
+        }
+        catch (Exception e) {
+            // Cannot find startfile.properties.
+            // XXX: Should we print something?
+        }
         /* create an array to store the processes */
         int i=0;
-        for (Iterator e = prop.getKeys(); e.hasNext() ;) {
-            e.next();
+        for (Enumeration e = prop.keys(); e.hasMoreElements() ;) {
+            e.nextElement();
             i++;
         }
         System.err.println("ServiceDaemon: init for " + i + " processes");
@@ -84,12 +91,12 @@ public class ServiceDaemon implements Daemon {
 
         /* Start */
         int i=0;
-        for (Iterator e = prop.getKeys(); e.hasNext() ;) {
-           String name = (String) e.next();
-           System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getString(name));
-           try {
-               proc[i] = Runtime.getRuntime().exec(prop.getString(name));
-           } catch(Exception ex) {
+        for (Enumeration e = prop.keys(); e.hasMoreElements() ;) {
+            String name = (String) e.nextElement();
+            System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getProperty(name));
+            try {
+                proc[i] = Runtime.getRuntime().exec(prop.getProperty(name));
+            } catch(Exception ex) {
                System.err.println("Exception: " + ex);
            }
            /* Start threads to read from Error and Out streams */
