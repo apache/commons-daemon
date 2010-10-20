@@ -15,6 +15,9 @@ follow the release early/release often mentality.
 
 NEW FEATURES:
 
+* DAEMON-180: Add DaemonWrapper to allow running standard applications
+              as daemons. (1.0.4)
+* DAEMON-179: Allow procrun to use java/lang/System as --ShutdownClass. (1.0.4)
 * DAEMON-178: Allow jsvc umask to be configured at build time
 * DAEMON-177: Allow fail during init with nicer message. (1.0.4)
 * DAEMON-176: Create config.nice during configure step. (1.0.4)
