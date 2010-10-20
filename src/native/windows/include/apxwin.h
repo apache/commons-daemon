@@ -206,6 +206,7 @@ LPSTR   lstrlcatA(LPSTR dst, int siz, LPCSTR src);
 LPWSTR  lstrlcatW(LPWSTR dst, int siz, LPCWSTR src);
 LPSTR   lstrlcpyA(LPSTR dst, int siz, LPCSTR src);
 LPWSTR  lstrlcpyW(LPWSTR dst, int siz, LPCWSTR src);
+LPWSTR  lstrlocaseW(LPWSTR str);
 
 PSECURITY_ATTRIBUTES GetNullACL();
 void CleanNullACL(void *sa);

@@ -407,3 +407,14 @@ lstrlcpyW(LPWSTR dst, int siz, LPCWSTR src)
 
     return d;
 }
+
+LPWSTR
+lstrlocaseW(LPWSTR str)
+{
+    LPWSTR  p = str;
+    while (p && *p != 0) {
+        *p = towlower(*p);
+        p++;
+    }
+    return str;
+}

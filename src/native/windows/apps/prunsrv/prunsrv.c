@@ -258,7 +258,7 @@ DWORD WINAPI eventThread(LPVOID lpParam)
  * If stderrfile is not specified it will
  * go to stdoutfile.
  */
-static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
+static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
 {
     BOOL aErr = FALSE;
     BOOL aOut = FALSE;
@@ -268,10 +268,14 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
         if (lstrcmpiW(lpWrapper->szStdOutFilename, PRSRV_AUTO) == 0) {
+            WCHAR lsn[1024];
             aOut = TRUE;
+            lstrcpyW(lsn, lpCmdline->szApplication);
+            lstrlocaseW(lsn);
+            lstrcatW(lsn, L"-stdout");
             lpWrapper->szStdOutFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
-                                                     L"service-stdout",
+                                                     lsn,
                                                      NULL, TRUE);
         }
         /* Delete the file if not in append mode
@@ -290,10 +294,14 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper)
     }
     if (lpWrapper->szStdErrFilename) {
         if (lstrcmpiW(lpWrapper->szStdErrFilename, PRSRV_AUTO) == 0) {
+            WCHAR lsn[1024];
             aErr = TRUE;
+            lstrcpyW(lsn, lpCmdline->szApplication);
+            lstrlocaseW(lsn);
+            lstrcatW(lsn, L"-stderr");
             lpWrapper->szStdErrFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
-                                                     L"service-stderr",
+                                                     lsn,
                                                      NULL, TRUE);
         }
         if (!aErr)
@@ -1494,7 +1502,7 @@ void __cdecl main(int argc, char **argv)
         gStdwrap.szStdOutFilename = SO_STDOUTPUT;
         gStdwrap.szStdErrFilename = SO_STDERROR;
     }
-    redirectStdStreams(&gStdwrap);
+    redirectStdStreams(&gStdwrap, lpCmdline);
     if (lpCmdline->dwCmdIndex == 2) {
         SYSTEMTIME t;
         GetLocalTime(&t);
