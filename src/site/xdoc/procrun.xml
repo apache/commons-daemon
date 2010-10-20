@@ -316,7 +316,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     <tr>
     <td>--StartPath</td>
     <td></td>
-    <td>Working path for the start image executable. Does not apply to <b>jvm</b> mode.</td>
+    <td>Working path for the start image executable.</td>
     </tr>
     <tr>
     <td>--StartClass</td>
