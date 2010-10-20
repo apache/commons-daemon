@@ -24,8 +24,10 @@ NEW FEATURES:
 * DAEMON-173: Allow --JavaHome=jdk and --JavaHome=jre options that
               will guess default JavaHome from the registry. (1.0.4)
 * DAEMON-160: Remove obsolete code; rename native/nt as native/windows (1.0.4)
+* DAEMON-144: Drop sample dependency on Commons Collections ExtendedProperties (1.0.4)
 * DAEMON-95:  Support log rotation using SIGUSR1 (1.0.4)
-* DAEMON-80:  Syslog support for jsvc
+* DAEMON-80:  Syslog support for jsvc (1.0.4)
+
 * DAEMON-138: Add --PidFile option to allow storing running process id. (1.0.3)
 * DAEMON-137: Add --LogJniMessages allowing to configure JNI verbose message
               logging. By default those messages were always logged. (1.0.3)
@@ -53,7 +55,7 @@ NEW FEATURES:
 BUG FIXES:
 
 1.0.4: DAEMON-95, DAEMON-171, DAEMON-100, DAEMON-164, DAEMON-165, DAEMON-175,
-       DAEMON-177, DAEMON-150
+       DAEMON-177, DAEMON-150, DAEMON-163
 
 1.0.3: DAEMON-108, DAEMON-128, DAEMON-139, DAEMON-143, DAEMON-148,
        DAEMON-135, DAEMON-155, DAEMON-159, DAEMON-161, DAEMON-145, DAEMON-146,
