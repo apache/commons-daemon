@@ -18,7 +18,7 @@
 #include "private.h"
 #include <stdio.h>
 
-#define LINE_SEP    "\n"
+#define LINE_SEP    "\r\n"
 #define LOGF_EXT    L".%04d-%02d-%02d.log"
 
 static LPCSTR _log_level[] = {
@@ -247,7 +247,7 @@ apxLogWrite(
     ...)
 {
     va_list args;
-    CHAR    buffer[1024+32];
+    CHAR    buffer[1024+32] = "";
     LPSTR   szBp;
     int     len = 0;
     LPCSTR  f = szFile;
@@ -274,7 +274,9 @@ apxLogWrite(
         if(f != szFile)
             f++;
     }
-    szBp = &buffer[0];
+    else
+        f = "";
+    szBp = buffer;
     if (!szFormat) {
         if (err == 0) {
             lstrcpyA(szBp, "Unknown error code");
@@ -301,10 +303,10 @@ apxLogWrite(
     len = lstrlenA(buffer);
     if (len > 0) {
         /* Remove trailing line separator */
-        if (buffer[len - 1] == '\n') {
-            buffer[len - 1] = '\0';
-            --len;
-        }
+        if (buffer[len - 1] == '\n')
+            buffer[--len] = '\0';
+        if (len > 0 && buffer[len - 1] == '\r')
+            buffer[--len] = '\0';
         if (!IS_INVALID_HANDLE(lf->hFile)) {
             SYSTEMTIME t;
             GetLocalTime(&t);
@@ -327,7 +329,8 @@ apxLogWrite(
                 wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
-            WriteFile(lf->hFile, buffer, len, &wr, NULL);
+            if (len)
+                WriteFile(lf->hFile, buffer, len, &wr, NULL);
 
             /* Terminate the line */
             WriteFile(lf->hFile, LINE_SEP, sizeof(LINE_SEP) - 1, &wr, NULL);
@@ -389,6 +392,8 @@ apxDisplayError(
         if(f != szFile)
             f++;
     }
+    else
+        f = "";
     sysbuf[0] = '\0';
     if (err != ERROR_SUCCESS) {
         len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
@@ -399,15 +404,13 @@ apxDisplayError(
                              sysbuf,
                              SIZ_DESLEN,
                              NULL);
+        sysbuf[len] = '\0';
         if (len > 0) {
-            sysbuf[len] = '\0';
-            if (sysbuf[len - 1] == '\n') {
-                sysbuf[len - 1] = '\0';
-                --len;
-            }
+            if (sysbuf[len - 1] == '\n')
+                sysbuf[--len] = '\0';
+            if (len > 0 && sysbuf[len - 1] == '\r')
+                sysbuf[--len] = '\0';
         }
-        else
-            sysbuf[0] = '\0';
     }
     if (szFormat) {
         va_start(args, szFormat);
@@ -418,7 +421,7 @@ apxDisplayError(
             wsprintfA(sb, "%s (%d)", f, dwLine);
             lstrcatA(sysbuf, sb);
         }
-        lstrlcatA(sysbuf, SIZ_HUGLEN, "\n");
+        lstrlcatA(sysbuf, SIZ_HUGLEN, LINE_SEP);
         lstrlcatA(sysbuf, SIZ_HUGLEN, buffer);
     }
     len = lstrlenA(sysbuf);
@@ -434,7 +437,7 @@ apxDisplayError(
         else {
             fputs(sysbuf, stderr);
             if (!szFormat)
-                fputc('\n', stderr);
+                fputs(LINE_SEP, stderr);
             fflush(stderr);
         }
     }
