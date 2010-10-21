@@ -54,6 +54,16 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>src/samples</directory>
+            <outputDirectory>unix/samples</outputDirectory>
+            <lineEnding>lf</lineEnding>
+            <fileMode>775</fileMode>
+            <includes>
+                <include>Tomcat5.sh</include>
+                <include>Tomcat7.sh</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>src/native/windows</directory>
             <outputDirectory>windows</outputDirectory>
             <lineEnding>crlf</lineEnding>
