@@ -38,7 +38,7 @@ libservice.a: $(OBJS)
 	$(RANLIB) libservice.a
 
 jsvc: jsvc-unix.o libservice.a
-	$(LDCMD) $(LDFLAGS) jsvc-unix.o libservice.a $(LIBS) -o ../jsvc
+	$(LDCMD) $(LDFLAGS) $(EXTRA_LDFLAGS) jsvc-unix.o libservice.a $(LIBS) -o ../jsvc
 	$(STRIP) ../jsvc
 
 clean:

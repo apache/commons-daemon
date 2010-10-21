@@ -67,3 +67,13 @@ the fat binaries enter the specific parameters before calling configure
    ./configure
    make
 
+Optional Build flags
+
+Make process allows specifying additional compilation flags at compile time
+by using EXTRA_CFLAGS and EXTRA_LDFLAGS either as environment variables
+or defined along the make command line
+
+    make EXTRA_CFLAGS="-march=i586"
+
+will cause -march=i586 to be added to the configure generated CFLAGS.
+The same applies to EXTRA_LDFLAGS which will be added at link stage.
