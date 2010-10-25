@@ -1,6 +1,9 @@
 APACHE COMMONS DAEMON (UNIX) CHANGELOG:
 Last modified at [$Date$]
 
+Changes with 1.0.5
+
+
 Changes with 1.0.4
   * Add DaemonWrapper to allow running standard applications
     as daemons. (DAEMON-180)

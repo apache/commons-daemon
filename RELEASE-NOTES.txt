@@ -1,14 +1,14 @@
 $Id$
 
             Commons Daemon Package
-               Version 1.0.4
+               Version 1.0.5
                 Release Notes
 
 
 INTRODUCTION:
 
 Commons Daemon is a set of utilities and Java support classes for running
-Java applications as server processes. 
+Java applications as server processes.
 Commonly known as 'daemon' processes in Unix terminology (hence the name),
 on Windows they are called 'services'.
 
@@ -69,6 +69,8 @@ NEW FEATURES:
 * Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
 
 BUG FIXES:
+
+1.0.5:
 
 1.0.4: DAEMON-95, DAEMON-171, DAEMON-100, DAEMON-164, DAEMON-165, DAEMON-175,
        DAEMON-177, DAEMON-150, DAEMON-163, DAEMON-182, DAEMON-181
