@@ -175,6 +175,7 @@ static __inline BOOL __apxJvmDetach(LPAPXJAVAVM lpJava)
 static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
 {
     UINT errMode;
+    WCHAR  jreAltPath[SIZ_PATHLEN];
     LPWSTR dllJvmPath = (LPWSTR)szJvmDllPath;
     DYNLOAD_FPTR_DECLARE(SetDllDirectoryW);
 
@@ -185,6 +186,19 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
     if (!dllJvmPath)
         return FALSE;
+    if (GetFileAttributesW(szJvmDllPath) == INVALID_FILE_ATTRIBUTES) {
+        /* DAEMON-184: RuntimeLib registry key is invalid.
+         * Check from Jre JavaHome directly
+         */
+        LPWSTR szJreHome = apxGetJavaSoftHome(NULL, TRUE);
+        apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S'", dllJvmPath);
+        if (szJreHome) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Using Jre JavaHome '%S'", szJreHome);
+            lstrlcpyW(jreAltPath, SIZ_PATHLEN, szJreHome);
+            lstrlcatW(jreAltPath, SIZ_PATHLEN, L"\\bin\\server\\jvm.dll");
+            dllJvmPath = jreAltPath;
+        }
+    }
     /* Suppress the not found system popup message */
     errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
