@@ -811,7 +811,7 @@ static int onExitHook(void)
 {
     apxLogWrite(APXLOG_MARK_DEBUG "On exit hook called ...");
     reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
-    return 0;    
+    return 0;
 }
 
 /* Executed when the service receives stop event */
@@ -1015,8 +1015,12 @@ static DWORD serviceStart()
         gPidfileName = apxLogFile(gPool, SO_LOGPATH, SO_PIDFILE, NULL, FALSE);
         if (GetFileAttributesW(gPidfileName) !=  INVALID_FILE_ATTRIBUTES) {
             /* Pid file exists */
-            apxLogWrite(APXLOG_MARK_ERROR "Pid file '%S' exists", gPidfileName);
-            return 1;
+            if (!DeleteFileW(gPidfileName)) {
+                /* Delete failed. Either no access or opened */
+                apxLogWrite(APXLOG_MARK_ERROR "Pid file '%S' exists",
+                            gPidfileName);
+                return 1;
+            }
         }
     }
     GetSystemTimeAsFileTime(&fts);
@@ -1123,7 +1127,8 @@ static DWORD serviceStart()
                                          FILE_SHARE_READ,
                                          NULL,
                                          CREATE_NEW,
-                                         FILE_ATTRIBUTE_NORMAL,
+                                         FILE_ATTRIBUTE_NORMAL |
+                                         FILE_FLAG_DELETE_ON_CLOSE,
                                          NULL);
 
             if (gPidfileHandle != INVALID_HANDLE_VALUE) {
@@ -1415,8 +1420,6 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished.");
     SAFE_CLOSE_HANDLE(gPidfileHandle);
-    if (gPidfileName)
-        DeleteFileW(gPidfileName);
     return rv;
 }
 
@@ -1432,8 +1435,6 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     rv = (StartServiceCtrlDispatcherW(_service_table) != 0);
     apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
     SAFE_CLOSE_HANDLE(gPidfileHandle);
-    if (gPidfileName)
-        DeleteFileW(gPidfileName);
     return rv;
 }
 
