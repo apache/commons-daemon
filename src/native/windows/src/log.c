@@ -351,6 +351,11 @@ apxLogWrite(
     }
     /* Restore the last Error code */
     SetLastError(err);
+    if (szFormat && err != 0 && dwLevel == APXLOG_LEVEL_ERROR) {
+        /* Print the System error description
+         */
+        apxLogWrite(hFile, dwLevel, bTimeStamp, szFile, dwLine, NULL);
+    }
     return len;
 }
 
