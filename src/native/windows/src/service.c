@@ -517,6 +517,11 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
     lpService->stServiceEntry.lpConfig = NULL;
     AplZeroMemory(&lpService->stServiceEntry, sizeof(APXSERVENTRY));
 
+    if (lpDependencies)
+        lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
+                                           L"Tcpip\0Afd\0", NULL);
+    else
+        lpDependencies = L"Tcpip\0Afd\0";
     lpService->hService = CreateServiceW(lpService->hManager,
                                          szServiceName,
                                          szDisplayName,
@@ -527,7 +532,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                                          szImagePath,
                                          NULL,
                                          NULL,
-                                         lpDependencies ? lpDependencies : L"Tcpip\0Afd\0",
+                                         lpDependencies,
                                          NULL,
                                          NULL);
 

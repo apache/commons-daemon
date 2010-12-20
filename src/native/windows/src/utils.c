@@ -256,7 +256,7 @@ LPWSTR apxMultiSzCombine(APXHANDLE hPool, LPCWSTR lpStrA, LPCWSTR lpStrB,
     if (lb) {
         AplMoveMemory(&rv[la], lpStrB, lb * sizeof(WCHAR));
     }
-    if (*lpdwLength)
+    if (lpdwLength)
         *lpdwLength = (la + lb + 1) * sizeof(WCHAR);
     return rv;
 }
