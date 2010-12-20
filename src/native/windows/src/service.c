@@ -249,7 +249,7 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
     DWORD dwBytesNeeded;
     DWORD dwCount;
 
-    LPENUM_SERVICE_STATUS   lpDependencies = NULL;
+    LPENUM_SERVICE_STATUSW  lpDependencies = NULL;
     ENUM_SERVICE_STATUS     ess;
     SC_HANDLE               hDepService;
     SERVICE_STATUS_PROCESS  ssp;
@@ -260,11 +260,11 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
 
     /* Pass a zero-length buffer to get the required buffer size.
      */
-    if (EnumDependentServices(lpService->hService,
-                              SERVICE_ACTIVE,
-                              lpDependencies, 0,
-                              &dwBytesNeeded,
-                              &dwCount)) {
+    if (EnumDependentServicesW(lpService->hService,
+                               SERVICE_ACTIVE,
+                               lpDependencies, 0,
+                               &dwBytesNeeded,
+                               &dwCount)) {
          /* If the Enum call succeeds, then there are no dependent
           * services, so do nothing.
           */
@@ -284,24 +284,26 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
 
         __try {
             /* Enumerate the dependencies. */
-            if (!EnumDependentServices(lpService->hService,
-                                       SERVICE_ACTIVE,
-                                       lpDependencies,
-                                       dwBytesNeeded,
-                                      &dwBytesNeeded,
-                                      &dwCount))
+            if (!EnumDependentServicesW(lpService->hService,
+                                        SERVICE_ACTIVE,
+                                        lpDependencies,
+                                        dwBytesNeeded,
+                                        &dwBytesNeeded,
+                                        &dwCount))
             return FALSE;
 
             for (i = 0; i < dwCount; i++)  {
                 ess = *(lpDependencies + i);
                 /* Open the service. */
-                hDepService = OpenService(lpService->hManager,
-                                          ess.lpServiceName,
-                                          SERVICE_STOP | SERVICE_QUERY_STATUS);
+                hDepService = OpenServiceW(lpService->hManager,
+                                           ess.lpServiceName,
+                                           SERVICE_STOP | SERVICE_QUERY_STATUS);
 
                 if (!hDepService)
-                   return FALSE;
-
+                   continue;
+                if (lstrcmpiW(ess.lpServiceName, L"Tcpip") == 0 ||
+                    lstrcmpiW(ess.lpServiceName, L"Afd") == 0)
+                    continue;
                 __try {
                     /* Send a stop code. */
                     if (!ControlService(hDepService,
@@ -525,7 +527,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                                          szImagePath,
                                          NULL,
                                          NULL,
-                                         lpDependencies,
+                                         lpDependencies ? lpDependencies : L"Tcpip\0Afd\0",
                                          NULL,
                                          NULL);
 
