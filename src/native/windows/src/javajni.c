@@ -112,6 +112,7 @@ typedef struct APXJAVAVM {
     DWORD           iWorkerThread;
     DWORD           dwWorkerStatus;
     SIZE_T          szStackSize;
+    HANDLE          hWorkerSync;
 } APXJAVAVM, *LPAPXJAVAVM;
 
 /* This is no longer exported in jni.h
@@ -888,6 +889,7 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
+    SetEvent(lpJava->hWorkerSync);
     JNICALL_3(CallStaticVoidMethod,
               lpJava->clWorker.jClazz,
               lpJava->clWorker.jMethod,
@@ -902,6 +904,7 @@ finished:
     lpJava->dwWorkerStatus = 0;
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
+    SetEvent(lpJava->hWorkerSync);
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
     return 0;
@@ -912,16 +915,20 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
 
     LPAPXJAVAVM lpJava;
     lpJava = APXHANDLE_DATA(pArgs->hJava);
-    lpJava->hWorkerThread = CreateThread(NULL,
-                                         lpJava->szStackSize,
-                                         __apxJavaWorkerThread,
-                                         pArgs, CREATE_SUSPENDED,
-                                         &lpJava->iWorkerThread);
+    lpJava->dwWorkerStatus = 0;
+    lpJava->hWorkerSync    = CreateEvent(NULL, FALSE, FALSE, NULL);
+    lpJava->hWorkerThread  = CreateThread(NULL,
+                                          lpJava->szStackSize,
+                                          __apxJavaWorkerThread,
+                                          pArgs, CREATE_SUSPENDED,
+                                          &lpJava->iWorkerThread);
     if (IS_INVALID_HANDLE(lpJava->hWorkerThread)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
     }
     ResumeThread(lpJava->hWorkerThread);
+    /* Wait until the worker thread initializes */
+    WaitForSingleObject(lpJava->hWorkerSync, INFINITE);
     if (lstrcmpA(lpJava->clWorker.sClazz, "java/lang/System")) {
         /* Give some time to initialize the thread
          * Unless we are calling System.exit(0).
