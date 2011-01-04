@@ -187,7 +187,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
     if (!dllJvmPath)
         return FALSE;
-    if (GetFileAttributesW(szJvmDllPath) == INVALID_FILE_ATTRIBUTES) {
+    if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
         /* DAEMON-184: RuntimeLib registry key is invalid.
          * Check from Jre JavaHome directly
          */
@@ -205,8 +205,10 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
 
     apxLogWrite(APXLOG_MARK_DEBUG "loading jvm '%S'", dllJvmPath);
     _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
-    if (GetFileAttributesW(szJvmDllPath) != INVALID_FILE_ATTRIBUTES) {
-        /* Try to load the MSVCRTxx.dll before JVM.dll
+    if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle) &&
+        GetFileAttributesW(dllJvmPath) != INVALID_FILE_ATTRIBUTES) {
+        /* There is a file but cannot be loaded.
+         * Try to load the MSVCRTxx.dll before JVM.dll
          */
         WCHAR  jreBinPath[SIZ_PATHLEN];
         WCHAR  crtBinPath[SIZ_PATHLEN];
