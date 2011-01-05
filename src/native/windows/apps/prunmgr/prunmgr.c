@@ -1514,7 +1514,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
         break;
         case WM_COMMAND:
-            switch(LOWORD(wParam)) {
+            switch (LOWORD(wParam)) {
                 case IDM_TM_CONFIG:
                     ShowServiceProperties(hWnd);
                 break;
@@ -1564,7 +1564,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             }
         break;
         case WM_TRAYMESSAGE:
-            switch(lParam) {
+            switch (lParam) {
                 case WM_LBUTTONDBLCLK:
                     ShowServiceProperties(hWnd);
                 break;
@@ -1701,11 +1701,18 @@ int WINAPI WinMain(HINSTANCE hInstance,
     if (!_options[0].dwValue) {
         mutex = CreateMutex(NULL, FALSE, _gui_store->szWndMutex);
         if ((mutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS)) {
-            /* Skip sytem error message */
-            SetLastError(ERROR_SUCCESS);
-            if (!quiet)
-                apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ALREAY_RUNING, 0),
-                                lpCmdline->szApplication);
+            HANDLE hOther = FindWindow(_gui_store->szWndClass, NULL);
+            if (hOther) {
+                SetForegroundWindow(hOther);
+                SendMessage(hOther, WM_COMMAND, MAKEWPARAM(IDM_TM_CONFIG, 0), 0);
+            }
+            else {
+                /* Skip sytem error message */
+                SetLastError(ERROR_SUCCESS);
+                if (!quiet)
+                    apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ALREAY_RUNING, 0),
+                                    lpCmdline->szApplication);
+            }
             goto cleanup;
         }
     }
