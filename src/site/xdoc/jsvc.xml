@@ -182,7 +182,23 @@ Where options include:
 
 </source>
 </p>
+<subsection name="Mac OS X universal binaries">
+<p>
+If jsvc was build with universal binary support the proper way of
+starting <code>jsvc</code> is by using Mac OS X <code>arch</code> command:
+</p>
+<source>
+    arch -arch i386 ./jsvc -jvm server &lt;original jsvc parameters&gt;
 
+    for running 64-bit JVM use the:
+    arch -arch x86_64 ./jsvc -jvm server &lt;original jsvc parameters&gt;
+
+</source>
+<p>
+Use <code>-jvm server</code> because default <code>client</code> JVM is
+not present for all architectures.
+</p>
+</subsection>
 </section>
 <section name="Using jsvc">
 <p>
