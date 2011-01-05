@@ -421,7 +421,7 @@ apxDisplayError(
         va_start(args, szFormat);
         wvsprintfA(buffer, szFormat, args);
         va_end(args);
-        if (f) {
+        if (f && *f) {
             CHAR sb[SIZ_PATHLEN];
             wsprintfA(sb, "%s (%d)", f, dwLine);
             lstrcatA(sysbuf, sb);
