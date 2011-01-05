@@ -1,0 +1,91 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<assembly>
+    <id>native-src</id>
+    <formats>
+        <format>tar.gz</format>
+        <format>zip</format>
+    </formats>
+    <baseDirectory>${project.artifactId}-${project.version}-native-src</baseDirectory>
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>LICENSE.txt</include>
+                <include>NOTICE.txt</include>
+                <include>RELEASE-NOTES.txt</include>
+                <!-- Includes build instructions -->
+                <include>README</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/native/unix</directory>
+            <outputDirectory>unix</outputDirectory>
+            <lineEnding>lf</lineEnding>
+            <excludes>
+                <exclude>**/*.sh</exclude> <!-- Excluded here, because processed below -->
+                <exclude>configure</exclude>
+                <exclude>autom4te.cache/**</exclude>
+                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <exclude>**/*.formatted</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>src/native/unix</directory>
+            <outputDirectory>unix</outputDirectory>
+            <lineEnding>lf</lineEnding>
+            <fileMode>775</fileMode>
+            <includes>
+                <include>**/*.sh</include>
+                <include>configure</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/samples</directory>
+            <outputDirectory>unix/samples</outputDirectory>
+            <lineEnding>lf</lineEnding>
+            <fileMode>775</fileMode>
+            <includes>
+                <include>Tomcat5.sh</include>
+                <include>Tomcat7.sh</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/native/windows</directory>
+            <outputDirectory>windows</outputDirectory>
+            <lineEnding>crlf</lineEnding>
+            <excludes>
+                <exclude>**/*.ico</exclude>
+                <exclude>**/*.bmp</exclude>
+                <exclude>**/*.rc</exclude>
+                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <exclude>**/*.formatted</exclude>
+            </excludes>
+            <fileMode>664</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/native/windows</directory>
+            <outputDirectory>windows</outputDirectory>
+            <includes>
+                <include>**/*.ico</include>
+                <include>**/*.bmp</include>
+                <include>**/*.rc</include>
+            </includes>
+            <fileMode>664</fileMode>
+        </fileSet>
+    </fileSets>
+</assembly>
+

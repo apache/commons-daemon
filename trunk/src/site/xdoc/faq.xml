@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Daemon : FAQ</title>
+  <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
+ </properties>
+
+<body>
+<section name="Buildconf problems">
+<p>
+<source>
+$ sh support/buildconf.sh
+autoconf: Undefined macros:
+***BUG in Autoconf--please report*** AC_PATH
+***BUG in Autoconf--please report*** AC_PATH
+***BUG in Autoconf--please report*** AC_PATH
+</source>
+Your version of autoconf is to old, upgrade your autoconf and retry.
+Or run support/buildconf.sh in another machine and copy the daemon tree in
+the machine where you want to compile jsvc.
+</p>
+</section>
+
+<section name="Configure problems">
+<p>
+<source>
+configure: creating ./config.status
+config.status: creating Makefile
+mv: Makefile: set owner/group (was: 1670/0): Operation not permitted
+config.status: creating Makedefs
+mv: Makedefs: set owner/group (was: 1670/0): Operation not permitted
+config.status: creating native/Makefile
+mv: native/Makefile: set owner/group (was: 1670/0): Operation not permitted
+*** All done ***
+Now you can issue "make"
+</source>
+You should ignore those error messages they are normal in FreeBSD.
+config.status creates files in /tmp and move them in the current directory.
+When FreeBSD creates files it sets the group of the files to
+the group of the directory where the files are created.
+So if /tmp is group "wheel" the files are "wheel". When moving the files in
+the current directory (if you are not member of group "wheel")
+the group "wheel" cannot be set on the moved files.
+</p>
+</section>
+<section name="Runtime problems">
+<p>
+On Linux 2.6.x jsvc does not start and write the following error:
+<source>
+jsvc.exec error: syscall failed in set_caps
+jsvc.exec error: Service exit with a return value of 4
+</source>
+CONFIG_SECURITY_CAPABILITIES in missing in your kernel try the following in the kernel sources:
+<ul>
+<li>
+Configure the kernel with "Default Linux Capabilities" and reboot
+  (by make gconfig or make xconfig under "security options" and "Enable different security models")
+</li>
+<li>
+Insert the module "capability":
+<source>
+modprobe capability
+</source>
+</li>
+</ul>
+</p>
+</section>
+
+<section name="Cygwin configuration problems">
+<p>
+The configure of jsvc does not like spaces in directory name.
+To configure with java installed in directory whose name contains a space,
+use the 8 characters name of the directory.
+For example for java in installed in <code>c:\Archivos de programa\java\jdk1.5.0_06</code>:
+<source>
+./configure --with-java=/cygdrive/c/Archiv~1/java/jdk1.5.0_06
+</source>
+</p>
+</section>
+
+</body>
+</document>

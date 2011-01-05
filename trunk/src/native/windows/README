@@ -1,0 +1,25 @@
+Note: MAKE SURE you first build the java part (using Ant) otherwise the dist
+directory is not created).
+
+To build the service utilities for windows you will need:
+- MS Visual C++ (I have used version 5.0).
+- CYGWIN to build the jsvc.exe.
+- A Java Platform 2 compliant SDK to run the service.
+
+The Windows applications are found in:
+
+apps/prunmgr
+apps/prunsrv
+
+The common source files are in
+
+src
+include
+resources
+
+The Makefiles in the apps/ directories can be used with MS Visual C++ 5.0.
+They will not work with earlier versions of nmake
+
+Note that later versions of Visual C++ can be set up to build the applications,
+however they may generate executables linked with a later version of the MS "C"
+runtime library (MSVCRTL), and may not work properly with all versions of Java.
