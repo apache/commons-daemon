@@ -96,7 +96,7 @@ void help(home_data *data)
     printf("    -keepstdin\n");
     printf("        does not redirect stdin to /dev/null\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
-    printf("Copyright (c) 1999-2010 Apache Software Foundation.\n");
+    printf("Copyright (c) 1999-2011 Apache Software Foundation.\n");
 
     printf("\n");
 }
