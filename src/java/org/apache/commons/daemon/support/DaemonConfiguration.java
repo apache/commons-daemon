@@ -126,7 +126,7 @@ public final class DaemonConfiguration
                 if (sysvalue == null) {
                     // Try with the environment if there was no
                     // property by that name.
-                    sysvalue = System.getenv(variable);
+                    sysvalue = System.getenv(variable); // N.B. Deprecated in Java 1.3/1.4, but re-instated in Java 1.5+
                 }
                 if (sysvalue != null) {
                     String strtoken = propValue.substring(ctoken, btoken);
