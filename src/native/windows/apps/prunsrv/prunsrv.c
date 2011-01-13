@@ -1508,7 +1508,7 @@ void __cdecl main(int argc, char **argv)
         SYSTEMTIME t;
         GetLocalTime(&t);
         fprintf(stdout, "\n%d-%02d-%02d %02d:%02d:%02d "
-                        "Commons Daemon procrun stdout initialized",
+                        "Commons Daemon procrun stdout initialized\n",
                         t.wYear, t.wMonth, t.wDay,
                         t.wHour, t.wMinute, t.wSecond);
         fprintf(stderr, "\n%d-%02d-%02d %02d:%02d:%02d "
