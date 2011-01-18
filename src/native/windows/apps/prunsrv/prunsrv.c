@@ -65,6 +65,7 @@ static LPCWSTR      PRSRV_JDK    = L"jdk";
 static LPCWSTR      PRSRV_JRE    = L"jre";
 static LPCWSTR      PRSRV_MANUAL = L"manual";
 static LPCWSTR      PRSRV_JBIN   = L"\\bin\\java.exe";
+static LPCWSTR      PRSRV_PBIN   = L"\\bin";
 static LPCWSTR      PRSRV_SIGNAL = L"SIGNAL";
 
 static LPCWSTR      STYPE_INTERACTIVE = L"interactive";
@@ -1289,7 +1290,13 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 jx = apxPoolAlloc(gPool, (lstrlenW(szJH) + 16) * sizeof(WCHAR));
                 lstrcpyW(jx, szJH);
                 lstrcatW(jx, PRSRV_JBIN);
-                SO_STARTPATH = szJH;
+                if (!SO_STARTPATH) {
+                    /* Use JAVA_HOME/bin as start path */
+                    LPWSTR szJP = apxPoolAlloc(gPool, (lstrlenW(szJH) + 8) * sizeof(WCHAR));
+                    lstrcpyW(szJP, szJH);
+                    lstrcatW(szJP, PRSRV_PBIN);
+                    SO_STARTPATH = szJP;
+                }
             }
             else {
                 apxLogWrite(APXLOG_MARK_ERROR "Unable to find Java Runtime Environment.");
@@ -1324,7 +1331,13 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 jx = apxPoolAlloc(gPool, (lstrlenW(szJH) + 16) * sizeof(WCHAR));
                 lstrcpyW(jx, szJH);
                 lstrcatW(jx, PRSRV_JBIN);
-                SO_STOPPATH = szJH;
+                if (!SO_STOPPATH) {
+                    LPWSTR szJP = apxPoolAlloc(gPool, (lstrlenW(szJH) + 8) * sizeof(WCHAR));
+                    lstrcpyW(szJP, szJH);
+                    lstrcatW(szJP, PRSRV_PBIN);
+                    /* Use JAVA_HOME/bin as stop path */
+                    SO_STOPPATH = szJP;
+                }
             }
             else {
                 apxLogWrite(APXLOG_MARK_ERROR "Unable to find Java Runtime Environment.");
