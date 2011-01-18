@@ -930,8 +930,10 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
             log_error("cannot create logger process: %s", strerror(errno));
         }
         else {
-            if (pid == 0) {
-                /* Child process */
+            if (pid != 0) {
+                /* Parent process.
+                 * Close child pipe endpoints.
+                 */
                 logger_pid = pid;
                 if (out_pipe[0] != -1) {
                     close(out_pipe[0]);
