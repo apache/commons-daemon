@@ -2,7 +2,8 @@ APACHE COMMONS DAEMON (UNIX) CHANGELOG:
 Last modified at [$Date$]
 
 Changes with 1.0.6
-
+  * Fix syslog infinite loop (DAEMON-194)
+  * Fix syslog invalid descriptors (DAEMON-186)
 
 Changes with 1.0.5
 

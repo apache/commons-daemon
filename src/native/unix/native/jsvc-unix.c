@@ -777,47 +777,77 @@ static int logger_child(int out_fd, int err_fd, char *procname)
 {
     fd_set rfds;
     struct timeval tv;
-    int retval, n;
+    int retval, nfd = -1, rc = 0;
+    ssize_t n;
     char buf[LOGBUF_SIZE];
 
-    if (out_fd > err_fd) {
-        n = out_fd + 1;
-    } else {
-        n = err_fd + 1;
-    }
+    if (out_fd == -1 && err_fd == -1)
+        return EINVAL;
+    if (out_fd == -1)
+        nfd = err_fd;
+    else if (err_fd == -1)
+        nfd = out_fd;
+    else
+        nfd = out_fd > err_fd ? out_fd : err_fd;
+    ++nfd;
 
     openlog(procname, LOG_PID, LOG_DAEMON);
 
-    while (1) {
+    while (out_fd != -1 || err_fd != -1) {
         FD_ZERO(&rfds);
-        FD_SET(out_fd, &rfds);
-        FD_SET(err_fd, &rfds);
-        tv.tv_sec = 60;
+        if (out_fd != -1) {
+            FD_SET(out_fd, &rfds);
+        }
+        if (err_fd != -1) {
+            FD_SET(err_fd, &rfds);
+        }
+        tv.tv_sec  = 60;
         tv.tv_usec = 0;
-        retval = select(n, &rfds, NULL, NULL, &tv);
-        if (retval == -1)
+        retval = select(nfd, &rfds, NULL, NULL, &tv);
+        if (retval == -1) {
+            rc = errno;
             syslog(LOG_ERR, "select: %s", strerror(errno));
+            /* If select failed no point to continue */
+            break;
+        }
         else if (retval) {
-            if (FD_ISSET(out_fd, &rfds)) {
-                ssize_t n = read(out_fd, buf, LOGBUF_SIZE-1);
-                if (n < 0) {
+            if (out_fd != -1 && FD_ISSET(out_fd, &rfds)) {
+                do {
+                    n = read(out_fd, buf, LOGBUF_SIZE-1);
+                } while (n == -1 && errno == EINTR);
+                if (n == -1) {
                     syslog(LOG_ERR, "read: %s", strerror(errno));
-                } else if (n > 0 && buf[0] != '\n') {
+                    close(out_fd);
+                    if (err_fd == -1)
+                        break;
+                    nfd = err_fd + 1;
+                    out_fd = -1;
+                }
+                else if (n > 0 && buf[0] != '\n') {
                     buf[n] = 0;
                     syslog(LOG_INFO, "%s", buf);
                 }
             }
-            if (FD_ISSET(err_fd, &rfds)) {
-                ssize_t n = read(err_fd, buf, LOGBUF_SIZE-1);
-                if (n < 0) {
+            if (err_fd != -1 && FD_ISSET(err_fd, &rfds)) {
+                do {
+                    n = read(err_fd, buf, LOGBUF_SIZE-1);
+                } while (n == -1 && errno == EINTR);
+                if (n == -1) {
                     syslog(LOG_ERR, "read: %s", strerror(errno));
-                } else if (n > 0 && buf[0] != '\n') {
+                    close(err_fd);
+                    if (out_fd == -1)
+                        break;
+                    nfd = out_fd + 1;
+                    err_fd = -1;
+                }
+                else if (n > 0 && buf[0] != '\n') {
                     buf[n] = 0;
                     syslog(LOG_ERR, "%s", buf);
                 }
             }
         }
     }
+    return rc;
 }
 
 /**
@@ -825,7 +855,9 @@ static int logger_child(int out_fd, int err_fd, char *procname)
  */
 static void set_output(char *outfile, char *errfile, bool redirectstdin, char *procname)
 {
-    int out_pipe[2] = {0, 0}, err_pipe[2] = {0, 0}, fork_needed = 0;
+    int out_pipe[2] = {-1, -1};
+    int err_pipe[2] = {-1, -1};
+    int fork_needed = 0;
 
     if (redirectstdin == true) {
         freopen("/dev/null", "r", stdin);
@@ -896,24 +928,27 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
         pid_t pid = fork();
         if (pid == -1) {
             log_error("cannot create logger process: %s", strerror(errno));
-        } else {
-            if (pid) {
+        }
+        else {
+            if (pid == 0) {
+                /* Child process */
                 logger_pid = pid;
-                if (out_pipe[0] != 0) {
+                if (out_pipe[0] != -1) {
                     close(out_pipe[0]);
                     if (dup2(out_pipe[1], 1) == -1) {
                         log_error("cannot redirect stdout to pipe for syslog: %s",
                                   strerror(errno));
                     }
                 }
-                if (err_pipe[0] != 0) {
+                if (err_pipe[0] != -1) {
                     close(err_pipe[0]);
                     if (dup2(err_pipe[1], 2) == -1) {
                         log_error("cannot redirect stderr to pipe for syslog: %s",
                                   strerror(errno));
                     }
                 }
-            } else {
+            }
+            else {
                 exit(logger_child(out_pipe[0], err_pipe[0], procname));
             }
         }
