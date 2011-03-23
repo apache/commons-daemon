@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>17</version>
+    <version>20</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>commons-daemon</groupId>
@@ -33,7 +33,7 @@
        which is why the NOTICE file has an earlier date than the inceptionYear -->
   <inceptionYear>2002</inceptionYear>
   <description>
-     Alternative invocation mechanism for unix-daemon-like java code.
+     Apache Commons Daemon software provides an alternative invocation mechanism for unix-daemon-like java code.
   </description>
   <url>http://commons.apache.org/daemon/</url>
 
