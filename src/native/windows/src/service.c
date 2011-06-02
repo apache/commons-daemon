@@ -54,6 +54,10 @@ static BOOL __apxIsValidServiceName(LPCWSTR szServiceName)
             }
         }
     }
+    if (i > 256) {
+        apxDisplayError(FALSE, NULL, 0, "Service name too long %S", szServiceName);
+        return FALSE;
+    }
     return TRUE;
 }
 
