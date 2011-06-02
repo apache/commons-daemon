@@ -24,6 +24,7 @@ char *java_library(arg_data *args, home_data *data);
 bool java_init(arg_data *args, home_data *data);
 bool java_destroy(void);
 bool java_load(arg_data *args);
+bool java_signal(void);
 bool java_start(void);
 bool java_stop(void);
 bool java_version(void);

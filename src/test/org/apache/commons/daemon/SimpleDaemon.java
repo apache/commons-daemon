@@ -29,7 +29,7 @@ import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonController;
 import org.apache.commons.daemon.DaemonContext;
 
-public class SimpleDaemon implements Daemon, Runnable {
+public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     private ServerSocket server=null;
     private Thread thread=null;
@@ -37,6 +37,7 @@ public class SimpleDaemon implements Daemon, Runnable {
     private volatile boolean stopping=false;
     private String directory=null;
     private Vector handlers=null;
+    private boolean softReloadSignalled;
 
     public SimpleDaemon() {
         super();
@@ -108,7 +109,10 @@ public class SimpleDaemon implements Daemon, Runnable {
         System.err.println("SimpleDaemon: started acceptor loop");
         try {
             while(!this.stopping) {
+                checkForReload();
                 Socket socket=this.server.accept();
+                checkForReload();
+
                 Handler handler=new Handler(socket,this,this.controller);
                 handler.setConnectionNumber(number++);
                 handler.setDirectoryName(this.directory);
@@ -130,6 +134,22 @@ public class SimpleDaemon implements Daemon, Runnable {
         }
 
         System.err.println("SimpleDaemon: exiting acceptor loop");
+    }
+
+    public void signal() {
+        /* In this example we are using soft reload on
+         * custom signal.
+         */
+        this.softReloadSignalled = true;
+    }
+
+    private void checkForReload() {
+      if (this.softReloadSignalled) {
+        System.err.println("SimpleDaemon: picked up reload, waiting for connections to finish...");
+        while (! this.handlers.isEmpty()) {}
+        System.err.println("SimpleDaemon: all connections have finished, pretending to reload");
+        this.softReloadSignalled = false;
+      }
     }
 
     protected void addHandler(Handler handler) {
@@ -225,7 +245,8 @@ public class SimpleDaemon implements Daemon, Runnable {
                         out.println("    2) Reload");
                         out.println("    3) Create a file");
                         out.println("    4) Disconnect");
-                        out.print("Your choiche: ");
+                        out.println("    5) Soft reload");
+                        out.print("Your choice: ");
                     }
 
                     /* Read an option from the client */
@@ -277,6 +298,10 @@ public class SimpleDaemon implements Daemon, Runnable {
                         /* Disconnect */
                         case '4':
                             out.println("Disconnecting...");
+                            return;
+                        case '5':
+                            out.println("Reloading configuration...");
+                            this.parent.signal();
                             return;
 
                         /* Discard any carriage return / newline characters */

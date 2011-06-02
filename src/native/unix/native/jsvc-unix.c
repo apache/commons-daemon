@@ -57,9 +57,11 @@ pid_t logger_pid = 0;           /* the logger process pid */
 static bool stopping = false;
 static bool doreload = false;
 static bool doreopen = false;
+static bool dosignal = false;
 typedef void (*sighandler_t)(int);
 static sighandler_t handler_int  = NULL;
 static sighandler_t handler_usr1 = NULL;
+static sighandler_t handler_usr2 = NULL;
 static sighandler_t handler_hup  = NULL;
 static sighandler_t handler_trm  = NULL;
 
@@ -129,6 +131,10 @@ static void handler(int sig)
         case SIGUSR1:
              log_debug("Caught SIGUSR1: Reopening logs");
              doreopen = true;
+	break;
+        case SIGUSR2:
+	     log_debug("Caught SIGUSR2: Scheduling a custom signal");
+             dosignal = true;
         break;
         default:
             log_debug("Caught unknown signal %d", sig);
@@ -374,6 +380,7 @@ static void controller(int sig)
         case SIGINT:
         case SIGHUP:
         case SIGUSR1:
+        case SIGUSR2:
             log_debug("Forwarding signal %d to process %d", sig, controlled);
             kill(controlled, sig);
             signal(sig, controller);
@@ -711,6 +718,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
     /* Install signal handlers */
     handler_hup = signal_set(SIGHUP, handler);
     handler_usr1 = signal_set(SIGUSR1, handler);
+    handler_usr2 = signal_set(SIGUSR2, handler);
     handler_trm = signal_set(SIGTERM, handler);
     handler_int = signal_set(SIGINT, handler);
     controlled = getpid();
@@ -728,6 +736,10 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
         if(doreopen) {
             doreopen = false;
             set_output(args->outfile, args->errfile, args->redirectstdin, args->procname);
+        }
+        if(dosignal) {
+            dosignal = false;
+            java_signal();
         }
     }
     remove_tmp_file(args);
@@ -1110,6 +1122,7 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
 #endif
         signal(SIGHUP, controller);
         signal(SIGUSR1, controller);
+        signal(SIGUSR2, controller);
         signal(SIGTERM, controller);
         signal(SIGINT, controller);
 

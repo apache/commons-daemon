@@ -40,6 +40,7 @@ public final class DaemonLoader
     private static Method start     = null; //@GuardedBy("this")
     private static Method stop      = null; //@GuardedBy("this")
     private static Method destroy   = null; //@GuardedBy("this")
+    private static Method signal    = null; //@GuardedBy("this")
 
     public static void version()
     {
@@ -94,6 +95,23 @@ public final class DaemonLoader
         /* The class was loaded and instantiated correctly, we can return
          */
         return true;
+    }
+
+    public static boolean signal()
+    {
+        try {
+            if (signal != null) {
+                signal.invoke(daemon, new Object[0]);
+                return true;
+            }
+            else {
+                System.out.println("Daemon doesn't support signaling");
+            }
+        } catch (Throwable ex) {
+            System.err.println("Cannot send signal: " + ex);
+            ex.printStackTrace(System.err);
+        }
+        return false;
     }
 
     public static boolean load(String className, String args[])
@@ -161,6 +179,12 @@ public final class DaemonLoader
             start   = c.getMethod("start", myclass);
             stop    = c.getMethod("stop", myclass);
             destroy = c.getMethod("destroy", myclass);
+
+            try {
+                signal = c.getMethod("signal", myclass);
+            } catch (NoSuchMethodException e) {
+                // Signaling will be disabled.
+            }
 
             /* Create a new instance of the daemon */
             daemon = c.newInstance();
