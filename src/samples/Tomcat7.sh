@@ -145,7 +145,7 @@ if [ "$cygwin" = "false" ]; then
         if [ "$darwin" = "true" -a "$MAX_FD_LIMIT" = "unlimited" ]; then
             MAX_FD_LIMIT=`/usr/sbin/sysctl -n kern.maxfilesperproc`
         fi
-        test ".$MAX_FD" = "maximum" && MAX_FD="$MAX_FD_LIMIT"
+        test ".$MAX_FD" = ".maximum" && MAX_FD="$MAX_FD_LIMIT"
         ulimit -n $MAX_FD
         if [ "$?" -ne 0 ]; then
             echo "$PROGRAM: Could not set maximum file descriptor limit: $MAX_FD"
