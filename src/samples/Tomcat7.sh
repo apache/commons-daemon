@@ -61,7 +61,20 @@ do
     ;;
   esac
 done
+# OS specific support (must be 'true' or 'false').
+cygwin=false;
+darwin=false;
+case "`uname`" in
+    CYGWIN*)
+        cygwin=true
+        ;;
+    Darwin*)
+        darwin=true
+        ;;
+esac
 
+# Use the maximum available, or set MAX_FD != -1 to use that
+test ".$MAX_FD" = . && MAX_FD="maximum"
 # Setup parameters for running the jsvc
 #
 test ".$TOMCAT_USER" = . && TOMCAT_USER=tomcat
@@ -123,6 +136,24 @@ JAVA_OPTS="$JAVA_OPTS $LOGGING_MANAGER"
 
 # Set -pidfile
 test ".$CATALINA_PID" = . && CATALINA_PID="$CATALINA_BASE/logs/catalina-daemon.pid"
+
+# Increase the maximum file descriptors if we can
+if [ "$cygwin" = "false" ]; then
+    MAX_FD_LIMIT=`ulimit -H -n`
+    if [ "$?" -eq 0 ]; then
+        # Darwin does not allow RLIMIT_INFINITY on file soft limit
+        if [ "$darwin" = "true" -a "$MAX_FD_LIMIT" = "unlimited" ]; then
+            MAX_FD_LIMIT=`/usr/sbin/sysctl -n kern.maxfilesperproc`
+        fi
+        test ".$MAX_FD" = "maximum" && MAX_FD="$MAX_FD_LIMIT"
+        ulimit -n $MAX_FD
+        if [ "$?" -ne 0 ]; then
+            echo "$PROGRAM: Could not set maximum file descriptor limit: $MAX_FD"
+        fi
+    else
+        echo "$PROGRAM: Could not query system maximum file descriptor limit: $MAX_FD_LIMIT"
+    fi
+fi
 
 # ----- Execute The Requested Command -----------------------------------------
 case "$1" in
