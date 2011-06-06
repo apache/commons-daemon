@@ -109,15 +109,17 @@ LPAPXCMDLINE apxCmdlineParse(
             ca += 2;
             while (*ca && *ca != L'/') {
                 cmd[l] = *ca;
-                if (l++ > 3)
+                if (++l > 2)
                     break;
                 ca++;
             }
             cmd[l] = L'\0';
-            while (lpszCommands[i]) {
-                if (lstrcmpW(lpszCommands[i++], cmd) == 0) {
-                    lpCmdline->dwCmdIndex = i;
-                    break;
+            if (*ca == L'\0' || *ca == L'/') {
+                while (lpszCommands[i]) {
+                    if (lstrcmpW(lpszCommands[i++], cmd) == 0) {
+                        lpCmdline->dwCmdIndex = i;
+                        break;
+                    }
                 }
             }
             if (lpCmdline->dwCmdIndex) {
