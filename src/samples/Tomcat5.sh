@@ -51,7 +51,7 @@ case "$1" in
     #
     # Start Tomcat
     #
-    $DAEMON_HOME/src/native/unix/jsvc \
+    $DAEMON_HOME/src/native/unix/jsvc $JSVC_OPTS \
     -user $TOMCAT_USER \
     -home $JAVA_HOME \
     -Dcatalina.home=$CATALINA_HOME \
@@ -76,7 +76,7 @@ case "$1" in
     #
     # Stop Tomcat
     #
-    $DAEMON_HOME/src/native/unix/jsvc \
+    $DAEMON_HOME/src/native/unix/jsvc $JSVC_OPTS \
     -stop \
     -pidfile $PID_FILE \
     org.apache.catalina.startup.Bootstrap

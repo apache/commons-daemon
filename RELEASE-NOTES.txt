@@ -34,6 +34,8 @@ NEW FEATURES:
 * DAEMON-205: Add support for building on ARM processors (1.0.6)
 * DAEMON-204: Add DaemonSignal interface that allows catching SIGUSR2
               signals and creating custom callbacks (1.0.6)
+* DAEMON-202: Allow JSVC_OPTS environment variable to be used in
+              the example Tomcat scripts (1.0.6)
 * DAEMON-180: Add DaemonWrapper to allow running standard applications
               as daemons. (1.0.4)
 * DAEMON-179: Allow procrun to use java/lang/System as --ShutdownClass. (1.0.4)

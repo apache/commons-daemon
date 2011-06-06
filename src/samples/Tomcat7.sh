@@ -160,6 +160,7 @@ case "$1" in
     run     )
       shift
       "$JSVC" $* \
+      $JSVC_OPTS \
       -java-home "$JAVA_HOME" \
       -pidfile "$CATALINA_PID" \
       -wait 10 \
@@ -176,7 +177,7 @@ case "$1" in
       exit $?
     ;;
     start   )
-      "$JSVC" \
+      "$JSVC" $JSVC_OPTS \
       -java-home "$JAVA_HOME" \
       -user $TOMCAT_USER \
       -pidfile "$CATALINA_PID" \
@@ -193,7 +194,7 @@ case "$1" in
       exit $?
     ;;
     stop    )
-      "$JSVC" \
+      "$JSVC" $JSVC_OPTS \
       -stop \
       -pidfile "$CATALINA_PID" \
       -classpath "$CLASSPATH" \
