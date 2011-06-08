@@ -31,6 +31,7 @@ Commons DAEMON 1.0.3 requires a minimum of JDK 1.3
 
 NEW FEATURES:
 
+* DAEMON-208: Add -server and -client -jvm <name> synonyms (1.0.6)
 * DAEMON-205: Add support for building on ARM processors (1.0.6)
 * DAEMON-204: Add DaemonSignal interface that allows catching SIGUSR2
               signals and creating custom callbacks (1.0.6)

@@ -120,6 +120,10 @@ Where options include:
     -jvm &lt;JVM name&gt;
         use a specific Java Virtual Machine. Available JVMs:
             'client' 'server'
+    -client
+        use a client Java Virtual Machine.
+    -server
+        use a server Java Virtual Machine.
     -cp / -classpath &lt;directories and zip/jar files&gt;
         set search path for service classes and resouces
     -home &lt;directory&gt;

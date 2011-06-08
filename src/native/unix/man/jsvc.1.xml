@@ -21,9 +21,9 @@
   <refmeta>
     <refentrytitle>JSVC</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='date'>October 2010</refmiscinfo>
-    <refmiscinfo class='source'>Jsvc version 1.0.4</refmiscinfo>
-    <refmiscinfo class='manual'>Apache Commons project</refmiscinfo>
+    <refmiscinfo class='date'>June 2011</refmiscinfo>
+    <refmiscinfo class='source'>Jsvc version 1.0.6</refmiscinfo>
+    <refmiscinfo class='manual'>Apache Commons Daemon project</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
     <refname>jsvc</refname>
@@ -34,6 +34,8 @@
     <cmdsynopsis>
       <command>jsvc</command>
       <arg choice='opt'>-jvm <replaceable>JVM name</replaceable></arg>
+      <arg choice='opt'>-client <replaceable>client JVM</replaceable></arg>
+      <arg choice='opt'>-server <replaceable>server JVM</replaceable></arg>
       <arg choice='opt'>-classpath <replaceable>path</replaceable></arg>
       <arg choice='opt'>-cp <replaceable>path</replaceable></arg>
       <arg choice='opt'>-java-home <replaceable>directory</replaceable></arg>
@@ -69,6 +71,18 @@
         <term><option>-jvm</option> JVM name</term>
         <listitem>
           <para>use a specific Java Virtual Machine.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-client</option> client JVM</term>
+        <listitem>
+          <para>use a client Java Virtual Machine.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-server</option> server JVM</term>
+        <listitem>
+          <para>use a server Java Virtual Machine.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -185,8 +199,8 @@
 
   <refsect1 id='author'><title>AUTHOR</title>
     <para>JSVC is part of the Apache Commons Daemon project. Authors are
-      Jean-Frederic Clere, Remy Maucherat, Yoav Shapira, Bill Barker. JSVC is
-      under the Apache License Version 2.0.</para>
+      Jean-Frederic Clere, Remy Maucherat, Yoav Shapira, Bill Barker, Mladen Turk. JSVC is
+      released under the Apache License Version 2.0.</para>
   </refsect1>
 
 </refentry>

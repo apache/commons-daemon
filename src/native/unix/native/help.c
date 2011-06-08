@@ -34,7 +34,10 @@ void help(home_data *data)
         printf(" '%s'", PRINT_NULL(data->jvms[x]->name));
     }
     printf("\n");
-
+    printf("    -client\n");
+    printf("        use a client Java Virtual Machine.\n");
+    printf("    -server\n");
+    printf("        use a server Java Virtual Machine.\n");
     printf("    -cp | -classpath <directories and zip/jar files>\n");
     printf("        set search path for service classes and resouces\n");
     printf("    -java-home | -home <directory>\n");
