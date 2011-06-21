@@ -116,17 +116,19 @@ BOOL apxAddEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName, LPCWSTR szAdd)
     rc = GetEnvironmentVariableW(wsName, NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
         return FALSE;
-    al = lstrlenW(szAdd) + 1;    
+    al = lstrlenW(szAdd) + 6;
     if (!(wsAdd = apxPoolAlloc(hPool, (al + rc + 1) * sizeof(WCHAR))))
         return FALSE;
-    lstrcpyW(wsAdd, szAdd);        
+    lstrcpyW(wsAdd, L"PATH=");        
+    lstrcatW(wsAdd, szAdd);        
     lstrcatW(wsAdd, L";");        
-    if (!GetEnvironmentVariableW(wsName, wsAdd + al, rc)) {
+    if (!GetEnvironmentVariableW(wsName, wsAdd + al, rc - al)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
         apxFree(wsAdd);
         return FALSE;
     }
-    SetEnvironmentVariableW(wsName, wsAdd);
+    SetEnvironmentVariableW(wsName, wsAdd + 5);
+    _wputenv(wsAdd);
     apxFree(wsAdd);
     return TRUE;
 }
