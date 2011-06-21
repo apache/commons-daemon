@@ -107,13 +107,13 @@ LPSTR __apxGetEnvironmentVariableA(APXHANDLE hPool, LPCSTR szName)
     return szRet;
 }
 
-BOOL apxAddEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName, LPCWSTR szAdd)
+BOOL apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd)
 {
     LPWSTR wsAdd;
     DWORD  rc;
     DWORD  al;
     
-    rc = GetEnvironmentVariableW(wsName, NULL, 0);
+    rc = GetEnvironmentVariableW(L"PATH", NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
         return FALSE;
     al = lstrlenW(szAdd) + 6;
@@ -122,12 +122,12 @@ BOOL apxAddEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName, LPCWSTR szAdd)
     lstrcpyW(wsAdd, L"PATH=");        
     lstrcatW(wsAdd, szAdd);        
     lstrcatW(wsAdd, L";");        
-    if (!GetEnvironmentVariableW(wsName, wsAdd + al, rc - al)) {
+    if (!GetEnvironmentVariableW(L"PATH", wsAdd + al, rc - al)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
         apxFree(wsAdd);
         return FALSE;
     }
-    SetEnvironmentVariableW(wsName, wsAdd + 5);
+    SetEnvironmentVariableW(L"PATH", wsAdd + 5);
     _wputenv(wsAdd);
     apxFree(wsAdd);
     return TRUE;

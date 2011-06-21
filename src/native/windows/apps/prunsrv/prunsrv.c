@@ -544,7 +544,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         dwType |= SERVICE_INTERACTIVE_PROCESS;
 
     /* Check if --Install is provided */
-    if (!SO_INSTALL) {
+    if (!IS_VALID_STRING(SO_INSTALL)) {
         lstrlcpyW(szImage, SIZ_HUGLEN, lpCmdline->szExePath);
         lstrlcatW(szImage, SIZ_HUGLEN, L"\\");
         lstrlcatW(szImage, SIZ_HUGLEN, lpCmdline->szExecutable);
@@ -833,7 +833,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         return TRUE;    /* Nothing to do */
     }
     if (_jni_shutdown) {
-        if (!SO_STARTPATH && SO_STOPPATH) {
+        if (!IS_VALID_STRING(SO_STARTPATH) && IS_VALID_STRING(SO_STOPPATH)) {
             /* If the Working path is specified change the current directory
              * but only if the start path wasn't specified already.
              */
@@ -878,11 +878,11 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         wait_to_die = TRUE;
     }
-    else if (SO_STOPMODE) { /* Only in case we have a stop mode */
+    else if (IS_VALID_STRING(SO_STOPMODE)) { /* Only in case we have a stop mode */
         DWORD nArgs;
         LPWSTR *pArgs;
 
-        if (!SO_STOPIMAGE) {
+        if (!IS_VALID_STRING(SO_STOPIMAGE)) {
             apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
             if (!_service_mode)
                 apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
@@ -1015,7 +1015,7 @@ static DWORD serviceStart()
         apxLogWrite(APXLOG_MARK_INFO "Worker is not defined");
         return TRUE;    /* Nothing to do */
     }
-    if (SO_PIDFILE) {
+    if (IS_VALID_STRING(SO_PIDFILE)) {
         gPidfileName = apxLogFile(gPool, SO_LOGPATH, SO_PIDFILE, NULL, FALSE);
         if (GetFileAttributesW(gPidfileName) !=  INVALID_FILE_ATTRIBUTES) {
             /* Pid file exists */
@@ -1029,13 +1029,13 @@ static DWORD serviceStart()
     }
     GetSystemTimeAsFileTime(&fts);
     if (_jni_startup) {
-        if (SO_STARTPATH) {
+        if (IS_VALID_STRING(SO_STARTPATH)) {
             /* If the Working path is specified change the current directory */
             SetCurrentDirectoryW(SO_STARTPATH);
         }
-        if (lstrlenW(SO_LIBPATH) > 0) {
+        if (IS_VALID_STRING(SO_LIBPATH)) {
             /* Add LibraryPath to the PATH */
-           apxAddEnvironmentVariableW(gPool, L"PATH", SO_LIBPATH);
+           apxAddToPathW(gPool, SO_LIBPATH);
         }
         /* Set the environment using putenv, so JVM can use it */
         setInprocEnvironment();
@@ -1067,16 +1067,16 @@ static DWORD serviceStart()
         apxLogWrite(APXLOG_MARK_DEBUG "Java started %s", _jni_rclass);
     }
     else {
-        if (!SO_STARTIMAGE) {
+        if (!IS_VALID_STRING(SO_STARTIMAGE)) {
             apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
             if (!_service_mode)
                 apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
                                 _service_name ? _service_name : L"unknown");
             return 1;
         }
-        if (lstrlenW(SO_LIBPATH) > 0) {
+        if (IS_VALID_STRING(SO_LIBPATH)) {
             /* Add LibraryPath to the PATH */
-           apxAddEnvironmentVariableW(gPool, L"PATH", SO_LIBPATH);
+           apxAddToPathW(gPool, SO_LIBPATH);
         }
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,
@@ -1258,7 +1258,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
     apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
 
-    if (_service_name) {
+    if (IS_VALID_STRING(_service_name)) {
         WCHAR en[SIZ_HUGLEN];
         int i;
         PSECURITY_ATTRIBUTES sa = GetNullACL();
@@ -1278,7 +1278,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         }
     }
     /* Check the StartMode */
-    if (SO_STARTMODE) {
+    if (IS_VALID_STRING(SO_STARTMODE)) {
         if (!lstrcmpiW(SO_STARTMODE, PRSRV_JVM)) {
             _jni_startup = TRUE;
             _jni_rclass  = WideToUTF8(SO_STARTCLASS);
@@ -1320,7 +1320,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         }
     }
     /* Check the StopMode */
-    if (SO_STOPMODE) {
+    if (IS_VALID_STRING(SO_STOPMODE)) {
         if (!lstrcmpiW(SO_STOPMODE, PRSRV_JVM)) {
             _jni_shutdown = TRUE;
             _jni_sclass = WideToUTF8(SO_STOPCLASS);
@@ -1362,15 +1362,15 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     }
     /* Find the classpath */
     if (_jni_shutdown || _jni_startup) {
-        if (SO_JVM) {
+        if (IS_VALID_STRING(SO_JVM)) {
             if (lstrcmpW(SO_JVM, PRSRV_AUTO))
                 _jni_jvmpath = SO_JVM;
         }
-        if (SO_CLASSPATH)
+        if (IS_VALID_STRING(SO_CLASSPATH))
             _jni_classpath = WideToUTF8(SO_CLASSPATH);
-        if (SO_STARTMETHOD)
+        if (IS_VALID_STRING(SO_STARTMETHOD))
             _jni_rmethod   = WideToAscii(SO_STARTMETHOD, (LPSTR)SO_STARTMETHOD);
-        if (SO_STOPMETHOD)
+        if (IS_VALID_STRING(SO_STOPMETHOD))
             _jni_smethod   = WideToAscii(SO_STOPMETHOD, (LPSTR)SO_STOPMETHOD);
         _jni_jvmoptions    = MzWideToUTF8(SO_JVMOPTIONS);
     }

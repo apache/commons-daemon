@@ -62,6 +62,7 @@ typedef _W64 int            intptr_t;
 #define TST_BIT_FLAG(x, b) ((x) & (1 << b))
 
 #define IS_INVALID_HANDLE(h) (((h) == NULL || (h) == INVALID_HANDLE_VALUE))
+#define IS_VALID_STRING(s)   ((s) != NULL && *(s) != 0)
 
 #define DYNOLAD_TYPE_DECLARE(fnName, callconv, retType)             \
     typedef retType (callconv *PFN_##fnName)                        \
@@ -187,7 +188,7 @@ LPSTR           apxExpandStrA(APXHANDLE hPool, LPCSTR szString);
 LPWSTR          apxExpandStrW(APXHANDLE hPool, LPCWSTR szString);
 void            apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith);
 void            apxStrCharReplaceW(LPWSTR szString, WCHAR chReplace, WCHAR chReplaceWith);
-BOOL            apxAddEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName, LPCWSTR szAdd);
+BOOL            apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd);
 
 
 LPVOID  AplFillMemory(PVOID Destination, SIZE_T Length, BYTE Fill);
