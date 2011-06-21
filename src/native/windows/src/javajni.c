@@ -872,7 +872,12 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
                            pArgs->bJniVfprintf)) {
         WORKER_EXIT(2);
     }
-
+    if (pArgs->szLibraryPath && *pArgs->szLibraryPath) {
+        DYNLOAD_FPTR_ADDRESS(SetDllDirectoryW, KERNEL32);
+        DYNLOAD_CALL(SetDllDirectoryW)(pArgs->szLibraryPath);
+        apxLogWrite(APXLOG_MARK_DEBUG "DLL search path set to '%S'",
+                    pArgs->szLibraryPath);
+    }
     if (!apxJavaLoadMainClass(pArgs->hJava,
                               pArgs->szClassName,
                               pArgs->szMethodName,

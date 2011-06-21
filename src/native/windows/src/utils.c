@@ -107,6 +107,29 @@ LPSTR __apxGetEnvironmentVariableA(APXHANDLE hPool, LPCSTR szName)
     return szRet;
 }
 
+BOOL apxAddEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName, LPCWSTR szAdd)
+{
+    LPWSTR wsAdd;
+    DWORD  rc;
+    DWORD  al;
+    
+    rc = GetEnvironmentVariableW(wsName, NULL, 0);
+    if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
+        return FALSE;
+    al = lstrlenW(szAdd) + 1;    
+    if (!(wsAdd = apxPoolAlloc(hPool, (al + rc + 1) * sizeof(WCHAR))))
+        return FALSE;
+    lstrcpyW(wsAdd, szAdd);        
+    lstrcatW(wsAdd, L";");        
+    if (!GetEnvironmentVariableW(wsName, wsAdd + al, rc)) {
+        apxLogWrite(APXLOG_MARK_SYSERR);
+        apxFree(wsAdd);
+        return FALSE;
+    }
+    SetEnvironmentVariableW(wsName, wsAdd);
+    apxFree(wsAdd);
+    return TRUE;
+}
 
 LPWSTR AsciiToWide(LPCSTR s, LPWSTR ws)
 {

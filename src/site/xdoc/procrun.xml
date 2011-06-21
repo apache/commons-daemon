@@ -254,6 +254,14 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>Password for user account set by --ServiceUser parameter</td>
     </tr>
     <tr>
+    <td>--LibraryPath</td>
+    <td></td>
+    <td>Directory added to the search path used to locate the DLLs for the JVM.
+        This directory is added both in front of the <b>PATH</b> environment variable
+        and as a parameter to the <b>SetDLLDirectory</b> function.
+    </td>
+    </tr>
+    <tr>
     <td>--JavaHome</td>
     <td>JAVA_HOME</td>
     <td>Set a different JAVA_HOME than defined by JAVA_HOME environment

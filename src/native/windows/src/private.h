@@ -265,5 +265,4 @@ DWORD   __apxGetMultiSzLengthW(LPCWSTR lpStr, LPDWORD lpdwCount);
 LPSTR   __apxGetEnvironmentVariableA(APXHANDLE hPool, LPCSTR szName);
 LPWSTR  __apxGetEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName);
 
-
 #endif /* _PRIVATE_H_INCLUDED_ */

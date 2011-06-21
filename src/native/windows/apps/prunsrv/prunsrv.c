@@ -99,37 +99,38 @@ static APXCMDLINEOPT _options[] = {
 /* 8  */    { L"Environment",       L"Environment",     NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
 /* 9  */    { L"User",              L"User",            NULL,           APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
 /* 10 */    { L"Password",          L"Password",        NULL,           APXCMDOPT_BIN | APXCMDOPT_REG, NULL, 0},
+/* 11 */    { L"LibraryPath",       L"LibraryPath",     NULL,           APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 
-/* 11 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 12 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 13 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 14 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 15 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 16 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 17 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 12 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 13 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 14 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 15 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 16 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 17 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 19 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 18 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 19 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 20 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 21 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 22 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 23 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 24 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 19 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 20 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 21 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 22 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 23 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 24 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 25 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 25 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 26 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 27 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 28 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 29 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 30 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 26 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 27 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 28 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 29 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 30 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 31 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
 
-/* 31 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 32 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 33 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 34 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 35 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 36 */    { L"LogJniMessages",    L"LogJniMessages",  L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 1},
-/* 37 */    { L"PidFile",           L"PidFile",         L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 32 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 33 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 34 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 35 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 36 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 37 */    { L"LogJniMessages",    L"LogJniMessages",  L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 1},
+/* 38 */    { L"PidFile",           L"PidFile",         L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
             /* NULL terminate the array */
             { NULL }
 };
@@ -159,38 +160,39 @@ static APXCMDLINEOPT _options[] = {
 
 #define SO_USER             GET_OPT_V(9)
 #define SO_PASSWORD         GET_OPT_V(10)
+#define SO_LIBPATH          GET_OPT_V(11)
 
-#define SO_JAVAHOME         GET_OPT_V(11)
-#define SO_JVM              GET_OPT_V(12)
-#define SO_JVMOPTIONS       GET_OPT_V(13)
-#define SO_CLASSPATH        GET_OPT_V(14)
-#define SO_JVMMS            GET_OPT_I(15)
-#define SO_JVMMX            GET_OPT_I(16)
-#define SO_JVMSS            GET_OPT_I(17)
+#define SO_JAVAHOME         GET_OPT_V(12)
+#define SO_JVM              GET_OPT_V(13)
+#define SO_JVMOPTIONS       GET_OPT_V(14)
+#define SO_CLASSPATH        GET_OPT_V(15)
+#define SO_JVMMS            GET_OPT_I(16)
+#define SO_JVMMX            GET_OPT_I(17)
+#define SO_JVMSS            GET_OPT_I(18)
 
-#define SO_STOPIMAGE        GET_OPT_V(18)
-#define SO_STOPPATH         GET_OPT_V(19)
-#define SO_STOPCLASS        GET_OPT_V(20)
-#define SO_STOPPARAMS       GET_OPT_V(21)
-#define SO_STOPMETHOD       GET_OPT_V(22)
-#define SO_STOPMODE         GET_OPT_V(23)
-#define SO_STOPTIMEOUT      GET_OPT_I(24)
+#define SO_STOPIMAGE        GET_OPT_V(19)
+#define SO_STOPPATH         GET_OPT_V(20)
+#define SO_STOPCLASS        GET_OPT_V(21)
+#define SO_STOPPARAMS       GET_OPT_V(22)
+#define SO_STOPMETHOD       GET_OPT_V(23)
+#define SO_STOPMODE         GET_OPT_V(24)
+#define SO_STOPTIMEOUT      GET_OPT_I(25)
 
-#define SO_STARTIMAGE       GET_OPT_V(25)
-#define SO_STARTPATH        GET_OPT_V(26)
-#define SO_STARTCLASS       GET_OPT_V(27)
-#define SO_STARTPARAMS      GET_OPT_V(28)
-#define SO_STARTMETHOD      GET_OPT_V(29)
-#define SO_STARTMODE        GET_OPT_V(30)
+#define SO_STARTIMAGE       GET_OPT_V(26)
+#define SO_STARTPATH        GET_OPT_V(27)
+#define SO_STARTCLASS       GET_OPT_V(28)
+#define SO_STARTPARAMS      GET_OPT_V(29)
+#define SO_STARTMETHOD      GET_OPT_V(30)
+#define SO_STARTMODE        GET_OPT_V(31)
 
-#define SO_LOGPATH          GET_OPT_V(31)
-#define SO_LOGPREFIX        GET_OPT_V(32)
-#define SO_LOGLEVEL         GET_OPT_V(33)
+#define SO_LOGPATH          GET_OPT_V(32)
+#define SO_LOGPREFIX        GET_OPT_V(33)
+#define SO_LOGLEVEL         GET_OPT_V(34)
 
-#define SO_STDERROR         GET_OPT_V(34)
-#define SO_STDOUTPUT        GET_OPT_V(35)
-#define SO_JNIVFPRINTF      GET_OPT_I(36)
-#define SO_PIDFILE          GET_OPT_V(37)
+#define SO_STDERROR         GET_OPT_V(35)
+#define SO_STDOUTPUT        GET_OPT_V(36)
+#define SO_JNIVFPRINTF      GET_OPT_I(37)
+#define SO_PIDFILE          GET_OPT_V(38)
 
 /* Main service table entry
  * filled at run-time
@@ -835,7 +837,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             /* If the Working path is specified change the current directory
              * but only if the start path wasn't specified already.
              */
-            SetCurrentDirectoryW(SO_STARTPATH);
+            SetCurrentDirectoryW(SO_STOPPATH);
         }
         hWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(hWorker)) {
@@ -854,6 +856,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         gSargs.lpArguments      = _jni_sparam;
         gSargs.szStdErrFilename = NULL;
         gSargs.szStdOutFilename = NULL;
+        gSargs.szLibraryPath    = SO_LIBPATH;
 
         if (lstrcmpA(_jni_sclass, "java/lang/System") == 0)
             _onexit(onExitHook);
@@ -1030,6 +1033,10 @@ static DWORD serviceStart()
             /* If the Working path is specified change the current directory */
             SetCurrentDirectoryW(SO_STARTPATH);
         }
+        if (lstrlenW(SO_LIBPATH) > 0) {
+            /* Add LibraryPath to the PATH */
+           apxAddEnvironmentVariableW(gPool, L"PATH", SO_LIBPATH);
+        }
         /* Set the environment using putenv, so JVM can use it */
         setInprocEnvironment();
         /* Create the JVM glbal worker */
@@ -1050,6 +1057,7 @@ static DWORD serviceStart()
         gRargs.lpArguments      = _jni_rparam;
         gRargs.szStdErrFilename = gStdwrap.szStdErrFilename;
         gRargs.szStdOutFilename = gStdwrap.szStdOutFilename;
+        gRargs.szLibraryPath    = SO_LIBPATH;
 
         if (!apxJavaStart(&gRargs)) {
             rv = 4;
@@ -1065,6 +1073,10 @@ static DWORD serviceStart()
                 apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
                                 _service_name ? _service_name : L"unknown");
             return 1;
+        }
+        if (lstrlenW(SO_LIBPATH) > 0) {
+            /* Add LibraryPath to the PATH */
+           apxAddEnvironmentVariableW(gPool, L"PATH", SO_LIBPATH);
         }
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,

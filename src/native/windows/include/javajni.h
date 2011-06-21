@@ -36,6 +36,7 @@ typedef struct stAPXJAVA_THREADARGS
     BOOL        setErrorOrOut;
     LPCWSTR     szStdErrFilename;
     LPCWSTR     szStdOutFilename;
+    LPCWSTR     szLibraryPath;
 } APXJAVA_THREADARGS, *LPAPXJAVA_THREADARGS;
 
 APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath);
