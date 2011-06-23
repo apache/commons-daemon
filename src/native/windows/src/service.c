@@ -88,7 +88,8 @@ apxCreateService(APXHANDLE hPool, DWORD dwOptions, BOOL bManagerMode)
     SC_HANDLE    hManager;
 
     if (!(hManager = OpenSCManager(NULL, NULL, dwOptions))) {
-        apxLogWrite(APXLOG_MARK_SYSERR);
+        if (GetLastError() != ERROR_ACCESS_DENIED)
+            apxLogWrite(APXLOG_MARK_SYSERR);
         return NULL;
     }
     hService = apxHandleCreate(hPool, 0,
@@ -134,7 +135,8 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
                                        dwOptions);
 
     if (IS_INVALID_HANDLE(lpService->hService)) {
-        apxLogWrite(APXLOG_MARK_SYSERR);
+        if (GetLastError() != ERROR_ACCESS_DENIED)
+            apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
     }
     lstrlcpyW(lpService->stServiceEntry.szServiceName, SIZ_RESLEN, szServiceName);
