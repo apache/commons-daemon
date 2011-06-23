@@ -135,8 +135,7 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
                                        dwOptions);
 
     if (IS_INVALID_HANDLE(lpService->hService)) {
-        if (GetLastError() != ERROR_ACCESS_DENIED)
-            apxLogWrite(APXLOG_MARK_SYSERR);
+        apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
     }
     lstrlcpyW(lpService->stServiceEntry.szServiceName, SIZ_RESLEN, szServiceName);

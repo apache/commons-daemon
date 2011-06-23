@@ -1642,8 +1642,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
         bEnableTry = TRUE;
     hService = apxCreateService(hPool, SC_MANAGER_CONNECT, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        if (GetLastError() == ERROR_ACCESS_DENIED)
-            quiet = TRUE;
         if (!quiet)
             apxDisplayError(TRUE, NULL, 0, "Unable to open the Service Manager");
         goto cleanup;
@@ -1658,8 +1656,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
                             SERVICE_ALL_ACCESS)) {
             if (!apxServiceOpen(hService, lpCmdline->szApplication,
                                 GENERIC_READ | GENERIC_EXECUTE)) {
-                if (GetLastError() == ERROR_ACCESS_DENIED)
-                    quiet = TRUE;
                 if (!quiet)
                     apxDisplayError(TRUE, NULL, 0, "Unable to open the service '%S'",
                                     lpCmdline->szApplication);
