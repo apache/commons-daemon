@@ -48,7 +48,7 @@ LPAPXCMDLINE apxCmdlineParse(
     LPWSTR p;
     WCHAR  cmd[4];
     DWORD  match;
-    BOOL   add;
+
     if (_st_sys_argc < 1)
         return NULL;
 
@@ -71,9 +71,10 @@ LPAPXCMDLINE apxCmdlineParse(
     }
     /* Find the path if it wasn't specified in the argv[0] */
     if (p == lpCmdline->szExePath) {
-        WCHAR  mh[4096];
+        WCHAR  mh[SIZ_HUGLEN];
         LPWSTR m;
-        if (GetModuleFileNameW(GetModuleHandle(NULL), mh, 4096)) {
+        if (GetModuleFileNameW(GetModuleHandle(NULL), mh, SIZ_HUGLEN)) {
+            GetLongPathNameW(mh, mh, SIZ_HUGLEN);
             lpCmdline->szExePath = apxPoolStrdupW(hPool, mh);
             m = lpCmdline->szExePath + lstrlenW(lpCmdline->szExePath);
             while (m > lpCmdline->szExePath) {
@@ -145,17 +146,13 @@ LPAPXCMDLINE apxCmdlineParse(
     }
     for (i = s; i < (DWORD)_st_sys_argc; i++) {
         LPWSTR e = NULL;
-        if (_st_sys_argvw[i][0] != L'-' ||
-            _st_sys_argvw[i][1] != L'-') {
-            if (_st_sys_argvw[i][0] != L'+' ||
-                _st_sys_argvw[i][1] != L'+')
-                break;
-            else
-                add = TRUE;
-        }
-        else
-            add = FALSE;
-        p = &(_st_sys_argvw[i][2]);
+        LPWSTR a = _st_sys_argvw[i];
+        BOOL add = FALSE;
+        if (a[0] == L'+' && a[1] == L'+')
+            add = TRUE;
+        else if (a[0] != L'-' || a[1] != L'-')
+            break;
+        p = a + 2;
         /* Find if the option has '=' char
          * for --option==value or --option value cases.
          */
@@ -170,7 +167,7 @@ LPAPXCMDLINE apxCmdlineParse(
         }
         match = 0;
         for (l = 0; lpOptions[l].szName; l++) {
-            if (lstrcmpW(lpOptions[l].szName, &(_st_sys_argvw[i][2])) == 0) {
+            if (lstrcmpW(lpOptions[l].szName, a + 2) == 0) {
                 LPWSTR val;
                 /* check if arg is needed */
                 if (e)
@@ -266,24 +263,27 @@ void apxCmdlineLoadEnvVars(
     while (lpCmdline->lpOptions[i].szName) {
         DWORD l;
         WCHAR szVar[SIZ_HUGLEN];
-        lstrlcpyW(szEnv, SIZ_HUGLEN, L"PR_");
-        lstrlcatW(szEnv, SIZ_HUGLEN, lpCmdline->lpOptions[i].szName);
+        lstrlcpyW(szEnv, 64, L"PR_");
+        lstrlcatW(szEnv, 64, lpCmdline->lpOptions[i].szName);
         l = GetEnvironmentVariableW(szEnv, szVar, SIZ_HUGMAX);
-        if (l == 0 && GetLastError() !=  ERROR_ENVVAR_NOT_FOUND) {
-            apxLogWrite(APXLOG_MARK_ERROR "Error geting environment variable %S",
-                        szEnv);
+        if (l == 0 || l >= SIZ_HUGMAX) {
+            if (l == 0 && GetLastError() != ERROR_ENVVAR_NOT_FOUND) {
+                apxLogWrite(APXLOG_MARK_ERROR "Error geting environment variable %S",
+                            szEnv);
+                return;
+            }
             ++i;
             continue;
         }
-        if (l && (lpCmdline->lpOptions[i].dwType & APXCMDOPT_STR)) {
+        if (lpCmdline->lpOptions[i].dwType & APXCMDOPT_STR) {
             lpCmdline->lpOptions[i].szValue = apxPoolStrdupW(lpCmdline->hPool, szVar);
             lpCmdline->lpOptions[i].dwType |= APXCMDOPT_FOUND;
         }
-        else if (l && (lpCmdline->lpOptions[i].dwType & APXCMDOPT_INT)) {
+        else if (lpCmdline->lpOptions[i].dwType & APXCMDOPT_INT) {
             lpCmdline->lpOptions[i].dwValue = (DWORD)apxAtoulW(szVar);
             lpCmdline->lpOptions[i].dwType |= APXCMDOPT_FOUND;
         }
-        else if (l && (lpCmdline->lpOptions[i].dwType & APXCMDOPT_MSZ)) {
+        else if (lpCmdline->lpOptions[i].dwType & APXCMDOPT_MSZ) {
             LPWSTR pp;
             BOOL insquote = FALSE, indquote = FALSE;
             DWORD sp = 0;
