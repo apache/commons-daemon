@@ -1,0 +1,173 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+!IF "$(OS)" == "Windows_NT"
+NULL=
+!ELSE 
+NULL=nul
+!ENDIF 
+
+OUTDIR=.\Release_x86
+INTDIR=.\Release_x86
+# Begin Custom Macros
+OutDir=.\Release_x86
+# End Custom Macros
+
+ALL : "$(OUTDIR)\libprocrun.lib"
+
+
+CLEAN :
+	-@erase "$(INTDIR)\cmdline.obj"
+	-@erase "$(INTDIR)\console.obj"
+	-@erase "$(INTDIR)\gui.obj"
+	-@erase "$(INTDIR)\handles.obj"
+	-@erase "$(INTDIR)\javajni.obj"
+	-@erase "$(INTDIR)\log.obj"
+	-@erase "$(INTDIR)\mclib.obj"
+	-@erase "$(INTDIR)\registry.obj"
+	-@erase "$(INTDIR)\rprocess.obj"
+	-@erase "$(INTDIR)\service.obj"
+	-@erase "$(INTDIR)\utils.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(OUTDIR)\libprocrun.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I ".\include" /I "$(JAVA_HOME)\include" /I "$(JAVA_HOME)\include\win32" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_UNICODE" /D "UNICODE" /Fp"$(INTDIR)\libprocrun.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\libprocrun.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\libprocrun.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\cmdline.obj" \
+	"$(INTDIR)\console.obj" \
+	"$(INTDIR)\gui.obj" \
+	"$(INTDIR)\handles.obj" \
+	"$(INTDIR)\javajni.obj" \
+	"$(INTDIR)\log.obj" \
+	"$(INTDIR)\mclib.obj" \
+	"$(INTDIR)\registry.obj" \
+	"$(INTDIR)\rprocess.obj" \
+	"$(INTDIR)\service.obj" \
+	"$(INTDIR)\utils.obj"
+
+"$(OUTDIR)\libprocrun.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+
+SOURCE=.\src\cmdline.c
+
+"$(INTDIR)\cmdline.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\console.c
+
+"$(INTDIR)\console.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\gui.c
+
+"$(INTDIR)\gui.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\handles.c
+
+"$(INTDIR)\handles.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\javajni.c
+
+"$(INTDIR)\javajni.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\log.c
+
+"$(INTDIR)\log.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\mclib.c
+
+"$(INTDIR)\mclib.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\registry.c
+
+"$(INTDIR)\registry.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\rprocess.c
+
+"$(INTDIR)\rprocess.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\service.c
+
+"$(INTDIR)\service.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\src\utils.c
+
+"$(INTDIR)\utils.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+

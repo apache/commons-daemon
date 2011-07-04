@@ -1,0 +1,68 @@
+(Please have a look to procrun (subdirectory), procrun is
+probably what you have to use).
+
+Note: MAKE SURE you first build the java part (using ant) otherwise the dist
+directory is not created).
+
+To build the service utilities for windows you will need:
+- MS Visual C++ (I have used version 5.0).
+- CYGWIN to build the jsvc.exe.
+- A Java Platform 2 compliant SDK to run the service.
+
+Structure of the utilies:
+- bin: exe files.
+- executables/vdmoniadm: project files for the desktop program.
+- executables/vdmonisvc: project files for the sevice wrapper.
+- lib: contains the common include file.
+- moni: contains sources of the vdmoniadm and vdmonisvc.
+- service: contains the sources and the project for the test installer.
+- signals: contains the kill() emulation logic.
+- supcalls_nt: contains the environment emulation logic.
+
+How to use it:
+1 - Build the jsvc.exe (See jakarta-tomcat-4.0/service).
+  It produces:
+  - service.jar
+  - jsvc.exe
+
+2- Create the following directories:
+  c:\home\jakarta\bin
+  c:\home\jakarta\lib
+
+3 - Copy
+  From jakarta-tomcat-4.0/service:
+  service.jar to lib
+  jsvc.exe to bin
+  From winnt:
+  INSTSVC.exe to bin
+  vdmoniadm.exe to bin
+  vdmonisvc to bin.
+
+4 - In a MSDOS windows run INSTSVC
+  It creates all informations to start the service.
+    The service is not started automaticly use control_panel+service and
+    and make it automatic after testing it starts and stops correctly.
+
+  It creates the registry values needed for the environment to start jsvc.exe
+    JAKARTA_HOME
+    CYGWIN (You have to set it to your cygwin directory home).
+    JAVA_HOME (You have to set it to your JAVA_HOME directory).
+    HOSTNAME (not yet used)
+    HOSTPORT (not yet used)
+  I use regedit to modify these values.
+
+5 - Using the explorer go to profiles/allusers/program/startup and add a link
+  to vdmoniadm.exe.
+
+6 - Reboot the machine and logon.
+  You should see a "nice" icon in the System Task-bar indicating that the 
+  Java service is running. A right click on the icon calls a small menu.
+  Restart: (not yet implemented).
+  Configure: (not yet implemented).
+  Stop: Stops the java service.
+
+It is still a work in progress and blabla...
+
+Have fun...
+
+ Jean-Frederic <jfrederic.clere AT fujitsu-siemens.com>

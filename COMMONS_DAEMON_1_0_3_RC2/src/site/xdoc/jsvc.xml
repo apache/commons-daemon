@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Daemon : Java Service</title>
+  <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
+ </properties>
+
+<body>
+<section name="Introduction">
+<p>
+      Jsvc is a set of libraries and applications for making Java
+      applications run on UNIX more easily. It can run on win32 via
+      the cygwin emulation layer (see 
+      <a href="http://www.cygwin.com/"> cygwin</a> for more information),
+      however win32 users may prefer to use <a href="procrun.html"> procrun</a>
+      instead.
+</p>
+<p>
+      The sources are located in the src/native/unix subdirectory.
+</p>
+<p>
+      In the future <a href="http://apr.apache.org/"> APR </a> may be used
+      to provide more portable platform support.
+</p>
+</section>
+
+<section name="Building from source">
+<p>
+To build under a UNIX operating system you will need:
+<ul>
+  <li>GNU AutoConf (at least version 2.53)</li>
+  <li>An ANSI-C compliant compiler (GCC is good)</li>
+  <li>GNU Make</li>
+  <li>A Java Platform 2 compliant SDK</li>
+</ul>
+
+
+You need to build the "configure" program with:
+
+<source>
+sh support/buildconf.sh
+</source>
+
+(Note it is possible to replace sh by any compatible shell like bash, ksh).
+
+The result should be something like:
+<source>
+support/buildconf.sh
+support/buildconf.sh: configure script generated successfully
+</source>
+Once the configure script is generated, follow the next section.
+</p>
+</section>
+
+<section name="Building from a release tarball">
+<p>
+To build the binary under a UNIX operating system you will need:
+<ul>
+  <li>An ANSI-C compliant compiler (GCC is good)</li>
+  <li>GNU Make</li>
+  <li>A Java Platform 2 compliant SDK</li>
+</ul>
+
+You have to specify the <code>JAVA_HOME</code> of the SDK
+either with the <code>--with-java=&lt;dir&gt;</code> parameter or set the <code>JAVA_HOME</code> environment
+to point to your SDK installation. For example:
+<source>
+./configure --with-java=/usr/java
+</source>
+or
+<source>
+export JAVA_HOME
+./configure
+</source>
+
+If your operating system is supported, configure will go through cleanly,
+otherwise it will report an error (please send us the details of your
+OS/JDK, or a patch against the sources). To build the binaries and
+libraries simply do:
+<source>
+make
+</source>
+This will generate the executable file <code>jsvc</code>.
+</p>
+</section>
+
+<section name="Starting jsvc">
+<p>
+To check the allowed parameters for the jsvc binary simply do:
+<source>
+./jsvc -help
+Usage: jsvc [-options] class [args...]
+
+Where options include:
+
+    -help | --help | -?
+        show this help page (implies -nodetach)
+    -jvm &lt;JVM name&gt;
+        use a specific Java Virtual Machine. Available JVMs:
+            'client' 'server'
+    -cp / -classpath &lt;directories and zip/jar files&gt;
+        set search path for service classes and resouces
+    -home &lt;directory&gt;
+        set the path of your JDK or JRE installation (or set
+        the JAVA_HOME environment variable)
+    -version
+        show the current Java environment version (to check
+        correctness of -home and -jvm. Implies -nodetach)
+    -showversion
+        show the current Java environment version (to check
+        correctness of -home and -jvm) and continue execution.
+    -nodetach
+        don't detach from parent process and become a daemon
+    -debug
+        verbosely print debugging information
+    -check
+        only check service (implies -nodetach)
+    -user &lt;user&gt;
+        user used to run the daemon (defaults to current user)
+    -verbose[:class|gc|jni]
+        enable verbose output
+    -outfile &lt;/full/path/to/file&gt;
+        Location for output from stdout (defaults to /dev/null)
+        Use the value '&amp;2' to simulate '1&gt;&amp;2'
+    -errfile &lt;/full/path/to/file&gt;
+        Location for output from stderr (defaults to /dev/null)
+        Use the value '&amp;1' to simulate '2&gt;&amp;1'
+    -pidfile &lt;/full/path/to/file&gt;
+        Location for output from the file containing the pid of jsvc
+        (defaults to /var/run/jsvc.pid)
+    -D&lt;name&gt;=&lt;value&gt;
+        set a Java system property
+    -X&lt;option&gt;
+        set Virtual Machine specific option
+    -ea[:&lt;packagename&gt;...|:&lt;classname&gt;]
+    -enableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+        enable assertions
+    -da[:&lt;packagename&gt;...|:&lt;classname&gt;]
+    -disableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+        disable assertions
+    -esa | -enablesystemassertions
+        enable system assertions
+    -dsa | -disablesystemassertions
+        disable system assertions
+    -agentlib:&lt;libname&gt;[=&lt;options&gt;]
+        load native agent library &lt;libname&gt;, e.g. -agentlib:hprof
+    -agentpath:&lt;pathname&gt;[=&lt;options&gt;]
+        load native agent library by full pathname
+    -javaagent:&lt;jarpath&gt;[=&lt;options&gt;]
+        load Java programming language agent, see java.lang.instrument
+    -procname &lt;procname&gt;
+        use the specified process name (works only for Linux)
+    -wait &lt;waittime&gt;
+        wait waittime seconds for the service to start
+        waittime should multiple of 10 (min=10)
+    -stop
+        stop the service using the file given in the -pidfile option
+    -keepstdin
+        does not redirect stdin to /dev/null
+
+</source>
+</p>
+
+</section>
+<section name="Using jsvc">
+<p>
+There two ways to use jsvc: via a Class that implements the Daemon interface or
+via calling a Class that has the required methods.
+For example Tomcat-4.1.x uses the Daemon interface
+whereas Tomcat-5.0.x provides a Class whose methods are called by jsvc directly.
+</p>
+<subsection name="Via Daemon interface">
+<p>
+Do the following:
+<ul>
+  <li>Write a Class that implements the Daemon interface (MyClass).</li>
+  <li>Put it in a jarfile (my.jar).</li>
+  <li>Call jsvc like:
+  <source>
+./jsvc -cp commons-daemon.jar:my.jar MyClass
+  </source>
+  </li>
+</ul>
+</p>
+</subsection>
+<subsection name="Directly">
+<p>
+Write a Class (MyClass) that implements the following methods:
+<ul>
+  <li>void init(String[] arguments): Here open configuration files, create a trace file, create
+      ServerSockets, Threads</li>
+  <li>void start(): Start the Thread, accept incoming connections</li>
+  <li>void stop(): Inform the Thread to terminate the run(), close the ServerSockets</li>
+  <li><code>void destroy()</code>: Destroy any object created in init()</li>
+</ul>
+Store it in a jarfile and use as above:
+<source>
+./jsvc -cp commons-daemon.jar:my.jar MyClass
+</source>
+</p>
+</subsection>
+</section>
+<section name="How jsvc works">
+<p>
+Jsvc uses 3 processes: a launcher process, a controller process and a controlled process.
+The controlled process is also the main java thread, if the JVM crashes
+the controller will restart it in the next minute.
+Jsvc is a daemon process so it should be started as root and the <code>-user</code> parameter
+allows to downgrade to an unprivilegded user.
+When the <code>-wait</code> parameter is used, the launcher process waits until the controller says
+"I am ready", otherwise it returns after creating the controller process.
+</p>
+
+<subsection name="Forks in commons-daemon">
+<p>
+Launcher process:
+<source>
+main()
+{
+  fork()
+  parent: wait_child(), wait until JAVA service started when the child says "I am ready".
+  child: controller process.
+}
+</source>
+
+Controller process:
+<source>
+  while (fork()) {
+    parent: wait_for_child.
+      if exited and restart needed continue
+      else exit.
+    child: exit(child()). controlled process.
+  }
+</source>
+
+Controlled process:
+<source>
+In child(): controlled process.
+  init_JVM().
+  load_service().
+  start_service().
+  say "I am ready"
+  wait for signal or pool for stop
+  stop_service().
+  destroy_service().
+  destroy_JVM().
+  exit (with different codes so that parent knows if it has to restart us).
+</source>
+Note: The controller process uses signals to stop the controlled process.
+</p>
+</subsection>
+
+<subsection name="Downgrading user">
+<p>
+On linux <code>setuid()</code>/<code>setgid()</code> + capabilities are used. On other unix <code>setgid</code>/<code>initgroups</code> are used.
+
+We have something like:
+<source>
+/* as root */
+init_JVM().
+load_service. /*  java_load() calls the load method */
+downgrade user (set_caps() or set_user_group())
+/* as the user $USER (from -user $USER parameter) */
+umask()
+start_service. /* java_start() calls the start method */
+</source>
+</p>
+</subsection>
+</section>
+
+</body>
+</document>

@@ -1,0 +1,50 @@
+$Id$
+
+			Commons Daemon Package
+			   Version 1.0.3
+			    Release Notes
+
+
+INTRODUCTION:
+
+This document contains the release notes for this version of the Commons
+Daemon package, and highlights changes since the previous version.  The
+current release adds new features and bug fixes, and is being done now to
+follow the release early/release often mentality.
+
+
+NEW FEATURES:
+
+* DAEMON-138: Add --PidFile option to allow storing running process id. (1.0.3)
+* DAEMON-137: Add --LogJniMessages allowing to configure JNI verbose message
+              logging. By default those messages were always logged. (1.0.3)
+* DAEMON-140: Add missing Java6 parameters -ea, da, -esa, -dsa, -showversion
+              and their long name synonyms. (1.0.3)
+* DAEMON-142: Add option to display procrun version.
+
+* Add -wait and -stop parameters. (1.0.1).
+  The -wait parameter is experimental: that a is loop testing for a
+  file in /tmp and waiting n/10 seconds.
+
+* Allow to run as normal user for testing. (1.0.1).
+
+* Initial import to Commons, including the daemon Java API, and jsvc 
+  for Unix and Windows NT/2K/XP, which allows running a Java program 
+  as a native operating system daemon
+
+* Switch to JIRA bug tracking sytem.
+
+BUG FIXES:
+
+1.0.3: DAEMON-108, DAEMON-128, DAEMON-139, DAEMON-143
+
+1.0.2: DAEMON-16, DAEMON-31, DAEMON-40, DAEMON-45, DAEMON-49, DAEMON-60,
+       DAEMON-84, DAEMON-90, DAEMON-91, DAEMON-92, DAEMON-93, DAEMON-94,
+       DAEMON-96, DAEMON-97, DAEMON-98, DAEMON-102, DAEMON-105, DAEMON-106,
+       DAEMON-110, DAEMON-112, DAEMON-113, DAEMON-114, DAEMON-115, DAEMON-116,
+       DAEMON-117, DAEMON-118, DAEMON-119, DAEMON-120, DAEMON-121, DAEMON-123, 
+       DAEMON-124, DAEMON-125, DAEMON-126, DAEMON-129, DAEMON-130, DAEMON-132,
+       DAEMON-133
+
+1.0.1: 304310,  30177, 27523, 29465, 31614, 33580, 31613, 34851.
+

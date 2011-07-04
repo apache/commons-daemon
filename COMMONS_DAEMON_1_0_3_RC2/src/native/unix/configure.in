@@ -1,0 +1,115 @@
+dnl
+dnl Licensed to the Apache Software Foundation (ASF) under one or more
+dnl contributor license agreements.  See the NOTICE file distributed with
+dnl this work for additional information regarding copyright ownership.
+dnl The ASF licenses this file to You under the Apache License, Version 2.0
+dnl (the "License"); you may not use this file except in compliance with
+dnl the License.  You may obtain a copy of the License at
+dnl
+dnl     http://www.apache.org/licenses/LICENSE-2.0
+dnl
+dnl Unless required by applicable law or agreed to in writing, software
+dnl distributed under the License is distributed on an "AS IS" BASIS,
+dnl WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+dnl See the License for the specific language governing permissions and
+dnl limitations under the License.
+dnl
+
+dnl -------------------------------------------------------------------------
+dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
+dnl Version $Id$
+dnl -------------------------------------------------------------------------
+
+dnl -------------------------------------------------------------------------
+dnl Initialize AutoConf
+dnl -------------------------------------------------------------------------
+
+AC_PREREQ(2.53)
+
+sinclude(./support/apfunctions.m4)dnl
+sinclude(./support/apjava.m4)dnl
+sinclude(./support/apsupport.m4)dnl
+AC_INIT(configure.in)
+AC_CONFIG_AUX_DIR(./support)
+
+dnl -------------------------------------------------------------------------
+dnl Check current host (forget about cross compilation) and validate it
+dnl against the cache (fail if the cache differs)
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([Current host])
+AC_CANONICAL_HOST()
+AP_CANONICAL_HOST_CHECK()
+
+dnl -------------------------------------------------------------------------
+dnl Check C environment
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([C-Language compilation tools])
+AC_PROG_CC()
+AC_CHECK_TOOL(RANLIB, ranlib, :)
+
+dnl -------------------------------------------------------------------------
+dnl Check if this host is supported
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([Host support])
+AP_SUPPORTED_HOST()
+if test "$supported_os" = "darwin"
+then
+  if test -z "$JAVA_HOME" -a -d /System/Library/Frameworks/JavaVM.framework/Home; then
+  	JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+  fi
+
+  _prevdir=`/bin/pwd`
+  if test -n "$JAVA_HOME" -a -d "$JAVA_HOME/include"; then
+    cd "$JAVA_HOME/include"
+  elif test -n "$JAVA_HOME" -a -d "$JAVA_HOME/../Headers"; then
+    cd "$JAVA_HOME/../Headers"
+  else
+    cd /System/Library/Frameworks/JavaVM.framework/Headers
+  fi
+  CFLAGS="$CFLAGS -I`/bin/pwd -P`"
+  cd $_prevdir
+  unset _prevdir
+fi
+
+dnl -------------------------------------------------------------------------
+dnl Check JAVA environment
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([Java compilation tools])
+AP_JAVA()
+AP_SABLEVM()
+AP_KAFFE()
+AP_PROG_JAVAC()
+AP_PROG_JAR()
+if test "$supported_os" != "darwin"
+then
+  CFLAGS="$CFLAGS -I$JAVA_HOME/include -I$JAVA_HOME/include/$supported_os"
+fi
+
+dnl -------------------------------------------------------------------------
+dnl Add gcc specific CFLAGS.
+dnl -------------------------------------------------------------------------
+if test "$GCC" = "yes"
+then
+   CFLAGS="$CFLAGS -Wall -Wstrict-prototypes"
+   AC_MSG_RESULT([gcc flags added])
+fi
+dnl -------------------------------------------------------------------------
+dnl Add gcc specific CFLAGS.
+dnl -------------------------------------------------------------------------
+if test -z "$LDCMD"
+then
+   LDCMD="$CC"
+fi
+AC_SUBST(LDCMD)
+
+dnl -------------------------------------------------------------------------
+dnl Random programs we need to compile locally
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([Writing output files])
+AC_OUTPUT(Makefile Makedefs native/Makefile)
+
+dnl -------------------------------------------------------------------------
+dnl Done
+dnl -------------------------------------------------------------------------
+AP_MSG_HEADER([All done])
+AC_MSG_RESULT([Now you can issue "make"])

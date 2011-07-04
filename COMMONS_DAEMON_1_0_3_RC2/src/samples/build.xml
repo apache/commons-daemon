@@ -1,0 +1,92 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<project name="daemons samples" default="jars" basedir=".">
+
+<!-- ========== Initialize Properties ===================================== -->
+  <property file="build.properties"/>
+  <property name="commons-daemon.jar"   value="../../dist/commons-daemon.jar"/>
+  <property name="dist.home"   value="../../dist"/>
+  <property name="build.home"  value="./build"/>
+  <property name="source.home" value="."/>
+  <property name="commons-collections.jar" value="${user.home}/java/commons-collections-3.1/commons-collections-3.1.jar"/>
+
+  <target name="jars" depends="SimpleDaemon,ServiceDaemon,AloneService"/>
+
+  <target name="SimpleDaemon" depends="compile"
+   description="Create SimpleDaemon.jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../../LICENSE"
+               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <jar    jarfile="${dist.home}/SimpleDaemon.jar">
+      <fileset dir="${build.home}/classes">
+        <include name="SimpleDaemon*.class" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="ServiceDaemon" depends="compile"
+   description="Create ServiceDaemon.jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../../LICENSE"
+               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <jar    jarfile="${dist.home}/service.jar">
+      <fileset dir="${build.home}/classes">
+        <include name="ServiceDaemon*.class" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="AloneService" depends="compile"
+   description="Create aloneservice.jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../../LICENSE"
+               tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <jar    jarfile="${dist.home}/aloneservice.jar">
+      <fileset dir="${build.home}/classes">
+        <include name="AloneService*.class" />
+        <include name="ServiceDaemonReadThread*.class" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="compile" depends="prepare"
+   description="Create class files">
+       <javac  srcdir="${source.home}"
+           destdir="${build.home}/classes"
+             debug="${compile.debug}"
+       deprecation="${compile.deprecation}"
+          optimize="${compile.optimize}">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="${build.home}"/>
+    <mkdir dir="${build.home}/classes"/>
+  </target>
+
+  <!-- Construct compile classpath -->
+  <path id="compile.classpath">
+    <pathelement location="${commons-daemon.jar}"/>
+    <pathelement location="${commons-collections.jar}"/>
+  </path>
+
+</project>

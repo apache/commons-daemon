@@ -1,0 +1,156 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+<title>Proposal for Daemon Package</title>
+</head>
+<body bgcolor="white">
+
+<div align="center">
+<h1>Proposal for <em>Daemon</em> Package</h1>
+</div>
+
+<h3>(0) Rationale</h3>
+
+    <P>
+      Since 1994, the Java&trade; programming language evolved and became a
+      valid tool to develop, other than applets and client applications,
+      reliable and performant server applications. The major disadvantage of
+      the Java&trade; platform is that still today the only portable way to
+      start a Java&trade; applcation relies on a single point of entry: the
+      <CODE><EM CLASS="key">public static void</EM> main(<EM CLASS="ref">String</EM>[])</CODE>
+      method.
+    </P>
+    <P>
+      Having a single-point of entry is a valid solution for client
+      applications, where interactively a user can command to the application
+      to quit (which can terminate the Virtual Machine process at calling the
+      <CODE><EM CLASS="ref">System</EM>.exit(<EM CLASS="key">int</EM>)</CODE>
+      method), but in those cases where the application is not interactive
+      (server applications) there is currently no portable way to notify
+      the Virtual Machine of its imminent shutdown.
+    </P>
+    <P>
+      A server application written in Java might have to perform several tasks
+      before being able to shutdown the Virtual Machine process. For example
+      in the case of a Servlet container, before the VM process is shut down,
+      sessions might need to be serialized to disk, and web applications need
+      to be destroyed.
+    </P>
+    <P>
+      One common solution to this problem is to create (for example) a
+      <CODE><EM CLASS="ref">ServerSocket</EM></CODE> and wait for a particular
+      message to be issued. When the message is received, all operations
+      required to shut down the server applications are performed and at the
+      end the <CODE><EM CLASS="ref">System</EM>.exit</CODE> method is called
+      to terminate the Virtual Machine process. This method, however, implies
+      several disadvantages and risks: for example in case of a system-wide
+      shutdown, it might happen that the Virtual Machine process will be shut
+      down directly by the operating system, without notifying the running
+      server application. Or, for example, if an attacker finds out what is
+      the required message to send to the server, and discovers a way to send
+      this message to the running server application, he can easily interrupt
+      the operation of a server, bypassing all the security restrictions
+      implemented in the operating system.
+    </P>
+    <P>
+      Most multi-user operating systems already have a way in which server
+      applications are started and stopped, under Unix based operating systems
+      non interactive server applications are called <em>daemons</em> and are
+      controlled by the operating system with a set of specified
+      <em>signals</em>. Under Windows such programs are called <em>services</em>
+      and are controlled by appropriate calls to specific functions defined in
+      the application binary, but although the ways of dealing with the problem
+      are different, in both cases the operating system can notify a server
+      application of its imminent shutdown, and the application has the
+      ability to perform certain tasks before its process of execution is
+      destroyed.
+    </P>
+
+<h3>(1) Scope of the Package</h3>
+
+    <P>
+      The scope of this specification is to define an API in line with the
+      current Java&trade; Platform APIs to support an alternative invocation
+      mechanism which could be used instead of the above mentioned
+      <CODE><EM CLASS="key">public static void</EM> main(<EM CLASS="ref">String</EM>[])</CODE>
+      method. This specification cover the behavior and life cycle of what
+      we define as &quot;Java &trade; daemons&quot;, or, in other words,
+      non interactive Java&trade; applications.
+    </P>
+    <P>
+      This specification does not cover how the container of a Java&trade;
+      daemon must be implemented, or how to build a native liaison between
+      the operating system and the <CODE><EM CLASS="ref">Daemon</EM></CODE>
+      interface, but defines the relation between the an operating system
+      process and the <CODE><EM CLASS="ref">Daemon</EM></CODE> implementation
+      life cycle. It should be trivial for implementors to build a native
+      liaison and container for Java&trade; daemons.
+    </P>
+    <P>
+      This specification, together with the related API documentation, can be
+      used by software deveopers to build portable non interactive applications
+      based on the Java&trade; platform.
+    </P>
+
+<h3>(1.5) Interaction With Other Packages</h3>
+
+<p><em>Daemon</em> relies only on standard JDK 1.2 (or later) APIs for
+production deployment.  It utilizes the JUnit unit testing framework for
+developing and executing unit tests, but this is of interest only to
+developers of the component.  Daemon will be a dependency for
+several existing components in the open source world.</p>
+
+<p>No external configuration files are utilized.</p>
+
+
+<h3>(2) Initial Source of the Package</h3>
+
+<p>The original Java classes come from the Jakarta Tomcat 4.0 project.</p>
+
+<p>The proposed package name for the new component is
+<code>org.apache.commons.daemon</code>.</p>
+
+
+<h3>(3)  Required Jakarta-Commons Resources</h3>
+
+<ul>
+<li>CVS Repository - New directory <code>daemon</code> in the
+    <code>jakarta-commons</code> CVS repository.</li>
+<li>Mailing List - Discussions will take place on the general
+    <em>dev@commons.apache.org</em> mailing list.  To help
+    list subscribers identify messages of interest, it is suggested that
+    the message subject of messages about this component be prefixed with
+    [Daemon].</li>
+<li>Bugzilla - New component "Daemon" under the "Commons" product
+    category, with appropriate version identifiers as needed.</li>
+<li>Jyve FAQ - New category "commons-daemon" (when available).</li>
+</ul>
+
+
+<h3>(4) Initial Committers</h3>
+
+<p>The initial committers on the Daemon component shall be:</p>
+<ul>
+<li>Jean-Frederic Clere</li>
+<li>Pier Fumagalli</li>
+<li>Remy Maucherat</li>
+
+
+
+</body>
+</html>
