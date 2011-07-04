@@ -36,6 +36,16 @@
     <release>
       <Version>
         <name>commons-daemon</name>
+        <created>2011-01-07</created>
+        <revision>1.0.5</revision>
+      </Version>
+      <Version>
+        <name>commons-daemon</name>
+        <created>2010-10-26</created>
+        <revision>1.0.4</revision>
+      </Version>
+      <Version>
+        <name>commons-daemon</name>
         <created>2010-08-03</created>
         <revision>1.0.3</revision>
       </Version>
