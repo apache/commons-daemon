@@ -180,14 +180,12 @@ static cap_value_t caps_std[] = {
     CAP_NET_BIND_SERVICE,
     CAP_SETUID,
     CAP_SETGID,
-    CAP_DAC_READ_SEARCH,
-    CAP_DAC_OVERRIDE
+    CAP_DAC_READ_SEARCH
 };
 
 static cap_value_t caps_min[] = {
     CAP_NET_BIND_SERVICE,
-    CAP_DAC_READ_SEARCH,
-    CAP_DAC_OVERRIDE
+    CAP_DAC_READ_SEARCH
 };
 
 #define CAPS     1
@@ -197,31 +195,42 @@ static int set_caps(int cap_type)
 {
     cap_t c;
     int ncap;
+    int flag = CAP_SET;
     cap_value_t *caps;
+    const char  *type;
 
     if (cap_type == CAPS) {
         ncap = sizeof(caps_std)/sizeof(cap_value_t);
         caps = caps_std;
+        type = "default";
+    }
+    else if (cap_type == CAPSMIN) {
+        ncap = sizeof(caps_min)/sizeof(cap_value_t);
+        caps = caps_min;
+        type = "min";
     }
     else {
         ncap = sizeof(caps_min)/sizeof(cap_value_t);
         caps = caps_min;
+        type = "null";
+        flag = CAP_CLEAR;
     }
     c = cap_init();
     cap_clear(c);
-    cap_set_flag(c, CAP_EFFECTIVE,   ncap, caps, CAP_SET);
-    cap_set_flag(c, CAP_INHERITABLE, ncap, caps, CAP_SET);
-    cap_set_flag(c, CAP_PERMITTED,   ncap, caps, CAP_SET);
+    cap_set_flag(c, CAP_EFFECTIVE,   ncap, caps, flag);
+    cap_set_flag(c, CAP_INHERITABLE, ncap, caps, flag);
+    cap_set_flag(c, CAP_PERMITTED,   ncap, caps, flag);
     if (cap_set_proc(c) != 0) {
-        log_error("failed setting %s capabilities.",
-                  cap_type == CAPS ? "default" : "min");
+        log_error("failed setting %s capabilities.", type);
         return -1;
     }
     cap_free(c);
     if (cap_type == CAPS)
         log_debug("increased capability set.");
-    else
+    else if (cap_type == CAPSMIN)
         log_debug("decreased capability set to min required.");
+    else
+        log_debug("dropped capabilities.");
     return 0;
 }
 
