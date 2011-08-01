@@ -83,10 +83,11 @@ public final class DaemonConfiguration
     public boolean load(String fileName)
     {
         boolean ok = false;
+        FileInputStream file = null;
         try {
             if (fileName == null)
                 fileName = DEFAULT_CONFIG;
-            FileInputStream file = new FileInputStream(fileName);
+            file = new FileInputStream(fileName);
             configurationProperties.clear();
             configurationProperties.load(file);
             ok = true;
@@ -96,6 +97,12 @@ public final class DaemonConfiguration
         }
         catch (IOException ex) {
             // Error reading properties file
+        } finally {
+            try {
+                if (file != null)
+                    file.close();
+            } catch (IOException ex) {
+            }
         }
         return ok;
     }
