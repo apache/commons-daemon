@@ -1,7 +1,7 @@
 $Id$
 
             Commons Daemon Package
-               Version 1.0.6
+               Version 1.0.7
                 Release Notes
 
 
