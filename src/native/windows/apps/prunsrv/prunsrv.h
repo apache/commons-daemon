@@ -25,7 +25,7 @@
 #define _PRUNSRV_H
 
 #undef  PRG_VERSION
-#define PRG_VERSION    "1.0.6.0"
+#define PRG_VERSION    "1.0.7.0"
 #define PRG_REGROOT   L"Apache Software Foundation\\Procrun 2.0"
 
 #endif /* _PRUNSRV_H */
