@@ -32,7 +32,6 @@ static LPCSTR _log_level[] = {
 typedef struct apx_logfile_st {
     HANDLE      hFile;
     DWORD       dwLogLevel;
-    BOOL        bRotate;
     SYSTEMTIME  sysTime;
     WCHAR       szPath[SIZ_PATHLEN];
     WCHAR       szPrefix[MAX_PATH];
@@ -175,16 +174,6 @@ void apxLogLevelSet(HANDLE hFile, DWORD dwLevel)
         lf->dwLogLevel = dwLevel;
 }
 
-void apxLogRotateSet(HANDLE hFile, BOOL doRotate)
-{
-    apx_logfile_st *lf = (apx_logfile_st *)hFile;
-    if (IS_INVALID_HANDLE(lf))
-        lf = _st_sys_loghandle;
-    if (IS_INVALID_HANDLE(lf))
-        return;
-    lf->bRotate = doRotate;
-}
-
 void apxLogLevelSetW(HANDLE  hFile,
                      LPCWSTR szLevel)
 {
@@ -204,36 +193,6 @@ void apxLogLevelSetW(HANDLE  hFile,
         else if (!lstrcmpiW(szLevel, L"debug"))
             lf->dwLogLevel = APXLOG_LEVEL_DEBUG;
     }
-}
-
-static BOOL apx_log_rotate(apx_logfile_st *l,
-                           LPSYSTEMTIME lpCtime)
-{
-    WCHAR sPath[SIZ_PATHLEN];
-
-    /* rotate on daily basis */
-    if (l->sysTime.wDay == lpCtime->wDay)
-        return TRUE;
-    FlushFileBuffers(l->hFile);
-    CloseHandle(l->hFile);
-    l->sysTime = *lpCtime;
-
-    wsprintfW(sPath, L"%s\\%s"  LOGF_EXT,
-              l->szPath,
-              l->szPrefix,
-              l->sysTime.wYear,
-              l->sysTime.wMonth,
-              l->sysTime.wDay);
-    l->hFile =  CreateFileW(sPath,
-                      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-                      NULL,
-                      OPEN_ALWAYS,
-                      FILE_FLAG_NO_BUFFERING | FILE_FLAG_SEQUENTIAL_SCAN,
-                      NULL);
-    if (IS_INVALID_HANDLE(l->hFile))
-        return FALSE;
-    else
-        return TRUE;
 }
 
 int
@@ -310,10 +269,6 @@ apxLogWrite(
         if (!IS_INVALID_HANDLE(lf->hFile)) {
             SYSTEMTIME t;
             GetLocalTime(&t);
-            if (lf->bRotate) {
-                if (!apx_log_rotate(lf, &t))
-                    return 0;
-            }
             if (dolock) {
                 APX_LOGLOCK(lf->hFile);
             }
