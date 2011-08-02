@@ -32,7 +32,7 @@ Commons DAEMON 1.0.3 requires a minimum of JDK 1.3
 NEW FEATURES:
 
 * DAEMON-209: Add --LibraryPath to procrun for setting the
-              LoadLibrary serch paths (1.0.6)
+              LoadLibrary search paths (1.0.6)
 * DAEMON-208: Add -server and -client -jvm <name> synonyms (1.0.6)
 * DAEMON-205: Add support for building on ARM processors (1.0.6)
 * DAEMON-204: Add DaemonSignal interface that allows catching SIGUSR2
@@ -72,7 +72,7 @@ NEW FEATURES:
   for Unix and Windows NT/2K/XP, which allows running a Java program
   as a native operating system daemon
 
-* Switch to JIRA bug tracking sytem.
+* Switch to JIRA bug tracking system.
 
 * Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
 
