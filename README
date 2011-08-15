@@ -28,3 +28,14 @@ mvn site:generate
 
 To deploy the documentation to the apache site:
 mvn -Dmaven.username=${user.name} site:deploy
+
+To deploy the Java jars to the Nexus staging repo:
+
+mvn clean
+mvn deploy -Prelease [-Ptest-deploy]
+
+The test-deploy profile will deploy to target/deploy; omit for the live deploy
+
+Note: do not use clean in the same invocation.
+Not sure why, but with Commons-Parent v21 this results deploying the non-Maven archives (zip and tar.gz) as well.
+They can be deleted before closing the repo, but it is easier not to create them. 
