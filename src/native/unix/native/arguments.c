@@ -170,7 +170,9 @@ static arg_data *parse(int argc, char *argv[])
     args->outfile = "/dev/null";   /* Swallow by default */
     args->errfile = "/dev/null";   /* Swallow by default */
     args->redirectstdin = true;    /* Redirect stdin to /dev/null by default */
+#ifdef OS_LINUX    
     args->procname = "jsvc.exec";
+#endif
 #ifndef JSVC_UMASK
     args->umask   = 0077;
 #else
@@ -375,6 +377,7 @@ static arg_data *parse(int argc, char *argv[])
         else if (!strcmp(argv[x], "-disablesystemassertions")) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
+#ifdef OS_LINUX        
         else if (!strcmp(argv[x], "-procname")) {
             args->procname = optional(argc, argv, x++);
             if (args->procname == NULL) {
@@ -382,6 +385,7 @@ static arg_data *parse(int argc, char *argv[])
               return NULL;
             }
         }
+#endif
         else if (!strncmp(argv[x], "-agentlib:", 10)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }

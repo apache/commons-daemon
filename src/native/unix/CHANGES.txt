@@ -5,6 +5,7 @@ Changes with 1.0.8
   * Better detection of JDK (DAEMON-220)
   * Use CPPFLAGS in makefile (DAEMON-223)
   * Add -umask parameter (DAEMON-221)
+  * Make sure -procname is visible only on Linux (DAEMON-222)
 
 Changes with 1.0.7
 

@@ -89,8 +89,10 @@ void help(home_data *data)
     printf("        load native agent library by full pathname\n");
     printf("    -javaagent:<jarpath>[=<options>]\n");
     printf("        load Java programming language agent, see java.lang.instrument\n");
+#ifdef OS_LINUX    
     printf("    -procname <procname>\n");
-    printf("        use the specified process name (works only for Linux)\n");
+    printf("        use the specified process name\n");
+#endif
     printf("    -wait <waittime>\n");
     printf("        wait waittime seconds for the service to start\n");
     printf("        waittime should multiple of 10 (min=10)\n");
