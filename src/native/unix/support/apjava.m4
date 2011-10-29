@@ -16,76 +16,12 @@ dnl limitations under the License.
 dnl
 
 dnl -------------------------------------------------------------------------
-dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
+dnl Author  Pier Fumagalli
+dnl Author  Mladen Turk
 dnl Version $Id$
 dnl -------------------------------------------------------------------------
 
-AC_DEFUN([AP_PROG_JAVAC_WORKS],[
-  AC_CACHE_CHECK([wether the Java compiler ($JAVAC) works],ap_cv_prog_javac_works,[
-    echo "public class Test {}" > Test.java
-    $JAVAC $JAVACFLAGS Test.java > /dev/null 2>&1
-    if test $? -eq 0
-    then
-      rm -f Test.java Test.class
-      ap_cv_prog_javac_works=yes
-    else
-      rm -f Test.java Test.class
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([installation or configuration problem: javac cannot compile])
-    fi
-  ])
-])
-
-dnl Check for JAVA compilers.
-AC_DEFUN([AP_PROG_JAVAC],[
-  if test "$SABLEVM" != "NONE"
-  then
-    AC_PATH_PROG(JAVACSABLE,javac-sablevm,NONE,$JAVA_HOME/bin)
-  else
-    JAVACSABLE="NONE"
-  fi
-  if test "$JAVACSABLE" = "NONE"
-  then
-    XPATH="$JAVA_HOME/bin:$JAVA_HOME/Commands:$PATH"
-    AC_PATH_PROG(JAVAC,javac,NONE,$XPATH)
-  else
-    AC_PATH_PROG(JAVAC,javac-sablevm,NONE,$JAVA_HOME/bin)
-  fi
-  AC_MSG_RESULT([$JAVAC])
-  if test "$JAVAC" = "NONE"
-  then
-    AC_MSG_ERROR([javac not found])
-  fi
-  AP_PROG_JAVAC_WORKS()
-  AC_PROVIDE([$0])
-  AC_SUBST(JAVAC)
-  AC_SUBST(JAVACFLAGS)
-])
-
-dnl Check for jar archivers.
-AC_DEFUN([AP_PROG_JAR],[
-  if test "$SABLEVM" != "NONE"
-  then
-    AC_PATH_PROG(JARSABLE,jar-sablevm,NONE,$JAVA_HOME/bin)
-  else
-    JARSABLE="NONE"
-  fi
-  if test "$JARSABLE" = "NONE"
-  then
-    XPATH="$JAVA_HOME/bin:$JAVA_HOME/Commands:$PATH"
-    AC_PATH_PROG(JAR,jar,NONE,$XPATH)
-  else
-    AC_PATH_PROG(JAR,jar-sablevm,NONE,$JAVA_HOME/bin)
-  fi
-  if test "$JAR" = "NONE"
-  then
-    AC_MSG_ERROR([jar not found])
-  fi
-  AC_PROVIDE([$0])
-  AC_SUBST(JAR)
-])
-
-AC_DEFUN([AP_JAVA],[
+AC_DEFUN([AP_FIND_JAVA],[
   AC_ARG_WITH(java,[  --with-java=DIR         Specify the location of your JDK installation],[
     AC_MSG_CHECKING([JAVA_HOME])
     if test -d "$withval"
@@ -98,45 +34,100 @@ AC_DEFUN([AP_JAVA],[
     fi
     AC_SUBST(JAVA_HOME)
   ])
+  if test "x$JAVA_HOME" = x
+  then
+    AC_MSG_CHECKING([for JDK location])
+    # Oh well, nobody set JAVA_HOME, have to guess
+    # Check if we have java in the PATH.
+    java_prog="`which java 2>/dev/null || true`"
+    if test "x$java_prog" != x
+    then
+      java_bin="`dirname $java_prog`"
+      java_top="`dirname $java_bin`"
+      if test -d "$java_top/include"
+      then
+        JAVA_HOME="$java_top"
+        AC_MSG_RESULT([${java_top}])
+      fi
+    fi
+  fi
+  if test "x$JAVA_HOME" = x
+  then
+    # Oh well, nobody set JAVA_HOME, have to guess
+    for java_prefix in /usr/local /usr/local/lib /usr /usr/lib /usr/lib/jvm /opt /usr/java /System/Library/Frameworks/JavaVM.framework/Versions/
+    do
+      for subversion in 1.9 1.8 1.7 1.6 1.5 1.4 1.3 1.2
+      do
+        for variant in IBMJava2- java java- jdk jdk-
+        do
+          for guess in $java_prefix/$variant$subversion*
+          do
+            if test -d "${guess}/bin" & test -d "${guess}/include"
+            then
+              JAVA_HOME="${guess}"
+              AC_MSG_RESULT([${guess}])
+              break
+            fi
+            if test -d "${guess}/Commands" & test -d "${guess}/Headers"
+            then
+              JAVA_HOME="$guess"
+              AC_MSG_RESULT([${guess}])
+              break
+            fi
+          done
+          if test -n "$JAVA_HOME"
+          then
+            break;
+          fi
+        done
+        if test -n "$JAVA_HOME"
+        then
+          break;
+        fi
+      done
+      if test -n "$JAVA_HOME"
+      then
+        break;
+      fi
+    done
+  fi  
   if test x"$JAVA_HOME" = x
   then
     AC_MSG_ERROR([Java Home not defined. Rerun with --with-java=[...] parameter])
   fi
 ])
 
-dnl check if the JVM in JAVA_HOME is sableVM
-dnl $JAVA_HOME/bin/sablevm and /opt/java/lib/sablevm/bin are tested.
-AC_DEFUN([AP_SABLEVM],[
-  if test x"$JAVA_HOME" != x
-  then
-    AC_PATH_PROG(SABLEVM,sablevm,NONE,$JAVA_HOME/bin)
-    if test "$SABLEVM" = "NONE"
+AC_DEFUN([AP_FIND_JAVA_OS],[
+  tempval=""
+  JAVA_OS=""
+  AC_ARG_WITH(os-type,[  --with-os-type[=SUBDIR]   Location of JDK os-type subdirectory.],
+  [
+    tempval=$withval
+    if test ! -d "$JAVA_HOME/$tempval"
     then
-      dnl java may be SableVM.
-      if $JAVA_HOME/bin/java -version 2> /dev/null | grep SableVM > /dev/null
-      then
-        SABLEVM=$JAVA_HOME/bin/java
+      AC_MSG_ERROR(Not a directory: ${JAVA_HOME}/${tempval})
+    fi
+    JAVA_OS=$tempval
+  ],
+  [
+    AC_MSG_CHECKING(for JDK os include directory)
+    JAVA_OS=NONE
+    if test -f $JAVA_HOME/$JAVA_INC/jni_md.h
+    then
+      JAVA_OS=""
+    else
+      for f in $JAVA_HOME/$JAVA_INC/*/jni_md.h
+      do
+        if test -f $f; then
+            JAVA_OS=`dirname $f`
+            JAVA_OS=`basename $JAVA_OS`
+            echo " $JAVA_OS"
+        fi
+      done
+      if test "x$JAVA_OS" = "xNONE"; then
+        AC_MSG_RESULT(Cannot find jni_md.h in ${JAVA_HOME}/${OS})
+        AC_MSG_ERROR(You should retry --with-os-type=SUBDIR)
       fi
     fi
-    if test "$SABLEVM" != "NONE"
-    then
-      AC_MSG_RESULT([Using sableVM: $SABLEVM])
-      CFLAGS="$CFLAGS -DHAVE_SABLEVM"
-    fi
-  fi
-])
-
-dnl check if the JVM in JAVA_HOME is kaffe
-dnl $JAVA_HOME/bin/kaffe is tested.
-AC_DEFUN([AP_KAFFE],[
-  if test x"$JAVA_HOME" != x
-  then
-    AC_PATH_PROG(KAFFEVM,kaffe,NONE,$JAVA_HOME/bin)
-    if test "$KAFFEVM" != "NONE"
-    then
-      AC_MSG_RESULT([Using kaffe: $KAFFEVM])
-      CFLAGS="$CFLAGS -DHAVE_KAFFEVM"
-      LDFLAGS="$LDFLAGS -Wl,-rpath $JAVA_HOME/jre/lib/$HOST_CPU -L $JAVA_HOME/jre/lib/$HOST_CPU -lkaffevm"
-    fi
-  fi
+  ])
 ])

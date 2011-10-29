@@ -64,6 +64,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
     LDFLAGS="$LDFLAGS -pthread"
     LIBS="$LIBS -lpthread"
+    supported_os="hp-ux"
     ;;
   aix5*)
     CFLAGS="$CFLAGS -DOS_AIX -DDSO_DLFCN"
@@ -104,11 +105,9 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     HOST_CPU=alpha;;
   hppa2.0w)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\""
-    supported_os="hp-ux"
     HOST_CPU=PA_RISC2.0W;;
   hppa2.0)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\""
-    supported_os="hp-ux"
     HOST_CPU=PA_RISC2.0;;
   mipsel)
     CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
@@ -116,7 +115,6 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     HOST_CPU=mipsel;;
   ia64)
     CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
-    supported_os="ia64"
     HOST_CPU=ia64;;
   s390)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
