@@ -35,6 +35,8 @@ char *location_home[] = {
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD)
     "/usr/java",
     "/usr/local/java",
+    "/etc/alternatives/java_sdk",
+    "/etc/alternatives/jre",
 #elif defined(OS_CYGWIN)
     "/cygdrive/c/WINNT/system32/java",
 #elif defined(OS_SYSV)
@@ -74,12 +76,6 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/bin/classic/jvm.dll",               /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/bin/client/jvm.dll",                /* Sun JDK 1.4 */
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD) || defined(OS_TRU64)
-#if defined(HAVE_SABLEVM)
-    "$JAVA_HOME/lib/libsablevm.so",                     /* sableVM */
-#endif
-#if defined(HAVE_KAFFEVM)
-    "$JAVA_HOME/jre/lib/" CPU "/libkaffevm.so",         /* kaffe */
-#endif
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so",     /* Sun JDK 1.2 */
     "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.so",      /* Sun JDK 1.4 */
     "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",      /* Sun JDK 1.3 */
