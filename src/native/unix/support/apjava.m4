@@ -58,7 +58,7 @@ AC_DEFUN([AP_FIND_JAVA],[
     do
       for subversion in 1.9 1.8 1.7 1.6 1.5 1.4 1.3 1.2
       do
-        for variant in IBMJava2- java java- jdk jdk-
+        for variant in IBMJava2- java java- jdk jdk- CurrentJDK ""
         do
           for guess in $java_prefix/$variant$subversion*
           do
