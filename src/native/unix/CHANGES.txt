@@ -1,6 +1,11 @@
 APACHE COMMONS DAEMON (UNIX) CHANGELOG:
 Last modified at [$Date$]
 
+Changes with 1.0.8
+  * Better detection of JDK (DAEMON-220)
+  * Use CPPFLAGS in makefile (DAEMON-223)
+  * Add -umask parameter (DAEMON-221)
+
 Changes with 1.0.7
 
 

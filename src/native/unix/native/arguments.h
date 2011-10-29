@@ -73,6 +73,8 @@ typedef struct {
     char *procname;
     /** Whether to redirect stdin to /dev/null or not. Defaults to true **/
     bool redirectstdin;
+    /** What umask to use **/
+    int umask;
 } arg_data;
 
 /**

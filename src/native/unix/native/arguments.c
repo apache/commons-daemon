@@ -171,6 +171,11 @@ static arg_data *parse(int argc, char *argv[])
     args->errfile = "/dev/null";   /* Swallow by default */
     args->redirectstdin = true;    /* Redirect stdin to /dev/null by default */
     args->procname = "jsvc.exec";
+#ifndef JSVC_UMASK
+    args->umask   = 0077;
+#else
+    args->umask   = JSVC_UMASK;
+#endif
 
     if (!(args->args = (char **)malloc(argc * sizeof(char *))))
         return NULL;
@@ -259,6 +264,18 @@ static arg_data *parse(int argc, char *argv[])
                 args->wait = atoi(temp);
             if (args->wait < 10) {
                 log_error("Invalid wait time specified (min=10)");
+                return NULL;
+            }
+        }
+        else if (!strcmp(argv[x], "-umask")) {
+            temp = optional(argc, argv, x++);
+            if (temp == NULL) {
+                log_error("Invalid umask specified");
+                return NULL;
+            }
+            args->umask = atoi(temp);
+            if (args->umask < 02) {
+                log_error("Invalid umask specified (min=02)");
                 return NULL;
             }
         }

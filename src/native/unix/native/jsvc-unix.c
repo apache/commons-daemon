@@ -45,9 +45,6 @@
 #define F_ULOCK 0               /* Unlock a previously locked region */
 #define F_LOCK  1               /* Lock a region for exclusive use */
 #endif
-#ifndef JSVC_UMASK
-#define JSVC_UMASK 0077
-#endif
 extern char **environ;
 
 static mode_t envmask;          /* mask to create the files */
@@ -1092,13 +1089,13 @@ int main(int argc, char *argv[])
     /*
      * umask() uses inverse logic; bits are CLEAR for allowed access.
      */
-    if ((~JSVC_UMASK) & 0022) {
+    if (~args->umask & 0022) {
         log_error("NOTICE: jsvc umask of %03o allows "
-                  "write permission to group and/or other", JSVC_UMASK);
+                  "write permission to group and/or other", args->umask);
     }
-    envmask = umask(JSVC_UMASK);
+    envmask = umask(args->umask);
     set_output(args->outfile, args->errfile, args->redirectstdin, args->procname);
-    log_debug("Switching umask back to %03o from %03o", envmask, JSVC_UMASK);
+    log_debug("Switching umask back to %03o from %03o", envmask, args->umask);
     res = run_controller(args, data, uid, gid);
     if (logger_pid != 0) {
         kill(logger_pid, SIGTERM);
