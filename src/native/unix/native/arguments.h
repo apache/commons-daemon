@@ -69,10 +69,8 @@ typedef struct {
     char *outfile;
     /** Destination for stderr */
     char *errfile;
-#ifdef OS_LINUX    
-    /** Program name for Linux **/
+    /** Program name **/
     char *procname;
-#endif
     /** Whether to redirect stdin to /dev/null or not. Defaults to true **/
     bool redirectstdin;
     /** What umask to use **/
