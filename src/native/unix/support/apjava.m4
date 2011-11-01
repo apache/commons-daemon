@@ -44,53 +44,13 @@ AC_DEFUN([AP_FIND_JAVA],[
     then
       java_bin="`dirname $java_prog`"
       java_top="`dirname $java_bin`"
-      if test -d "$java_top/include"
+      if test -f "$java_top/include/jni.h"
       then
         JAVA_HOME="$java_top"
         AC_MSG_RESULT([${java_top}])
       fi
     fi
   fi
-  if test "x$JAVA_HOME" = x
-  then
-    # Oh well, nobody set JAVA_HOME, have to guess
-    for java_prefix in /usr/local /usr/local/lib /usr /usr/lib /usr/lib/jvm /opt /usr/java /System/Library/Frameworks/JavaVM.framework/Versions/
-    do
-      for subversion in 1.9 1.8 1.7 1.6 1.5 1.4 1.3 1.2
-      do
-        for variant in IBMJava2- java java- jdk jdk- CurrentJDK ""
-        do
-          for guess in $java_prefix/$variant$subversion*
-          do
-            if test -d "${guess}/bin" & test -d "${guess}/include"
-            then
-              JAVA_HOME="${guess}"
-              AC_MSG_RESULT([${guess}])
-              break
-            fi
-            if test -d "${guess}/Commands" & test -d "${guess}/Headers"
-            then
-              JAVA_HOME="$guess"
-              AC_MSG_RESULT([${guess}])
-              break
-            fi
-          done
-          if test -n "$JAVA_HOME"
-          then
-            break;
-          fi
-        done
-        if test -n "$JAVA_HOME"
-        then
-          break;
-        fi
-      done
-      if test -n "$JAVA_HOME"
-      then
-        break;
-      fi
-    done
-  fi  
   if test x"$JAVA_HOME" = x
   then
     AC_MSG_ERROR([Java Home not defined. Rerun with --with-java=[...] parameter])
@@ -122,6 +82,7 @@ AC_DEFUN([AP_FIND_JAVA_OS],[
             JAVA_OS=`dirname $f`
             JAVA_OS=`basename $JAVA_OS`
             echo " $JAVA_OS"
+            break
         fi
       done
       if test "x$JAVA_OS" = "xNONE"; then
