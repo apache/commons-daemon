@@ -22,17 +22,19 @@ or
   export JAVA_HOME
   ./configure
 
-or (when using gcj (use fastjar for jar))
-  JAVAC=gcj; export JAVAC
-  JAVACFLAGS=-c; export JAVACFLAGS
-  ./configure
-
 Note: On Mac OS X <dir> is /System/Library/Frameworks/JavaVM.framework/Home.
+
+Depending on your JDK layout, configure might fail to find the JNI
+machine dependant include file (jni_md.h). If that's the case use the
+--with-os-type=<subdir> parameter where subdir points to the directory
+within JDK include directory containing jni_md.h file.
+
 
 If your operating system is supported, configure will go thru cleanly,
 otherwise it will report an error (please send us the details of your
-OS/JDK, or a patch against the sources). To build the binaries and
-libraries simply do:
+OS/JDK, or a patch against the sources).
+
+To build the binaries and libraries simply do:
 
   make
 
