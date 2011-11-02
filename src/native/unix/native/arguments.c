@@ -325,17 +325,6 @@ static arg_data *parse(int argc, char *argv[])
         else if (!strncmp(argv[x], "-verbose", 8)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
-#ifdef HAVE_KAFFEVM
-        else if (!strncmp(argv[x], "-vmdebug", 8)) {
-            args->opts[args->onum++] = strdup(argv[x]);
-            temp = optional(argc,argv,x++);
-            if (temp == NULL) {
-                log_error("vmdebug option requires a debug flag.");
-                return NULL;
-            }
-            args->opts[args->onum++] = strdup(temp);
-        }
-#endif
         else if (!strcmp(argv[x], "-D")) {
             log_error("Parameter -D must be followed by <name>=<value>");
             return NULL;
