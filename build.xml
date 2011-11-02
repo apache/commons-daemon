@@ -71,10 +71,10 @@
   <property name="dist.home"               value="dist"/>
 
   <!-- The base directory for component sources -->
-  <property name="source.home"             value="src/java"/>
+  <property name="source.home"             value="src/main/java"/>
 
   <!-- The base directory for unit test sources -->
-  <property name="test.home"               value="src/test"/>
+  <property name="test.home"               value="src/test/java"/>
 
   <!-- The ant dir (usefull for non standard layout)  -->
   <property name="ant.lib"                 value="${ant.home}/lib"/>
