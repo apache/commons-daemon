@@ -43,8 +43,8 @@ __APXBEGIN_DECLS
 #define APXLOG_LEVEL_WARN   2
 #define APXLOG_LEVEL_ERROR  3
 
-#define APXLOG_MARK_INFO    NULL, APXLOG_LEVEL_INFO,  TRUE,  NULL, 0, ""
-#define APXLOG_MARK_WARN    NULL, APXLOG_LEVEL_WARN,  TRUE,  NULL, 0, ""
+#define APXLOG_MARK_INFO    NULL, APXLOG_LEVEL_INFO,  TRUE,  __FILE__, __LINE__, ""
+#define APXLOG_MARK_WARN    NULL, APXLOG_LEVEL_WARN,  TRUE,  __FILE__, __LINE__, ""
 #define APXLOG_MARK_ERROR   NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, ""
 #define APXLOG_MARK_DEBUG   NULL, APXLOG_LEVEL_DEBUG, TRUE,  __FILE__, __LINE__, ""
 #define APXLOG_MARK_RAW     NULL, APXLOG_LEVEL_INFO,  FALSE, NULL, 0,
@@ -55,13 +55,15 @@ LPWSTR apxLogFile(
     LPCWSTR szPath,
     LPCWSTR szPrefix,
     LPCWSTR szName,
-    BOOL bTimeStamp
+    BOOL bTimeStamp,
+    DWORD dwRotate
 );
 
 HANDLE apxLogOpen(
     APXHANDLE hPool,
     LPCWSTR szPath,
-    LPCWSTR szPrefix
+    LPCWSTR szPrefix,
+    DWORD dwRotate
 );
 
 void apxLogClose(

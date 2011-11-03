@@ -131,6 +131,7 @@ static APXCMDLINEOPT _options[] = {
 /* 36 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 37 */    { L"LogJniMessages",    L"LogJniMessages",  L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 1},
 /* 38 */    { L"PidFile",           L"PidFile",         L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 39 */    { L"Rotate",            L"Rotate",          L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
             /* NULL terminate the array */
             { NULL }
 };
@@ -193,6 +194,7 @@ static APXCMDLINEOPT _options[] = {
 #define SO_STDOUTPUT        GET_OPT_V(36)
 #define SO_JNIVFPRINTF      GET_OPT_I(37)
 #define SO_PIDFILE          GET_OPT_V(38)
+#define SO_LOGROTATE        GET_OPT_I(39)
 
 /* Main service table entry
  * filled at run-time
@@ -239,18 +241,28 @@ static BOOL   gSignalValid   = TRUE;
 static APXJAVA_THREADARGS gRargs;
 static APXJAVA_THREADARGS gSargs;
 
-
 DWORD WINAPI eventThread(LPVOID lpParam)
 {
+    DWORD dwRotateCnt = SO_LOGROTATE;
+
     for (;;) {
-        DWORD dw = WaitForSingleObject(gSignalEvent, INFINITE);
+        DWORD dw = WaitForSingleObject(gSignalEvent, 1000);
+        if (dw == WAIT_TIMEOUT) {
+            /* Do process maintenance */
+            if (SO_LOGROTATE != 0 && --dwRotateCnt == 0) {
+                /* Perform log rotation. */
+
+                 dwRotateCnt = SO_LOGROTATE;
+            }
+            continue;
+        }
         if (dw == WAIT_OBJECT_0 && gSignalValid) {
             if (!GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, 0))
                 apxLogWrite(APXLOG_MARK_SYSERR);
             ResetEvent(gSignalEvent);
+            continue;
         }
-        else
-            break;
+        break;
     }
     ExitThread(0);
     return 0;
@@ -266,8 +278,16 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
     BOOL aErr = FALSE;
     BOOL aOut = FALSE;
 
-    if (lpWrapper->szStdOutFilename || lpWrapper->szStdErrFilename)
-        AllocConsole();
+    if (lpWrapper->szStdOutFilename || lpWrapper->szStdErrFilename) {
+        /* Alloc console if it doesn't exists. */
+        if (!AttachConsole(ATTACH_PARENT_PROCESS) &&
+             GetLastError() == ERROR_INVALID_HANDLE) {
+            HWND hc;
+            AllocConsole();
+            if ((hc = GetConsoleWindow()) != NULL)
+                ShowWindow(hc, SW_HIDE);
+        }
+    }
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
         if (lstrcmpiW(lpWrapper->szStdOutFilename, PRSRV_AUTO) == 0) {
@@ -279,7 +299,8 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
             lpWrapper->szStdOutFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
                                                      lsn,
-                                                     NULL, TRUE);
+                                                     NULL, TRUE,
+                                                     SO_LOGROTATE);
         }
         /* Delete the file if not in append mode
          * XXX: See if we can use the params instead of that.
@@ -305,7 +326,8 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
             lpWrapper->szStdErrFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
                                                      lsn,
-                                                     NULL, TRUE);
+                                                     NULL, TRUE,
+                                                     SO_LOGROTATE);
         }
         if (!aErr)
             DeleteFileW(lpWrapper->szStdErrFilename);
@@ -1016,7 +1038,7 @@ static DWORD serviceStart()
         return TRUE;    /* Nothing to do */
     }
     if (IS_VALID_STRING(SO_PIDFILE)) {
-        gPidfileName = apxLogFile(gPool, SO_LOGPATH, SO_PIDFILE, NULL, FALSE);
+        gPidfileName = apxLogFile(gPool, SO_LOGPATH, SO_PIDFILE, NULL, FALSE, 0);
         if (GetFileAttributesW(gPidfileName) !=  INVALID_FILE_ATTRIBUTES) {
             /* Pid file exists */
             if (!DeleteFileW(gPidfileName)) {
@@ -1384,7 +1406,13 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             goto cleanup;
         }
         /* Allocate console so that events gets processed */
-        AllocConsole();
+        if (!AttachConsole(ATTACH_PARENT_PROCESS) &&
+             GetLastError() == ERROR_INVALID_HANDLE) {
+            HWND hc;
+            AllocConsole();
+            if ((hc = GetConsoleWindow()) != NULL)
+                ShowWindow(hc, SW_HIDE);
+        }
     }
     reportServiceStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
     if ((rc = serviceStart()) == 0) {
@@ -1514,9 +1542,12 @@ void __cdecl main(int argc, char **argv)
         }
     }
 
-    apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX);
+    apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
     apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun log initialized");
+    if (SO_LOGROTATE)
+        apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
+
     apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun (%s %d-bit) started",
                 PRG_VERSION, PRG_BITS);
 
