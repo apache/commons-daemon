@@ -1281,7 +1281,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (IS_VALID_STRING(SO_STARTMODE)) {
         if (!lstrcmpiW(SO_STARTMODE, PRSRV_JVM)) {
             _jni_startup = TRUE;
-            _jni_rclass  = WideToUTF8(SO_STARTCLASS);
+            _jni_rclass  = WideToANSI(SO_STARTCLASS);
             /* Exchange all dots with slashes */
             apxStrCharReplaceA(_jni_rclass, '.', '/');
             _jni_rparam = SO_STARTPARAMS;
@@ -1323,7 +1323,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (IS_VALID_STRING(SO_STOPMODE)) {
         if (!lstrcmpiW(SO_STOPMODE, PRSRV_JVM)) {
             _jni_shutdown = TRUE;
-            _jni_sclass = WideToUTF8(SO_STOPCLASS);
+            _jni_sclass = WideToANSI(SO_STOPCLASS);
             apxStrCharReplaceA(_jni_sclass, '.', '/');
             _jni_sparam = SO_STOPPARAMS;
         }
@@ -1367,12 +1367,12 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 _jni_jvmpath = SO_JVM;
         }
         if (IS_VALID_STRING(SO_CLASSPATH))
-            _jni_classpath = WideToUTF8(SO_CLASSPATH);
+            _jni_classpath = WideToANSI(SO_CLASSPATH);
         if (IS_VALID_STRING(SO_STARTMETHOD))
             _jni_rmethod   = WideToAscii(SO_STARTMETHOD, (LPSTR)SO_STARTMETHOD);
         if (IS_VALID_STRING(SO_STOPMETHOD))
             _jni_smethod   = WideToAscii(SO_STOPMETHOD, (LPSTR)SO_STOPMETHOD);
-        _jni_jvmoptions    = MzWideToUTF8(SO_JVMOPTIONS);
+        _jni_jvmoptions    = MzWideToANSI(SO_JVMOPTIONS);
     }
     if (_service_mode) {
         /* Register Service Control handler */

@@ -148,6 +148,8 @@ LPSTR       WideToAscii(LPCWSTR ws, LPSTR s);
 LPSTR       MzWideToAscii(LPCWSTR ws, LPSTR s);
 LPSTR       WideToUTF8(LPCWSTR ws);
 LPSTR       MzWideToUTF8(LPCWSTR ws);
+LPSTR       WideToANSI(LPCWSTR ws);
+LPSTR       MzWideToANSI(LPCWSTR ws);
 
 typedef struct APXMULTISZ APXMULTISZ;
 typedef APXMULTISZ*       LPAPXMULTISZ;
