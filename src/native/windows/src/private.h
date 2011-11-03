@@ -253,8 +253,6 @@ typedef struct APXREGENUM {
 } APXREGENUM, *LPAPXREGENUM;
 
 BOOL    apxRegistryEnumServices(LPAPXREGENUM lpEnum, LPAPXSERVENTRY lpEntry);
-
-BOOL    apxSetServiceDescriptionW(LPCWSTR szServiceName, LPCWSTR szDescription);
 BOOL    apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,
                                   DWORD dwDescriptionLength);
 BOOL    apxGetServiceUserW(LPCWSTR szServiceName, LPWSTR szUser,

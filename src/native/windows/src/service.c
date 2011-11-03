@@ -23,11 +23,6 @@
         (h) = NULL;                                     \
     }
 
-#define CHANGE_SERVICE(h, b, u, p, d)   \
-    ChangeServiceConfigW(h, SERVICE_NO_CHANGE, SERVICE_NO_CHANGE,   \
-                         SERVICE_NO_CHANGE,b,NULL,NULL,NULL,        \
-                         u,p,d)
-
 typedef struct APXSERVICE {
     /* Are we a service manager or we are the service itself */
     BOOL            bManagerMode;
@@ -197,6 +192,7 @@ apxServiceSetNames(APXHANDLE hService,
                    LPCWSTR szPassword)
 {
     LPAPXSERVICE lpService;
+    DWORD dwServiceType = SERVICE_NO_CHANGE;
 
     if (hService->dwType != APXHANDLE_TYPE_SERVICE)
         return FALSE;
@@ -208,17 +204,28 @@ apxServiceSetNames(APXHANDLE hService,
     /* Check if the ServiceOpen has been called */
     if (IS_INVALID_HANDLE(lpService->hService))
         return FALSE;
-    if (!CHANGE_SERVICE(lpService->hService,
-                                        szImagePath,
-                                        szUsername,
-                                        szPassword,
-                                        szDisplayName)) {
+    if (szUsername || szPassword)
+        dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+    if (!ChangeServiceConfigW(lpService->hService,
+                              dwServiceType,
+                              SERVICE_NO_CHANGE,
+                              SERVICE_NO_CHANGE,
+                              szImagePath,
+                              NULL,
+                              NULL,
+                              NULL,
+                              szUsername,
+                              szPassword,
+                              szDisplayName)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
     }
     if (szDescription) {
-        return apxSetServiceDescriptionW(lpService->stServiceEntry.szServiceName,
-                                         szDescription);
+        SERVICE_DESCRIPTIONW desc;
+        desc.lpDescription = (LPWSTR)szDescription;
+        return ChangeServiceConfig2(lpService->hService,
+                                    SERVICE_CONFIG_DESCRIPTION,
+                                    &desc);
     }
     return TRUE;
 }

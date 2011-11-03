@@ -1062,32 +1062,6 @@ BOOL apxRegistryEnumServices(LPAPXREGENUM lpEnum, LPAPXSERVENTRY lpEntry)
     return TRUE;
 }
 
-/* We could use the ChangeServiceConfig2 on WIN2K+
- * For now use the registry.
- */
-BOOL apxSetServiceDescriptionW(LPCWSTR szServiceName, LPCWSTR szDescription)
-{
-    HKEY  hKey;
-    WCHAR wcName[SIZ_RESLEN];
-    DWORD rc;
-
-    if (lstrlenW(szServiceName) > SIZ_RESMAX)
-        return FALSE;
-    lstrcpyW(wcName, REGSERVICE_ROOT);
-    lstrcatW(wcName, szServiceName);
-
-    rc = RegOpenKeyExW(HKEY_LOCAL_MACHINE, wcName, 0, KEY_WRITE, &hKey);
-    if (rc != ERROR_SUCCESS) {
-        return FALSE;
-    }
-
-    rc = RegSetValueExW(hKey, REGDESCRIPTION, 0, REG_SZ, (CONST BYTE *)szDescription,
-                        (lstrlenW(szDescription) + 1) * sizeof(WCHAR));
-    SAFE_CLOSE_KEY(hKey);
-
-    return rc == ERROR_SUCCESS;
-}
-
 BOOL apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,
                                DWORD dwDescriptionLength)
 {
