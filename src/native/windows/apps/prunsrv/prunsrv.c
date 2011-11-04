@@ -220,6 +220,7 @@ static BOOL                  _java_shutdown = FALSE;
 static APXHANDLE    gPool;
 static APXHANDLE    gWorker;
 static APX_STDWRAP  gStdwrap;           /* stdio/stderr redirection */
+static int          gExitval;
 
 static LPWSTR   _jni_jvmpath              = NULL;   /* Path to jvm dll */
 static LPSTR    _jni_jvmoptions           = NULL;   /* Path to jvm options */
@@ -1268,7 +1269,7 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
 /* Main service execution loop */
 void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 {
-    DWORD rc;
+    DWORD rc = 0;
     _service_status.dwServiceType      = SERVICE_WIN32_OWN_PROCESS;
     _service_status.dwCurrentState     = SERVICE_START_PENDING;
     _service_status.dwControlsAccepted = SERVICE_ACCEPT_STOP |
@@ -1428,13 +1429,12 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     reportServiceStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
     if ((rc = serviceStart()) == 0) {
         /* Service is started */
-        DWORD rv;
         reportServiceStatus(SERVICE_RUNNING, NO_ERROR, 0);
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for worker to finish...");
         /* Set console handler to capture CTRL events */
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
 
-        rv = apxHandleWait(gWorker, INFINITE, FALSE);
+        apxHandleWait(gWorker, INFINITE, FALSE);
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
     }
     else {
@@ -1468,7 +1468,8 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     return;
 cleanup:
     /* Cleanup */
-    reportServiceStatus(SERVICE_STOPPED, ERROR_SERVICE_SPECIFIC_ERROR, 0);
+    reportServiceStatus(SERVICE_STOPPED, ERROR_SERVICE_SPECIFIC_ERROR, rc);
+    gExitval = rc;
     return;
 }
 
@@ -1476,15 +1477,13 @@ cleanup:
 /* Run the service in the debug mode */
 BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 {
-    BOOL rv = TRUE;
-
     _service_mode = FALSE;
     _service_name = lpCmdline->szApplication;
     apxLogWrite(APXLOG_MARK_INFO "Debugging '%S' Service...", _service_name);
     serviceMain(0, NULL);
-    apxLogWrite(APXLOG_MARK_INFO "Debug service finished.");
+    apxLogWrite(APXLOG_MARK_INFO "Debug service finished with exit code %d", gExitval);
     SAFE_CLOSE_HANDLE(gPidfileHandle);
-    return rv;
+    return gExitval == 0 ? TRUE : FALSE;
 }
 
 BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
