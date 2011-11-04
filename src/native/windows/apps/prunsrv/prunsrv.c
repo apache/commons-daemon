@@ -1303,9 +1303,15 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (IS_VALID_STRING(SO_STARTMODE)) {
         if (!lstrcmpiW(SO_STARTMODE, PRSRV_JVM)) {
             _jni_startup = TRUE;
-            _jni_rclass  = WideToANSI(SO_STARTCLASS);
-            /* Exchange all dots with slashes */
-            apxStrCharReplaceA(_jni_rclass, '.', '/');
+            if (IS_VALID_STRING(SO_STARTCLASS)) {
+                _jni_rclass  = WideToANSI(SO_STARTCLASS);
+                /* Exchange all dots with slashes */
+                apxStrCharReplaceA(_jni_rclass, '.', '/');
+            }
+            else {
+                /* Presume its main */
+                _jni_rclass = WideToANSI(L"Main");
+            }
             _jni_rparam = SO_STARTPARAMS;
         }
         else if (!lstrcmpiW(SO_STARTMODE, PRSRV_JAVA)) {
@@ -1345,14 +1351,14 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     if (IS_VALID_STRING(SO_STOPMODE)) {
         if (!lstrcmpiW(SO_STOPMODE, PRSRV_JVM)) {
             _jni_shutdown = TRUE;
-            _jni_sclass = WideToANSI(SO_STOPCLASS);
             if (IS_VALID_STRING(SO_STOPCLASS)) {
+                _jni_sclass = WideToANSI(SO_STOPCLASS);
                 apxStrCharReplaceA(_jni_sclass, '.', '/');
-                _jni_sparam = SO_STOPPARAMS;
             }
             else {
-                _jni_sclass = "java/lang/System";
+                _jni_sclass = WideToANSI(L"java/lang/System");
             }
+            _jni_sparam = SO_STOPPARAMS;
         }
         else if (!lstrcmpiW(SO_STOPMODE, PRSRV_JAVA)) {
             LPWSTR jx = NULL, szJH = SO_JAVAHOME;

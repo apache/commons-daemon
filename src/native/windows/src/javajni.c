@@ -792,8 +792,18 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         return FALSE;
     lpJava = APXHANDLE_DATA(hJava);
-    if (!__apxJvmAttach(lpJava))
+    if (!lpJava)
         return FALSE;
+    if (IS_EMPTY_STRING(szMethodName))
+        szMethodName = "main";
+    if (lstrcmpA(szClassName, "java/lang/System") == 0) {
+        /* Usable only for exit method, so force */
+        szSignature  = "(I)V";
+        szMethodName = "exit";
+    }
+    lstrlcpyA(lpJava->clWorker.sClazz, 1024, szClassName);
+    lstrlcpyA(lpJava->clWorker.sMethod, 512, szMethodName);
+
     jClazz = JNICALL_1(FindClass, JAVA_CLASSSTRING);
     if (!jClazz) {
         JVM_EXCEPTION_CLEAR(lpJava);
@@ -802,7 +812,6 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     }
     lpJava->clString.jClazz = JNICALL_1(NewGlobalRef, jClazz);
     JNI_LOCAL_UNREF(jClazz);
-
     /* Find the class */
     jClazz  = JNICALL_1(FindClass, szClassName);
     if (!jClazz) {
@@ -814,15 +823,6 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     lpJava->clWorker.jClazz  = JNICALL_1(NewGlobalRef, jClazz);
     JNI_LOCAL_UNREF(jClazz);
 
-    if (!szMethodName)
-        szMethodName = "main";
-    if (lstrcmpA(szClassName, "java/lang/System") == 0) {
-        /* Usable only for exit method, so force */
-        szSignature  = "(I)V";
-        szMethodName = "exit";
-    }
-    lstrlcpyA(lpJava->clWorker.sClazz, 1024, szClassName);
-    lstrlcpyA(lpJava->clWorker.sMethod, 512, szMethodName);
     lpJava->clWorker.jMethod = JNICALL_3(GetStaticMethodID,
                                          lpJava->clWorker.jClazz,
                                          szMethodName, szSignature);
@@ -855,16 +855,18 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
  */
 static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
 {
-#define WORKER_EXIT(x)  { rv = x; goto finished; }
+#define WORKER_EXIT(x)  do { rv = x; goto finished; } while(0)
     DWORD rv = 0;
-    LPAPXJAVAVM lpJava;
+    LPAPXJAVAVM lpJava = NULL;
     LPAPXJAVA_THREADARGS pArgs = (LPAPXJAVA_THREADARGS)lpParameter;
     APXHANDLE hJava;
 
-    hJava = (APXHANDLE)pArgs->hJava;
+    hJava  = (APXHANDLE)pArgs->hJava;
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         WORKER_EXIT(1);
-
+    lpJava = APXHANDLE_DATA(pArgs->hJava);
+    if (!lpJava)
+        WORKER_EXIT(1);
     if (!apxJavaInitialize(pArgs->hJava,
                            pArgs->szClassPath,
                            pArgs->lpOptions,
@@ -882,17 +884,16 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
                               pArgs->szClassName,
                               pArgs->szMethodName,
                               pArgs->lpArguments)) {
-        WORKER_EXIT(2);
+        WORKER_EXIT(3);
     }
     apxJavaSetOut(pArgs->hJava, TRUE,  pArgs->szStdErrFilename);
     apxJavaSetOut(pArgs->hJava, FALSE, pArgs->szStdOutFilename);
 
-    lpJava = APXHANDLE_DATA(pArgs->hJava);
     /* Check if we have a class and a method */
     if (!lpJava->clWorker.jClazz || !lpJava->clWorker.jMethod)
-        WORKER_EXIT(2);
+        WORKER_EXIT(4);
     if (!__apxJvmAttach(lpJava))
-        WORKER_EXIT(3);
+        WORKER_EXIT(5);
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
@@ -902,26 +903,30 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
               lpJava->clWorker.jMethod,
               lpJava->clWorker.jArgs);
     if (JVM_EXCEPTION_CHECK(lpJava)) {
-        WORKER_EXIT(4);
+        WORKER_EXIT(6);
     }
     else {
         __apxJvmDetach(lpJava);
     }
 finished:
-    lpJava->dwWorkerStatus = 0;
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
-                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
-    SetEvent(lpJava->hWorkerSync);
+    if (lpJava) {
+        lpJava->dwWorkerStatus = 0;
+        apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
+                    lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
+        SetEvent(lpJava->hWorkerSync);
+    }
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
-    return 0;
+    return rv;
 }
 
+BOOL
 apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
 {
-
     LPAPXJAVAVM lpJava;
     lpJava = APXHANDLE_DATA(pArgs->hJava);
+    if (!lpJava)
+        return FALSE;
     lpJava->dwWorkerStatus = 0;
     lpJava->hWorkerSync    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerThread  = CreateThread(NULL,
@@ -936,6 +941,8 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
     ResumeThread(lpJava->hWorkerThread);
     /* Wait until the worker thread initializes */
     WaitForSingleObject(lpJava->hWorkerSync, INFINITE);
+    if (lpJava->dwWorkerStatus == 0)
+        return FALSE;
     if (lstrcmpA(lpJava->clWorker.sClazz, "java/lang/System")) {
         /* Give some time to initialize the thread
          * Unless we are calling System.exit(0).
