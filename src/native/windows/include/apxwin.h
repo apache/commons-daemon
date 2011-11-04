@@ -63,6 +63,7 @@ typedef _W64 int            intptr_t;
 
 #define IS_INVALID_HANDLE(h) (((h) == NULL || (h) == INVALID_HANDLE_VALUE))
 #define IS_VALID_STRING(s)   ((s) != NULL && *(s) != 0)
+#define IS_EMPTY_STRING(s)   ((s) == NULL || *(s) == 0)
 
 #define DYNOLAD_TYPE_DECLARE(fnName, callconv, retType)             \
     typedef retType (callconv *PFN_##fnName)                        \

@@ -1346,8 +1346,13 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         if (!lstrcmpiW(SO_STOPMODE, PRSRV_JVM)) {
             _jni_shutdown = TRUE;
             _jni_sclass = WideToANSI(SO_STOPCLASS);
-            apxStrCharReplaceA(_jni_sclass, '.', '/');
-            _jni_sparam = SO_STOPPARAMS;
+            if (IS_VALID_STRING(SO_STOPCLASS)) {
+                apxStrCharReplaceA(_jni_sclass, '.', '/');
+                _jni_sparam = SO_STOPPARAMS;
+            }
+            else {
+                _jni_sclass = "java/lang/System";
+            }
         }
         else if (!lstrcmpiW(SO_STOPMODE, PRSRV_JAVA)) {
             LPWSTR jx = NULL, szJH = SO_JAVAHOME;

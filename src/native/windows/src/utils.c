@@ -499,6 +499,8 @@ LPTSTR apxStrCharRemove(LPTSTR szString, TCHAR chSkip)
 {
   LPTSTR p = szString;
   LPTSTR q = szString;
+  if (IS_EMPTY_STRING(szString))
+    return szString;
   while (*p) {
     if(*p != chSkip)
       *q++ = *p;
@@ -514,6 +516,8 @@ DWORD apxStrCharRemoveA(LPSTR szString, CHAR chSkip)
   LPSTR p = szString;
   LPSTR q = szString;
   DWORD c = 0;
+  if (IS_EMPTY_STRING(szString))
+    return c;
   while (*p) {
     if(*p != chSkip)
       *q++ = *p;
@@ -531,6 +535,8 @@ DWORD apxStrCharRemoveW(LPWSTR szString, WCHAR chSkip)
   LPWSTR p = szString;
   LPWSTR q = szString;
   DWORD  c = 0;
+  if (IS_EMPTY_STRING(szString))
+    return c;
   while (*p) {
     if(*p != chSkip)
       *q++ = *p;
@@ -548,6 +554,9 @@ apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith)
 {
   LPSTR p = szString;
   LPSTR q = szString;
+  
+  if (IS_EMPTY_STRING(szString))
+    return;
   while (*p) {
     if(*p == chReplace)
       *q++ = chReplaceWith;
@@ -563,6 +572,8 @@ apxStrCharReplaceW(LPWSTR szString, WCHAR chReplace, WCHAR chReplaceWith)
 {
   LPWSTR p = szString;
   LPWSTR q = szString;
+  if (IS_EMPTY_STRING(szString))
+    return;
   while (*p) {
     if(*p == chReplace)
       *q++ = chReplaceWith;
