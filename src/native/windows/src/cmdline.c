@@ -16,7 +16,6 @@
 
 #include "apxwin.h"
 #include "private.h"
-#include <stdio.h>
 
 #define EXE_SUFFIX      L".EXE"
 #define EXE_SUFFIXLEN   (sizeof(EXE_SUFFIX) / sizeof(WCHAR) - 1)
@@ -118,11 +117,9 @@ LPAPXCMDLINE apxCmdlineParse(
             }
         }
         else {
-            printf("checking arg %S\n", ca);
             while (lpszAltcmds[i]) {
                 if (lstrcmpW(lpszAltcmds[i++], ca) == 0) {
                     lpCmdline->dwCmdIndex = i;
-                    printf("Found cmd %S : %d\n", ca, i);
                     break;
                 }
             }
