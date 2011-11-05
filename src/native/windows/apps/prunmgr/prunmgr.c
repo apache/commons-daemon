@@ -89,6 +89,15 @@ static LPCWSTR _commands[] = {
     NULL
 };
 
+static LPCWSTR _altcmds[] = {
+    L"manage",      /* 1 Manage Service (default)*/
+    L"monitor",     /* 2 Monitor Service */
+    L"start",       /* 3 Monitor Service and start if not runing */
+    L"quit",        /* 4 Quit all running Monitor applications */
+    NULL
+};
+
+
 /* Allowed procrun parameters */
 static APXCMDLINEOPT _options[] = {
 /* 0  */    { L"AllowMultiInstances", NULL, NULL,   APXCMDOPT_INT, NULL, 0},
@@ -1622,7 +1631,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     hPool     = apxPoolCreate(NULL, 0);
 
     /* Parse the command line */
-    if ((lpCmdline = apxCmdlineParse(hPool, _options, _commands)) == NULL) {
+    if ((lpCmdline = apxCmdlineParse(hPool, _options, _commands, _altcmds)) == NULL) {
         /* TODO: dispalay error message */
         apxDisplayError(TRUE, NULL, 0, "Error parsing command line");
         goto cleanup;

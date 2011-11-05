@@ -60,7 +60,8 @@ typedef struct APXCMDLINE {
 LPAPXCMDLINE apxCmdlineParse(
     APXHANDLE hPool,
     APXCMDLINEOPT   *lpOptions,
-    LPCWSTR         *lpszCommands
+    LPCWSTR         *lpszCommands,
+    LPCWSTR         *lpszAltcmds
 );
 
 void apxCmdlineLoadEnvVars(

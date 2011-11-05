@@ -84,6 +84,18 @@ static LPCWSTR _commands[] = {
     NULL
 };
 
+static LPCWSTR _altcmds[] = {
+    L"run",         /* 1 Run Service as console application (default)*/
+    L"start",       /* 2 Run Service */
+    L"stop",        /* 3 Stop Service */
+    L"update",      /* 4 Update Service parameters */
+    L"install",     /* 5 Install Service */
+    L"delete",      /* 6 Delete Service */
+    L"help",        /* 7 Help */
+    L"version",     /* 8 Version */
+    NULL
+};
+
 /* Allowed procrun parameters */
 static APXCMDLINEOPT _options[] = {
 
@@ -1537,7 +1549,7 @@ void __cdecl main(int argc, char **argv)
     gPool = apxPoolCreate(NULL, 0);
 
     /* Parse the command line */
-    if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands)) == NULL) {
+    if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands, _altcmds)) == NULL) {
         apxLogWrite(APXLOG_MARK_ERROR "Invalid command line arguments");
         rv = 1;
         goto cleanup;
