@@ -16,6 +16,7 @@
 
 #include "apxwin.h"
 #include "private.h"
+#include <stdio.h>
 
 #define EXE_SUFFIX      L".EXE"
 #define EXE_SUFFIXLEN   (sizeof(EXE_SUFFIX) / sizeof(WCHAR) - 1)
@@ -47,53 +48,34 @@ LPAPXCMDLINE apxCmdlineParse(
     LPAPXCMDLINE lpCmdline = NULL;
     DWORD l, i, s = 1;
     LPWSTR p;
-    WCHAR  cmd[4];
     DWORD  match;
+    WCHAR  mh[SIZ_HUGLEN];
 
     if (_st_sys_argc < 1)
         return NULL;
 
-    l = lstrlenW(_st_sys_argvw[0]);
-    if (l < EXE_SUFFIXLEN)
-        return NULL;
     if (!(lpCmdline = (LPAPXCMDLINE)apxPoolCalloc(hPool, sizeof(APXCMDLINE))))
         return NULL;
-    lpCmdline->hPool       = hPool;
-    lpCmdline->lpOptions   = lpOptions;
-    lpCmdline->szExePath   = _st_sys_argvw[0];
-    p = lpCmdline->szExePath + l;
-
-    while (p > lpCmdline->szExePath) {
-        if (*p == L'\\') {
+    lpCmdline->hPool     = hPool;
+    lpCmdline->lpOptions = lpOptions;
+    if (GetModuleFileNameW(GetModuleHandle(NULL), mh, SIZ_HUGLEN)) {
+        GetLongPathNameW(mh, mh, SIZ_HUGLEN);
+        lpCmdline->szExePath = apxPoolStrdupW(hPool, mh);
+        lpCmdline->szArgv0   = apxPoolStrdupW(hPool, mh);
+        if (lpCmdline->szExePath == NULL || lpCmdline->szArgv0 == NULL)
+            return NULL;
+        if ((p = wcsrchr(lpCmdline->szExePath, L'\\')))
             *p++ = L'\0';
-            break;
-        }
-        p--;
+        else
+            return NULL;
     }
-    /* Find the path if it wasn't specified in the argv[0] */
-    if (p == lpCmdline->szExePath) {
-        WCHAR  mh[SIZ_HUGLEN];
-        LPWSTR m;
-        if (GetModuleFileNameW(GetModuleHandle(NULL), mh, SIZ_HUGLEN)) {
-            GetLongPathNameW(mh, mh, SIZ_HUGLEN);
-            lpCmdline->szExePath = apxPoolStrdupW(hPool, mh);
-            m = lpCmdline->szExePath + lstrlenW(lpCmdline->szExePath);
-            while (m > lpCmdline->szExePath) {
-                if (*(m--) == L'\\') {
-                    *(++m) = L'\0';
-                    break;
-                }
-            }
-        }
-    }
+    else
+        return NULL;
     lpCmdline->szExecutable = p;
-    p = _st_sys_argvw[0] + l - EXE_SUFFIXLEN;
-    if (lstrcmpiW(p, EXE_SUFFIX) == 0)
+    p = wcsrchr(lpCmdline->szExecutable, L'.');
+    if (p && lstrcmpiW(p, EXE_SUFFIX) == 0)
         *p = L'\0';
-    /* Strip CPU specific suffixes */
-    l = lstrlenW(_st_sys_argvw[0]);
-    if (l > EXE_SUFFIXLEN) {
-        p = _st_sys_argvw[0] + l - EXE_SUFFIXLEN;
+    if ((p = wcsrchr(lpCmdline->szExecutable, L'.'))) {
         if (lstrcmpiW(p, X86_SUFFIX) == 0) {
             *p = L'\0';
         }
@@ -104,67 +86,59 @@ LPAPXCMDLINE apxCmdlineParse(
             *p = L'\0';
         }
     }
-    if (lpszCommands && _st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 2) {
-        LPWSTR ca = _st_sys_argvw[1];
+    if (_st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 2) {
+        LPWSTR cp = _st_sys_argvw[1];
+        LPWSTR cn = _st_sys_argc > 2 ? _st_sys_argvw[2] : NULL;
+        LPWSTR ca = cp;
         i = 0;
         if (ca[0] == L'/' && ca[1] == L'/') {
-            l   = 0;
             ca += 2;
-            while (*ca && *ca != L'/') {
-                cmd[l] = *ca;
-                if (++l > 2)
-                    break;
-                ca++;
+            if ((cn = wcschr(ca, L'/'))) {
+                *cn++ = L'\0';
+                while (*cn == L'/')
+                    cn++;
+                if (*cn == L'\0')
+                    cn = NULL;
             }
-            cmd[l] = L'\0';
-            if (*ca == L'\0' || *ca == L'/') {
-                while (lpszCommands[i]) {
-                    if (lstrcmpW(lpszCommands[i++], cmd) == 0) {
-                        lpCmdline->dwCmdIndex = i;
-                        break;
-                    }
+            if (cn == NULL)
+                cn = lpCmdline->szExecutable;
+            while (lpszCommands[i]) {
+                if (lstrcmpW(lpszCommands[i++], ca) == 0) {
+                    lpCmdline->dwCmdIndex = i;
+                    break;
                 }
             }
             if (lpCmdline->dwCmdIndex) {
-                while (*ca == '/')
-                    *(ca++) = L'\0';
-                if (*ca == '\0')
-                    lpCmdline->szApplication = _st_sys_argvw[0];
-                else
-                    lpCmdline->szApplication = ca;
+                lpCmdline->szApplication = cn;
                 s = 2;
             }
-            else if (!lpszAltcmds) {
-                apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %S",
-                            _st_sys_argvw[1]);
+            else {
+                apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %S", cp);
                 return NULL;
             }
         }
-    }
-    if (lpszAltcmds && _st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 2 &&
-        !(_st_sys_argvw[1][0] == L'-' || _st_sys_argvw[1][0] == L'+')) {
-        LPWSTR ca = _st_sys_argvw[1];
-        i = 0;
-        while (lpszAltcmds[i]) {
-            if (lstrcmpW(lpszAltcmds[i++], ca) == 0) {
-                lpCmdline->dwCmdIndex = i;
-                break;
-            }
-        }
-        if (lpCmdline->dwCmdIndex) {
-            s = 2;
-            if (_st_sys_argc > 2 && !(_st_sys_argvw[2][0] == L'-' ||
-                                      _st_sys_argvw[2][0] == L'+')) {
-                s++;
-                lpCmdline->szApplication = _st_sys_argvw[2];
-            }
-            else
-                lpCmdline->szApplication = _st_sys_argvw[0];
-        }
         else {
-            apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %S",
-                        _st_sys_argvw[1]);
-            return NULL;
+            printf("checking arg %S\n", ca);
+            while (lpszAltcmds[i]) {
+                if (lstrcmpW(lpszAltcmds[i++], ca) == 0) {
+                    lpCmdline->dwCmdIndex = i;
+                    printf("Found cmd %S : %d\n", ca, i);
+                    break;
+                }
+            }
+            if (lpCmdline->dwCmdIndex) {
+                s = 2;
+                if (cn && iswalnum(*cn)) {
+                    s++;
+                    lpCmdline->szApplication = cn;
+                }
+                else
+                    lpCmdline->szApplication = lpCmdline->szExecutable;
+            }
+            else {
+                apxLogWrite(APXLOG_MARK_ERROR "Unrecognized cmd option %S", cp);
+                return NULL;
+            }
         }
     }
     else {

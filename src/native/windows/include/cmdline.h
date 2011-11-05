@@ -47,6 +47,7 @@ struct APXCMDLINEOPT {
 
 typedef struct APXCMDLINE {
     APXCMDLINEOPT       *lpOptions;
+    LPWSTR              szArgv0;
     LPWSTR              szExecutable;   /* Parsed argv0 */
     LPWSTR              szExePath;      /* Parsed argv0 */
     LPWSTR              szApplication;  /* Fist string after //CMD// */

@@ -58,41 +58,42 @@ typedef struct APX_STDWRAP {
 } APX_STDWRAP;
 
 /* Use static variables instead of #defines */
-static LPCWSTR      PRSRV_AUTO   = L"auto";
-static LPCWSTR      PRSRV_JAVA   = L"java";
-static LPCWSTR      PRSRV_JVM    = L"jvm";
-static LPCWSTR      PRSRV_JDK    = L"jdk";
-static LPCWSTR      PRSRV_JRE    = L"jre";
-static LPCWSTR      PRSRV_MANUAL = L"manual";
-static LPCWSTR      PRSRV_JBIN   = L"\\bin\\java.exe";
-static LPCWSTR      PRSRV_PBIN   = L"\\bin";
-static LPCWSTR      PRSRV_SIGNAL = L"SIGNAL";
-
-static LPCWSTR      STYPE_INTERACTIVE = L"interactive";
+static LPCWSTR  PRSRV_AUTO        = L"auto";
+static LPCWSTR  PRSRV_JAVA        = L"java";
+static LPCWSTR  PRSRV_JVM         = L"jvm";
+static LPCWSTR  PRSRV_JDK         = L"jdk";
+static LPCWSTR  PRSRV_JRE         = L"jre";
+static LPCWSTR  PRSRV_MANUAL      = L"manual";
+static LPCWSTR  PRSRV_JBIN        = L"\\bin\\java.exe";
+static LPCWSTR  PRSRV_PBIN        = L"\\bin";
+static LPCWSTR  PRSRV_SIGNAL      = L"SIGNAL";
+static LPCWSTR  STYPE_INTERACTIVE = L"interactive";
 
 static LPWSTR       _service_name = NULL;
 /* Allowed procrun commands */
 static LPCWSTR _commands[] = {
     L"TS",      /* 1 Run Service as console application (default)*/
     L"RS",      /* 2 Run Service */
-    L"SS",      /* 3 Stop Service */
-    L"US",      /* 4 Update Service parameters */
-    L"IS",      /* 5 Install Service */
-    L"DS",      /* 6 Delete Service */
-    L"?",       /* 7 Help */
-    L"VS",      /* 8 Version */
+    L"ES",      /* 3 Execute start */
+    L"SS",      /* 4 Stop Service */
+    L"US",      /* 5 Update Service parameters */
+    L"IS",      /* 6 Install Service */
+    L"DS",      /* 7 Delete Service */
+    L"?",       /* 8 Help */
+    L"VS",      /* 9 Version */
     NULL
 };
 
 static LPCWSTR _altcmds[] = {
-    L"run",         /* 1 Run Service as console application (default)*/
-    L"start",       /* 2 Run Service */
-    L"stop",        /* 3 Stop Service */
-    L"update",      /* 4 Update Service parameters */
-    L"install",     /* 5 Install Service */
-    L"delete",      /* 6 Delete Service */
-    L"help",        /* 7 Help */
-    L"version",     /* 8 Version */
+    L"debug",       /* 1 Run Service as console application (default)*/
+    L"run",         /* 2 Run Service */
+    L"start",       /* 3 Version */
+    L"stop",        /* 4 Stop Service */
+    L"update",      /* 5 Update Service parameters */
+    L"install",     /* 6 Install Service */
+    L"delete",      /* 7 Delete Service */
+    L"help",        /* 8 Help */
+    L"version",     /* 9 Version */
     NULL
 };
 
@@ -208,14 +209,6 @@ static APXCMDLINEOPT _options[] = {
 #define SO_PIDFILE          GET_OPT_V(38)
 #define SO_LOGROTATE        GET_OPT_I(39)
 
-/* Main service table entry
- * filled at run-time
- */
-static SERVICE_TABLE_ENTRYW _service_table[] = {
-        {NULL, NULL},
-        {NULL, NULL}
-};
-
 static SERVICE_STATUS        _service_status;
 static SERVICE_STATUS_HANDLE _service_status_handle = NULL;
 /* Set if launched by SCM   */
@@ -233,6 +226,7 @@ static APXHANDLE    gPool;
 static APXHANDLE    gWorker;
 static APX_STDWRAP  gStdwrap;           /* stdio/stderr redirection */
 static int          gExitval;
+static LPWSTR       gStartPath;
 
 static LPWSTR   _jni_jvmpath              = NULL;   /* Path to jvm dll */
 static LPSTR    _jni_jvmoptions           = NULL;   /* Path to jvm options */
@@ -244,7 +238,6 @@ static LPSTR    _jni_rmethod              = NULL;    /* Startup  method */
 static LPSTR    _jni_smethod              = NULL;    /* Shutdown method */
 static LPSTR    _jni_rclass               = NULL;    /* Startup  class */
 static LPSTR    _jni_sclass               = NULL;    /* Shutdown class */
-
 static HANDLE gShutdownEvent = NULL;
 static HANDLE gSignalEvent   = NULL;
 static HANDLE gSignalThread  = NULL;
@@ -374,6 +367,7 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
     fwprintf(stderr, L"  //US[//ServiceName]  Update Service parameters\n");
     fwprintf(stderr, L"  //DS[//ServiceName]  Delete Service\n");
     fwprintf(stderr, L"  //RS[//ServiceName]  Run Service\n");
+    fwprintf(stderr, L"  //ES[//ServiceName]  Start Service\n");
     fwprintf(stderr, L"  //SS[//ServiceName]  Stop Service\n");
     fwprintf(stderr, L"  //TS[//ServiceName]  Run Service as console application\n");
     fwprintf(stderr, L"  //PP[//Num Seconds]  Sleep for n Seconds (defaults to 60)\n");
@@ -719,6 +713,44 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
     return rv;
 }
 
+static BOOL docmdStartService(LPAPXCMDLINE lpCmdline)
+{
+    APXHANDLE hService;
+    BOOL  rv = FALSE;
+
+    apxLogWrite(APXLOG_MARK_INFO "Starting service '%S' ...",
+                lpCmdline->szApplication);
+    hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
+    if (IS_INVALID_HANDLE(hService)) {
+        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
+        return FALSE;
+    }
+
+    SetLastError(ERROR_SUCCESS);
+    /* Open the service */
+    if (apxServiceOpen(hService, lpCmdline->szApplication,
+                       GENERIC_READ | GENERIC_EXECUTE)) {
+        rv = apxServiceControl(hService,
+                               SERVICE_CONTROL_CONTINUE,
+                               0,
+                               NULL,
+                               NULL);
+        if (rv)
+            apxLogWrite(APXLOG_MARK_INFO "Service '%S' started",
+                        lpCmdline->szApplication);
+        else
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to start '%S' service",
+                        lpCmdline->szApplication);
+
+    }
+    else
+        apxDisplayError(FALSE, NULL, 0, "Unable to open '%S' service",
+                        lpCmdline->szApplication);
+    apxCloseHandle(hService);
+    apxLogWrite(APXLOG_MARK_INFO "Start service finished.");
+    return rv;
+}
+
 static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 {
     APXHANDLE hService;
@@ -845,10 +877,21 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
     return TRUE;
 }
 
-static int onExitHook(void)
+static int onExitStop(void)
 {
-    apxLogWrite(APXLOG_MARK_DEBUG "On exit hook called ...");
-    reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    if (_service_mode) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Stop exit hook called ...");
+        reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    }
+    return 0;
+}
+
+static int onExitStart(void)
+{
+    if (_service_mode) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Start exit hook called ...");
+        reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    }
     return 0;
 }
 
@@ -892,9 +935,9 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         gSargs.szStdErrFilename = NULL;
         gSargs.szStdOutFilename = NULL;
         gSargs.szLibraryPath    = SO_LIBPATH;
-
-        if (lstrcmpA(_jni_sclass, "java/lang/System") == 0)
-            _onexit(onExitHook);
+        /* Register onexit hook
+         */
+        _onexit(onExitStop);
         /* Create sutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(&gSargs)) {
@@ -1064,6 +1107,8 @@ static DWORD serviceStart()
     }
     GetSystemTimeAsFileTime(&fts);
     if (_jni_startup) {
+        if (IS_EMPTY_STRING(SO_STARTPATH))
+            SO_STARTPATH = gStartPath;
         if (IS_VALID_STRING(SO_STARTPATH)) {
             /* If the Working path is specified change the current directory */
             SetCurrentDirectoryW(SO_STARTPATH);
@@ -1093,7 +1138,9 @@ static DWORD serviceStart()
         gRargs.szStdErrFilename = gStdwrap.szStdErrFilename;
         gRargs.szStdOutFilename = gStdwrap.szStdOutFilename;
         gRargs.szLibraryPath    = SO_LIBPATH;
-
+        /* Register onexit hook
+         */
+        _onexit(onExitStart);
         if (!apxJavaStart(&gRargs)) {
             rv = 4;
             apxLogWrite(APXLOG_MARK_ERROR "Failed to start Java");
@@ -1301,8 +1348,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         lstrlcatW(en, SIZ_DESLEN, _service_name);
         lstrlcatW(en, SIZ_DESLEN, PRSRV_SIGNAL);
         for (i = 7; i < lstrlenW(en); i++) {
-            if (en[i] >= L'a' && en[i] <= L'z')
-                en[i] = en[i] - 32;
+            en[i] = towlower(en[i]);
         }
         gSignalEvent = CreateEventW(sa, TRUE, FALSE, en);
         CleanNullACL((void *)sa);
@@ -1491,7 +1537,7 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 {
     _service_mode = FALSE;
     _service_name = lpCmdline->szApplication;
-    apxLogWrite(APXLOG_MARK_INFO "Debugging '%S' Service...", _service_name);
+    apxLogWrite(APXLOG_MARK_INFO "Debugging '%S' service...", _service_name);
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished with exit code %d", gExitval);
     SAFE_CLOSE_HANDLE(gPidfileHandle);
@@ -1500,15 +1546,23 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 
 BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
 {
-    BOOL rv = FALSE;
-
+    BOOL rv;
+    SERVICE_TABLE_ENTRYW dispatch_table[] = {
+        { lpCmdline->szApplication, (LPSERVICE_MAIN_FUNCTIONW)serviceMain },
+        { NULL, NULL }
+    };
     _service_mode = TRUE;
     _service_name = lpCmdline->szApplication;
     apxLogWrite(APXLOG_MARK_INFO "Running '%S' Service...", _service_name);
-    _service_table[0].lpServiceName = lpCmdline->szApplication;
-    _service_table[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONW)serviceMain;
-    rv = (StartServiceCtrlDispatcherW(_service_table) != 0);
-    apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
+    if (StartServiceCtrlDispatcherW(dispatch_table)) {
+        apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
+        rv = TRUE;
+    }
+    else {
+        apxLogWrite(APXLOG_MARK_ERROR "StartServiceCtrlDispatcher for '%S' failed",
+                    lpCmdline->szApplication);
+        rv = FALSE;
+    }
     SAFE_CLOSE_HANDLE(gPidfileHandle);
     return rv;
 }
@@ -1519,6 +1573,7 @@ static const char *gSzProc[] = {
     "load configuration",
     "run service as console application",
     "run service",
+    "start service",
     "stop service",
     "update service parameters",
     "install service",
@@ -1532,17 +1587,32 @@ void __cdecl main(int argc, char **argv)
 
     LPAPXCMDLINE lpCmdline;
 
-    if (argc > 1 && strncmp(argv[1], "//PP", 4) == 0) {
-        /* Handy sleep routine defaulting to 1 minute */
-        DWORD ss = 60;
-        if (argv[1][4] && argv[1][5] && argv[1][6]) {
-             int us = atoi(argv[1] + 6);
-             if (us > 0)
-                ss = (DWORD)us;
+    if (argc > 1) {
+        DWORD ss = 0;
+        if (strncmp(argv[1], "//PP", 4) == 0) {
+            /* Handy sleep routine defaulting to 1 minute */
+            if (argv[1][4] && argv[1][5] && argv[1][6]) {
+                int us = atoi(argv[1] + 6);
+                if (us > 0)
+                    ss = (DWORD)us;
+            }
+            Sleep(ss * 1000);
+            ExitProcess(0);
+            return;
         }
-        Sleep(ss * 1000);
-        ExitProcess(0);
-        return;
+        else if (strcmp(argv[1], "pause") == 0) {
+            /* Handy sleep routine defaulting to 1 minute */
+            if (argc > 2) {
+                int us = atoi(argv[2]);
+                if (us > 0)
+                    ss = (DWORD)us;
+            }
+        }
+        if (ss) {
+            Sleep(ss * 1000);
+            ExitProcess(0);
+            return;
+        }
     }
     apxHandleManagerInitialize();
     /* Create the main Pool */
@@ -1574,7 +1644,7 @@ void __cdecl main(int argc, char **argv)
                 PRG_VERSION, PRG_BITS);
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
-
+    gStartPath = lpCmdline->szExePath;
     gStdwrap.szLogPath = SO_LOGPATH;
     /* In debug mode allways use console */
     if (lpCmdline->dwCmdIndex != 1) {
@@ -1603,26 +1673,30 @@ void __cdecl main(int argc, char **argv)
             if (!docmdRunService(lpCmdline))
                 rv = 4;
         break;
-        case 3: /* Stop Service */
-            if (!docmdStopService(lpCmdline))
+        case 3: /* Start service */
+            if (!docmdStartService(lpCmdline))
                 rv = 5;
         break;
-        case 4: /* Update Service parameters */
-            if (!docmdUpdateService(lpCmdline))
+        case 4: /* Stop Service */
+            if (!docmdStopService(lpCmdline))
                 rv = 6;
         break;
-        case 5: /* Install Service */
-            if (!docmdInstallService(lpCmdline))
+        case 5: /* Update Service parameters */
+            if (!docmdUpdateService(lpCmdline))
                 rv = 7;
         break;
-        case 6: /* Delete Service */
-            if (!docmdDeleteService(lpCmdline))
+        case 6: /* Install Service */
+            if (!docmdInstallService(lpCmdline))
                 rv = 8;
         break;
-        case 7: /* Print Usage and exit */
+        case 7: /* Delete Service */
+            if (!docmdDeleteService(lpCmdline))
+                rv = 9;
+        break;
+        case 8: /* Print Usage and exit */
             printUsage(lpCmdline, TRUE);
         break;
-        case 8: /* Print version and exit */
+        case 9: /* Print version and exit */
             printVersion();
         break;
         default:
@@ -1635,15 +1709,15 @@ void __cdecl main(int argc, char **argv)
 
 cleanup:
     if (rv) {
-        int ipx = 0;
-        if (rv > 0 && rv < 7)
-            ipx = rv;
+        int ix = 0;
+        if (rv > 0 && rv < 10)
+            ix = rv;
         apxLogWrite(APXLOG_MARK_ERROR "Commons Daemon procrun failed "
                                       "with exit value: %d (Failed to %s)",
-                                      rv, gSzProc[ipx]);
-        if (ipx > 2 && !_service_mode) {
+                                      rv, gSzProc[ix]);
+        if (ix > 2 && !_service_mode) {
             /* Print something to the user console */
-            apxDisplayError(FALSE, NULL, 0, "Failed to %s", gSzProc[ipx]);
+            apxDisplayError(FALSE, NULL, 0, "Failed to %s", gSzProc[ix]);
         }
     }
     else
@@ -1653,6 +1727,7 @@ cleanup:
     if (_service_status_handle)
         CloseHandle(_service_status_handle);
     _service_status_handle = NULL;
+    _service_mode = FALSE;
     _flushall();
     apxLogClose(NULL);
     apxHandleManagerDestroy();
