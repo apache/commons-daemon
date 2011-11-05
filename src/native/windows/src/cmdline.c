@@ -142,7 +142,7 @@ LPAPXCMDLINE apxCmdlineParse(
         }
     }
     if (lpszAltcmds && _st_sys_argc > 1 && lstrlenW(_st_sys_argvw[1]) > 2 &&
-        _st_sys_argvw[1][0] != L'-') {
+        !(_st_sys_argvw[1][0] == L'-' || _st_sys_argvw[1][0] == L'+')) {
         LPWSTR ca = _st_sys_argvw[1];
         i = 0;
         while (lpszAltcmds[i]) {
@@ -153,7 +153,8 @@ LPAPXCMDLINE apxCmdlineParse(
         }
         if (lpCmdline->dwCmdIndex) {
             s = 2;
-            if (_st_sys_argc > 2 && _st_sys_argvw[2][0] != L'-') {
+            if (_st_sys_argc > 2 && !(_st_sys_argvw[2][0] == L'-' ||
+                                      _st_sys_argvw[2][0] == L'+')) {
                 s++;
                 lpCmdline->szApplication = _st_sys_argvw[2];
             }
