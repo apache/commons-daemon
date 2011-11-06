@@ -32,7 +32,7 @@ bool log_stdout_syslog_flag = false;
 /* The name of the jsvc binary. */
 char *log_prog = "jsvc";
 
-/* Dump a debug message to stderr */
+/* Dump a debug trace message to stderr */
 void log_debug(const char *fmt, ...)
 {
     va_list ap;
@@ -45,13 +45,16 @@ void log_debug(const char *fmt, ...)
     if (fmt == NULL)
         return;
 
+    now   = time(NULL);
+    nowtm = localtime(&now);
+    strftime(buff, sizeof(buff), "%Y-%m-%d %T", nowtm);
     va_start(ap, fmt);
-    if (log_stderr_syslog_flag) {
-        now   = time(NULL);
-        nowtm = localtime(&now);
-        strftime(buff, sizeof(buff), "%d/%m/%Y %T", nowtm);
+    if (log_stderr_syslog_flag)
         fprintf(stderr, "%s %d %s debug: ", buff, getpid(), log_prog);
-    }
+#if defined(DEBUG) || defined(_DEBUG)
+    else
+        fprintf(stderr, "[debug] %s %d ", buff, getpid());
+#endif
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
     fflush(stderr);
@@ -73,7 +76,7 @@ void log_error(const char *fmt, ...)
     if (log_stderr_syslog_flag) {
         now   = time(NULL);
         nowtm = localtime(&now);
-        strftime(buff, sizeof(buff), "%d/%m/%Y %T", nowtm);
+        strftime(buff, sizeof(buff), "%Y-%m-%d %T", nowtm);
         fprintf(stderr, "%s %d %s error: ", buff, getpid(), log_prog);
     }
     vfprintf(stderr, fmt, ap);

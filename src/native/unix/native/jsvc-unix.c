@@ -467,14 +467,15 @@ static int check_pid(arg_data *args)
 /*
  * read the pid from the pidfile
  */
-static int get_pidf(arg_data *args)
+static int get_pidf(arg_data *args, bool quiet)
 {
     int fd;
     int i;
     char buff[80];
 
     fd = open(args->pidf, O_RDONLY, 0);
-    log_debug("get_pidf: %d in %s", fd, args->pidf);
+    if (!quiet)
+        log_debug("get_pidf: %d in %s", fd, args->pidf);
     if (fd < 0) {
         /* something has gone wrong the JVM has stopped */
         return -1;
@@ -486,7 +487,8 @@ static int get_pidf(arg_data *args)
     if (i > 0) {
         buff[i] = '\0';
         i = atoi(buff);
-        log_debug("get_pidf: pid %d", i);
+        if (!quiet)
+            log_debug("get_pidf: pid %d", i);
         if (kill(i, 0) == 0)
             return i;
     }
@@ -507,7 +509,7 @@ static int check_tmp_file(arg_data *args)
     char buff[80];
     int fd;
 
-    pid = get_pidf(args);
+    pid = get_pidf(args, false);
     if (pid < 0)
         return -1;
     sprintf(buff, "/tmp/%d.jsvc_up", pid);
@@ -610,8 +612,8 @@ static int wait_child(arg_data *args, int pid)
  */
 static int stop_child(arg_data *args)
 {
-    int pid = get_pidf(args);
-    int count = 10;
+    int pid = get_pidf(args, false);
+    int count = 60;
 
     if (pid > 0) {
         /* kill the process and wait until the pidfile has been
@@ -619,8 +621,8 @@ static int stop_child(arg_data *args)
          */
         kill(pid, SIGTERM);
         while (count > 0) {
-            sleep(6);
-            pid = get_pidf(args);
+            sleep(1);
+            pid = get_pidf(args, true);
             if (pid <= 0) {
                 /* JVM has stopped */
                 return 0;
