@@ -60,7 +60,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -pthread -DOS_TRU64 -DDSO_DLFCN -D_XOPEN_SOURCE_EXTENDED"
     LDFLAGS="$LDFLAGS -pthread"
     ;;
-  hpux11*)
+  hpux*)
     CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
     LDFLAGS="$LDFLAGS -pthread"
     LIBS="$LIBS -lpthread"
@@ -83,7 +83,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
     HOST_CPU=$host_cpu;;
   i?86)
-    CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
+    if [ $supported_os = hp-ux]
+    then
+        CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
+    else
+        CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
+    fi
     HOST_CPU=i386;;
   x86_64 | amd64)
     CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\""
@@ -104,17 +109,22 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     supported_os="alpha"
     HOST_CPU=alpha;;
   hppa2.0w)
-    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\""
+    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\" -DSO_EXT=\\\"sl\\\""
     HOST_CPU=PA_RISC2.0W;;
   hppa2.0)
-    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\""
+    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\" -DSO_EXT=\\\"sl\\\""
     HOST_CPU=PA_RISC2.0;;
   mipsel)
     CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
     supported_os="mipsel"
     HOST_CPU=mipsel;;
   ia64)
-    CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
+    if [ $supported_os = hp-ux]
+    then
+        CFLAGS="$CFLAGS -mlp64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
+    else
+        CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
+    endif
     HOST_CPU=ia64;;
   s390)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""

@@ -46,6 +46,8 @@ char *location_home[] = {
     "/usr/opt/java142",
     "/usr/opt/java13",
 #elif defined(OS_HPUX)
+    "/opt/java6",
+    "/opt/java1.5",
     "/opt/java1.4",
     "/opt/java1.3",
 #endif
@@ -113,10 +115,10 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/lib/" CPU "/fast64/libjvm.so",
     "$JAVA_HOME/lib/" CPU "/fast32/libjvm.so",
 #elif defined(OS_HPUX)
-    "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.sl",
-    "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.sl",
-    "$JAVA_HOME/jre/lib/" CPU "/hotspot/libjvm.sl",
-    "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.sl",
+    "$JAVA_HOME/jre/lib/" CPU "/server/libjvm." SO_EXT,
+    "$JAVA_HOME/jre/lib/" CPU "/client/libjvm." SO_EXT,
+    "$JAVA_HOME/jre/lib/" CPU "/hotspot/libjvm." SO_EXT,
+    "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm." SO_EXT,
 #endif
     "/usr/lib/libgcj.so.7",     /* gcc java libraries */
     "/usr/lib/libgcj.so.6",
