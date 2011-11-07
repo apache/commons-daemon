@@ -83,7 +83,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
     HOST_CPU=$host_cpu;;
   i?86)
-    if [ $supported_os = hp-ux]
+    if test "$supported_os" = "hp-ux"
     then
         CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
     else
@@ -119,12 +119,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     supported_os="mipsel"
     HOST_CPU=mipsel;;
   ia64)
-    if [ $supported_os = hp-ux]
+    if test "$supported_os" = "hp-ux"
     then
         CFLAGS="$CFLAGS -mlp64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
     else
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
-    endif
+    fi
     HOST_CPU=ia64;;
   s390)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
