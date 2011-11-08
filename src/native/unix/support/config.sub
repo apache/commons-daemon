@@ -365,7 +365,7 @@ case $basic_machine in
 	| f30[01]-* | f700-* | fido-* | fr30-* | frv-* | fx80-* \
 	| h8300-* | h8500-* \
 	| hppa-* | hppa1.[01]-* | hppa2.0-* | hppa2.0[nw]-* | hppa64-* \
-	| i*86-* | i860-* | i960-* | ia64-* \
+	| i*86-* | i860-* | i960-* | ia64-* | ia64[nw]-* \
 	| ip2k-* | iq2000-* \
 	| lm32-* \
 	| m32c-* | m32r-* | m32rle-* \
