@@ -82,15 +82,17 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   sparc*)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
     HOST_CPU=$host_cpu;;
-  i?86)
+  i*86|x86)
     if test "$supported_os" = "hp-ux"
     then
         CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
         LDFLAGS="$LDFLAGS -milp32"
+        HOST_CPU=IA64N
     else
         CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
+        HOST_CPU=i386
     fi
-    HOST_CPU=i386;;
+    ;;
   x86_64 | amd64)
     CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\""
     HOST_CPU=amd64;;
@@ -109,9 +111,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
     supported_os="alpha"
     HOST_CPU=alpha;;
-  hppa2.0w)
+  hppa2.0w|hppa64)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\" -DSO_EXT=\\\"sl\\\""
     HOST_CPU=PA_RISC2.0W;;
+  hppa2.0n)
+    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0N\\\" -DSO_EXT=\\\"sl\\\""
+    HOST_CPU=PA_RISC2.0N;;
   hppa2.0)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\" -DSO_EXT=\\\"sl\\\""
     HOST_CPU=PA_RISC2.0;;
