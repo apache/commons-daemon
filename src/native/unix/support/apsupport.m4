@@ -82,17 +82,9 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   sparc*)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
     HOST_CPU=$host_cpu;;
-  i*86|x86)
-    if test "$supported_os" = "hp-ux"
-    then
-        CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
-        LDFLAGS="$LDFLAGS -milp32"
-        HOST_CPU=IA64N
-    else
-        CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
-        HOST_CPU=i386
-    fi
-    ;;
+  i?86|x86)
+    CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
+    HOST_CPU=i386;;
   x86_64 | amd64)
     CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\""
     HOST_CPU=amd64;;
@@ -124,7 +116,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
     supported_os="mipsel"
     HOST_CPU=mipsel;;
-  ia64)
+  ia64w)
     if test "$supported_os" = "hp-ux"
     then
         CFLAGS="$CFLAGS -mlp64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
@@ -133,6 +125,10 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
     fi
     HOST_CPU=ia64;;
+  ia64|ia64n)
+    CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
+    LDFLAGS="$LDFLAGS -milp32"
+    HOST_CPU=IA64N;;
   s390)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
     supported_os="s390"
