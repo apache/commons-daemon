@@ -138,8 +138,8 @@ char *location_jvm_configured[] = {
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",        /* Sun JRE 1.3 */
 #elif defined(OS_HPUX)
-    "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.sl",
-    "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.sl",
+    "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm." SO_EXT,
+    "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm." SO_EXT,
 #elif defined(OS_SYSV)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/dce_threads/libjvm.so",
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/green_threads/libjvm.so",
