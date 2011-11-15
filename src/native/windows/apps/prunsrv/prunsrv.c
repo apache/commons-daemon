@@ -358,20 +358,19 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
 static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
 {
     int i = 0;
-    fwprintf(stderr, L"Usage: %s //CMD//Service [--options]\n",
+    fwprintf(stderr, L"Usage: %s command [ServiceName] [--options]\n",
              lpCmdline->szExecutable);
     fwprintf(stderr, L"  Commands:\n");
     if (isHelp)
-        fwprintf(stderr, L"  //?                  This page\n");
-    fwprintf(stderr, L"  //IS[//ServiceName]  Install Service\n");
-    fwprintf(stderr, L"  //US[//ServiceName]  Update Service parameters\n");
-    fwprintf(stderr, L"  //DS[//ServiceName]  Delete Service\n");
-    fwprintf(stderr, L"  //RS[//ServiceName]  Run Service\n");
-    fwprintf(stderr, L"  //ES[//ServiceName]  Start Service\n");
-    fwprintf(stderr, L"  //SS[//ServiceName]  Stop Service\n");
-    fwprintf(stderr, L"  //TS[//ServiceName]  Run Service as console application\n");
-    fwprintf(stderr, L"  //PP[//Num Seconds]  Sleep for n Seconds (defaults to 60)\n");
-    fwprintf(stderr, L"  //VS                 Display version\n");
+        fwprintf(stderr, L"  help                   This page\n");
+    fwprintf(stderr, L"  install [ServiceName]  Install Service\n");
+    fwprintf(stderr, L"  update  [ServiceName]  Update Service parameters\n");
+    fwprintf(stderr, L"  delete  [ServiceName]  Delete Service\n");
+    fwprintf(stderr, L"  start   [ServiceName]  Start Service\n");
+    fwprintf(stderr, L"  stop    [ServiceName]  Stop Service\n");
+    fwprintf(stderr, L"  run     [ServiceName]  Run Service as console application\n");
+    fwprintf(stderr, L"  pause   [Num Seconds]  Sleep for n Seconds (defaults to 60)\n");
+    fwprintf(stderr, L"  version                Display version\n");
     fwprintf(stderr, L"  Options:\n");
     while (_options[i].szName) {
         fwprintf(stderr, L"  --%s\n", _options[i].szName);
