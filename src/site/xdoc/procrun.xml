@@ -144,45 +144,45 @@
     </table>
 </p>
     <p>Starting with version <b>1.0.8</b> a more traditional command line can
-    be used in the form: <b>--command [ServiceName]</b>.
+    be used in the form: <b>command [ServiceName]</b>.
 </p>
 <p>
     <table>
-    <tr><th>--run</th>
+    <tr><th>run</th>
         <td>Run the service as a console application</td>
         <td>This is the default operation. It is called if the no option is provided
         and has the same effect as calling <b>//TS</b>.
         </td>
     </tr>
-    <tr><th>--service</th>
+    <tr><th>service</th>
         <td>Run the service</td>
         <td>Called only from ServiceManager</td>
     </tr>
-    <tr><th>--stop</th>
+    <tr><th>stop</th>
         <td>Stop the service</td>
         <td>Synonym for <b>//SS</b></td>
     </tr>
-    <tr><th>--update</th>
+    <tr><th>update</th>
         <td>Update service parameters</td>
         <td>Synonym for <b>//US</b></td>
     </tr>
-    <tr><th>--install</th>
+    <tr><th>install</th>
         <td>Install service</td>
         <td>Synonym for <b>//IS</b></td>
     </tr>
-    <tr><th>--delete</th>
+    <tr><th>delete</th>
         <td>Delete service</td>
         <td>Stops the service first if it is currently running</td>
     </tr>
-    <tr><th>--pause [seconds]</th>
+    <tr><th>pause [seconds]</th>
         <td>Pause</td>
         <td>Default is 60 seconds</td>
     </tr>
-    <tr><th>--version</th>
+    <tr><th>version</th>
         <td>Version</td>
         <td>Print version and exit</td>
     </tr>
-    <tr><th>--help</th>
+    <tr><th>help</th>
         <td>Help</td>
         <td>Print usage and exit</td>
     </tr>
