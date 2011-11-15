@@ -373,7 +373,7 @@ then it is treated the same as <b>--</b>. No error is reported.
     </tr>
     <tr>
     <td>--StartClass</td>
-    <td></td>
+    <td>Main</td>
     <td>Class that contains the startup method.
     Applies to the <b>jvm</b> and <b>Java</b> modes.  (Not used in <b>exe</b> mode.)
     </td>
@@ -414,12 +414,9 @@ then it is treated the same as <b>--</b>. No error is reported.
     </tr>
     <tr>
     <td>--StopClass</td>
-    <td></td>
+    <td>Main</td>
     <td>Class that will be used on Stop service signal.
     Applies to the <b>jvm</b> and <b>Java</b> modes.
-    <br />
-    <b>Note:</b> if <code>undefined</code> it defaults to <code>java.lang.System</code> in
-    which case <b>StopMethod</b> is set to <code>exit</code>.
     </td>
     </tr>
     <tr>

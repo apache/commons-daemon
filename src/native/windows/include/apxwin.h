@@ -145,10 +145,7 @@ typedef enum {
 
 APX_OSLEVEL apxGetOsLevel();
 LPWSTR      AsciiToWide(LPCSTR s, LPWSTR ws);
-LPSTR       WideToAscii(LPCWSTR ws, LPSTR s);
 LPSTR       MzWideToAscii(LPCWSTR ws, LPSTR s);
-LPSTR       WideToUTF8(LPCWSTR ws);
-LPSTR       MzWideToUTF8(LPCWSTR ws);
 LPSTR       WideToANSI(LPCWSTR ws);
 LPSTR       MzWideToANSI(LPCWSTR ws);
 

@@ -147,46 +147,6 @@ LPWSTR AsciiToWide(LPCSTR s, LPWSTR ws)
     return pszSave;
 }
 
-LPSTR WideToAscii(LPCWSTR ws, LPSTR s)
-{
-    LPSTR pszSave = s;
-
-    if (!ws) {
-        *s = '\0';
-        return pszSave;
-    }
-    do {
-        *s++ = (CHAR)*ws;
-    } while( *ws++);
-    return pszSave;
-}
-
-LPSTR WideToUTF8(LPCWSTR ws)
-{
-
-    LPSTR s;
-    int cch = WideCharToMultiByte(CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL);
-    s = (LPSTR)apxAlloc(cch);
-    if (!WideCharToMultiByte(CP_UTF8, 0, ws, -1, s, cch, NULL, NULL)) {
-        apxFree(s);
-        return NULL;
-    }
-    return s;
-}
-
-LPWSTR UTF8ToWide(LPCSTR cs)
-{
-
-    LPWSTR s;
-    int cch = MultiByteToWideChar(CP_UTF8, 0, cs, -1, NULL, 0);
-    s = (LPWSTR)apxAlloc(cch * sizeof(WCHAR));
-    if (!MultiByteToWideChar(CP_UTF8, 0, cs, -1, s, cch)) {
-        apxFree(s);
-        return NULL;
-    }
-    return s;
-}
-
 LPSTR WideToANSI(LPCWSTR ws)
 {
 
@@ -227,38 +187,6 @@ LPSTR MzWideToAscii(LPCWSTR ws, LPSTR s)
     *s++ = '\0';
     *s   = '\0';
     return pszSave;
-}
-
-LPSTR MzWideToUTF8(LPCWSTR ws)
-{
-    LPSTR str;
-    LPSTR s;
-    LPCWSTR p = ws;
-    int cch = 0;
-
-    for ( ; p && *p; p++) {
-        int len = WideCharToMultiByte(CP_UTF8, 0, p, -1, NULL, 0, NULL, NULL);
-        if (len > 0)
-            cch += len;
-        while (*p)
-            p++;
-    }
-    cch ++;
-    str = s = (LPSTR)apxAlloc(cch + 1);
-
-    p = ws;
-    for ( ; p && *p; p++) {
-        int len = WideCharToMultiByte(CP_UTF8, 0, p, -1, s, cch, NULL, NULL);
-        if (len > 0) {
-            s = s + len;
-            cch -= len;
-        }
-        while (*p)
-            p++;
-    }
-    /* double terminate */
-    *s = '\0';
-    return str;
 }
 
 LPSTR MzWideToANSI(LPCWSTR ws)

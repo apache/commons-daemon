@@ -1420,7 +1420,8 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 apxStrCharReplaceA(_jni_sclass, '.', '/');
             }
             else {
-                _jni_sclass = WideToANSI(L"java/lang/System");
+                /* Defaults to Main */
+                _jni_sclass = WideToANSI(L"Main");
             }
             _jni_sparam = SO_STOPPARAMS;
         }
@@ -1466,9 +1467,9 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         if (IS_VALID_STRING(SO_CLASSPATH))
             _jni_classpath = WideToANSI(SO_CLASSPATH);
         if (IS_VALID_STRING(SO_STARTMETHOD))
-            _jni_rmethod   = WideToAscii(SO_STARTMETHOD, (LPSTR)SO_STARTMETHOD);
+            _jni_rmethod   = WideToANSI(SO_STARTMETHOD);
         if (IS_VALID_STRING(SO_STOPMETHOD))
-            _jni_smethod   = WideToAscii(SO_STOPMETHOD, (LPSTR)SO_STOPMETHOD);
+            _jni_smethod   = WideToANSI(SO_STOPMETHOD);
         _jni_jvmoptions    = MzWideToANSI(SO_JVMOPTIONS);
     }
     if (_service_mode) {
