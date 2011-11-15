@@ -92,7 +92,7 @@
 
 <subsection name="Command line arguments">
 <p>
-    Each command line directive is in the form of <b>//XX[//ServiceName]</b>
+    Each command line directive is in the form of <b>//XX[//ServiceName]</b>.
 </p>
 <p>
     If the <code>//ServiceName</code> parameter is omitted, then the service name is
@@ -143,6 +143,51 @@
     </tr>
     </table>
 </p>
+    <p>Starting with version <b>1.0.8</b> a more tradiditional command line can
+    be used in the form: <b>--command [ServiceName]</b>.
+</p>
+<p>
+    <table>
+    <tr><th>--run</th>
+        <td>Run the service as a console application</td>
+        <td>This is the default operation. It is called if the no option is provided
+        and has the same effect as calling <b>//TS</b>.
+        </td>
+    </tr>
+    <tr><th>--service</th>
+        <td>Run the service</td>
+        <td>Called only from ServiceManager</td>
+    </tr>
+    <tr><th>--stop</th>
+        <td>Stop the service</td>
+        <td>Synonym for <b>//SS</b></td>
+    </tr>
+    <tr><th>--update</th>
+        <td>Update service parameters</td>
+        <td>Synonym for <b>//US</b></td>
+    </tr>
+    <tr><th>--install</th>
+        <td>Install service</td>
+        <td>Synonym for <b>//IS</b></td>
+    </tr>
+    <tr><th>--delete</th>
+        <td>Delete service</td>
+        <td>Stops the service first if it is currently running</td>
+    </tr>
+    <tr><th>--pause [seconds]</th>
+        <td>Pause</td>
+        <td>Default is 60 seconds</td>
+    </tr>
+    <tr><th>--version</th>
+        <td>Version</td>
+        <td>Print version and exit</td>
+    </tr>
+    <tr><th>--help</th>
+        <td>Help</td>
+        <td>Print usage and exit</td>
+    </tr>
+    </table>
+</p>
 </subsection>
 <subsection name="Command line parameters">
 <p>
@@ -182,7 +227,7 @@ then it is treated the same as <b>--</b>. No error is reported.
 <p>
     <table>
     <tr>
-    <th>ParameterName</th>
+    <th>Parameter&nbsp;Name&nbsp;&nbsp;</th>
     <th>Default</th>
     <th>Description</th>
     </tr>
@@ -372,6 +417,9 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td></td>
     <td>Class that will be used on Stop service signal.
     Applies to the <b>jvm</b> and <b>Java</b> modes.
+    <br />
+    <b>Note:</b> if <code>undefined</code> it defaults to <code>java.lang.System</code> in
+    which case <b>StopMethod</b> is set to <code>exit</code>.
     </td>
     </tr>
     <tr>
@@ -411,7 +459,8 @@ then it is treated the same as <b>--</b>. No error is reported.
     <td>--LogLevel</td>
     <td>Info</td>
     <td>Defines the logging level and can be either <b>Error</b>,
-        <b>Info</b>, <b>Warn</b> or <b>Debug</b></td>. (Case insensitive).
+        <b>Info</b>, <b>Warn</b> or <b>Debug</b>. (Case insensitive).
+    </td>
     </tr>
     <tr>
     <td>--LogJniMessages</td>
