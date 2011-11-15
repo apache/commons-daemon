@@ -143,7 +143,7 @@
     </tr>
     </table>
 </p>
-    <p>Starting with version <b>1.0.8</b> a more tradiditional command line can
+    <p>Starting with version <b>1.0.8</b> a more traditional command line can
     be used in the form: <b>--command [ServiceName]</b>.
 </p>
 <p>
