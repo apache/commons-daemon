@@ -618,6 +618,11 @@ The basic Service definitions are maintained under the registry key:
 Additional parameters are stored in the registry at:
 <source>HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\ProcRun 2.0\&lt;ServiceName&gt;\Parameters</source>
 </p>
+<p>
+On 64-bit Windows procrun always uses 32-bit registry view for storing the configuration.
+This means that parameters will be stored inside:
+<source>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Apache Software Foundation\ProcRun 2.0\&lt;ServiceName&gt;</source>
+</p>
 </section>
 </body>
 </document>
