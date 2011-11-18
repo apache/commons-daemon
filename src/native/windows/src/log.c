@@ -358,7 +358,7 @@ apxLogWrite(
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
             WriteFile(lf->hFile, _log_level[dwLevel],
-                          strlen(_log_level[dwLevel]), &wr, NULL);
+                      lstrlenA(_log_level[dwLevel]), &wr, NULL);
             if (f && lf->dwLogLevel == APXLOG_LEVEL_DEBUG) {
                 wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
