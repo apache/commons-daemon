@@ -18,7 +18,7 @@
 package org.apache.commons.daemon;
 
 /**
- * This interface provides support for native daemon invocation. Using
+ * Provides support for native daemon invocation. Using
  * a platform dependant helper program, classes that implement the
  * <code>Daemon</code> interface can be initialized, started and
  * stopped according to the conventions of the underlying operating
@@ -35,7 +35,7 @@ public interface Daemon
 {
 
     /**
-     * Initialize this <code>Daemon</code> instance.
+     * Initializes this <code>Daemon</code> instance.
      * <p>
      *   This method gets called once the JVM process is created and the
      *   <code>Daemon</code> instance is created thru its empty public
@@ -73,7 +73,7 @@ public interface Daemon
         throws DaemonInitException, Exception;
 
     /**
-     * Start the operation of this <code>Daemon</code> instance. This
+     * Starts the operation of this <code>Daemon</code> instance. This
      * method is to be invoked by the environment after the init()
      * method has been successfully invoked and possibly the security
      * level of the JVM has been dropped. Implementors of this
@@ -85,7 +85,7 @@ public interface Daemon
         throws Exception;
 
     /**
-     * Stop the operation of this <code>Daemon</code> instance. Note
+     * Stops the operation of this <code>Daemon</code> instance. Note
      * that the proper place to free any allocated resources such as
      * sockets or file descriptors is in the destroy method, as the
      * container may restart the Daemon by calling start() after
@@ -95,7 +95,7 @@ public interface Daemon
         throws Exception;
 
     /**
-     * Free any resources allocated by this daemon such as file
+     * Frees any resources allocated by this daemon such as file
      * descriptors or sockets. This method gets called by the container
      * after stop() has been called, before the JVM exits. The Daemon
      * can not be restarted after this method has been called without a

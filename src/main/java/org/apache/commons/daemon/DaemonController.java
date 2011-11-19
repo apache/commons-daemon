@@ -19,7 +19,7 @@ package org.apache.commons.daemon;
 
 
 /**
- * Interface which defines methods needed by the DaemonLoader.
+ * Defines methods needed by the DaemonLoader.
  * 
  * @author Pier Fumagalli
  * @version $Id$
@@ -28,37 +28,37 @@ public interface DaemonController
 {
 
     /**
-     * Shutdown the daemon.     
+     * Shuts down the daemon.     
      */
     public void shutdown()
         throws IllegalStateException;
 
     /**
-     * Reload daemon
+     * Reloads daemon
      */
     public void reload()
         throws IllegalStateException;
 
     /**
-     * Shudown daemon and log failed message.
+     * Shuts down daemon and logs failed message.
      */
     public void fail()
         throws IllegalStateException;
 
     /**
-     * Shudown daemon and log failed message.
+     * Shuts down daemon and logs failed message.
      */
     public void fail(String message)
         throws IllegalStateException;
 
     /**
-     * Shudown daemon and log failed message.
+     * Shuts down daemon and logs failed message.
      */
     public void fail(Exception exception)
         throws IllegalStateException;
 
     /**
-     * Shudown daemon and log failed message.
+     * Shuts down daemon and logs failed message.
      */
     public void fail(String message, Exception exception)
         throws IllegalStateException;

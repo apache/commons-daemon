@@ -21,7 +21,7 @@ import java.security.Permission;
 import java.util.StringTokenizer;
 
 /**
- * This class represents the permissions to control and query the status of
+ * Represents the permissions to control and query the status of
  * a <code>Daemon</code>. A <code>DaemonPermission</code> consists of a
  * target name and a list of actions associated with it.
  * <p>
@@ -173,7 +173,7 @@ public final class DaemonPermission extends Permission
      */
 
     /**
-     * Create a new <code>DaemonPermission</code> instance with a specified
+     * Creates a new <code>DaemonPermission</code> instance with a specified
      * permission name.
      * <p>
      * This constructor will create a new <code>DaemonPermission</code>
@@ -205,7 +205,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Create a new <code>DaemonPermission</code> instance with a specified
+     * Creates a new <code>DaemonPermission</code> instance with a specified
      * permission name and a specified list of actions.
      * <p>
      * </p>
@@ -234,7 +234,7 @@ public final class DaemonPermission extends Permission
      */
 
     /**
-     * Return the list of actions permitted by this instance of
+     * Returns the list of actions permitted by this instance of
      * <code>DaemonPermission</code> in its canonical form.
      *
      * @return The canonicalized list of actions.
@@ -248,7 +248,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Return the hash code for this <code>DaemonPermission</code> instance.
+     * Returns the hash code for this <code>DaemonPermission</code> instance.
      *
      * @return An hash code value.
      */
@@ -259,7 +259,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Check if a specified object equals <code>DaemonPermission</code>.
+     * Checks if a specified object equals <code>DaemonPermission</code>.
      *
      * @return <b>true</b> or <b>false</b> wether the specified object equals
      *         this <code>DaemonPermission</code> instance or not.
@@ -280,7 +280,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Check if this <code>DaemonPermission</code> implies another
+     * Checks if this <code>DaemonPermission</code> implies another
      * <code>Permission</code>.
      *
      * @return <b>true</b> or <b>false</b> wether the specified permission
@@ -303,7 +303,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Return a <code>String</code> representation of this instance.
+     * Returns a <code>String</code> representation of this instance.
      *
      * @return A <code>String</code> representing this
      *         <code>DaemonPermission</code> instance.
@@ -318,7 +318,8 @@ public final class DaemonPermission extends Permission
      * Private methods
      */
 
-    /** Create a String description for this permission instance.
+    /** 
+     * Creates a String description for this permission instance.
      */
     private void setupDescription()
     {
@@ -343,7 +344,8 @@ public final class DaemonPermission extends Permission
         this.desc = buf.toString();
     }
 
-    /** Create a permission mask for a given control actions string.
+    /** 
+     * Creates a permission mask for a given control actions string.
      */
     private int createControlMask(String actions)
         throws IllegalArgumentException
@@ -381,7 +383,7 @@ public final class DaemonPermission extends Permission
         return mask;
     }
 
-    /** Create a actions list for a given control permission mask. */
+    /** Creates a actions list for a given control permission mask. */
     private String createControlActions(int mask)
     {
         StringBuffer buf = new StringBuffer();

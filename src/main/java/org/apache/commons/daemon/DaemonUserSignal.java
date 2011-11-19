@@ -18,7 +18,7 @@
 package org.apache.commons.daemon;
 
 /**
- * This interface tags a Daemon as supporting some kind of
+ * Tags a Daemon as supporting some kind of
  * signaling method that allows the java application to
  * perform a custom action.
  * <p>
@@ -33,7 +33,7 @@ public interface DaemonUserSignal
 {
 
     /**
-     * Perform a custom action on received user signal.
+     * Performs a custom action on received user signal.
      */
     void signal();
 

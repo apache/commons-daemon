@@ -75,7 +75,7 @@ public final class DaemonConfiguration
     }
 
     /**
-     * Load the configuration properties file.
+     * Loads the configuration properties file.
      *
      * @param fileName The properties file to load.
      * @return <code>true</code> if the file was loaded.
@@ -155,7 +155,8 @@ public final class DaemonConfiguration
     }
 
     /**
-     * Get the configuration property.
+     * Gets the configuration property.
+     * 
      * @param name The name of the property to get.
      *
      * @throws ParseException if the property is wrongly formatted.
@@ -170,7 +171,7 @@ public final class DaemonConfiguration
     }
 
     /**
-     * Get the configuration property array.
+     * Gets the configuration property array.
      * <p>
      * Property array is constructed form the lsit of properties
      * which end with <code>[index]</code>
