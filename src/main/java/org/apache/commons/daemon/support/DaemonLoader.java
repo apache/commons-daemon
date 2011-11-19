@@ -24,10 +24,10 @@ import org.apache.commons.daemon.DaemonInitException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/*
+/**
  * Used by jsvc for Daemon management.
  *
- * @version 1.0 <i>(SVN $Revision$)</i>
+ * @version $Id$
  */
 public final class DaemonLoader
 {

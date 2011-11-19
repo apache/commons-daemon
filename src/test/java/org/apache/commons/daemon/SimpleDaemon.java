@@ -15,8 +15,6 @@
  *  limitations under the License.
  */
 
-/* @version $Id$ */
-
 package org.apache.commons.daemon;
 
 import java.io.*;
@@ -29,6 +27,9 @@ import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonController;
 import org.apache.commons.daemon.DaemonContext;
 
+/**
+ *  @version $Id$ 
+ */
 public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     private ServerSocket server=null;

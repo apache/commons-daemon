@@ -21,6 +21,7 @@ package org.apache.commons.daemon;
  * reason.  Using this exception will cause the exception's message to come out
  * on stdout, rather than a dirty great stacktrace.
  * @author Nick Griffiths (nicobrevin@gmail.com)
+ * @version $Id: $
  */
 public class DaemonInitException extends Exception {
 

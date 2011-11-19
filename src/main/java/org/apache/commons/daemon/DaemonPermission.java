@@ -83,7 +83,7 @@ import java.util.StringTokenizer;
  * </p>
  *
  * @author Pier Fumagalli
- * @version 1.0 <i>(SVN $Revision$)</i>
+ * @version $Id$
  */
 public final class DaemonPermission extends Permission
 {

@@ -27,6 +27,7 @@ package org.apache.commons.daemon;
  * </p>
  * @author Nick Griffiths <nicobrevin@gmail.com>
  * @author Mladen Turk <mturk@apache.org>
+ * @version $Id: $
  */
 public interface DaemonUserSignal
 {

@@ -21,7 +21,7 @@ import java.util.EventListener;
 
 /**
  * EvenListener type wrapper.
- * @version 1.0 <i>(SVN $Revision$)</i>
+ * @version $Id$
  */
 public interface DaemonListener extends EventListener
 {

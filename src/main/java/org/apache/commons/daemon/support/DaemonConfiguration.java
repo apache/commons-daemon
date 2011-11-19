@@ -45,7 +45,7 @@ import java.text.ParseException;
  * value will be <code>${foo}</code>.
  * </p>
  *
- * @version 1.0 <i>(SVN $Revision: 925053 $)</i>
+ * @version $Id: $
  * @author Mladen Turk
  */
 public final class DaemonConfiguration

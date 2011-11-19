@@ -22,7 +22,7 @@ package org.apache.commons.daemon;
  * Interface which defines methods needed by the DaemonLoader.
  * 
  * @author Pier Fumagalli
- * @version 1.0 <i>(SVN $Revision$)</i>
+ * @version $Id$
  */
 public interface DaemonController
 {
