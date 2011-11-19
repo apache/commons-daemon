@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-/* @version $Id: Main.java 937350 2010-04-23 16:03:39Z mturk $ */
+/* @version $Id$ */
 
 package org.apache.commons.daemon.support;
 
@@ -31,7 +31,7 @@ import org.apache.commons.daemon.DaemonContext;
  * The applications must have the mechanism to manage
  * the application lifecycle.
  *
- * @version $Id: $
+ * @version $Id$
  * @author Mladen Turk
  */
 public class DaemonWrapper implements Daemon
