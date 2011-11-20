@@ -1,21 +1,20 @@
-$Id$
-
-            Commons Daemon Package
+            Apache Commons Daemon
                Version 1.0.8
-                Release Notes
+               Release Notes
 
 
 INTRODUCTION:
 
-Commons Daemon is a set of utilities and Java support classes for running
-Java applications as server processes.
+Apache Commons Daemon is a set of utilities and Java support classes
+for running Java applications as server processes.
 Commonly known as 'daemon' processes in Unix terminology (hence the name),
 on Windows they are called 'services'.
 
-This document contains the release notes for this version of the Commons
-Daemon package, and highlights changes since the previous version.  The
-current release adds new features and bug fixes, and is being done now to
-follow the release early/release often mentality.
+This document contains the release notes for this version of the
+Apache Commons Daemon package, and highlights changes since
+the previous version.
+The current release adds new features and bug fixes, and is being done now
+to follow the release early/release often mentality.
 
 
 Compatibility with 1.0.3
@@ -118,4 +117,4 @@ https://issues.apache.org/jira/browse/DAEMON
 Or subscribe to the commons-user mailing list (prefix emails by [daemon])
 http://commons.apache.org/mail-lists.html
 
-The Commons-DAEMON Team
+The Apache Commons Daemon Team

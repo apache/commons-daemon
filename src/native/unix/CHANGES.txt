@@ -1,5 +1,3 @@
-$Id$
-
              APACHE COMMONS DAEMON (UNIX) CHANGELOG:
 
 Changes with 1.0.8

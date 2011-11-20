@@ -1,25 +1,59 @@
-Note: MAKE SURE you first build the java part (using Ant) otherwise the dist
-directory is not created).
+Configuring and Building Commons Daemon on Windows
+==================================================
 
-To build the service utilities for windows you will need:
-- MS Visual C++ (I have used version 5.0).
-- CYGWIN to build the jsvc.exe.
-- A Java Platform 2 compliant SDK to run the service.
+Using Visual Studio, you can build the Commons Daemon.
+The Makefile make file has a bunch of documentation about its
+options, but a trivial build is simply;
 
-The Windows applications are found in:
+  nmake CPU=X86
+  nmake CPU=X86 PREFIX=c:\desired\path\of\daemon install
 
-apps/prunmgr
-apps/prunsrv
 
-The common source files are in
+Needed Tools
+============
 
-src
-include
-resources
+Commons Daemon needs the Microsoft Visual C 6/SP5 to
+build the x86 binaries. This is because this compiler
+doesn't create MSVCRTnn.DLL dependencies which will
+be loaded inside running JVM if used.
+For building AMD64/EMT64 binaries use the Platform SDK
+for Windows Server 2003R2.
 
-The Makefiles in the apps/ directories can be used with MS Visual C++ 5.0.
-They will not work with earlier versions of nmake
 
-Note that later versions of Visual C++ can be set up to build the applications,
-however they may generate executables linked with a later version of the MS "C"
-runtime library (MSVCRTL), and may not work properly with all versions of Java.
+Step by Step
+============
+
+0. These were written for 64-bit XP. YMMV.
+
+1. Install the pre-requisites:
+   - Microsoft Visual C 6
+   - Microsoft Visual C 6 Service Pack 5
+   - Platform SDK for Windows Server 2003 R2
+
+2. Open a new command prompt (to ensure the environment is clean)
+   You'll need to do this for each different platform you want to build
+
+3. Configure the Visual C environment variables
+   Not necessary if the option to add them to the user's environment was
+   selected on install
+   %VC6_DIR%\Bin\VCVARS32.BAT
+   (e.g. "c:\Program Files (x86)\Microsoft Visual Studio\VC98\Bin\VCVARS32.BAT")
+
+4. Configure the Platform SDK environment (optional for X86?)
+   - win32
+     <PlatformSdkDir>\SetEnv /SRV32 /RETAIL 
+   - x64
+     <PlatformSdkDir>\SetEnv /X64 /RETAIL 
+   - i64
+     <PlatformSdkDir>\SetEnv /SRV64 /RETAIL 
+
+5. On 64-bit platforms set the following environment variable
+   set EXTRA_CFLAGS=/GS-
+
+6. Build the binary
+   - win32
+     nmake CPU=X86
+   - x64
+     nmake CPU=X64
+   - ia64
+     nmake CPU=I64
