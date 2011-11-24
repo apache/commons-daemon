@@ -1,0 +1,43 @@
+How to do a Apache Commons Deamon release
+=========================================
+
+Check out a clean copy of commons daemon from subversion to
+make sure you don't have any lingering configure or build files.
+This will make sure that the source distribution created is clean.
+
+We assume, that you checked out
+https://svn.apache.org/repos/asf/commons/proper/daemon/trunk
+to a directory named daemon. All further path names will be relative to this
+directory.
+
+If you haven't already, add your public PGP key to KEYS.
+
+Update version numbers as needed
+--------------------------------
+
+Do a find for all the docs which include the previous version string
+and replace it with the new version.
+
+TODO: explain what exactly needs to be changed.
+
+
+Maven tasks
+-----------
+
+To build the documentation: (See http://commons.apache.org/building.html).
+mvn site:generate
+(Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/commons/proper/commons-build/trunk/ commons-build))
+
+To deploy the documentation to the apache site:
+mvn -Dmaven.username=${user.name} site:deploy
+
+To deploy the Java jars to the Nexus staging repo:
+
+mvn clean
+mvn deploy -Prelease [-Ptest-deploy]
+
+The test-deploy profile will deploy to target/deploy; omit for the live deploy
+
+Note: do not use clean in the same invocation.
+Not sure why, but with Commons-Parent v21 this results deploying the non-Maven archives (zip and tar.gz) as well.
+They can be deleted before closing the repo, but it is easier not to create them.
