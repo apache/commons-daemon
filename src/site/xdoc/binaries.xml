@@ -67,8 +67,8 @@ The <code>prunsrv.exe</code> executable is available in 3 different versions for
 The version in the top-level directory is for 32-bit (x86) architectures.
 The lower level directories are for 64-bit systems:
 <ul>
-<li>amd64 - AMD 64-bit</li>
-<li>ia64 - Intel 64-bit</li>
+<li>amd64 - AMD/EMT 64-bit</li>
+<li>ia64 - Intel Itanium 64-bit</li>
 </ul>
 The Windows application <code>prunsrv.exe</code> is used to install an application as a service.
 Once installed, <code>prunmgr.exe</code> can be used to monitor and reconfigure the service.
