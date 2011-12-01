@@ -203,18 +203,18 @@
 <p> as a command line parameter.</p>
 <p>
 If a parameter is repeated, then normally the last value takes precedence.
-However some parameters can take multiple values - for example StartParams and JvmOption.
+However some parameters can take multiple values - for example StartParams and JvmOptions.
 If these parameters are prefixed with <b>++</b>, then the value will be appended to the existing value.
 For example:
 <source>
---Startup=manual --Startup=auto --JvmOption=-Done=1 ++JvmOption=-Dtwo=2
+--Startup=manual --Startup=auto --JvmOptions=-Done=1 ++JvmOptions=-Dtwo=2
 </source>
 will result in the following values being used:
 <source>
 Startup:
 auto
 
-JvmOption:
+JvmOptions:
 -Done=1
 -Dtwo=2
 </source>
