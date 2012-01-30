@@ -87,7 +87,7 @@ static LPCWSTR _commands[] = {
 static LPCWSTR _altcmds[] = {
     L"run",         /* 1 Run Service as console application (default)*/
     L"service",     /* 2 Run Service */
-    L"start",       /* 3 Version */
+    L"start",       /* 3 Start Service */
     L"stop",        /* 4 Stop Service */
     L"update",      /* 5 Update Service parameters */
     L"install",     /* 6 Install Service */
