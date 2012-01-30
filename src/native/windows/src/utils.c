@@ -298,7 +298,7 @@ apxSetEnvironmentVariable(APXHANDLE hPool, LPCTSTR szName, LPCTSTR szValue,
 }
 
 
-/** Convert null separated double null terimated string to LPTSTR array)
+/** Convert null separated double null terminated string to LPTSTR array)
  * returns array size
  */
 DWORD
