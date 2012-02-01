@@ -1630,9 +1630,9 @@ void __cdecl main(int argc, char **argv)
         goto cleanup;
     }
     apxCmdlineLoadEnvVars(lpCmdline);
-    if (lpCmdline->dwCmdIndex < 5) {
+    if (lpCmdline->dwCmdIndex < 6) {
         if (!loadConfiguration(lpCmdline) &&
-            lpCmdline->dwCmdIndex < 4) {
+            lpCmdline->dwCmdIndex < 5) {
             apxLogWrite(APXLOG_MARK_ERROR "Load configuration failed");
             rv = 2;
             goto cleanup;
