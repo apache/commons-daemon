@@ -228,9 +228,9 @@ END
 STRINGTABLE
 BEGIN
     IDS_APPLICATION     RSTR_PSM
-    IDS_APPVERSION      "Version 1.0.8"
+    IDS_APPVERSION      "Version 1.0.9"
     IDS_APPFULLNAME     RSTR_PSM " Version " PRG_VERSION
-    IDS_APPCOPYRIGHT    "Copyright (c) 2000-2011 The Apache Software Foundation"
+    IDS_APPCOPYRIGHT    "Copyright (c) 2000-2012 The Apache Software Foundation"
     IDS_APPDESCRIPTION  "Apache Commons Daemon Service Management Tool"
     IDS_ALREAY_RUNING   "An instance of '%S' application is already running"
     IDS_ERRORCMD        "Unknown command line option '%s'\nSee the manual for command line usage."
@@ -259,8 +259,8 @@ BEGIN
 END
 
 1 VERSIONINFO
- FILEVERSION 1,0,8,0
- PRODUCTVERSION 1,0,8,0
+ FILEVERSION 1,0,9,0
+ PRODUCTVERSION 1,0,9,0
  FILEFLAGSMASK 0x3fL
 #if defined(_DEBUG)
  FILEFLAGS 0x03L
@@ -280,7 +280,7 @@ BEGIN
       VALUE "FileDescription", RSTR_PSM "\0"
       VALUE "FileVersion", PRG_VERSION
       VALUE "InternalName", RSTR_PSM "\0"
-      VALUE "LegalCopyright", "Copyright (c) 2000-2011 The Apache Software Foundation.\0"
+      VALUE "LegalCopyright", "Copyright (c) 2000-2012 The Apache Software Foundation.\0"
       VALUE "OriginalFilename", "prunmgr.exe\0"
       VALUE "ProductName", RSTR_PSM "\0"
       VALUE "ProductVersion", PRG_VERSION

@@ -87,7 +87,7 @@ static LPCWSTR _commands[] = {
 static LPCWSTR _altcmds[] = {
     L"run",         /* 1 Run Service as console application (default)*/
     L"service",     /* 2 Run Service */
-    L"start",       /* 3 Version */
+    L"start",       /* 3 Start Service */
     L"stop",        /* 4 Stop Service */
     L"update",      /* 5 Update Service parameters */
     L"install",     /* 6 Install Service */
@@ -382,7 +382,7 @@ static void printVersion(void)
 {
     fwprintf(stderr, L"Commons Daemon Service Runner version %S/Win%d (%S)\n",
             PRG_VERSION, PRG_BITS, __DATE__);
-    fwprintf(stderr, L"Copyright (c) 2000-2011 The Apache Software Foundation.\n\n"
+    fwprintf(stderr, L"Copyright (c) 2000-2012 The Apache Software Foundation.\n\n"
                      L"For bug reporting instructions, please see:\n"
                      L"<URL:https://issues.apache.org/jira/browse/DAEMON>.");
 }
