@@ -650,13 +650,6 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
             return ret;
     }
 
-    /* create a new process group to prevent kill 0 killing the monitor process */
-#if defined(OS_FREEBSD) || defined(OS_DARWIN)
-    setpgid(0, 0);
-#else
-    setpgrp();
-#endif
-
 #ifdef OS_LINUX
     /* setuid()/setgid() only apply the current thread so we must do it now */
     if (linuxset_user_group(args->user, uid, gid) != 0)
