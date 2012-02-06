@@ -199,9 +199,11 @@
 </subsection>
 <subsection name="Command line parameters">
 <p>
-    Each command parameter is prefixed with <b>--</b>.
-    If an environment variable exists with the same name as command line parameter but
-    prefixed with <code>PR_</code> it will take precedence.
+    Each command parameter is prefixed with <b>--</b> (or <b>++</b>, see below).
+    <br/>
+    If an environment variable exists with the same name as a command line parameter but
+    prefixed with <code>PR_</code> it will <b>override</b> the equivalent command line parameter.
+    <br/>
     For example:
 <source>set PR_CLASSPATH=xx.jar</source>
 </p>
