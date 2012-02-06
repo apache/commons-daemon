@@ -113,6 +113,10 @@
         <td>Run the service</td>
         <td>Called only from ServiceManager</td>
     </tr>
+    <tr><th>//ES</th>
+        <td>Start (execute) the service</td>
+        <td></td>
+    </tr>
     <tr><th>//SS</th>
         <td>Stop the service</td>
         <td></td>
@@ -157,6 +161,10 @@
     <tr><th>service</th>
         <td>Run the service</td>
         <td>Called only from ServiceManager</td>
+    </tr>
+    <tr><th>start</th>
+        <td>Start the service</td>
+        <td>Synonym for <b>//ES</b></td>
     </tr>
     <tr><th>stop</th>
         <td>Stop the service</td>

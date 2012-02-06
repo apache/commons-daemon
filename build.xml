@@ -59,7 +59,7 @@
   <property name="component.title"         value="Java Daemons"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.0.8"/>
+  <property name="component.version"       value="1.0.9"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -214,7 +214,7 @@
                 version="true"
                doctitle="&lt;h1&gt;${component.title}&lt;/h1&gt;"
             windowtitle="${component.title} (Version ${component.version})"
-                 bottom="Copyright (c) 2002-2011 - Apache Software Foundation">
+                 bottom="Copyright (c) 2002-2012 - Apache Software Foundation">
       <classpath refid="compile.classpath"/>
       <classpath location="${ant.lib}/ant.jar"/>
     </javadoc>
