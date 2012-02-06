@@ -239,6 +239,13 @@ It is error to intermix <b><code>++</code></b> and <b><code>--</code></b> option
 command line. Staring with version <b>1.0.9</b> procrun will refuse to continue in such cases.
 </p>
 <p>
+When updating a service (//US or update command), using <b><code>--</code></b> 
+will replace any existing parameter with the new setting.
+<br/>
+For multi-valued parameters, using the <b><code>++</code></b> option qualifier 
+will add the new value(s) to any existing value(s).
+</p>
+<p>
     <table>
     <tr>
     <th>Parameter&nbsp;Name&nbsp;&nbsp;</th>
