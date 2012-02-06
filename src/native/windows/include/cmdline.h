@@ -30,8 +30,8 @@ __APXBEGIN_DECLS
 #define APXCMDOPT_SRV   0x00000200  /* Save to service registry */
 #define APXCMDOPT_USR   0x00000400  /* Save to user registry */
 
-#define APXCMDOPT_FOUND 0x00001000  /* The option is present in cmdline */
-#define APXCMDOPT_ADD   0x00002000  /* The option is present in cmdline as ++*/
+#define APXCMDOPT_FOUND 0x00001000  /* The option is present in cmdline as -- */
+#define APXCMDOPT_ADD   0x00002000  /* The option is present in cmdline as ++ */
 
 
 typedef struct APXCMDLINEOPT APXCMDLINEOPT;

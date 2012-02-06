@@ -179,6 +179,21 @@ LPAPXCMDLINE apxCmdlineParse(
                     lpOptions[l].dwType |= APXCMDOPT_FOUND;
                     break;
                 }
+                if (add) {
+                    if (lpOptions[l].dwType & APXCMDOPT_FOUND) {
+                        apxLogWrite(APXLOG_MARK_ERROR "Option ++%S found after --%S. "
+                                    "Intermixing --option and ++option is not allowed",
+                                    a + 2, a + 2);
+                        return NULL;
+                    }
+                    lpOptions[l].dwType |= APXCMDOPT_ADD;
+                }
+                else if (lpOptions[l].dwType & APXCMDOPT_ADD) {
+                     apxLogWrite(APXLOG_MARK_ERROR "Option --%S found after ++%S. "
+                                    "Intermixing --option and ++option is not allowed",
+                                 a + 2, a + 2);
+                     return NULL;
+                }
                 if (lpOptions[l].dwType & APXCMDOPT_STR)
                     lpOptions[l].szValue = val;
                 else if (lpOptions[l].dwType & APXCMDOPT_INT)
@@ -214,8 +229,6 @@ LPAPXCMDLINE apxCmdlineParse(
                     }
                 }
                 lpOptions[l].dwType |= APXCMDOPT_FOUND;
-                if (add)
-                    lpOptions[l].dwType |= APXCMDOPT_ADD;
                 match = l + 1;
                 break;
             }

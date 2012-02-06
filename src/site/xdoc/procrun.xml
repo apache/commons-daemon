@@ -217,7 +217,7 @@ However some parameters can take multiple values - for example StartParams and J
 If these parameters are prefixed with <b>++</b>, then the value will be appended to the existing value.
 For example:
 <source>
---Startup=manual --Startup=auto --JvmOptions=-Done=1 ++JvmOptions=-Dtwo=2
+--Startup=manual --Startup=auto ++JvmOptions=-Done=1 ++JvmOptions=-Dtwo=2
 </source>
 will result in the following values being used:
 <source>
@@ -232,7 +232,11 @@ JvmOptions:
 Only multi-valued parameters support this; they are indicated in the table below by <b><code>++</code></b>.
 <br></br>
 If <b><code>++</code></b> is used for a parameter that does not support multiple values,
-then it is treated the same as <b>--</b>. No error is reported.
+then it is treated the same as <b><code>--</code></b>. No error is reported.
+<br/>
+<b>Notice:</b><br/>
+It is error to intermix <b><code>++</code></b> and <b><code>--</code></b> options on the same
+command line. Staring with version <b>1.0.9</b> procrun will refuse to continue in such cases.
 </p>
 <p>
     <table>
