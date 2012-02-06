@@ -115,7 +115,7 @@ fi
 AC_SUBST(LDCMD)
 if test "$supported_os" = "linux"
 then
-AC_CHECK_LIB([cap], [cap_init], [CFLAGS="$CFLAGS -DHAVE_LIBCAP" ; LIBS="$LIBS -lcap"])
+AC_CHECK_LIB([cap], [cap_init], [CFLAGS="$CFLAGS -DHAVE_LIBCAP"])
 fi
 
 if test -z "$STRIPFLAGS"

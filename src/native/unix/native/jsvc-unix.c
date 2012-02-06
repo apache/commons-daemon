@@ -188,6 +188,53 @@ static cap_value_t caps_min[] = {
 #define CAPS     1
 #define CAPSMIN  2
 
+
+typedef int     (*fd_cap_free)(void *);
+typedef cap_t   (*fd_cap_init)(void);
+typedef int     (*fd_cap_clear)(cap_t);
+typedef int     (*fd_cap_get_flag)(cap_t, cap_value_t, cap_flag_t, cap_flag_value_t *);
+typedef int     (*fd_cap_set_flag)(cap_t, cap_flag_t, int, const cap_value_t *, cap_flag_value_t);
+typedef int     (*fd_cap_set_proc)(cap_t);
+
+static dso_handle hlibcap = NULL;
+static fd_cap_free  fp_cap_free;
+static fd_cap_init  fp_cap_init;
+static fd_cap_clear fp_cap_clear;
+static fd_cap_get_flag fp_cap_get_flag;
+static fd_cap_set_flag fp_cap_set_flag;
+static fd_cap_set_proc fp_cap_set_proc;
+
+static int ld_libcap(void)
+{
+    dso_handle dso;
+#define CAP_LDD(name) \
+    if ((fp_##name = dso_symbol(dso, #name)) == NULL) { \
+        log_error("cannot locate " #name " in libcap.so -- %s", dso_error());  \
+        dso_unlink(dso);    \
+        return -1;          \
+    } else log_debug("loaded " #name " from libcap.")
+
+    if (hlibcap != NULL)
+        return 0;
+    dso = dso_link("/lib/libcap.so");
+    if (dso == 0)
+        dso = dso_link("/usr/lib/libcap.so");
+    if (dso == 0) {
+        log_error("failed loading capabilities library -- %s.", dso_error());
+        return -1;
+    }
+    CAP_LDD(cap_free);
+    CAP_LDD(cap_init);
+    CAP_LDD(cap_clear);
+
+    CAP_LDD(cap_get_flag);
+    CAP_LDD(cap_set_flag);
+    CAP_LDD(cap_set_proc);
+    hlibcap = dso;
+#undef CAP_LDD
+    return 0;
+}
+
 static int set_caps(int cap_type)
 {
     cap_t c;
@@ -196,6 +243,9 @@ static int set_caps(int cap_type)
     cap_value_t *caps;
     const char  *type;
 
+    if (ld_libcap()) {
+        return -1;
+    }
     if (cap_type == CAPS) {
         ncap = sizeof(caps_std)/sizeof(cap_value_t);
         caps = caps_std;
@@ -212,16 +262,16 @@ static int set_caps(int cap_type)
         type = "null";
         flag = CAP_CLEAR;
     }
-    c = cap_init();
-    cap_clear(c);
-    cap_set_flag(c, CAP_EFFECTIVE,   ncap, caps, flag);
-    cap_set_flag(c, CAP_INHERITABLE, ncap, caps, flag);
-    cap_set_flag(c, CAP_PERMITTED,   ncap, caps, flag);
-    if (cap_set_proc(c) != 0) {
+    c = (*fp_cap_init)();
+    (*fp_cap_clear)(c);
+    (*fp_cap_set_flag)(c, CAP_EFFECTIVE,   ncap, caps, flag);
+    (*fp_cap_set_flag)(c, CAP_INHERITABLE, ncap, caps, flag);
+    (*fp_cap_set_flag)(c, CAP_PERMITTED,   ncap, caps, flag);
+    if ((*fp_cap_set_proc)(c) != 0) {
         log_error("failed setting %s capabilities.", type);
         return -1;
     }
-    cap_free(c);
+    (*fp_cap_free)(c);
     if (cap_type == CAPS)
         log_debug("increased capability set.");
     else if (cap_type == CAPSMIN)
