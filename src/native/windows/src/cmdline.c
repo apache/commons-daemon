@@ -180,19 +180,19 @@ LPAPXCMDLINE apxCmdlineParse(
                     break;
                 }
                 if (add) {
-                    if (lpOptions[l].dwType & APXCMDOPT_FOUND) {
-                        apxLogWrite(APXLOG_MARK_ERROR "Option ++%S found after --%S. "
-                                    "Intermixing --option and ++option is not allowed",
-                                    a + 2, a + 2);
-                        return NULL;
+                    if (!(lpOptions[l].dwType & APXCMDOPT_FOUND)) {
+                        /* Only set add flag in case there was no --option
+                         */
+                        lpOptions[l].dwType |= APXCMDOPT_ADD;
                     }
-                    lpOptions[l].dwType |= APXCMDOPT_ADD;
                 }
                 else if (lpOptions[l].dwType & APXCMDOPT_ADD) {
-                     apxLogWrite(APXLOG_MARK_ERROR "Option --%S found after ++%S. "
-                                    "Intermixing --option and ++option is not allowed",
-                                 a + 2, a + 2);
-                     return NULL;
+                    /* We have ++option --option ...
+                     * Discard earlier values and go over.
+                     */
+                     lpOptions[l].dwType &= ~APXCMDOPT_ADD;
+                     lpOptions[l].dwValue = 0;
+                     lpOptions[l].szValue = 0;
                 }
                 if (lpOptions[l].dwType & APXCMDOPT_STR)
                     lpOptions[l].szValue = val;
