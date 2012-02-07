@@ -22,7 +22,7 @@ UNICODE = 1
 !include <..\..\include\Makefile.inc>
 
 !IF !DEFINED(PREFIX) || "$(PREFIX)" == ""
-PREFIX = .\..\..\dist
+PREFIX = .\..\..\..\..\..\target
 !ENDIF
 !IF !DEFINED(SRCDIR) || "$(SRCDIR)" == ""
 SRCDIR = .\..\..
@@ -30,6 +30,13 @@ SRCDIR = .\..\..
 
 !IF "$(CPU)" == "X86"
 LFLAGS = $(LFLAGS) /stack:0x64000
+!ENDIF
+
+!IF "$(CPU)" == "X64"
+PREFIX = $(PREFIX)\amd64
+!ENDIF
+!IF "$(CPU)" == "I64"
+PREFIX = $(PREFIX)\ia64
 !ENDIF
 
 LFLAGS = $(LFLAGS) /version:1.0
