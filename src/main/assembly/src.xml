@@ -41,8 +41,10 @@
                 <exclude>native/unix/configure</exclude>
                 <exclude>native/unix/autom4te.cache/**</exclude>
                 <exclude>native/windows/**</exclude>
+                <!--
                 <exclude>media/**</exclude>
                 <exclude>site/**</exclude>
+                -->
             </excludes>
         </fileSet>
         <fileSet>
