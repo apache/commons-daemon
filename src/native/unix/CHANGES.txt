@@ -1,5 +1,11 @@
              APACHE COMMONS DAEMON (UNIX) CHANGELOG:
 
+Changes with 1.0.10
+  * Fix dynamic libcap loading for some linux ditributions (DAEMON-242)
+
+Changes with 1.0.9
+  * Dynamically load libcap on linux (DAEMON-234)
+
 Changes with 1.0.8
   * Better detection of JDK (DAEMON-220)
   * Use CPPFLAGS in makefile (DAEMON-223)
