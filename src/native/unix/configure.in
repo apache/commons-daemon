@@ -115,7 +115,9 @@ fi
 AC_SUBST(LDCMD)
 if test "$supported_os" = "linux"
 then
-AC_CHECK_LIB([cap], [cap_init], [CFLAGS="$CFLAGS -DHAVE_LIBCAP"])
+AC_CHECK_HEADER([sys/capability.h],
+                [CFLAGS="$CFLAGS -DHAVE_LIBCAP"],
+                AC_MSG_WARN([cannot find headers for libcap]))
 fi
 
 if test -z "$STRIPFLAGS"

@@ -172,6 +172,48 @@ static int set_user_group(const char *user, int uid, int gid)
 
 /* Set linux capability, user and group */
 #ifdef OS_LINUX
+/* CAPSALL is to allow to read/write at any location */
+#define LEGACY_CAPSALL  (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_SETUID) +             \
+                        (1 << CAP_SETGID) +             \
+                        (1 << CAP_DAC_READ_SEARCH) +    \
+                        (1 << CAP_DAC_OVERRIDE)
+
+#define LEGACY_CAPSMAX  (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_DAC_READ_SEARCH) +    \
+                        (1 << CAP_DAC_OVERRIDE)
+
+/* That a more reasonable configuration */
+#define LEGACY_CAPS     (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_DAC_READ_SEARCH) +    \
+                        (1 << CAP_SETUID) +             \
+                        (1 << CAP_SETGID)
+
+/* probably the only one Java could use */
+#define LEGACY_CAPSMIN  (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_DAC_READ_SEARCH)
+
+#define LEGACY_CAP_VERSION  0x19980330
+static int set_legacy_caps(int caps)
+{
+    struct __user_cap_header_struct caphead;
+    struct __user_cap_data_struct   cap;
+
+    memset(&caphead, 0, sizeof caphead);
+    caphead.version = LEGACY_CAP_VERSION;
+    caphead.pid = 0;
+    memset(&cap, 0, sizeof cap);
+    cap.effective = caps;
+    cap.permitted = caps;
+    cap.inheritable = caps;
+    if (syscall(__NR_capset, &caphead, &cap) < 0) {
+        log_error("set_caps: failed to set capabilities");
+        log_error("check that your kernel supports capabilities");
+        return -1;
+    }
+    return 0;
+}
+
 #ifdef HAVE_LIBCAP
 static cap_value_t caps_std[] = {
     CAP_NET_BIND_SERVICE,
@@ -204,9 +246,20 @@ static fd_cap_get_flag fp_cap_get_flag;
 static fd_cap_set_flag fp_cap_set_flag;
 static fd_cap_set_proc fp_cap_set_proc;
 
+static const char *libcap_locs[] = {
+    "/lib/libcap.so.2",
+    "/lib/libcap.so.1",
+    "/lib/libcap.so",
+    "/usr/lib/libcap.so.2",
+    "/usr/lib/libcap.so.1",
+    "/usr/lib/libcap.so",
+    NULL
+};
+
 static int ld_libcap(void)
 {
-    dso_handle dso;
+    int i = 0;
+    dso_handle dso = NULL;
 #define CAP_LDD(name) \
     if ((fp_##name = dso_symbol(dso, #name)) == NULL) { \
         log_error("cannot locate " #name " in libcap.so -- %s", dso_error());  \
@@ -216,10 +269,11 @@ static int ld_libcap(void)
 
     if (hlibcap != NULL)
         return 0;
-    dso = dso_link("/lib/libcap.so");
-    if (dso == 0)
-        dso = dso_link("/usr/lib/libcap.so");
-    if (dso == 0) {
+    while (libcap_locs[i] && dso == NULL) {
+        if ((dso = dso_link(libcap_locs[i++])))
+            break;
+    };
+    if (dso == NULL) {
         log_error("failed loading capabilities library -- %s.", dso_error());
         return -1;
     }
@@ -235,6 +289,7 @@ static int ld_libcap(void)
     return 0;
 }
 
+
 static int set_caps(int cap_type)
 {
     cap_t c;
@@ -244,7 +299,7 @@ static int set_caps(int cap_type)
     const char  *type;
 
     if (ld_libcap()) {
-        return -1;
+        return set_legacy_caps(cap_type);
     }
     if (cap_type == CAPS) {
         ncap = sizeof(caps_std)/sizeof(cap_value_t);
@@ -283,45 +338,13 @@ static int set_caps(int cap_type)
 
 #else /* !HAVE_LIBCAP */
 /* CAPSALL is to allow to read/write at any location */
-#define CAPSALL (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_SETUID) +             \
-                (1 << CAP_SETGID) +             \
-                (1 << CAP_DAC_READ_SEARCH) +    \
-                (1 << CAP_DAC_OVERRIDE)
-
-#define CAPSMAX (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_DAC_READ_SEARCH) +    \
-                (1 << CAP_DAC_OVERRIDE)
-
-/* That a more reasonable configuration */
-#define CAPS    (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_DAC_READ_SEARCH) +    \
-                (1 << CAP_SETUID) +             \
-                (1 << CAP_SETGID)
-
-/* probably the only one Java could use */
-#define CAPSMIN (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_DAC_READ_SEARCH)
-
-#define LEGACY_CAP_VERSION  0x19980330
+#define CAPSALL LEGACY_CAPSALL
+#define CAPSMAX LEGACY_CAPSMAX
+#define CAPS    LEGACY_CAPS
+#define CAPSMIN LEGACY_CAPSMIN
 static int set_caps(int caps)
 {
-    struct __user_cap_header_struct caphead;
-    struct __user_cap_data_struct   cap;
-
-    memset(&caphead, 0, sizeof caphead);
-    caphead.version = LEGACY_CAP_VERSION;
-    caphead.pid = 0;
-    memset(&cap, 0, sizeof cap);
-    cap.effective = caps;
-    cap.permitted = caps;
-    cap.inheritable = caps;
-    if (syscall(__NR_capset, &caphead, &cap) < 0) {
-        log_error("set_caps: failed to set capabilities");
-        log_error("check that your kernel supports capabilities");
-        return -1;
-    }
-    return 0;
+    return set_legacy_caps(int caps);
 }
 #endif
 
