@@ -344,7 +344,7 @@ static int set_caps(int cap_type)
 #define CAPSMIN LEGACY_CAPSMIN
 static int set_caps(int caps)
 {
-    return set_legacy_caps(int caps);
+    return set_legacy_caps(caps);
 }
 #endif
 
