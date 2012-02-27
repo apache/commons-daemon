@@ -1,5 +1,5 @@
             Apache Commons Daemon
-               Version 1.0.10
+               Version 1.0.11
                Release Notes
 
 
@@ -78,6 +78,8 @@ NEW FEATURES:
 * Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
 
 BUG FIXES:
+
+1.0.11:
 
 1.0.10: DAEMON-241, DAEMON-242
 
