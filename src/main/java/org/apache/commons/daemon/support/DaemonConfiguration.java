@@ -173,7 +173,7 @@ public final class DaemonConfiguration
     /**
      * Gets the configuration property array.
      * <p>
-     * Property array is constructed form the lsit of properties
+     * Property array is constructed form the list of properties
      * which end with <code>[index]</code>
      * </p>
      * <pre>
