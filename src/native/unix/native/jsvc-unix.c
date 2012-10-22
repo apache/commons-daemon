@@ -253,6 +253,9 @@ static const char *libcap_locs[] = {
     "/usr/lib/libcap.so.2",
     "/usr/lib/libcap.so.1",
     "/usr/lib/libcap.so",
+    "libcap.so.2",
+    "libcap.so.1",
+    "libcap.so",
     NULL
 };
 
