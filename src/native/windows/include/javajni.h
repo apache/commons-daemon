@@ -63,6 +63,9 @@ DWORD       apxJavaSetOptions(APXHANDLE hJava, DWORD dwOptions);
 
 BOOL        apxDestroyJvm(DWORD dwTimeout);
 
+DWORD        apxGetVmExitCode();
+
+void        apxSetVmExitCode(DWORD exitCode);
 
 __APXEND_DECLS
 

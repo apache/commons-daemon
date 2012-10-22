@@ -139,6 +139,8 @@ typedef struct APX_JDK1_1InitArgs {
 #define JAVA_CLASSSTRING    "java/lang/String"
 #define MSVCRT71_DLLNAME    L"\\msvcrt71.dll"
 
+static DWORD vmExitCode = 0;
+
 static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
 {
     jint _iStatus;
@@ -438,6 +440,13 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
     return rv;
 }
 
+static void JNICALL __apxJniExit(jint exitCode)
+{
+    apxLogWrite(APXLOG_MARK_DEBUG "Exit hook with exit code %d", exitCode);
+    vmExitCode = exitCode;
+    return;
+}
+
 static LPSTR __apxStrIndexA(LPCSTR szStr, int nCh)
 {
     LPSTR pStr;
@@ -624,6 +633,9 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (szClassPath && *szClassPath)
             ++sOptions;
+
+        sOptions++; /* unconditionally set for extraInfo exit */
+
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
         if (szClassPath && *szClassPath) {
@@ -641,6 +653,12 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniVfprintf;
             --sOptions;
         }
+
+        /* unconditionally add hook for System.exit() in order to store exit code */
+        lpJvmOptions[nOptions - sOptions].optionString = "exit";
+        lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniExit;
+        --sOptions; 
+
         if (dwMs) {
             wsprintfA(iB[0], "-Xms%dm", dwMs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[0];
@@ -903,6 +921,10 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
               lpJava->clWorker.jMethod,
               lpJava->clWorker.jArgs);
     if (JVM_EXCEPTION_CHECK(lpJava)) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Exception has been thrown");
+        vmExitCode = 1;
+        (*((lpJava)->lpEnv))->ExceptionDescribe((lpJava)->lpEnv);
+        __apxJvmDetach(lpJava);
         WORKER_EXIT(6);
     }
     else {
@@ -1213,5 +1235,14 @@ apxJavaSetOut(APXHANDLE hJava, BOOL setErrorOrOut, LPCWSTR szFilename)
     else
         return TRUE;
 
+}
+
+DWORD apxGetVmExitCode(void) {
+    return vmExitCode;
+}
+
+void apxSetVmExitCode(DWORD exitCode) {
+    vmExitCode = exitCode;
+    return;
 }
 

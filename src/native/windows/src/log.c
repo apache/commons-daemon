@@ -363,6 +363,11 @@ apxLogWrite(
                 wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
+
+            /* add thread ID to log output */
+            wsprintfA(sb, "[%5d] ", GetCurrentThreadId());
+            WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
+
             if (len)
                 WriteFile(lf->hFile, buffer, len, &wr, NULL);
 

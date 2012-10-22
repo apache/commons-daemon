@@ -826,14 +826,18 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 }
 
 
-/* Report the service status to the SCM
+/* Report the service status to the SCM, including service specific exit code
  */
-int reportServiceStatus(DWORD dwCurrentState,
+int reportServiceStatusE(DWORD dwCurrentState,
                         DWORD dwWin32ExitCode,
-                        DWORD dwWaitHint)
+                         DWORD dwWaitHint,
+                         DWORD dwServiceSpecificExitCode)
 {
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
+
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatus: %d, %d, %d, %d", 
+               dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
        if (dwCurrentState == SERVICE_START_PENDING)
@@ -844,6 +848,7 @@ int reportServiceStatus(DWORD dwCurrentState,
        _service_status.dwCurrentState  = dwCurrentState;
        _service_status.dwWin32ExitCode = dwWin32ExitCode;
        _service_status.dwWaitHint      = dwWaitHint;
+       _service_status.dwServiceSpecificExitCode = dwServiceSpecificExitCode;
 
        if ((dwCurrentState == SERVICE_RUNNING) ||
            (dwCurrentState == SERVICE_STOPPED))
@@ -858,6 +863,22 @@ int reportServiceStatus(DWORD dwCurrentState,
    return fResult;
 }
 
+/* Report the service status to the SCM
+ */
+int reportServiceStatus(DWORD dwCurrentState,
+                        DWORD dwWin32ExitCode,
+                        DWORD dwWaitHint)
+{
+    return reportServiceStatusE(dwCurrentState, dwWin32ExitCode, dwWaitHint, 0);
+}
+
+int reportServiceStatusStopped(DWORD exitCode) {
+    if(exitCode) {
+        return reportServiceStatusE(SERVICE_STOPPED, ERROR_SERVICE_SPECIFIC_ERROR, 0, exitCode);
+    } else {
+        return reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    }
+}
 
 BOOL child_callback(APXHANDLE hObject, UINT uMsg,
                     WPARAM wParam, LPARAM lParam)
@@ -889,7 +910,8 @@ static int onExitStart(void)
 {
     if (_service_mode) {
         apxLogWrite(APXLOG_MARK_DEBUG "Start exit hook called ...");
-        reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+        apxLogWrite(APXLOG_MARK_DEBUG "VM exit code: %d", apxGetVmExitCode());
+        reportServiceStatusStopped(apxGetVmExitCode());
     }
     return 0;
 }
@@ -1526,12 +1548,12 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
     }
     apxLogWrite(APXLOG_MARK_DEBUG "JVM destroyed.");
-    reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    reportServiceStatusStopped(apxGetVmExitCode());
 
     return;
 cleanup:
     /* Cleanup */
-    reportServiceStatus(SERVICE_STOPPED, ERROR_SERVICE_SPECIFIC_ERROR, rc);
+    reportServiceStatusStopped(rc);
     gExitval = rc;
     return;
 }
