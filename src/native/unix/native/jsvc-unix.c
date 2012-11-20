@@ -247,6 +247,14 @@ static fd_cap_set_flag fp_cap_set_flag;
 static fd_cap_set_proc fp_cap_set_proc;
 
 static const char *libcap_locs[] = {
+#ifdef __LP64__
+    "/lib64/libcap.so.2",
+    "/lib64/libcap.so.1",
+    "/lib64/libcap.so",
+    "/usr/lib64/libcap.so.2",
+    "/usr/lib64/libcap.so.1",
+    "/usr/lib64/libcap.so",
+#endif
     "/lib/libcap.so.2",
     "/lib/libcap.so.1",
     "/lib/libcap.so",
