@@ -502,6 +502,41 @@ static sighandler_t signal_set(int sig, sighandler_t newHandler)
  * Check pid and if still running
  */
 
+static int mkdir0(const char *name, int perms)
+{
+    if (mkdir(name, perms) == 0)
+        return 0;
+    else
+        return errno;
+}
+
+static int mkdir1(const char *name, int perms)
+{
+    int rc;
+
+    rc = mkdir0(name, perms);
+    if (rc == EEXIST)
+        return 0;
+    if (rc == ENOENT) {  /* Missing an intermediate dir */
+        char *pos;
+        char *dir = strdup(name);
+        if (!dir)
+            return ENOMEM;
+        if ((pos = strrchr(dir, '/'))) {
+            *pos = '\0';
+            if (*dir) {
+                if (!(rc = mkdir1(dir, perms))) {
+                    /* Try again, now with parents created
+                     */
+                    rc = mkdir0(name, perms);
+                }
+            }
+        }
+        free(dir);
+    }
+    return rc;
+}
+
 static int check_pid(arg_data *args)
 {
     int fd;
@@ -515,15 +550,9 @@ retry:
     fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0) {
         if (once == 0 && (errno == ENOTDIR || errno == ENOENT)) {
-            char *p = strrchr(args->pidf, '/');
             once = 1;
-            if (p != NULL && *p) {
-               *p = '\0';
-                i = mkdir(args->pidf, S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH);
-               *p = '/';
-               if (i == 0)
-                   goto retry;
-            }
+            if (mkdir1(args->pidf, S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH) == 0)
+                goto retry;
         }
         log_error("Cannot open PID file %s, PID is %d", args->pidf, pidn);
         return -1;
