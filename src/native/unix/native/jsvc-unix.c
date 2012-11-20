@@ -915,6 +915,7 @@ static FILE *loc_freopen(char *outfile, char *mode, FILE * stream)
 {
     FILE *ftest;
 
+    mkdir2(outfile, S_IRWXU);
     ftest = fopen(outfile, mode);
     if (ftest == NULL) {
         fprintf(stderr, "Unable to redirect to %s\n", outfile);
