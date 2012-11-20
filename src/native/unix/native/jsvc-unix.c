@@ -498,10 +498,6 @@ static sighandler_t signal_set(int sig, sighandler_t newHandler)
     return hand;
 }
 
-/*
- * Check pid and if still running
- */
-
 static int mkdir0(const char *name, int perms)
 {
     if (mkdir(name, perms) == 0)
@@ -510,7 +506,7 @@ static int mkdir0(const char *name, int perms)
         return errno;
 }
 
-static int mkdir1(const char *name, int perms)
+static int mkdir1(char *name, int perms)
 {
     int rc;
 
@@ -519,23 +515,42 @@ static int mkdir1(const char *name, int perms)
         return 0;
     if (rc == ENOENT) {  /* Missing an intermediate dir */
         char *pos;
-        char *dir = strdup(name);
-        if (!dir)
-            return ENOMEM;
-        if ((pos = strrchr(dir, '/'))) {
+        if ((pos = strrchr(name, '/'))) {
             *pos = '\0';
-            if (*dir) {
-                if (!(rc = mkdir1(dir, perms))) {
+            if (*name) {
+                if (!(rc = mkdir1(name, perms))) {
                     /* Try again, now with parents created
                      */
+                    *pos = '/';
                     rc = mkdir0(name, perms);
                 }
             }
+            *pos = '/';
         }
-        free(dir);
     }
     return rc;
 }
+
+static int mkdir2(const char *name, int perms)
+{
+    int rc = 0;
+    char *pos;
+    char *dir = strdup(name);
+
+    if (!dir)
+        return ENOMEM;
+    if ((pos = strrchr(dir, '/'))) {
+        *pos = '\0';
+        if (*dir)
+            rc = mkdir1(dir, perms);
+    }
+    free(dir);
+    return rc;
+}
+
+/*
+ * Check pid and if still running
+ */
 
 static int check_pid(arg_data *args)
 {
@@ -551,7 +566,7 @@ retry:
     if (fd < 0) {
         if (once == 0 && (errno == ENOTDIR || errno == ENOENT)) {
             once = 1;
-            if (mkdir1(args->pidf, S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH) == 0)
+            if (mkdir2(args->pidf, S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH) == 0)
                 goto retry;
         }
         log_error("Cannot open PID file %s, PID is %d", args->pidf, pidn);
