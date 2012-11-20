@@ -502,7 +502,7 @@ static int check_pid(arg_data *args)
     pid_t pidn = getpid();
     int i, pid;
 
-    fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0) {
         log_error("Cannot open PID file %s, PID is %d", args->pidf, pidn);
         return -1;
