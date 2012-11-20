@@ -501,9 +501,22 @@ static int check_pid(arg_data *args)
     char buff[80];
     pid_t pidn = getpid();
     int i, pid;
+    int once = 0;
 
+retry:
     fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0) {
+        if (once == 0 && (errno == ENOTDIR || errno == ENOENT)) {
+            char *p = strrchr(args->pidf, '/');
+            once = 1;
+            if (p != NULL && *p) {
+               *p = '\0';
+                i = mkdir(args->pidf, S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH);
+               *p = '/';
+               if (i == 0)
+                   goto retry;
+            }
+        }
         log_error("Cannot open PID file %s, PID is %d", args->pidf, pidn);
         return -1;
     }
