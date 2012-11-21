@@ -35,6 +35,8 @@ char *location_home[] = {
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD)
     "/usr/java",
     "/usr/local/java",
+    "/usr/lib/jvm/default-java",
+    "/usr/lib/jvm/java",
     "/etc/alternatives/java_sdk",
     "/etc/alternatives/jre",
 #elif defined(OS_CYGWIN)
