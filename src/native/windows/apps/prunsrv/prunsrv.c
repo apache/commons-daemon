@@ -1386,7 +1386,10 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         lstrlcatW(en, SIZ_DESLEN, _service_name);
         lstrlcatW(en, SIZ_DESLEN, PRSRV_SIGNAL);
         for (i = 7; i < lstrlenW(en); i++) {
-            en[i] = towlower(en[i]);
+            if (en[i] == L' ')
+                en[i] = L'_';
+            else
+                en[i] = towupper(en[i]);
         }
         gSignalEvent = CreateEventW(sa, TRUE, FALSE, en);
         CleanNullACL((void *)sa);
