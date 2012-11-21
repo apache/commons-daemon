@@ -185,10 +185,22 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     if (!IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
         return TRUE;    /* jvm.dll is already loaded */
 
-    if (!dllJvmPath || *dllJvmPath == L'\0')
+    if (dllJvmPath && *dllJvmPath) {
+        /* Explicit JVM path.
+         * Check if provided argument is valid
+         */
+        if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
+            /* DAEMON-247: Invalid RuntimeLib explicitly specified is error.
+             */
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib specified '%S'", dllJvmPath);
+            return FALSE;
+        }
+    }
+    else {
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
-    if (!dllJvmPath)
-        return FALSE;
+        if (!dllJvmPath)
+            return FALSE;
+    }
     if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
         /* DAEMON-184: RuntimeLib registry key is invalid.
          * Check from Jre JavaHome directly
@@ -657,7 +669,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         /* unconditionally add hook for System.exit() in order to store exit code */
         lpJvmOptions[nOptions - sOptions].optionString = "exit";
         lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniExit;
-        --sOptions; 
+        --sOptions;
 
         if (dwMs) {
             wsprintfA(iB[0], "-Xms%dm", dwMs);
