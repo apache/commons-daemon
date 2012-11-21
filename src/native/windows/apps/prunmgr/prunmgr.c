@@ -524,6 +524,7 @@ BOOL __generalStopSave(HWND hDlg)
 
 void __generalPropertyRefresh(HWND hDlg)
 {
+
     Button_Enable(GetDlgItem(hDlg, IDC_PPSGSTART), FALSE);
     Button_Enable(GetDlgItem(hDlg, IDC_PPSGSTOP), FALSE);
     Button_Enable(GetDlgItem(hDlg, IDC_PPSGPAUSE), FALSE);
@@ -561,6 +562,8 @@ void __generalPropertyRefresh(HWND hDlg)
 }
 
 static BOOL bpropCentered = FALSE;
+static HWND _generalPropertyHwnd = NULL;
+
 LRESULT CALLBACK __generalProperty(HWND hDlg,
                                    UINT uMessage,
                                    WPARAM wParam,
@@ -572,6 +575,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
     switch (uMessage) {
         case WM_INITDIALOG:
             {
+                _generalPropertyHwnd = hDlg;
                 if (!bEnableTry)
                     apxCenterWindow(GetParent(hDlg), NULL);
                 else if (!bpropCentered)
@@ -1469,6 +1473,7 @@ void ShowServiceProperties(HWND hWnd)
 
     PropertySheetW(&psH);
     _propertyOpened = FALSE;
+    _generalPropertyHwnd = NULL;
     if (!bEnableTry)
         PostQuitMessage(0);
      bpropCentered = FALSE;
@@ -1611,6 +1616,27 @@ static BOOL saveConfiguration()
     return TRUE;
 }
 
+static BOOL isManagerRunning = FALSE;
+static DWORD WINAPI refreshThread(LPVOID lpParam)
+{
+    while (isManagerRunning) {
+        /* Refresh property window */
+        DWORD os = 0;
+        if (_currentEntry)
+            os = _currentEntry->stServiceStatus.dwCurrentState;
+        _currentEntry = apxServiceEntry(hService, TRUE);
+        if (_currentEntry && _currentEntry->stServiceStatus.dwCurrentState != os) {
+            if (_gui_store->hMainWnd)
+                PostMessage(_gui_store->hMainWnd, WM_COMMAND,
+                            MAKEWPARAM(IDMS_REFRESH, 0), 0);
+            if (_generalPropertyHwnd)
+                __generalPropertyRefresh(_generalPropertyHwnd);
+        }
+        Sleep(1000);
+    }
+    return 0;
+}
+
 /* Main program entry
  * Since we are inependant from CRT
  * the arguments are not used
@@ -1740,6 +1766,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
             apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ERRSREG, 0));
         return FALSE;
     }
+    isManagerRunning = TRUE;
+    CreateThread(NULL, 0, refreshThread, NULL, 0, NULL);
     /* Create main invisible window */
     _gui_store->hMainWnd = CreateWindow(_gui_store->szWndClass,
                                         apxLoadResource(IDS_APPLICATION, 0),
@@ -1753,7 +1781,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
     }
     if (lpCmdline->dwCmdIndex == 3)
         PostMessage(_gui_store->hMainWnd, WM_COMMAND, IDM_TM_START, 0);
-
     while (GetMessage(&msg, NULL, 0, 0))  {
         if(!TranslateAccelerator(_gui_store->hMainWnd,
                                  _gui_store->hAccel, &msg)) {
@@ -1761,6 +1788,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+    isManagerRunning = FALSE;
     saveConfiguration();
 
 cleanup:
