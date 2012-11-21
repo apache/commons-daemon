@@ -346,6 +346,8 @@ apxLogWrite(
             buffer[--len] = '\0';
         if (!IS_INVALID_HANDLE(lf->hFile)) {
             SYSTEMTIME t;
+            /* Append operation */
+            SetFilePointer(lf->hFile, 0, &wr, FILE_END);
             GetLocalTime(&t);
             if (dolock) {
                 APX_LOGLOCK(lf->hFile);
@@ -373,9 +375,8 @@ apxLogWrite(
 
             /* Terminate the line */
             WriteFile(lf->hFile, LINE_SEP, sizeof(LINE_SEP) - 1, &wr, NULL);
-#ifdef _DEBUG_FULL
-            FlushFileBuffers(lf->hFile);
-#endif
+            if (dwLevel)
+                FlushFileBuffers(lf->hFile);
             if (dolock) {
                 APX_LOGUNLOCK(lf->hFile);
             }
