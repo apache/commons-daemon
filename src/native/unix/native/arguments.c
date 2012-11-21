@@ -167,6 +167,7 @@ static arg_data *parse(int argc, char *argv[])
     args->onum    = 0;            /* Zero arguments, but let's have some room */
     args->clas    = NULL;         /* No class predefined */
     args->anum    = 0;            /* Zero class specific arguments but make room*/
+    args->cwd     = "/";           /* Use root as default */
     args->outfile = "/dev/null";   /* Swallow by default */
     args->errfile = "/dev/null";   /* Swallow by default */
     args->redirectstdin = true;    /* Redirect stdin to /dev/null by default */
@@ -234,6 +235,13 @@ static arg_data *parse(int argc, char *argv[])
             args->user = optional(argc, argv, x++);
             if (args->user == NULL) {
                 log_error("Invalid user name specified");
+                return NULL;
+            }
+        }
+        else if (!strcmp(argv[x], "-cwd")) {
+            args->cwd = optional(argc, argv, x++);
+            if (args->cwd == NULL) {
+                log_error("Invalid working directory specified");
                 return NULL;
             }
         }

@@ -1223,6 +1223,10 @@ int main(int argc, char *argv[])
 #endif
     }
 
+    if (chdir(args->cwd)) {
+        log_error("ERROR: jsvc was unable to "
+                  "change directory to: %s", args->cwd);
+    }
     /*
      * umask() uses inverse logic; bits are CLEAR for allowed access.
      */

@@ -35,6 +35,8 @@ typedef struct {
     char *name;
     /** The JDK or JRE installation path (JAVA_HOME). */
     char *home;
+    /** Working directory (defaults to /). */
+    char *cwd;
     /** Options used to invoke the JVM. */
     char **opts;
     /** Number of JVM options. */
