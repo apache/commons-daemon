@@ -555,6 +555,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     DWORD dwStart = SERVICE_DEMAND_START;
     DWORD dwType  = SERVICE_WIN32_OWN_PROCESS;
     WCHAR szImage[SIZ_HUGLEN];
+    WCHAR szName[SIZ_BUFLEN];
 
     apxLogWrite(APXLOG_MARK_DEBUG "Installing service...");
     hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
@@ -583,8 +584,11 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     /* Replace not needed qoutes */
     apxStrQuoteInplaceW(szImage);
     /* Add run-service command line option */
-    lstrlcatW(szImage, SIZ_HUGLEN, L" //RS//");
-    lstrlcatW(szImage, SIZ_HUGLEN, lpCmdline->szApplication);
+    lstrlcatW(szImage, SIZ_HUGLEN, L" ");
+    lstrlcatW(szName, SIZ_BUFLEN, L"//RS//");
+    lstrlcatW(szName, SIZ_HUGLEN, lpCmdline->szApplication);
+    apxStrQuoteInplaceW(szName);
+    lstrlcatW(szImage, SIZ_HUGLEN, szName);
     SO_INSTALL = apxPoolStrdupW(gPool, szImage);
     /* Ensure that option gets saved in the registry */
     ST_INSTALL |= APXCMDOPT_FOUND;
