@@ -836,7 +836,7 @@ int reportServiceStatusE(DWORD dwCurrentState,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatus: %d, %d, %d, %d", 
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatus: %d, %d, %d, %d",
                dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
@@ -911,7 +911,15 @@ static int onExitStart(void)
     if (_service_mode) {
         apxLogWrite(APXLOG_MARK_DEBUG "Start exit hook called ...");
         apxLogWrite(APXLOG_MARK_DEBUG "VM exit code: %d", apxGetVmExitCode());
-        reportServiceStatusStopped(apxGetVmExitCode());
+        /* Reporting the service as stopped even with a non-zero exit code
+         * will not cause recovery actions to be initiated, so don't report at all.
+         * "A service is considered failed when it terminates without reporting a
+         * status of SERVICE_STOPPED to the service controller"
+         * http://msdn.microsoft.com/en-us/library/ms685939(VS.85).aspx
+         */
+        if (apxGetVmExitCode() == 0) {
+            reportServiceStatusStopped(0);
+        }
     }
     return 0;
 }
