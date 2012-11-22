@@ -145,6 +145,8 @@ Where options include:
         user used to run the daemon (defaults to current user)
     -verbose[:class|gc|jni]
         enable verbose output
+    -cwd &lt;/full/path&gt;
+        set working directory to given location (defaults to /)
     -outfile &lt;/full/path/to/file&gt;
         Location for output from stdout (defaults to /dev/null)
         Use the value '&amp;2' to simulate '1&gt;&amp;2'
