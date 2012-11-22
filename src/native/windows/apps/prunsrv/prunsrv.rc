@@ -20,6 +20,7 @@
 #define RSTR_PRUNSRV "Commons Daemon Service Runner"
 
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunsrv.manifest"
 
 1 VERSIONINFO
  FILEVERSION 1,0,11,0
