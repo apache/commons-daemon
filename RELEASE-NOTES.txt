@@ -1,5 +1,5 @@
             Apache Commons Daemon
-               Version 1.0.11
+               Version 1.0.12
                Release Notes
 
 
@@ -30,6 +30,7 @@ Commons DAEMON 1.0.3 requires a minimum of JDK 1.3
 
 NEW FEATURES:
 
+* DAEMON-269: Support privilege escalation on Windows UAC for procmgr (1.0.12)
 * DAEMON-264: Add -cwd to jsvc so that user can specify working
               directory. It defaults to /. (1.0.11)
 * DAEMON-262: Automatically refresh manager application (1.0.11)
@@ -82,6 +83,8 @@ NEW FEATURES:
 * Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
 
 BUG FIXES:
+
+1.0.12: DAEMON-268
 
 1.0.11: DAEMON-244, DAEMON-246, DAEMON-247, DAEMON-252, DAEMON-253, DAEMON-254,
         DAEMON-255, DAEMON-257, DAEMON-261, DAEMON-263, DAEMON-265, DAEMON-266,
