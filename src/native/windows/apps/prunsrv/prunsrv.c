@@ -832,22 +832,22 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 
 /* Report the service status to the SCM, including service specific exit code
  */
-int reportServiceStatusE(DWORD dwCurrentState,
-                        DWORD dwWin32ExitCode,
-                         DWORD dwWaitHint,
-                         DWORD dwServiceSpecificExitCode)
+static BOOL reportServiceStatusE(DWORD dwCurrentState,
+                                 DWORD dwWin32ExitCode,
+                                 DWORD dwWaitHint,
+                                 DWORD dwServiceSpecificExitCode)
 {
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatus: %d, %d, %d, %d",
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: %d, %d, %d, %d",
                dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
-       if (dwCurrentState == SERVICE_START_PENDING)
-            _service_status.dwControlsAccepted = 0;
+       if (dwCurrentState == SERVICE_RUNNING)
+            _service_status.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN;
         else
-            _service_status.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+            _service_status.dwControlsAccepted = 0;
 
        _service_status.dwCurrentState  = dwCurrentState;
        _service_status.dwWin32ExitCode = dwWin32ExitCode;
@@ -862,6 +862,7 @@ int reportServiceStatusE(DWORD dwCurrentState,
        fResult = SetServiceStatus(_service_status_handle, &_service_status);
        if (!fResult) {
            /* TODO: Deal with error */
+           apxLogWrite(APXLOG_MARK_ERROR "Failed to set service status");
        }
    }
    return fResult;
@@ -869,15 +870,16 @@ int reportServiceStatusE(DWORD dwCurrentState,
 
 /* Report the service status to the SCM
  */
-int reportServiceStatus(DWORD dwCurrentState,
-                        DWORD dwWin32ExitCode,
-                        DWORD dwWaitHint)
+static BOOL reportServiceStatus(DWORD dwCurrentState,
+                                DWORD dwWin32ExitCode,
+                                DWORD dwWaitHint)
 {
     return reportServiceStatusE(dwCurrentState, dwWin32ExitCode, dwWaitHint, 0);
 }
 
-int reportServiceStatusStopped(DWORD exitCode) {
-    if(exitCode) {
+static BOOL reportServiceStatusStopped(DWORD exitCode)
+{
+    if (exitCode) {
         return reportServiceStatusE(SERVICE_STOPPED, ERROR_SERVICE_SPECIFIC_ERROR, 0, exitCode);
     } else {
         return reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
@@ -1369,8 +1371,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     DWORD rc = 0;
     _service_status.dwServiceType      = SERVICE_WIN32_OWN_PROCESS;
     _service_status.dwCurrentState     = SERVICE_START_PENDING;
-    _service_status.dwControlsAccepted = SERVICE_ACCEPT_STOP |
-                                         SERVICE_ACCEPT_PAUSE_CONTINUE;
+    _service_status.dwControlsAccepted = SERVICE_CONTROL_INTERROGATE;
     _service_status.dwWin32ExitCode    = 0;
     _service_status.dwCheckPoint       = 0;
     _service_status.dwWaitHint         = 0;
