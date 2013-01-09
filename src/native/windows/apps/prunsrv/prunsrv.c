@@ -1295,12 +1295,14 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
     HANDLE stopThread;
 
     switch (dwCtrlCode) {
+        case SERVICE_CONTROL_SHUTDOWN:
+            apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signaled");
         case SERVICE_CONTROL_STOP:
             reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3000);
             /* Stop the service asynchronously */
             stopThread = CreateThread(NULL, 0,
                                       serviceStop,
-                                      (LPVOID)SERVICE_CONTROL_STOP,
+                                      (LPVOID)dwCtrlCode,
                                       0, &threadId);
 #if 0
             /* Seems we don't need to wait for the stop thread
@@ -1308,18 +1310,6 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
              */
             WaitForSingleObject(stopThread, INFINITE);
 #endif
-            CloseHandle(stopThread);
-
-            return;
-        case SERVICE_CONTROL_SHUTDOWN:
-            apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signaled");
-            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3000);
-            /* Stop the service asynchronously */
-            stopThread = CreateThread(NULL, 0,
-                                      serviceStop,
-                                      (LPVOID)SERVICE_CONTROL_SHUTDOWN,
-                                      0, &threadId);
-            WaitForSingleObject(stopThread, INFINITE);
             CloseHandle(stopThread);
             return;
         case SERVICE_CONTROL_INTERROGATE:
