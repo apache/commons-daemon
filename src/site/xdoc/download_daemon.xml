@@ -95,32 +95,32 @@ limitations under the License.
       </p>
     </subsection>
     </section>
-    <section name="Commons Daemon 1.0.12 ">
+    <section name="Commons Daemon 1.0.13 ">
       <subsection name="Binaries">
         <table>
           <tr>
-              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.0.12-bin.tar.gz">commons-daemon-1.0.12-bin.tar.gz</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.12-bin.tar.gz.md5">md5</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.12-bin.tar.gz.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.0.13-bin.tar.gz">commons-daemon-1.0.13-bin.tar.gz</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.13-bin.tar.gz.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.13-bin.tar.gz.asc">pgp</a></td>
           </tr>
           <tr>
-              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.0.12-bin.zip">commons-daemon-1.0.12-bin.zip</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.12-bin.zip.md5">md5</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.12-bin.zip.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.0.13-bin.zip">commons-daemon-1.0.13-bin.zip</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.13-bin.zip.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.0.13-bin.zip.asc">pgp</a></td>
           </tr>
         </table>
       </subsection>
       <subsection name="Source">
         <table>
           <tr>
-              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.0.12-src.tar.gz">commons-daemon-1.0.12-src.tar.gz</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.12-src.tar.gz.md5">md5</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.12-src.tar.gz.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.0.13-src.tar.gz">commons-daemon-1.0.13-src.tar.gz</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.13-src.tar.gz.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.13-src.tar.gz.asc">pgp</a></td>
           </tr>
           <tr>
-              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.0.12-src.zip">commons-daemon-1.0.12-src.zip</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.12-src.zip.md5">md5</a></td>
-              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.12-src.zip.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.0.13-src.zip">commons-daemon-1.0.13-src.zip</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.13-src.zip.md5">md5</a></td>
+              <td><a href="http://www.apache.org/dist/commons/daemon/source/commons-daemon-1.0.13-src.zip.asc">pgp</a></td>
           </tr>
         </table>
       </subsection>
