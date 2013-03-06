@@ -20,6 +20,7 @@
 package org.apache.commons.daemon.support;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.apache.commons.daemon.Daemon;
@@ -226,7 +227,11 @@ public class DaemonWrapper implements Daemon
                 System.exit(0);
             }
             else {
-                Object obj   = main.newInstance();
+                Object obj   = null;
+                if ((inst.getModifiers() & Modifier.STATIC) == 0) {
+                    // We only need object instance for non-static methods.
+                    obj = main.newInstance();
+                }
                 Object arg[] = new Object[1];
 
                 arg[0] = args;
