@@ -84,6 +84,8 @@ char *location_jvm_cfg[] = {
 char *location_jvm_default[] = {
 #if defined(OS_DARWIN)
     "$JAVA_HOME/../Libraries/libjvm.dylib",
+    "$JAVA_HOME/jre/lib/server/libjvm.dylib",
+    "$JAVA_HOME/jre/lib/client/libjvm.dylib",
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/classic/jvm.dll",               /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/bin/client/jvm.dll",                /* Sun JDK 1.4 */
