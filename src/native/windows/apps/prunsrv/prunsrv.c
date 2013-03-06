@@ -1195,6 +1195,8 @@ static DWORD serviceStart()
             /* Add LibraryPath to the PATH */
            apxAddToPathW(gPool, SO_LIBPATH);
         }
+        /* Set the environment using putenv, so JVM can use it */
+        setInprocEnvironment();
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,
                                     0,
