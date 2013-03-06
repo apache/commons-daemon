@@ -281,7 +281,8 @@ static arg_data *parse(int argc, char *argv[])
                 log_error("Invalid umask specified");
                 return NULL;
             }
-            args->umask = atoi(temp);
+            /* Parameter must be in octal */
+            args->umask = (int)strtol(temp, NULL, 8);
             if (args->umask < 02) {
                 log_error("Invalid umask specified (min=02)");
                 return NULL;
