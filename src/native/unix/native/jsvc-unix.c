@@ -1159,6 +1159,16 @@ int main(int argc, char *argv[])
         char *p1  = NULL;
         char *p2  = NULL;
 
+        /* We don't want to use a form of exec() that searches the
+         * PATH, so require that argv[0] be either an absolute or
+         * relative path.  Error out if this isn't the case.
+         */
+        tmp = strchr(oldpath,'/');
+        if (tmp == NULL) {
+            log_error("JSVC re-exec requires execution with an absolute or relative path");
+            return 1;
+        }
+
         /*
          * There is no need to change LD_LIBRARY_PATH
          * if we were not able to find a path to libjvm.so
