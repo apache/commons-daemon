@@ -299,9 +299,9 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
         if (lstrcmpiW(lpWrapper->szStdOutFilename, PRSRV_AUTO) == 0) {
             WCHAR lsn[1024];
             aOut = TRUE;
-            lstrcpyW(lsn, lpCmdline->szApplication);
+            lstrlcpyW(lsn, 1020, lpCmdline->szApplication);
+            lstrlcatW(lsn, 1020, L"-stdout");
             lstrlocaseW(lsn);
-            lstrcatW(lsn, L"-stdout");
             lpWrapper->szStdOutFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
                                                      lsn,
@@ -326,9 +326,9 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
         if (lstrcmpiW(lpWrapper->szStdErrFilename, PRSRV_AUTO) == 0) {
             WCHAR lsn[1024];
             aErr = TRUE;
-            lstrcpyW(lsn, lpCmdline->szApplication);
+            lstrlcpyW(lsn, 1020, lpCmdline->szApplication);
+            lstrlcatW(lsn, 1020, L"-stderr");
             lstrlocaseW(lsn);
-            lstrcatW(lsn, L"-stderr");
             lpWrapper->szStdErrFilename = apxLogFile(gPool,
                                                      lpWrapper->szLogPath,
                                                      lsn,
@@ -580,7 +580,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         lstrlcatW(szImage, SIZ_HUGLEN, L".exe");
     }
     else
-        lstrcpyW(szImage, SO_INSTALL);
+        lstrlcpyW(szImage, SIZ_HUGLEN, SO_INSTALL);
     /* Replace not needed qoutes */
     apxStrQuoteInplaceW(szImage);
     /* Add run-service command line option */
