@@ -585,7 +585,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     apxStrQuoteInplaceW(szImage);
     /* Add run-service command line option */
     lstrlcatW(szImage, SIZ_HUGLEN, L" ");
-    lstrlcatW(szName, SIZ_BUFLEN, L"//RS//");
+    lstrlcpyW(szName, SIZ_BUFLEN, L"//RS//");
     lstrlcatW(szName, SIZ_HUGLEN, lpCmdline->szApplication);
     apxStrQuoteInplaceW(szName);
     lstrlcatW(szImage, SIZ_HUGLEN, szName);
