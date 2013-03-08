@@ -907,7 +907,7 @@ static int onExitStop(void)
 {
     if (_service_mode) {
         apxLogWrite(APXLOG_MARK_DEBUG "Stop exit hook called ...");
-        reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+        reportServiceStatusStopped(0);
     }
     return 0;
 }
@@ -981,7 +981,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         else {
             if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
-                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 5000);
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 20 * 1000);
                 apxLogWrite(APXLOG_MARK_DEBUG "Forcing java jni System.exit worker to finish...");
                 return 0;
             }
@@ -1112,7 +1112,7 @@ cleanup:
     }
 
     apxLogWrite(APXLOG_MARK_INFO "Service stopped.");
-    reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
+    reportServiceStatusStopped(0);
     return rv;
 }
 
@@ -1302,7 +1302,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
         case SERVICE_CONTROL_SHUTDOWN:
             apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signaled");
         case SERVICE_CONTROL_STOP:
-            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3000);
+            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3 * 1000);
             /* Stop the service asynchronously */
             stopThread = CreateThread(NULL, 0,
                                       serviceStop,
