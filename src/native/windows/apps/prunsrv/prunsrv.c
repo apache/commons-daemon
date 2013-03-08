@@ -979,15 +979,17 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
             rv = 3;
         }
-        else if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
-            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 5000);
-            apxLogWrite(APXLOG_MARK_DEBUG "Forcing java jni System.exit worker to finish...");
-            return 0;
-        }
         else {
-            apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java jni stop worker to finish...");
-            apxJavaWait(hWorker, INFINITE, FALSE);
-            apxLogWrite(APXLOG_MARK_DEBUG "Java jni stop worker finished.");
+            if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 5000);
+                apxLogWrite(APXLOG_MARK_DEBUG "Forcing java jni System.exit worker to finish...");
+                return 0;
+            }
+            else {
+                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java jni stop worker to finish...");
+                apxJavaWait(hWorker, INFINITE, FALSE);
+                apxLogWrite(APXLOG_MARK_DEBUG "Java jni stop worker finished.");
+            }
         }
         wait_to_die = TRUE;
     }
