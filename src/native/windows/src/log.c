@@ -89,6 +89,10 @@ static void logRotate(apx_logfile_st *lf, LPSYSTEMTIME t)
         /* TODO: Log something */
         return;
     }
+    /* Make sure we relock the correct file */
+    APX_LOGLOCK(h);
+    APX_LOGUNLOCK(lf->hFile);
+    /* Close original handle */
     CloseHandle(lf->hFile);
     lf->hFile = h;
 }
@@ -305,6 +309,9 @@ apxLogWrite(
     if (IS_INVALID_HANDLE(lf)) {
         lf = &_st_sys_errhandle;
         lf->hFile = GetStdHandle(STD_ERROR_HANDLE);
+    }
+    if (lf == &_st_sys_errhandle) {
+        /* Do not rotate if redirected to console */
         dolock = FALSE;
     }
     if (dwLevel < lf->dwLogLevel)
