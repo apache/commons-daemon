@@ -929,7 +929,7 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
     SetEvent(lpJava->hWorkerInit);
-    /* Ensure apxJavaStart readed our status */
+    /* Ensure apxJavaStart worker has read our status */
     WaitForSingleObject(lpJava->hWorkerSync, INFINITE);    
     JNICALL_3(CallStaticVoidMethod,
               lpJava->clWorker.jClazz,
