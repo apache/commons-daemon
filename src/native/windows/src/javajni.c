@@ -113,6 +113,7 @@ typedef struct APXJAVAVM {
     DWORD           dwWorkerStatus;
     SIZE_T          szStackSize;
     HANDLE          hWorkerSync;
+    HANDLE          hWorkerInit;
 } APXJAVAVM, *LPAPXJAVAVM;
 
 /* This is no longer exported in jni.h
@@ -927,7 +928,9 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
-    SetEvent(lpJava->hWorkerSync);
+    SetEvent(lpJava->hWorkerInit);
+    /* Ensure apxJavaStart readed our status */
+    WaitForSingleObject(lpJava->hWorkerSync, INFINITE);    
     JNICALL_3(CallStaticVoidMethod,
               lpJava->clWorker.jClazz,
               lpJava->clWorker.jMethod,
@@ -947,7 +950,7 @@ finished:
         lpJava->dwWorkerStatus = 0;
         apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
                     lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
-        SetEvent(lpJava->hWorkerSync);
+        SetEvent(lpJava->hWorkerInit);
     }
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
@@ -962,6 +965,7 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
     if (!lpJava)
         return FALSE;
     lpJava->dwWorkerStatus = 0;
+    lpJava->hWorkerInit    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerSync    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerThread  = CreateThread(NULL,
                                           lpJava->szStackSize,
@@ -974,9 +978,10 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
     }
     ResumeThread(lpJava->hWorkerThread);
     /* Wait until the worker thread initializes */
-    WaitForSingleObject(lpJava->hWorkerSync, INFINITE);
+    WaitForSingleObject(lpJava->hWorkerInit, INFINITE);
     if (lpJava->dwWorkerStatus == 0)
         return FALSE;
+    SetEvent(lpJava->hWorkerSync);
     if (lstrcmpA(lpJava->clWorker.sClazz, "java/lang/System")) {
         /* Give some time to initialize the thread
          * Unless we are calling System.exit(0).
