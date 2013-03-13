@@ -1761,8 +1761,6 @@ cleanup:
         apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun finished");
     if (lpCmdline)
         apxCmdlineFree(lpCmdline);
-    if (_service_status_handle)
-        CloseHandle(_service_status_handle);
     _service_status_handle = NULL;
     _service_mode = FALSE;
     _flushall();
