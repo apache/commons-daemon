@@ -1,5 +1,5 @@
             Apache Commons Daemon
-               Version 1.0.14
+               Version 1.0.15
                Release Notes
 
 
@@ -83,6 +83,8 @@ NEW FEATURES:
 * Add sample ProcrunService Java application for use with Procrun Jvm/Java modes (1.0.3)
 
 BUG FIXES:
+
+1.0.15:
 
 1.0.14: DAEMON-278, DAEMON-280, DAEMON-281, DAEMON-283, DAEMON-284, DAEMON-286,
         DAEMON-287
