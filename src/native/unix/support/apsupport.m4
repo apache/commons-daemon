@@ -70,13 +70,23 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -DOS_AIX -DDSO_DLFCN"
     LDFLAGS="$LDFLAGS -ldl"
     ;;
+  kfreebsd*-gnu)
+    CFLAGS="$CFLAGS -DOS_BSD -DDSO_DLFCN -pthread"
+    supported_os="kfreebsd-gnu"
+    LIBS="$LIBS -ldl -lpthread"
+    ;;
+  gnu*)
+    CFLAGS="$CFLAGS -DOS_HURD -DDSO_DLFCN -pthread "
+    supported_os="hurd-gnu"
+    LIBS="$LIBS -ldl -lpthread"
+    ;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported operating system "$host_os"])
     ;;
   esac
   case $host_cpu in
-  powerpc)
+  powerpc*)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
     HOST_CPU=$host_cpu;;
   sparc*)
@@ -136,7 +146,10 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
         HOST_CPU=ia64
     fi
     ;;
-  s390)
+  sh*)
+    CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
+    HOST_CPU=$host_cpu;;
+  s390 | s390x)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
     supported_os="s390"
     HOST_CPU=s390;;
