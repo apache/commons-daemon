@@ -263,8 +263,11 @@ DWORD WINAPI eventThread(LPVOID lpParam)
             continue;
         }
         if (dw == WAIT_OBJECT_0 && gSignalValid) {
-            if (!GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, 0))
-                apxLogWrite(APXLOG_MARK_SYSERR);
+            if (!GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, 0)) {
+                /* Invoke Thread dump */
+                if (gWorker && _jni_startup)
+                    apxJavaDumpAllStacks(gWorker);
+            }
             ResetEvent(gSignalEvent);
             continue;
         }
@@ -284,15 +287,13 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
     BOOL aErr = FALSE;
     BOOL aOut = FALSE;
 
-    if (lpWrapper->szStdOutFilename || lpWrapper->szStdErrFilename) {
-        /* Alloc console if it doesn't exists. */
-        if (!AttachConsole(ATTACH_PARENT_PROCESS) &&
-             GetLastError() == ERROR_INVALID_HANDLE) {
-            HWND hc;
-            AllocConsole();
-            if ((hc = GetConsoleWindow()) != NULL)
-                ShowWindow(hc, SW_HIDE);
-        }
+    /* Allocate console if we have none
+     */
+    if (GetConsoleWindow() == NULL) {
+        HWND hc;
+        AllocConsole();
+        if ((hc = GetConsoleWindow()) != NULL)
+            ShowWindow(hc, SW_HIDE);
     }
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
