@@ -1163,7 +1163,7 @@ int main(int argc, char *argv[])
          * PATH, so require that argv[0] be either an absolute or
          * relative path.  Error out if this isn't the case.
          */
-        tmp = strchr(oldpath,'/');
+        tmp = strchr(argv[0], '/');
         if (tmp == NULL) {
             log_error("JSVC re-exec requires execution with an absolute or relative path");
             return 1;
