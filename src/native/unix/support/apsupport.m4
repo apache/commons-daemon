@@ -142,11 +142,11 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     then
         if test "x$GCC" = "xyes"
         then
-            CFLAGS="$CFLAGS +DD32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
-            LDFLAGS="$LDFLAGS +DD32"
-        else
             CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
             LDFLAGS="$LDFLAGS -milp32"
+        else
+            CFLAGS="$CFLAGS +DD32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
+            LDFLAGS="$LDFLAGS +DD32"
         fi
         HOST_CPU=IA64N
     else
