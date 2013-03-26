@@ -61,9 +61,15 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     LDFLAGS="$LDFLAGS -pthread"
     ;;
   hpux*)
-    CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
-    LDFLAGS="$LDFLAGS -pthread"
-    LIBS="$LIBS -lpthread"
+    if test "x$GCC" = "xyes"
+    then
+        CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
+        LDFLAGS="$LDFLAGS -pthread"
+        LIBS="$LIBS -lpthread"
+    else
+        CFLAGS="$CFLAGS -mt -DOS_HPUX -DDSO_DLFCN"
+        LDFLAGS="$LDFLAGS -mt"
+    fi
     supported_os="hp-ux"
     ;;
   aix5*)
@@ -119,8 +125,14 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   ia64w)
     if test "$supported_os" = "hp-ux"
     then
-        CFLAGS="$CFLAGS -mlp64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
-        LDFLAGS="$LDFLAGS -mlp64"
+        if test "x$GCC" = "xyes"
+        then
+            CFLAGS="$CFLAGS -mlp64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
+            LDFLAGS="$LDFLAGS -mlp64"
+        else
+            CFLAGS="$CFLAGS +DD64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
+            LDFLAGS="$LDFLAGS +DD64"
+        fi
     else
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
     fi
@@ -128,8 +140,14 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   ia64|ia64n)
     if test "$supported_os" = "hp-ux"
     then
-        CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
-        LDFLAGS="$LDFLAGS -milp32"
+        if test "x$GCC" = "xyes"
+        then
+            CFLAGS="$CFLAGS +DD32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
+            LDFLAGS="$LDFLAGS +DD32"
+        else
+            CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
+            LDFLAGS="$LDFLAGS -milp32"
+        fi
         HOST_CPU=IA64N
     else
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
