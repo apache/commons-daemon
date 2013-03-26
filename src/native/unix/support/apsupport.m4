@@ -91,6 +91,8 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     supported_os="hp-ux"
     if test "$host_cpu" = "ia64"
     then
+        host_cpu="ia64w"
+    else
         host_cpu="hppa2.0w"
     fi
     ;;
