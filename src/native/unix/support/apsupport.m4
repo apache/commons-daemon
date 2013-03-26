@@ -63,8 +63,8 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   hpux32)
     if test "x$GCC" = "xyes"
     then
-        CFLAGS="$CFLAGS -pthread -mlp32"
-        LDFLAGS="$LDFLAGS -pthread -mlp32"
+        CFLAGS="$CFLAGS -pthread -milp32"
+        LDFLAGS="$LDFLAGS -pthread -milp32"
     else
         CFLAGS="$CFLAGS -mt +DD32"
         LDFLAGS="$LDFLAGS -mt +DD32"
