@@ -1076,7 +1076,6 @@ cleanup:
         CloseHandle(gSignalThread);
         gSignalEvent = NULL;
     }
-    SetEvent(gShutdownEvent);
     if (timeout > 0x7FFFFFFF)
         timeout = INFINITE;     /* If the timeout was '-1' wait forewer */
     if (wait_to_die && !timeout)
@@ -1112,8 +1111,8 @@ cleanup:
         apxHandleSendMessage(gWorker, WM_CLOSE, 0, 0);
     }
 
-    apxLogWrite(APXLOG_MARK_INFO "Service stopped.");
-    reportServiceStatusStopped(0);
+    apxLogWrite(APXLOG_MARK_INFO "Service stop thread completed.");
+    SetEvent(gShutdownEvent);
     return rv;
 }
 
@@ -1538,15 +1537,18 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         goto cleanup;
     }
     if (gShutdownEvent) {
-        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+
         /* Ensure that shutdown thread exits before us */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
+        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         WaitForSingleObject(gShutdownEvent, ONE_MINUTE);
         apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
         CloseHandle(gShutdownEvent);
+
         /* This will cause to wait for all threads to exit
          */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting 1 minute for all threads to exit");
+        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         apxDestroyJvm(ONE_MINUTE);
     }
     else {
