@@ -60,16 +60,44 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     CFLAGS="$CFLAGS -pthread -DOS_TRU64 -DDSO_DLFCN -D_XOPEN_SOURCE_EXTENDED"
     LDFLAGS="$LDFLAGS -pthread"
     ;;
-  hpux*)
+  hpux32)
     if test "x$GCC" = "xyes"
     then
-        CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
-        LDFLAGS="$LDFLAGS -pthread"
-        LIBS="$LIBS -lpthread"
+        CFLAGS="$CFLAGS -pthread -mlp32"
+        LDFLAGS="$LDFLAGS -pthread -mlp32"
     else
-        CFLAGS="$CFLAGS -mt -DOS_HPUX -DDSO_DLFCN"
-        LDFLAGS="$LDFLAGS -mt"
+        CFLAGS="$CFLAGS -mt +DD32"
+        LDFLAGS="$LDFLAGS -mt +DD32"
     fi
+    CFLAGS="$CFLAGS -DOS_HPUX -DDSO_DLFCN"
+    supported_os="hp-ux"
+    if test "$host_cpu" = "ia64"
+    then
+        host_cpu="ia64n"
+    else
+        host_cpu="hppa2.0n"
+    fi
+    ;;
+  hpux64)
+    if test "x$GCC" = "xyes"
+    then
+        CFLAGS="$CFLAGS -pthread -mlp64"
+        LDFLAGS="$LDFLAGS -pthread -mlp64"
+    else
+        CFLAGS="$CFLAGS -mt +DD64"
+        LDFLAGS="$LDFLAGS -mt +DD64"
+    fi
+    CFLAGS="$CFLAGS -DOS_HPUX -DDSO_DLFCN"
+    supported_os="hp-ux"
+    if test "$host_cpu" = "ia64"
+    then
+        host_cpu="hppa2.0w"
+    fi
+    ;;
+  hpux*)
+    CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
+    LDFLAGS="$LDFLAGS -pthread"
+    LIBS="$LIBS -lpthread"
     supported_os="hp-ux"
     ;;
   aix5*)
@@ -125,29 +153,17 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   ia64w)
     if test "$supported_os" = "hp-ux"
     then
-        if test "x$GCC" = "xyes"
-        then
-            CFLAGS="$CFLAGS -mlp64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
-            LDFLAGS="$LDFLAGS -mlp64"
-        else
-            CFLAGS="$CFLAGS +DD64 -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
-            LDFLAGS="$LDFLAGS +DD64"
-        fi
+        CFLAGS="$CFLAGS -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
+        HOST_CPU=IA64W
     else
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
+        HOST_CPU=ia64
     fi
-    HOST_CPU=ia64;;
+  ;;
   ia64|ia64n)
     if test "$supported_os" = "hp-ux"
     then
-        if test "x$GCC" = "xyes"
-        then
-            CFLAGS="$CFLAGS -milp32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
-            LDFLAGS="$LDFLAGS -milp32"
-        else
-            CFLAGS="$CFLAGS +DD32 -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
-            LDFLAGS="$LDFLAGS +DD32"
-        fi
+        CFLAGS="$CFLAGS -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
         HOST_CPU=IA64N
     else
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
