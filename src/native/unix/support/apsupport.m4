@@ -65,7 +65,8 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     ;;
   hpux*)
     CFLAGS="$CFLAGS -DOS_HPUX -DDSO_DLFCN"
-    supported_os="hpux"
+    supported_os="hp-ux"
+    host_os="hpux"
     ;;
   aix5*)
     CFLAGS="$CFLAGS -DOS_AIX -DDSO_DLFCN"
@@ -122,7 +123,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     HOST_CPU=PA_RISC2.0N
     ;;
   hppa2.0)
-    if test "$supported_os" = "hpux"
+    if test "$host_os" = "hpux"
     then
         host_cpu=hppa2.0w
         HOST_CPU=PA_RISC2.0W
@@ -145,7 +146,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     HOST_CPU=IA64N
     ;;
   ia64)
-    if test "$supported_os" = "hpux"
+    if test "$host_os" = "hpux"
     then
         CFLAGS="$CFLAGS -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
         host_cpu=ia64w
@@ -170,7 +171,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
   esac
 
-  case $supported_os-$host_cpu in
+  case $host_os-$host_cpu in
   hpux-ia64n|hpux-hppa2.0n)
     if test "x$GCC" = "xyes"
     then
