@@ -180,7 +180,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
         LIBS="$LIBS -lpthread"
     else
         CFLAGS="+DD32 -mt $CFLAGS"
-        LDFLAGS="+DD32 -mt $CFLAGS"
+        LDFLAGS="+DD32 -mt $LDFLAGS"
     fi
   ;;
   hpux-ia64w|hpux-hppa2.0w)
@@ -191,7 +191,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
         LIBS="$LIBS -lpthread"
     else
         CFLAGS="+DD64 -mt $CFLAGS"
-        LDFLAGS="+DD64 -mt $CFLAGS"
+        LDFLAGS="+DD64 -mt $LDFLAGS"
     fi
   ;;
   *)
