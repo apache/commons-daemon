@@ -118,7 +118,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     host_cpu=hppa2.0w
     HOST_CPU=PA_RISC2.0W
     ;;
-  hppa2.0n)
+  hppa2.0n|hppa32)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0N\\\" -DSO_EXT=\\\"sl\\\""
     HOST_CPU=PA_RISC2.0N
     ;;
@@ -171,32 +171,45 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
   esac
 
-  case $host_os-$host_cpu in
-  hpux-ia64n|hpux-hppa2.0n)
-    if test "x$GCC" = "xyes"
-    then
+  if test "x$GCC" = "xyes"
+  then
+    case $host_os-$host_cpu in
+    hpux-ia64n)
         CFLAGS="-milp32 -pthread $CFLAGS"
         LDFLAGS="-milp32 -pthread $LDFLAGS"
         LIBS="$LIBS -lpthread"
-    else
-        CFLAGS="+DD32 -mt $CFLAGS"
-        LDFLAGS="+DD32 -mt $LDFLAGS"
-    fi
-  ;;
-  hpux-ia64w|hpux-hppa2.0w)
-    if test "x$GCC" = "xyes"
-    then
+    ;;
+    hpux-ia64w)
         CFLAGS="-mlp64 -pthread $CFLAGS"
         LDFLAGS="-mlp64 -pthread $LDFLAGS"
         LIBS="$LIBS -lpthread"
-    else
+    ;;
+    hpux-*)
+        CFLAGS="-pthread $CFLAGS"
+        LDFLAGS="-pthread $LDFLAGS"
+        LIBS="$LIBS -lpthread"
+    ;;
+    *)
+    ;;
+    esac
+  else
+    case $host_os-$host_cpu in
+    hpux-ia64n|hpux-hppa2.0n)
+        CFLAGS="+DD32 -mt $CFLAGS"
+        LDFLAGS="+DD32 -mt $LDFLAGS"
+    ;;
+    hpux-ia64w|hpux-hppa2.0w)
         CFLAGS="+DD64 -mt $CFLAGS"
         LDFLAGS="+DD64 -mt $LDFLAGS"
-    fi
-  ;;
-  *)
-  ;;
-  esac
+    ;;
+    hpux-*)
+        CFLAGS="-mt $CFLAGS"
+        LDFLAGS="-mt $LDFLAGS"
+    ;;
+    *)
+    ;;
+    esac
+  fi
 
   AC_MSG_RESULT([ok])
   AC_SUBST(CFLAGS)
