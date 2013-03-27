@@ -2714,7 +2714,7 @@ echo "$as_me: error: Unsupported CPU architecture \"$host_cpu\"" >&2;}
         LIBS="$LIBS -lpthread"
     else
         CFLAGS="+DD32 -mt $CFLAGS"
-        LDFLAGS="+DD32 -mt $CFLAGS"
+        LDFLAGS="+DD32 -mt $LDFLAGS"
     fi
   ;;
   hpux-ia64w|hpux-hppa2.0w)
@@ -2725,7 +2725,7 @@ echo "$as_me: error: Unsupported CPU architecture \"$host_cpu\"" >&2;}
         LIBS="$LIBS -lpthread"
     else
         CFLAGS="+DD64 -mt $CFLAGS"
-        LDFLAGS="+DD64 -mt $CFLAGS"
+        LDFLAGS="+DD64 -mt $LDFLAGS"
     fi
   ;;
   *)
