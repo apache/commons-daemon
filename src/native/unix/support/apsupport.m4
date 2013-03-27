@@ -45,11 +45,13 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   sysv)
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN"
     LIBS="$LIBS -ldl"
+    supported_os="sysv"
     ;;
   sysv4)
     CFLAGS="$CFLAGS -DOS_SYSV -DDSO_DLFCN -Kthread"
     LDFLAGS="-Kthread $LDFLAGS"
     LIBS="$LIBS -ldl"
+    supported_os="sysv4"
     ;;
   freebsd*)
     CFLAGS="$CFLAGS -DOS_FREEBSD -DDSO_DLFCN -D_THREAD_SAFE -pthread"
@@ -59,52 +61,16 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   osf5*)
     CFLAGS="$CFLAGS -pthread -DOS_TRU64 -DDSO_DLFCN -D_XOPEN_SOURCE_EXTENDED"
     LDFLAGS="$LDFLAGS -pthread"
-    ;;
-  hpux32)
-    if test "x$GCC" = "xyes"
-    then
-        CFLAGS="$CFLAGS -pthread -milp32"
-        LDFLAGS="$LDFLAGS -pthread -milp32"
-    else
-        CFLAGS="$CFLAGS -mt +DD32"
-        LDFLAGS="$LDFLAGS -mt +DD32"
-    fi
-    CFLAGS="$CFLAGS -DOS_HPUX -DDSO_DLFCN"
-    supported_os="hp-ux"
-    if test "$host_cpu" = "ia64"
-    then
-        host_cpu="ia64n"
-    else
-        host_cpu="hppa2.0n"
-    fi
-    ;;
-  hpux64)
-    if test "x$GCC" = "xyes"
-    then
-        CFLAGS="$CFLAGS -pthread -mlp64"
-        LDFLAGS="$LDFLAGS -pthread -mlp64"
-    else
-        CFLAGS="$CFLAGS -mt +DD64"
-        LDFLAGS="$LDFLAGS -mt +DD64"
-    fi
-    CFLAGS="$CFLAGS -DOS_HPUX -DDSO_DLFCN"
-    supported_os="hp-ux"
-    if test "$host_cpu" = "ia64"
-    then
-        host_cpu="ia64w"
-    else
-        host_cpu="hppa2.0w"
-    fi
+    supported_os="osf5"
     ;;
   hpux*)
-    CFLAGS="$CFLAGS -pthread -DOS_HPUX -DDSO_DLFCN"
-    LDFLAGS="$LDFLAGS -pthread"
-    LIBS="$LIBS -lpthread"
-    supported_os="hp-ux"
+    CFLAGS="$CFLAGS -DOS_HPUX -DDSO_DLFCN"
+    supported_os="hpux"
     ;;
   aix5*)
     CFLAGS="$CFLAGS -DOS_AIX -DDSO_DLFCN"
     LDFLAGS="$LDFLAGS -ldl"
+    supported_os="aix5"
     ;;
   *)
     AC_MSG_RESULT([failed])
@@ -114,59 +80,76 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   case $host_cpu in
   powerpc)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
-    HOST_CPU=$host_cpu;;
+    HOST_CPU=$host_cpu
+    ;;
   sparc*)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
-    HOST_CPU=$host_cpu;;
+    HOST_CPU=$host_cpu
+    ;;
   i?86|x86)
     CFLAGS="$CFLAGS -DCPU=\\\"i386\\\""
-    HOST_CPU=i386;;
+    HOST_CPU=i386
+    ;;
   x86_64 | amd64)
     CFLAGS="$CFLAGS -DCPU=\\\"amd64\\\""
-    HOST_CPU=amd64;;
+    HOST_CPU=amd64
+    ;;
   bs2000)
     CFLAGS="$CFLAGS -DCPU=\\\"osd\\\" -DCHARSET_EBCDIC -DOSD_POSIX"
     supported_os="osd"
     LDFLAGS="-Kno_link_stdlibs -B llm4"
     LIBS="$LIBS -lBLSLIB"
     LDCMD="/opt/C/bin/cc"
-    HOST_CPU=osd;;
+    HOST_CPU=osd
+    ;;
   mips)
     CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
     supported_os="mips"
-    HOST_CPU=mips;;
+    HOST_CPU=mips
+    ;;
   alpha*)
     CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
     supported_os="alpha"
-    HOST_CPU=alpha;;
+    HOST_CPU=alpha
+    ;;
   hppa2.0w|hppa64)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0W\\\" -DSO_EXT=\\\"sl\\\""
-    HOST_CPU=PA_RISC2.0W;;
+    host_cpu=hppa2.0w
+    HOST_CPU=PA_RISC2.0W
+    ;;
   hppa2.0n)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0N\\\" -DSO_EXT=\\\"sl\\\""
-    HOST_CPU=PA_RISC2.0N;;
+    HOST_CPU=PA_RISC2.0N
+    ;;
   hppa2.0)
-    CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0\\\" -DSO_EXT=\\\"sl\\\""
-    HOST_CPU=PA_RISC2.0;;
+    if test "$supported_os" = "hpux"
+    then
+        host_cpu=hppa2.0w
+        HOST_CPU=PA_RISC2.0W
+    else
+        HOST_CPU=PA_RISC2.0
+    fi
+    CFLAGS="$CFLAGS -DCPU=\\\"$HOST_CPU\\\" -DSO_EXT=\\\"sl\\\""
+    ;;
   mipsel)
     CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
     supported_os="mipsel"
-    HOST_CPU=mipsel;;
+    HOST_CPU=mipsel
+    ;;
   ia64w)
-    if test "$supported_os" = "hp-ux"
+    CFLAGS="$CFLAGS -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
+    HOST_CPU=IA64W
+    ;;
+  ia64n)
+    CFLAGS="$CFLAGS -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
+    HOST_CPU=IA64N
+    ;;
+  ia64)
+    if test "$supported_os" = "hpux"
     then
         CFLAGS="$CFLAGS -DCPU=\\\"IA64W\\\" -DSO_EXT=\\\"so\\\""
+        host_cpu=ia64w
         HOST_CPU=IA64W
-    else
-        CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
-        HOST_CPU=ia64
-    fi
-  ;;
-  ia64|ia64n)
-    if test "$supported_os" = "hp-ux"
-    then
-        CFLAGS="$CFLAGS -DCPU=\\\"IA64N\\\" -DSO_EXT=\\\"so\\\""
-        HOST_CPU=IA64N
     else
         CFLAGS="$CFLAGS -DCPU=\\\"ia64\\\""
         HOST_CPU=ia64
@@ -175,14 +158,43 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
   s390)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
     supported_os="s390"
-    HOST_CPU=s390;;
+    HOST_CPU=s390
+    ;;
   arm*)
     CFLAGS="$CFLAGS -DCPU=\\\"arm\\\""
     supported_os="arm"
-    HOST_CPU=arm;;
+    HOST_CPU=arm
+    ;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
+  esac
+
+  case $supported_os-$host_cpu in
+  hpux-ia64n|hpux-hppa2.0n)
+    if test "x$GCC" = "xyes"
+    then
+        CFLAGS="-milp32 -pthread $CFLAGS"
+        LDFLAGS="-milp32 -pthread $LDFLAGS"
+        LIBS="$LIBS -lpthread"
+    else
+        CFLAGS="+DD32 -mt $CFLAGS"
+        LDFLAGS="+DD32 -mt $CFLAGS"
+    fi
+  ;;
+  hpux-ia64w|hpux-hppa2.0w)
+    if test "x$GCC" = "xyes"
+    then
+        CFLAGS="-mlp64 -pthread $CFLAGS"
+        LDFLAGS="-mlp64 -pthread $LDFLAGS"
+        LIBS="$LIBS -lpthread"
+    else
+        CFLAGS="+DD64 -mt $CFLAGS"
+        LDFLAGS="+DD64 -mt $CFLAGS"
+    fi
+  ;;
+  *)
+  ;;
   esac
 
   AC_MSG_RESULT([ok])
