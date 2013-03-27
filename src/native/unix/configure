@@ -2649,7 +2649,7 @@ echo "$as_me: error: Unsupported operating system \"$host_os\"" >&2;}
     host_cpu=hppa2.0w
     HOST_CPU=PA_RISC2.0W
     ;;
-  hppa2.0n)
+  hppa2.0n|hppa32)
     CFLAGS="$CFLAGS -DCPU=\\\"PA_RISC2.0N\\\" -DSO_EXT=\\\"sl\\\""
     HOST_CPU=PA_RISC2.0N
     ;;
@@ -2705,32 +2705,45 @@ echo "$as_me: error: Unsupported CPU architecture \"$host_cpu\"" >&2;}
    { (exit 1); exit 1; }; };;
   esac
 
-  case $host_os-$host_cpu in
-  hpux-ia64n|hpux-hppa2.0n)
-    if test "x$GCC" = "xyes"
-    then
+  if test "x$GCC" = "xyes"
+  then
+    case $host_os-$host_cpu in
+    hpux-ia64n)
         CFLAGS="-milp32 -pthread $CFLAGS"
         LDFLAGS="-milp32 -pthread $LDFLAGS"
         LIBS="$LIBS -lpthread"
-    else
-        CFLAGS="+DD32 -mt $CFLAGS"
-        LDFLAGS="+DD32 -mt $LDFLAGS"
-    fi
-  ;;
-  hpux-ia64w|hpux-hppa2.0w)
-    if test "x$GCC" = "xyes"
-    then
+    ;;
+    hpux-ia64w)
         CFLAGS="-mlp64 -pthread $CFLAGS"
         LDFLAGS="-mlp64 -pthread $LDFLAGS"
         LIBS="$LIBS -lpthread"
-    else
+    ;;
+    hpux-*)
+        CFLAGS="-pthread $CFLAGS"
+        LDFLAGS="-pthread $LDFLAGS"
+        LIBS="$LIBS -lpthread"
+    ;;
+    *)
+    ;;
+    esac
+  else
+    case $host_os-$host_cpu in
+    hpux-ia64n|hpux-hppa2.0n)
+        CFLAGS="+DD32 -mt $CFLAGS"
+        LDFLAGS="+DD32 -mt $LDFLAGS"
+    ;;
+    hpux-ia64w|hpux-hppa2.0w)
         CFLAGS="+DD64 -mt $CFLAGS"
         LDFLAGS="+DD64 -mt $LDFLAGS"
-    fi
-  ;;
-  *)
-  ;;
-  esac
+    ;;
+    hpux-*)
+        CFLAGS="-mt $CFLAGS"
+        LDFLAGS="-mt $LDFLAGS"
+    ;;
+    *)
+    ;;
+    esac
+  fi
 
   echo "$as_me:$LINENO: result: ok" >&5
 echo "${ECHO_T}ok" >&6
