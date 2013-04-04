@@ -3,7 +3,7 @@ system you will need:
 
   An ANSI-C compliant compiler (GCC is good)
   A Java Platform 2 compliant SDK
-  GNU AutoConf (when building for SVN).
+  GNU AutoConf (when building from SVN).
 
 When building from SVN sources you need to build the "configure" program with:
 
