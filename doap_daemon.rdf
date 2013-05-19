@@ -23,7 +23,7 @@
     <category rdf:resource="http://projects.apache.org/category/library"/>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20"/>
     <bug-database rdf:resource="http://issues.apache.org/jira/browse/DAEMON"/>
-    <download-page rdf:resource="http://commons.apache.org/downloads/download_daemon.cgi"/>
+    <download-page rdf:resource="http://commons.apache.org/daemon/download_daemon.cgi"/>
     <asfext:pmc rdf:resource="http://commons.apache.org/"/>
     <shortdesc xml:lang="en">Commons Daemon</shortdesc>
     <description xml:lang="en">Commons Daemon</description>
