@@ -17,8 +17,13 @@
 
 package org.apache.commons.daemon;
 
-import java.io.*;
-import java.net.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
