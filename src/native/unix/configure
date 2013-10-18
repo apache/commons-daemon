@@ -2697,6 +2697,11 @@ echo "$as_me: error: Unsupported operating system \"$host_os\"" >&2;}
     supported_os="arm"
     HOST_CPU=arm
     ;;
+  aarch64)
+    CFLAGS="$CFLAGS -DCPU=\\\"aarch64\\\""
+    supported_os="aarch64"
+    HOST_CPU=aarch64
+    ;;
   *)
     echo "$as_me:$LINENO: result: failed" >&5
 echo "${ECHO_T}failed" >&6

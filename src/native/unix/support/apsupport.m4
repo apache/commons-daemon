@@ -179,6 +179,11 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     supported_os="arm"
     HOST_CPU=arm
     ;;
+  aarch64)
+    CFLAGS="$CFLAGS -DCPU=\\\"aarch64\\\""
+    supported_os="aarch64"
+    HOST_CPU=aarch64
+    ;;
   *)
     AC_MSG_RESULT([failed])
     AC_MSG_ERROR([Unsupported CPU architecture "$host_cpu"]);;
