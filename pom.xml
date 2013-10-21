@@ -28,7 +28,7 @@
   <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
   <version>1.0.16-SNAPSHOT</version>
-  <name>Commons Daemon</name>
+  <name>Apache Commons Daemon</name>
   <!-- Daemon started in Commons in 2002 with an import of code from Tomcat,
        which is why the NOTICE file has an earlier date than the inceptionYear -->
   <inceptionYear>2002</inceptionYear>
