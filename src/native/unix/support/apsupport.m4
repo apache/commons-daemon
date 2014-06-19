@@ -113,7 +113,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     LDCMD="/opt/C/bin/cc"
     HOST_CPU=osd
     ;;
-  mips)
+  mips | mipsn32 | mips64)
     CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
     supported_os="mips"
     HOST_CPU=mips
@@ -142,7 +142,7 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     fi
     CFLAGS="$CFLAGS -DCPU=\\\"$HOST_CPU\\\" -DSO_EXT=\\\"sl\\\""
     ;;
-  mipsel)
+  mipsel | mipsn32el | mips64el)
     CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
     supported_os="mipsel"
     HOST_CPU=mipsel

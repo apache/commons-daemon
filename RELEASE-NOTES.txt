@@ -1,5 +1,5 @@
             Apache Commons Daemon
-               Version 1.0.15
+               Version 1.0.16
                Release Notes
 
 
@@ -84,7 +84,7 @@ NEW FEATURES:
 
 BUG FIXES:
 
-1.0.16: DAEMON-281, DAEMON-289, DAEMON-308
+1.0.16: DAEMON-281, DAEMON-289, DAEMON-308, DAEMON-319
 
 1.0.15: DAEMON-288, DAEMON-291, DAEMON-292
 
