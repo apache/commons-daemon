@@ -25,6 +25,8 @@ package org.apache.commons.daemon;
  */
 public class DaemonInitException extends Exception {
 
+  private static final long serialVersionUID = 5665891535067213551L;
+
   //don't rely on Throwable#getCause (jdk1.4)
   private final Throwable cause;
 
