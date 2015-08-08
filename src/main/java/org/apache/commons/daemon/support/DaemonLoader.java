@@ -65,8 +65,9 @@ public final class DaemonLoader
     {
         try {
             /* Check the class name */
-            if (cn == null)
+            if (cn == null) {
                 throw new NullPointerException("Null class name specified");
+            }
 
             /* Get the ClassLoader loading this class */
             ClassLoader cl = DaemonLoader.class.getClassLoader();
@@ -79,8 +80,9 @@ public final class DaemonLoader
             Class c = cl.loadClass(cn);
 
             /* This should _never_ happen, but doublechecking doesn't harm */
-            if (c == null)
+            if (c == null) {
                 throw new ClassNotFoundException(cn);
+            }
 
             /* Create a new instance of the daemon */
             c.newInstance();
@@ -122,12 +124,14 @@ public final class DaemonLoader
 
             /* Check if the underlying libray supplied a valid list of
                arguments */
-            if (args == null)
+            if (args == null) {
                 args = new String[0];
+            }
 
             /* Check the class name */
-            if (className == null)
+            if (className == null) {
                 throw new NullPointerException("Null class name specified");
+            }
 
             /* Get the ClassLoader loading this class */
             ClassLoader cl = DaemonLoader.class.getClassLoader();
@@ -147,11 +151,13 @@ public final class DaemonLoader
                 System.arraycopy(args, 0, a, 2, args.length);
                 args = a;
             }
-            else
+            else {
                 c = cl.loadClass(className);
+            }
             /* This should _never_ happen, but doublechecking doesn't harm */
-            if (c == null)
+            if (c == null) {
                 throw new ClassNotFoundException(className);
+            }
             /* Check interfaces */
             boolean isdaemon = false;
 
@@ -243,8 +249,9 @@ public final class DaemonLoader
             start.invoke(daemon, arg);
 
             /* Set the availability flag in the controller */
-            if (controller != null)
+            if (controller != null) {
                 controller.setAvailable(true);
+            }
 
         } catch (Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
@@ -260,8 +267,9 @@ public final class DaemonLoader
     {
         try {
             /* Set the availability flag in the controller */
-            if (controller != null)
+            if (controller != null) {
                 controller.setAvailable(false);
+            }
 
             /* Attempt to stop the daemon */
             Object arg[] = null;
@@ -381,10 +389,12 @@ public final class DaemonLoader
                 this.setAvailable(false);
                 String msg = message;
                 if (exception != null) {
-                    if (msg != null)
+                    if (msg != null) {
                         msg = msg + ": " + exception.toString();
-                    else
+                    }
+                    else {
                         msg = exception.toString();
+                    }
                 }
                 DaemonLoader.failed(msg);
             }
@@ -422,4 +432,3 @@ public final class DaemonLoader
 
     }
 }
-

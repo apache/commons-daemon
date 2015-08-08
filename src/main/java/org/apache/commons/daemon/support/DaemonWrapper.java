@@ -101,33 +101,39 @@ public class DaemonWrapper implements Daemon
                     break;
                 }
                 else if (args[i].equals("-daemon-properties")) {
-                    if (++i == args.length)
+                    if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
+                    }
                     configFileName = args[i];
                 }
                 else if (args[i].equals("-start")) {
-                    if (++i == args.length)
+                    if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
+                    }
                     startup.setClassName(args[i]);
                 }
                 else if (args[i].equals("-start-method")) {
-                    if (++i == args.length)
+                    if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
+                    }
                     startup.setMethodName(args[i]);
                 }
                 else if (args[i].equals("-stop")) {
-                    if (++i == args.length)
+                    if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
+                    }
                     shutdown.setClassName(args[i]);
                 }
                 else if (args[i].equals("-stop-method")) {
-                    if (++i == args.length)
+                    if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
+                    }
                     shutdown.setMethodName(args[i]);
                 }
                 else if (args[i].equals("-stop-argument")) {
-                    if (++i == args.length)
+                    if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
+                    }
                     String[] aa = new String[1];
                     aa[0] = args[i];
                     shutdown.addArguments(aa);
@@ -198,20 +204,23 @@ public class DaemonWrapper implements Daemon
 
         protected void setClassName(String name)
         {
-            if (this.name == null)
+            if (this.name == null) {
                 this.name = name;
+            }
         }
         protected void setMethodName(String name)
         {
-            if (this.call == null)
+            if (this.call == null) {
                 this.call = name;
+            }
         }
         protected void addArguments(String[] args)
         {
             if (args != null) {
                 ArrayList aa = new ArrayList();
-                if (this.args != null)
+                if (this.args != null) {
                     aa.addAll(Arrays.asList(this.args));
+                }
                 aa.addAll(Arrays.asList(args));
                 this.args = (String[])aa.toArray(new String[aa.size()]);
             }
@@ -248,21 +257,25 @@ public class DaemonWrapper implements Daemon
                 call = "exit";
                 return;
             }
-            if (args == null)
+            if (args == null) {
                 args = new String[0];
-            if (call == null)
+            }
+            if (call == null) {
                 call = "main";
+            }
 
             // Get the ClassLoader loading this class
             ClassLoader cl = DaemonWrapper.class.getClassLoader();
-            if (cl == null)
+            if (cl == null) {
                 throw new NullPointerException("Cannot retrieve ClassLoader instance");
+            }
             Class[] ca = new Class[1];
             ca[0]      = args.getClass();
             // Find the required class
             main = cl.loadClass(name);
-            if (main == null)
+            if (main == null) {
                 throw new ClassNotFoundException(name);
+            }
             // Find the required method.
             // NoSuchMethodException will be thrown if matching method
             // is not found.
