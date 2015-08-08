@@ -92,6 +92,8 @@ public final class DaemonPermission extends Permission
      * Constants.
      */
 
+    private static final long serialVersionUID = -8682149075879731987L;
+
     /**
      * The target name when associated with control actions
      * (&quot;control&quot;).
