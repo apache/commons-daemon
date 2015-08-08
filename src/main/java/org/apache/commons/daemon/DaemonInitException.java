@@ -25,24 +25,24 @@ package org.apache.commons.daemon;
  */
 public class DaemonInitException extends Exception {
 
-  private static final long serialVersionUID = 5665891535067213551L;
+    private static final long serialVersionUID = 5665891535067213551L;
 
-  //don't rely on Throwable#getCause (jdk1.4)
-  private final Throwable cause;
+    // don't rely on Throwable#getCause (jdk1.4)
+    private final Throwable cause;
 
-  public DaemonInitException(String message) {
-    super(message);
-    this.cause = null;
-  }
+    public DaemonInitException(String message) {
+        super(message);
+        this.cause = null;
+    }
 
-  public DaemonInitException(String message, Throwable cause) {
-    super(message);
-    this.cause = cause;
-  }
+    public DaemonInitException(String message, Throwable cause) {
+        super(message);
+        this.cause = cause;
+    }
 
-  public String getMessageWithCause() {
-    String extra = this.cause == null ? "" : ": " + this.cause.getMessage();
-    return getMessage() + extra;
-  }
+    public String getMessageWithCause() {
+        String extra = this.cause == null ? "" : ": " + this.cause.getMessage();
+        return getMessage() + extra;
+    }
 
 }
