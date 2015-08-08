@@ -85,8 +85,9 @@ public final class DaemonConfiguration
         boolean ok = false;
         FileInputStream file = null;
         try {
-            if (fileName == null)
+            if (fileName == null) {
                 fileName = DEFAULT_CONFIG;
+            }
             file = new FileInputStream(fileName);
             configurationProperties.clear();
             configurationProperties.load(file);
@@ -99,8 +100,9 @@ public final class DaemonConfiguration
             // Error reading properties file
         } finally {
             try {
-                if (file != null)
+                if (file != null) {
                     file.close();
+                }
             } catch (IOException ex) {
             }
         }
@@ -114,8 +116,9 @@ public final class DaemonConfiguration
         int btoken;
         int ctoken = 0;
 
-        if (propValue == null)
+        if (propValue == null) {
             return null;
+        }
         expanded = new StringBuffer();
         btoken   = propValue.indexOf(BTOKEN);
         while (btoken != -1) {
@@ -164,10 +167,10 @@ public final class DaemonConfiguration
     public String getProperty(String name)
         throws ParseException
     {
-        if (name == null)
+        if (name == null) {
             return null;
-        else
-            return expandProperty(configurationProperties.getProperty(PREFIX + name));
+        }
+        return expandProperty(configurationProperties.getProperty(PREFIX + name));
     }
 
     /**

@@ -190,8 +190,9 @@ public final class DaemonPermission extends Permission
         super(target);
 
         // Check if the permission target name was specified
-        if (target == null)
+        if (target == null) {
             throw new IllegalArgumentException("Null permission name");
+        }
 
         // Check if this is a "control" permission and set up accordingly.
         if (CONTROL.equalsIgnoreCase(target)) {
@@ -266,16 +267,19 @@ public final class DaemonPermission extends Permission
      */
     public boolean equals(Object object)
     {
-        if (object == this)
+        if (object == this) {
             return true;
+        }
 
-        if (!(object instanceof DaemonPermission))
+        if (!(object instanceof DaemonPermission)) {
             return false;
+        }
 
         DaemonPermission that = (DaemonPermission) object;
 
-        if (this.type != that.type)
+        if (this.type != that.type) {
             return false;
+        }
         return this.mask == that.mask;
     }
 
@@ -289,16 +293,19 @@ public final class DaemonPermission extends Permission
      */
     public boolean implies(Permission permission)
     {
-        if (permission == this)
+        if (permission == this) {
             return true;
+        }
 
-        if (!(permission instanceof DaemonPermission))
+        if (!(permission instanceof DaemonPermission)) {
             return false;
+        }
 
         DaemonPermission that = (DaemonPermission) permission;
 
-        if (this.type != that.type)
+        if (this.type != that.type) {
             return false;
+        }
         return (this.mask & that.mask) == that.mask;
     }
 
@@ -323,8 +330,9 @@ public final class DaemonPermission extends Permission
      */
     private void setupDescription()
     {
-        if (this.desc != null)
+        if (this.desc != null) {
             return;
+        }
 
         StringBuffer buf = new StringBuffer();
         buf.append(this.getClass().getName());
@@ -350,8 +358,9 @@ public final class DaemonPermission extends Permission
     private int createControlMask(String actions)
         throws IllegalArgumentException
     {
-        if (actions == null)
+        if (actions == null) {
             return 0;
+        }
 
         int mask = 0;
         StringTokenizer tok = new StringTokenizer(actions, ",", false);
@@ -395,26 +404,32 @@ public final class DaemonPermission extends Permission
         }
 
         if ((mask & MASK_CONTROL_STOP) == MASK_CONTROL_STOP) {
-            if (sep)
+            if (sep) {
                 buf.append(",");
-            else
+            }
+            else {
                 sep = true;
+            }
             buf.append(CONTROL_STOP);
         }
 
         if ((mask & MASK_CONTROL_SHUTDOWN) == MASK_CONTROL_SHUTDOWN) {
-            if (sep)
+            if (sep) {
                 buf.append(",");
-            else
+            }
+            else {
                 sep = true;
+            }
             buf.append(CONTROL_SHUTDOWN);
         }
 
         if ((mask & MASK_CONTROL_RELOAD) == MASK_CONTROL_RELOAD) {
-            if (sep)
+            if (sep) {
                 buf.append(",");
-            else
+            }
+            else {
                 sep = true;
+            }
             buf.append(CONTROL_RELOAD);
         }
 
