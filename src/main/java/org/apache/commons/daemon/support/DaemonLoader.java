@@ -106,9 +106,7 @@ public final class DaemonLoader
                 signal.invoke(daemon, new Object[0]);
                 return true;
             }
-            else {
-                System.out.println("Daemon doesn't support signaling");
-            }
+            System.out.println("Daemon doesn't support signaling");
         } catch (Throwable ex) {
             System.err.println("Cannot send signal: " + ex);
             ex.printStackTrace(System.err);
@@ -347,10 +345,8 @@ public final class DaemonLoader
                 if (!this.isAvailable()) {
                     throw new IllegalStateException();
                 }
-                else {
-                    this.setAvailable(false);
-                    DaemonLoader.shutdown(false);
-                }
+                this.setAvailable(false);
+                DaemonLoader.shutdown(false);
             }
         }
 
@@ -361,10 +357,8 @@ public final class DaemonLoader
                 if (!this.isAvailable()) {
                     throw new IllegalStateException();
                 }
-                else {
-                    this.setAvailable(false);
-                    DaemonLoader.shutdown(true);
-                }
+                this.setAvailable(false);
+                DaemonLoader.shutdown(true);
             }
         }
 
