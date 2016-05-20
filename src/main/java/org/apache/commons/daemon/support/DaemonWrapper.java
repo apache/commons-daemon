@@ -72,7 +72,7 @@ public class DaemonWrapper implements Daemon
      * <li>Anything else is treated as a startup argument</li>
      * </ul>
      * <p>
-     * The following "-daemon-properties" are recognised:
+     * The following "-daemon-properties" are recognized:
      * <ul>
      * <li>args (startup argument)</li>
      * <li>start</li>
