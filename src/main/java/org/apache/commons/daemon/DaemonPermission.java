@@ -182,7 +182,7 @@ public final class DaemonPermission extends Permission
      * instance that <b>will not</b> grant any permission to the caller.
      *
      * @param target The target name of this permission.
-     * @exception IllegalArgumentException If the specified target name is not
+     * @throws IllegalArgumentException If the specified target name is not
      *                supported.
      */
     public DaemonPermission(String target)
@@ -215,7 +215,7 @@ public final class DaemonPermission extends Permission
      *
      * @param target The target name of this permission.
      * @param actions The list of actions permitted by this permission.
-     * @exception IllegalArgumentException If the specified target name is not
+     * @throws IllegalArgumentException If the specified target name is not
      *                supported, or the specified list of actions includes an
      *                invalid value.
      */
