@@ -283,7 +283,7 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
 
         /* Allocate a buffer for the dependencies.
          */
-        lpDependencies = (LPENUM_SERVICE_STATUSW) HeapAlloc(GetProcessHeap(),
+        lpDependencies = (LPENUM_SERVICE_STATUS) HeapAlloc(GetProcessHeap(),
                                                            HEAP_ZERO_MEMORY,
                                                            dwBytesNeeded);
         if (!lpDependencies)
