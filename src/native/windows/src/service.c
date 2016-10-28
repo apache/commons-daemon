@@ -300,16 +300,16 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
         } else {
             BOOL exit = FALSE;
             for (i = 0; i < dwCount && exit == FALSE; i++) {
-                ess = *(((ENUM_SERVICE_STATUS *) lpDependencies) + i);
+                ess = *(lpDependencies + i);
                 /* Open the service. */
                 hDepService = OpenServiceW(lpService->hManager,
-                                           (LPCWSTR) ess.lpServiceName,
+                                           ess.lpServiceName,
                                            SERVICE_STOP | SERVICE_QUERY_STATUS);
 
                 if (!hDepService)
                    continue;
-                if (lstrcmpiW((LPCWSTR) ess.lpServiceName, L"Tcpip") == 0 ||
-                    lstrcmpiW((LPCWSTR) ess.lpServiceName, L"Afd") == 0)
+                if (lstrcmpiW(ess.lpServiceName, L"Tcpip") == 0 ||
+                    lstrcmpiW(ess.lpServiceName, L"Afd") == 0)
                     continue;
 
                 /* Send a stop code. */
