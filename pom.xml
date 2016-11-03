@@ -92,7 +92,7 @@
     <maven.compiler.source>1.5</maven.compiler.source>
     <maven.compiler.target>1.5</maven.compiler.target>
     <commons.componentid>daemon</commons.componentid>
-    <commons.release.version>1.0.8</commons.release.version>
+    <commons.release.version>1.1.0</commons.release.version>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
   </properties>
