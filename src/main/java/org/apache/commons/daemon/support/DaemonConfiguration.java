@@ -158,7 +158,7 @@ public final class DaemonConfiguration
 
     /**
      * Gets the configuration property.
-     * 
+     *
      * @param name The name of the property to get.
      *
      * @throws ParseException if the property is wrongly formatted.
@@ -190,7 +190,7 @@ public final class DaemonConfiguration
     public String[] getPropertyArray(String name)
         throws ParseException
     {
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<String>();
         String    args;
 
         // Load daemon.arg[0] ... daemon.arg[n] into the String array.
@@ -198,8 +198,7 @@ public final class DaemonConfiguration
         while ((args = getProperty(name + "[" + list.size() + "]")) != null) {
             list.add(args);
         }
-        return (String[])list.toArray(new String[list.size()]);
+        return list.toArray(new String[list.size()]);
     }
-
 }
 

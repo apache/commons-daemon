@@ -242,6 +242,7 @@ public final class DaemonPermission extends Permission
      *
      * @return The canonicalized list of actions.
      */
+    @Override
     public String getActions()
     {
         if (this.type == TYPE_CONTROL) {
@@ -255,6 +256,7 @@ public final class DaemonPermission extends Permission
      *
      * @return An hash code value.
      */
+    @Override
     public int hashCode()
     {
         this.setupDescription();
@@ -267,6 +269,7 @@ public final class DaemonPermission extends Permission
      * @return <b>true</b> or <b>false</b> wether the specified object equals
      *         this <code>DaemonPermission</code> instance or not.
      */
+    @Override
     public boolean equals(Object object)
     {
         if (object == this) {
@@ -293,6 +296,7 @@ public final class DaemonPermission extends Permission
      *         is implied by this <code>DaemonPermission</code> instance or
      *         not.
      */
+    @Override
     public boolean implies(Permission permission)
     {
         if (permission == this) {
@@ -317,6 +321,7 @@ public final class DaemonPermission extends Permission
      * @return A <code>String</code> representing this
      *         <code>DaemonPermission</code> instance.
      */
+    @Override
     public String toString()
     {
         this.setupDescription();
@@ -327,7 +332,7 @@ public final class DaemonPermission extends Permission
      * Private methods
      */
 
-    /** 
+    /**
      * Creates a String description for this permission instance.
      */
     private void setupDescription()
@@ -354,7 +359,7 @@ public final class DaemonPermission extends Permission
         this.desc = buf.toString();
     }
 
-    /** 
+    /**
      * Creates a permission mask for a given control actions string.
      */
     private int createControlMask(String actions)
