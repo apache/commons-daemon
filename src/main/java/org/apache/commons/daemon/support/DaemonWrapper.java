@@ -196,7 +196,7 @@ public class DaemonWrapper implements Daemon
         private String      call = null;
         private String[]    args = null;
         private Method      inst = null;
-        private Class       main = null;
+        private Class<?>       main = null;
 
         protected Invoker()
         {
@@ -217,12 +217,12 @@ public class DaemonWrapper implements Daemon
         protected void addArguments(String[] args)
         {
             if (args != null) {
-                ArrayList aa = new ArrayList();
+                ArrayList<String> aa = new ArrayList<String>();
                 if (this.args != null) {
                     aa.addAll(Arrays.asList(this.args));
                 }
                 aa.addAll(Arrays.asList(args));
-                this.args = (String[])aa.toArray(new String[aa.size()]);
+                this.args = aa.toArray(new String[aa.size()]);
             }
         }
 
@@ -269,7 +269,7 @@ public class DaemonWrapper implements Daemon
             if (cl == null) {
                 throw new NullPointerException("Cannot retrieve ClassLoader instance");
             }
-            Class[] ca = new Class[1];
+            Class<?>[] ca = new Class[1];
             ca[0]      = args.getClass();
             // Find the required class
             main = cl.loadClass(name);

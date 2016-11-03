@@ -77,7 +77,7 @@ public final class DaemonLoader
             }
 
             /* Find the required class */
-            Class c = cl.loadClass(cn);
+            Class<?> c = cl.loadClass(cn);
 
             /* This should _never_ happen, but doublechecking doesn't harm */
             if (c == null) {
@@ -137,7 +137,7 @@ public final class DaemonLoader
                 System.err.println("Cannot retrieve ClassLoader instance");
                 return false;
             }
-            Class c;
+            Class<?> c;
             if (className.charAt(0) == '@') {
                 /* Wrapp the class with DaemonWrapper
                  * and modify arguments to include the real class name.
@@ -160,8 +160,7 @@ public final class DaemonLoader
             boolean isdaemon = false;
 
             try {
-                Class dclass =
-                    cl.loadClass("org.apache.commons.daemon.Daemon");
+                Class<?> dclass = cl.loadClass("org.apache.commons.daemon.Daemon");
                 isdaemon = dclass.isAssignableFrom(c);
             }
             catch (Exception cnfex) {
@@ -169,7 +168,7 @@ public final class DaemonLoader
             }
 
             /* Check methods */
-            Class[] myclass = new Class[1];
+            Class<?>[] myclass = new Class[1];
             if (isdaemon) {
                 myclass[0] = DaemonContext.class;
             }
