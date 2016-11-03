@@ -89,8 +89,8 @@
   </dependencies>
 
   <properties>
-    <maven.compiler.source>1.3</maven.compiler.source>
-    <maven.compiler.target>1.3</maven.compiler.target>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
     <commons.componentid>daemon</commons.componentid>
     <commons.release.version>1.0.8</commons.release.version>
     <commons.jira.id>DAEMON</commons.jira.id>
