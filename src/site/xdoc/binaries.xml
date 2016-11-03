@@ -32,7 +32,7 @@ you will find subdirectories containing archives
 corresponding to your operating system. If your machine is not in the list,
 please mail us and we will try to make it available, or you can try to build it on your own.
 The non-Windows files are compressed tar files. They are named <code>commons-daemon-m.n.p-bin-os-hw.tar.gz</code>.
-For example: In the directory <code>linux</code> we have <code>commons-daemon-1.0.8-bin-linux-i686.tar.gz</code>
+For example: In the directory <code>linux</code> we have <code>commons-daemon-1.1.0-bin-linux-i686.tar.gz</code>
 That is a file suitable for a Linux system running on Intel hardware.
 Windows builds are provided as a zip file.
 </p>
@@ -57,7 +57,7 @@ Do the following:
 </subsection>
 <subsection name="procrun">
 <p>
-The Windows archive (e.g. commons-daemon-1.0.8-bin-windows.zip) contains 2 different executables:
+The Windows archive (e.g. commons-daemon-1.1.0-bin-windows.zip) contains 2 different executables:
 <ul>
 <li>prunsrv.exe - service application for running applications as services.</li>
 <li>prunmgr.exe - the GUI manager application used to monitor and configure installed services.</li>

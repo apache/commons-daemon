@@ -21,8 +21,8 @@
   <refmeta>
     <refentrytitle>JSVC</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='date'>June 2011</refmiscinfo>
-    <refmiscinfo class='source'>Jsvc version 1.0.6</refmiscinfo>
+    <refmiscinfo class='date'>DD MMM YYYY</refmiscinfo>
+    <refmiscinfo class='source'>Jsvc version 1.1.0</refmiscinfo>
     <refmiscinfo class='manual'>Apache Commons Daemon project</refmiscinfo>
   </refmeta>
   <refnamediv id='name'>
