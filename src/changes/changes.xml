@@ -45,6 +45,10 @@
       <action issue="DAEMON-347" type="update" dev="ggregory" due-to="Ganesh Raju">
         Add AArch64 support to src/native/unix/support/apsupport.m4
       </action>
+      <action issue="DAEMON-346" type="fix" dev="markt">
+        Compile the Windows binaries with the /DYNAMICBASE and /NXCOMPAT
+        switches.
+      </action>
     </release>
   </body>
 </document>
