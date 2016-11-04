@@ -49,6 +49,10 @@
         Compile the Windows binaries with the /DYNAMICBASE and /NXCOMPAT
         switches.
       </action>
+      <action issue="DAEMON-333" type="fix" dev="markt">
+        Remove calls to explicit garbage collection during daemon start and
+        stop.
+      </action>
     </release>
   </body>
 </document>
