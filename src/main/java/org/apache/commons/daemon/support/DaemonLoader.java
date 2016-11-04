@@ -120,7 +120,7 @@ public final class DaemonLoader
             /* Make sure any previous instance is garbage collected */
             System.gc();
 
-            /* Check if the underlying libray supplied a valid list of
+            /* Check if the underlying library supplied a valid list of
                arguments */
             if (args == null) {
                 args = new String[0];
@@ -139,7 +139,7 @@ public final class DaemonLoader
             }
             Class<?> c;
             if (className.charAt(0) == '@') {
-                /* Wrapp the class with DaemonWrapper
+                /* Wrap the class with DaemonWrapper
                  * and modify arguments to include the real class name.
                  */
                 c = DaemonWrapper.class;
@@ -152,7 +152,7 @@ public final class DaemonLoader
             else {
                 c = cl.loadClass(className);
             }
-            /* This should _never_ happen, but doublechecking doesn't harm */
+            /* This should _never_ happen, but double-checking doesn't harm */
             if (c == null) {
                 throw new ClassNotFoundException(className);
             }
@@ -186,7 +186,7 @@ public final class DaemonLoader
             try {
                 signal = c.getMethod("signal", myclass);
             } catch (NoSuchMethodException e) {
-                // Signaling will be disabled.
+                // Signalling will be disabled.
             }
 
             /* Create a new instance of the daemon */
