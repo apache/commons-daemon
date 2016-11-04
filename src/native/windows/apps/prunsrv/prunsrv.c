@@ -1508,7 +1508,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         /* Ensure that shutdown thread exits before us */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
         WaitForSingleObject(gShutdownEvent, ONE_MINUTE);
-        apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
+        apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signalled");
         CloseHandle(gShutdownEvent);
         /* This will cause to wait for all threads to exit
          */
