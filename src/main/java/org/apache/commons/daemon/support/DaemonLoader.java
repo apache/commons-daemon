@@ -117,9 +117,6 @@ public final class DaemonLoader
     public static boolean load(String className, String args[])
     {
         try {
-            /* Make sure any previous instance is garbage collected */
-            System.gc();
-
             /* Check if the underlying library supplied a valid list of
                arguments */
             if (args == null) {
@@ -271,10 +268,6 @@ public final class DaemonLoader
             /* Attempt to stop the daemon */
             Object arg[] = null;
             stop.invoke(daemon, arg);
-
-            /* Run garbage collector */
-            System.gc();
-
         }
         catch (Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
@@ -293,11 +286,8 @@ public final class DaemonLoader
             Object arg[] = null;
             destroy.invoke(daemon, arg);
 
-            /* Run garbage collector */
             daemon = null;
             controller = null;
-            System.gc();
-
         } catch (Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
