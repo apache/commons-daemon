@@ -1221,8 +1221,7 @@ static DWORD serviceStart()
                                          FILE_SHARE_READ,
                                          NULL,
                                          CREATE_NEW,
-                                         FILE_ATTRIBUTE_NORMAL |
-                                         FILE_FLAG_DELETE_ON_CLOSE,
+                                         FILE_ATTRIBUTE_NORMAL,
                                          NULL);
 
             if (gPidfileHandle != INVALID_HANDLE_VALUE) {
@@ -1546,6 +1545,9 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     serviceMain(0, NULL);
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished with exit code %d", gExitval);
     SAFE_CLOSE_HANDLE(gPidfileHandle);
+    if (gPidfileName) {
+   	    DeleteFileW(gPidfileName);
+    }
     return gExitval == 0 ? TRUE : FALSE;
 }
 
@@ -1569,6 +1571,9 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
         rv = FALSE;
     }
     SAFE_CLOSE_HANDLE(gPidfileHandle);
+    if (gPidfileName) {
+   	    DeleteFileW(gPidfileName);
+    }
     return rv;
 }
 

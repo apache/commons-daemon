@@ -54,8 +54,12 @@
         stop.
       </action>
       <action issue="DAEMON-343" type="fix" dev="markt">
-        Update config.guess and config.sub to add support, amongst others for
+        Update config.guess and config.sub to add support, amongst others, for
         64-bit PowerPC Little-Endian architecture. 
+      </action>
+      <action issue="DAEMON-332" type="fix" dev="markt">
+        Ensure that the PID file on Windows, if used, is readable by other
+        processes.
       </action>
     </release>
   </body>
