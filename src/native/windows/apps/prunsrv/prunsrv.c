@@ -937,7 +937,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         /* Register onexit hook
          */
         _onexit(onExitStop);
-        /* Create sutdown event */
+        /* Create shutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(&gSargs)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
@@ -979,7 +979,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         if (!apxProcessSetExecutableW(hWorker, SO_STOPIMAGE)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
-                        SO_STARTIMAGE);
+            		    SO_STOPIMAGE);
             rv = 2;
             goto cleanup;
         }
@@ -1118,7 +1118,7 @@ static DWORD serviceStart()
         }
         /* Set the environment using putenv, so JVM can use it */
         setInprocEnvironment();
-        /* Create the JVM glbal worker */
+        /* Create the JVM global worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(gWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
