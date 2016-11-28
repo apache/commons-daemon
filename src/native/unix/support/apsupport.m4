@@ -86,6 +86,12 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     ;;
   esac
   case $host_cpu in
+  powerpc64)
+    CFLAGS="$CFLAGS -DCPU=\\\"ppc64\\\""
+    HOST_CPU=ppc64;;
+  powerpc64le)
+    CFLAGS="$CFLAGS -DCPU=\\\"ppc64le\\\""
+    HOST_CPU=ppc64le;;
   powerpc*)
     CFLAGS="$CFLAGS -DCPU=\\\"$host_cpu\\\""
     HOST_CPU=$host_cpu;;
