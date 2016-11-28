@@ -38,6 +38,16 @@ __APXBEGIN_DECLS
         UnlockFile(file, 0, 0, 512, 0);             \
     APXMACRO_END
 
+#define APX_LOGENTER()                              \
+    if (_pt_sys_loglock)                            \
+        EnterCriticalSection(_pt_sys_loglock);      \
+    else (void)0
+
+#define APX_LOGLEAVE()                              \
+    if (_pt_sys_loglock)                            \
+        LeaveCriticalSection(_pt_sys_loglock);      \
+    else (void)0
+
 #define APXLOG_LEVEL_DEBUG  0
 #define APXLOG_LEVEL_INFO   1
 #define APXLOG_LEVEL_WARN   2

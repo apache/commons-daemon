@@ -172,89 +172,29 @@ static int set_user_group(const char *user, int uid, int gid)
 
 /* Set linux capability, user and group */
 #ifdef OS_LINUX
-#ifdef HAVE_LIBCAP
-static cap_value_t caps_std[] = {
-    CAP_NET_BIND_SERVICE,
-    CAP_SETUID,
-    CAP_SETGID,
-    CAP_DAC_READ_SEARCH
-};
-
-static cap_value_t caps_min[] = {
-    CAP_NET_BIND_SERVICE,
-    CAP_DAC_READ_SEARCH
-};
-
-#define CAPS     1
-#define CAPSMIN  2
-
-static int set_caps(int cap_type)
-{
-    cap_t c;
-    int ncap;
-    int flag = CAP_SET;
-    cap_value_t *caps;
-    const char  *type;
-
-    if (cap_type == CAPS) {
-        ncap = sizeof(caps_std)/sizeof(cap_value_t);
-        caps = caps_std;
-        type = "default";
-    }
-    else if (cap_type == CAPSMIN) {
-        ncap = sizeof(caps_min)/sizeof(cap_value_t);
-        caps = caps_min;
-        type = "min";
-    }
-    else {
-        ncap = sizeof(caps_min)/sizeof(cap_value_t);
-        caps = caps_min;
-        type = "null";
-        flag = CAP_CLEAR;
-    }
-    c = cap_init();
-    cap_clear(c);
-    cap_set_flag(c, CAP_EFFECTIVE,   ncap, caps, flag);
-    cap_set_flag(c, CAP_INHERITABLE, ncap, caps, flag);
-    cap_set_flag(c, CAP_PERMITTED,   ncap, caps, flag);
-    if (cap_set_proc(c) != 0) {
-        log_error("failed setting %s capabilities.", type);
-        return -1;
-    }
-    cap_free(c);
-    if (cap_type == CAPS)
-        log_debug("increased capability set.");
-    else if (cap_type == CAPSMIN)
-        log_debug("decreased capability set to min required.");
-    else
-        log_debug("dropped capabilities.");
-    return 0;
-}
-
-#else /* !HAVE_LIBCAP */
 /* CAPSALL is to allow to read/write at any location */
-#define CAPSALL (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_SETUID) +             \
-                (1 << CAP_SETGID) +             \
-                (1 << CAP_DAC_READ_SEARCH) +    \
-                (1 << CAP_DAC_OVERRIDE)
+#define LEGACY_CAPSALL  (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_SETUID) +             \
+                        (1 << CAP_SETGID) +             \
+                        (1 << CAP_DAC_READ_SEARCH) +    \
+                        (1 << CAP_DAC_OVERRIDE)
 
-#define CAPSMAX (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_DAC_READ_SEARCH) +    \
-                (1 << CAP_DAC_OVERRIDE)
+#define LEGACY_CAPSMAX  (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_DAC_READ_SEARCH) +    \
+                        (1 << CAP_DAC_OVERRIDE)
 
 /* That a more reasonable configuration */
-#define CAPS    (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_DAC_READ_SEARCH) +    \
-                (1 << CAP_SETUID) +             \
-                (1 << CAP_SETGID)
+#define LEGACY_CAPS     (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_DAC_READ_SEARCH) +    \
+                        (1 << CAP_SETUID) +             \
+                        (1 << CAP_SETGID)
 
 /* probably the only one Java could use */
-#define CAPSMIN (1 << CAP_NET_BIND_SERVICE) +   \
-                (1 << CAP_DAC_READ_SEARCH)
+#define LEGACY_CAPSMIN  (1 << CAP_NET_BIND_SERVICE) +   \
+                        (1 << CAP_DAC_READ_SEARCH)
 
 #define LEGACY_CAP_VERSION  0x19980330
-static int set_caps(int caps)
+static int set_legacy_caps(int caps)
 {
     struct __user_cap_header_struct caphead;
     struct __user_cap_data_struct   cap;
@@ -272,6 +212,150 @@ static int set_caps(int caps)
         return -1;
     }
     return 0;
+}
+
+#ifdef HAVE_LIBCAP
+static cap_value_t caps_std[] = {
+    CAP_NET_BIND_SERVICE,
+    CAP_SETUID,
+    CAP_SETGID,
+    CAP_DAC_READ_SEARCH
+};
+
+static cap_value_t caps_min[] = {
+    CAP_NET_BIND_SERVICE,
+    CAP_DAC_READ_SEARCH
+};
+
+#define CAPS     1
+#define CAPSMIN  2
+
+
+typedef int     (*fd_cap_free)(void *);
+typedef cap_t   (*fd_cap_init)(void);
+typedef int     (*fd_cap_clear)(cap_t);
+typedef int     (*fd_cap_get_flag)(cap_t, cap_value_t, cap_flag_t, cap_flag_value_t *);
+typedef int     (*fd_cap_set_flag)(cap_t, cap_flag_t, int, const cap_value_t *, cap_flag_value_t);
+typedef int     (*fd_cap_set_proc)(cap_t);
+
+static dso_handle hlibcap = NULL;
+static fd_cap_free  fp_cap_free;
+static fd_cap_init  fp_cap_init;
+static fd_cap_clear fp_cap_clear;
+static fd_cap_get_flag fp_cap_get_flag;
+static fd_cap_set_flag fp_cap_set_flag;
+static fd_cap_set_proc fp_cap_set_proc;
+
+static const char *libcap_locs[] = {
+#ifdef __LP64__
+    "/lib64/libcap.so.2",
+    "/lib64/libcap.so.1",
+    "/lib64/libcap.so",
+    "/usr/lib64/libcap.so.2",
+    "/usr/lib64/libcap.so.1",
+    "/usr/lib64/libcap.so",
+#endif
+    "/lib/libcap.so.2",
+    "/lib/libcap.so.1",
+    "/lib/libcap.so",
+    "/usr/lib/libcap.so.2",
+    "/usr/lib/libcap.so.1",
+    "/usr/lib/libcap.so",
+    "libcap.so.2",
+    "libcap.so.1",
+    "libcap.so",
+    NULL
+};
+
+static int ld_libcap(void)
+{
+    int i = 0;
+    dso_handle dso = NULL;
+#define CAP_LDD(name) \
+    if ((fp_##name = dso_symbol(dso, #name)) == NULL) { \
+        log_error("cannot locate " #name " in libcap.so -- %s", dso_error());  \
+        dso_unlink(dso);    \
+        return -1;          \
+    } else log_debug("loaded " #name " from libcap.")
+
+    if (hlibcap != NULL)
+        return 0;
+    while (libcap_locs[i] && dso == NULL) {
+        if ((dso = dso_link(libcap_locs[i++])))
+            break;
+    };
+    if (dso == NULL) {
+        log_error("failed loading capabilities library -- %s.", dso_error());
+        return -1;
+    }
+    CAP_LDD(cap_free);
+    CAP_LDD(cap_init);
+    CAP_LDD(cap_clear);
+
+    CAP_LDD(cap_get_flag);
+    CAP_LDD(cap_set_flag);
+    CAP_LDD(cap_set_proc);
+    hlibcap = dso;
+#undef CAP_LDD
+    return 0;
+}
+
+
+static int set_caps(int cap_type)
+{
+    cap_t c;
+    int ncap;
+    int flag = CAP_SET;
+    cap_value_t *caps;
+    const char  *type;
+
+    if (ld_libcap()) {
+        return set_legacy_caps(cap_type);
+    }
+    if (cap_type == CAPS) {
+        ncap = sizeof(caps_std)/sizeof(cap_value_t);
+        caps = caps_std;
+        type = "default";
+    }
+    else if (cap_type == CAPSMIN) {
+        ncap = sizeof(caps_min)/sizeof(cap_value_t);
+        caps = caps_min;
+        type = "min";
+    }
+    else {
+        ncap = sizeof(caps_min)/sizeof(cap_value_t);
+        caps = caps_min;
+        type = "null";
+        flag = CAP_CLEAR;
+    }
+    c = (*fp_cap_init)();
+    (*fp_cap_clear)(c);
+    (*fp_cap_set_flag)(c, CAP_EFFECTIVE,   ncap, caps, flag);
+    (*fp_cap_set_flag)(c, CAP_INHERITABLE, ncap, caps, flag);
+    (*fp_cap_set_flag)(c, CAP_PERMITTED,   ncap, caps, flag);
+    if ((*fp_cap_set_proc)(c) != 0) {
+        log_error("failed setting %s capabilities.", type);
+        return -1;
+    }
+    (*fp_cap_free)(c);
+    if (cap_type == CAPS)
+        log_debug("increased capability set.");
+    else if (cap_type == CAPSMIN)
+        log_debug("decreased capability set to min required.");
+    else
+        log_debug("dropped capabilities.");
+    return 0;
+}
+
+#else /* !HAVE_LIBCAP */
+/* CAPSALL is to allow to read/write at any location */
+#define CAPSALL LEGACY_CAPSALL
+#define CAPSMAX LEGACY_CAPSMAX
+#define CAPS    LEGACY_CAPS
+#define CAPSMIN LEGACY_CAPSMIN
+static int set_caps(int caps)
+{
+    return set_legacy_caps(caps);
 }
 #endif
 
@@ -414,6 +498,56 @@ static sighandler_t signal_set(int sig, sighandler_t newHandler)
     return hand;
 }
 
+static int mkdir0(const char *name, int perms)
+{
+    if (mkdir(name, perms) == 0)
+        return 0;
+    else
+        return errno;
+}
+
+static int mkdir1(char *name, int perms)
+{
+    int rc;
+
+    rc = mkdir0(name, perms);
+    if (rc == EEXIST)
+        return 0;
+    if (rc == ENOENT) {  /* Missing an intermediate dir */
+        char *pos;
+        if ((pos = strrchr(name, '/'))) {
+            *pos = '\0';
+            if (*name) {
+                if (!(rc = mkdir1(name, perms))) {
+                    /* Try again, now with parents created
+                     */
+                    *pos = '/';
+                    rc = mkdir0(name, perms);
+                }
+            }
+            *pos = '/';
+        }
+    }
+    return rc;
+}
+
+static int mkdir2(const char *name, int perms)
+{
+    int rc = 0;
+    char *pos;
+    char *dir = strdup(name);
+
+    if (!dir)
+        return ENOMEM;
+    if ((pos = strrchr(dir, '/'))) {
+        *pos = '\0';
+        if (*dir)
+            rc = mkdir1(dir, perms);
+    }
+    free(dir);
+    return rc;
+}
+
 /*
  * Check pid and if still running
  */
@@ -425,9 +559,16 @@ static int check_pid(arg_data *args)
     char buff[80];
     pid_t pidn = getpid();
     int i, pid;
+    int once = 0;
 
-    fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+retry:
+    fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0) {
+        if (once == 0 && (errno == ENOTDIR || errno == ENOENT)) {
+            once = 1;
+            if (mkdir2(args->pidf, S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH) == 0)
+                goto retry;
+        }
         log_error("Cannot open PID file %s, PID is %d", args->pidf, pidn);
         return -1;
     }
@@ -650,13 +791,6 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
             return ret;
     }
 
-    /* create a new process group to prevent kill 0 killing the monitor process */
-#if defined(OS_FREEBSD) || defined(OS_DARWIN)
-    setpgid(0, 0);
-#else
-    setpgrp();
-#endif
-
 #ifdef OS_LINUX
     /* setuid()/setgid() only apply the current thread so we must do it now */
     if (linuxset_user_group(args->user, uid, gid) != 0)
@@ -781,6 +915,7 @@ static FILE *loc_freopen(char *outfile, char *mode, FILE * stream)
 {
     FILE *ftest;
 
+    mkdir2(outfile, S_IRWXU);
     ftest = fopen(outfile, mode);
     if (ftest == NULL) {
         fprintf(stderr, "Unable to redirect to %s\n", outfile);
@@ -1024,6 +1159,16 @@ int main(int argc, char *argv[])
         char *p1  = NULL;
         char *p2  = NULL;
 
+        /* We don't want to use a form of exec() that searches the
+         * PATH, so require that argv[0] be either an absolute or
+         * relative path.  Error out if this isn't the case.
+         */
+        tmp = strchr(argv[0], '/');
+        if (tmp == NULL) {
+            log_error("JSVC re-exec requires execution with an absolute or relative path");
+            return 1;
+        }
+
         /*
          * There is no need to change LD_LIBRARY_PATH
          * if we were not able to find a path to libjvm.so
@@ -1088,6 +1233,10 @@ int main(int argc, char *argv[])
 #endif
     }
 
+    if (chdir(args->cwd)) {
+        log_error("ERROR: jsvc was unable to "
+                  "change directory to: %s", args->cwd);
+    }
     /*
      * umask() uses inverse logic; bits are CLEAR for allowed access.
      */

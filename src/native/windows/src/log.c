@@ -41,9 +41,10 @@ typedef struct apx_logfile_st {
 } apx_logfile_st;
 
 /* Per-application master log file */
-static apx_logfile_st *_st_sys_loghandle = NULL;
-
-static apx_logfile_st  _st_sys_errhandle = { NULL, APXLOG_LEVEL_WARN, FALSE};
+static apx_logfile_st   *_st_sys_loghandle = NULL;
+static CRITICAL_SECTION  _st_sys_loglock;
+static CRITICAL_SECTION *_pt_sys_loglock = NULL;
+static apx_logfile_st    _st_sys_errhandle = { NULL, APXLOG_LEVEL_WARN, FALSE};
 
 static void logRotate(apx_logfile_st *lf, LPSYSTEMTIME t)
 {
@@ -88,6 +89,10 @@ static void logRotate(apx_logfile_st *lf, LPSYSTEMTIME t)
         /* TODO: Log something */
         return;
     }
+    /* Make sure we relock the correct file */
+    APX_LOGLOCK(h);
+    APX_LOGUNLOCK(lf->hFile);
+    /* Close original handle */
     CloseHandle(lf->hFile);
     lf->hFile = h;
 }
@@ -171,6 +176,10 @@ HANDLE apxLogOpen(
     SYSTEMTIME sysTime;
     apx_logfile_st *h;
 
+    if (_pt_sys_loglock == NULL) {
+        InitializeCriticalSection(&_st_sys_loglock);
+        _pt_sys_loglock = &_st_sys_loglock;
+    }
     GetLocalTime(&sysTime);
     if (!szPath) {
         if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
@@ -300,10 +309,14 @@ apxLogWrite(
     if (IS_INVALID_HANDLE(lf)) {
         lf = &_st_sys_errhandle;
         lf->hFile = GetStdHandle(STD_ERROR_HANDLE);
+    }
+    if (lf == &_st_sys_errhandle) {
+        /* Do not rotate if redirected to console */
         dolock = FALSE;
     }
     if (dwLevel < lf->dwLogLevel)
         return 0;
+    APX_LOGENTER();
     if (f && (lf->dwLogLevel == APXLOG_LEVEL_DEBUG || dwLevel == APXLOG_LEVEL_ERROR)) {
         f = (szFile + lstrlenA(szFile) - 1);
         while(f != szFile && '\\' != *f && '/' != *f)
@@ -346,6 +359,8 @@ apxLogWrite(
             buffer[--len] = '\0';
         if (!IS_INVALID_HANDLE(lf->hFile)) {
             SYSTEMTIME t;
+            /* Append operation */
+            SetFilePointer(lf->hFile, 0, &wr, FILE_END);
             GetLocalTime(&t);
             if (dolock) {
                 APX_LOGLOCK(lf->hFile);
@@ -363,14 +378,18 @@ apxLogWrite(
                 wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
+
+            /* add thread ID to log output */
+            wsprintfA(sb, "[%5d] ", GetCurrentThreadId());
+            WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
+
             if (len)
                 WriteFile(lf->hFile, buffer, len, &wr, NULL);
 
             /* Terminate the line */
             WriteFile(lf->hFile, LINE_SEP, sizeof(LINE_SEP) - 1, &wr, NULL);
-#ifdef _DEBUG_FULL
-            FlushFileBuffers(lf->hFile);
-#endif
+            if (dwLevel)
+                FlushFileBuffers(lf->hFile);
             if (dolock) {
                 APX_LOGUNLOCK(lf->hFile);
             }
@@ -383,6 +402,7 @@ apxLogWrite(
         }
 #endif
     }
+    APX_LOGLEAVE();
     /* Restore the last Error code */
     SetLastError(err);
     if (szFormat && err != 0 && dwLevel == APXLOG_LEVEL_ERROR) {

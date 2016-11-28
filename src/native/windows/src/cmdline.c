@@ -179,6 +179,21 @@ LPAPXCMDLINE apxCmdlineParse(
                     lpOptions[l].dwType |= APXCMDOPT_FOUND;
                     break;
                 }
+                if (add) {
+                    if (!(lpOptions[l].dwType & APXCMDOPT_FOUND)) {
+                        /* Only set add flag in case there was no --option
+                         */
+                        lpOptions[l].dwType |= APXCMDOPT_ADD;
+                    }
+                }
+                else if (lpOptions[l].dwType & APXCMDOPT_ADD) {
+                    /* We have ++option --option ...
+                     * Discard earlier values and go over.
+                     */
+                     lpOptions[l].dwType &= ~APXCMDOPT_ADD;
+                     lpOptions[l].dwValue = 0;
+                     lpOptions[l].szValue = 0;
+                }
                 if (lpOptions[l].dwType & APXCMDOPT_STR)
                     lpOptions[l].szValue = val;
                 else if (lpOptions[l].dwType & APXCMDOPT_INT)
@@ -214,8 +229,6 @@ LPAPXCMDLINE apxCmdlineParse(
                     }
                 }
                 lpOptions[l].dwType |= APXCMDOPT_FOUND;
-                if (add)
-                    lpOptions[l].dwType |= APXCMDOPT_ADD;
                 match = l + 1;
                 break;
             }
@@ -249,7 +262,7 @@ void apxCmdlineFree(
  * Each variable is prfixed with PR_
  * for example 'set PR_JVM=auto' has a same meaning as providing '--Jvm auto'
  * on the command line.
- * Multistring varisables are added to the present conf.
+ * Multistring variables are added to the present conf.
  */
 void apxCmdlineLoadEnvVars(
     LPAPXCMDLINE lpCmdline)

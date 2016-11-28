@@ -59,8 +59,12 @@ AP_MSG_HEADER([Host support])
 AP_SUPPORTED_HOST()
 if test "$supported_os" = "darwin"
 then
+  if test -z "$JAVA_HOME" -a -x /usr/libexec/java_home
+  then
+    JAVA_HOME="`/usr/libexec/java_home 2>dev/null`"
+  fi
   if test -z "$JAVA_HOME" -a -d /System/Library/Frameworks/JavaVM.framework/Home; then
-  	JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+    JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
   fi
 
   _prevdir=`/bin/pwd`
@@ -115,7 +119,9 @@ fi
 AC_SUBST(LDCMD)
 if test "$supported_os" = "linux"
 then
-AC_CHECK_LIB([cap], [cap_init], [CFLAGS="$CFLAGS -DHAVE_LIBCAP" ; LIBS="$LIBS -lcap"])
+AC_CHECK_HEADER([sys/capability.h],
+                [CFLAGS="$CFLAGS -DHAVE_LIBCAP"],
+                AC_MSG_WARN([cannot find headers for libcap]))
 fi
 
 if test -z "$STRIPFLAGS"

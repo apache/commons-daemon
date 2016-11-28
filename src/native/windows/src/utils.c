@@ -318,7 +318,7 @@ apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray)
 
     *lppArray = (LPWSTR *)buff;
     p = (LPWSTR)(buff + (n + 2) * sizeof(LPWSTR));
-    AplCopyMemory(p, lpString, (l + 1) * sizeof(WCHAR) + sizeof(WCHAR));
+    AplCopyMemory(p, lpString, (l + 1) * sizeof(WCHAR));
     for (i = 0; i < n; i++) {
         (*lppArray)[i] = p;
         while (*p)
@@ -347,7 +347,7 @@ apxMultiSzToArrayA(APXHANDLE hPool, LPCSTR lpString, LPSTR **lppArray)
 
     *lppArray = (LPSTR *)buff;
     p = (LPSTR)(buff + (n + 2) * sizeof(LPSTR));
-    AplCopyMemory(p, lpString, (l + 1) * sizeof(CHAR) + sizeof(CHAR));
+    AplCopyMemory(p, lpString, (l + 1) * sizeof(CHAR));
     for (i = 0; i < n; i++) {
         (*lppArray)[i] = p;
         while (*p)

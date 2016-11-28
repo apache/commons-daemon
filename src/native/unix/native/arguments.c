@@ -167,6 +167,7 @@ static arg_data *parse(int argc, char *argv[])
     args->onum    = 0;            /* Zero arguments, but let's have some room */
     args->clas    = NULL;         /* No class predefined */
     args->anum    = 0;            /* Zero class specific arguments but make room*/
+    args->cwd     = "/";           /* Use root as default */
     args->outfile = "/dev/null";   /* Swallow by default */
     args->errfile = "/dev/null";   /* Swallow by default */
     args->redirectstdin = true;    /* Redirect stdin to /dev/null by default */
@@ -237,6 +238,13 @@ static arg_data *parse(int argc, char *argv[])
                 return NULL;
             }
         }
+        else if (!strcmp(argv[x], "-cwd")) {
+            args->cwd = optional(argc, argv, x++);
+            if (args->cwd == NULL) {
+                log_error("Invalid working directory specified");
+                return NULL;
+            }
+        }
         else if (!strcmp(argv[x], "-version")) {
             args->vers = true;
             args->dtch = false;
@@ -273,7 +281,8 @@ static arg_data *parse(int argc, char *argv[])
                 log_error("Invalid umask specified");
                 return NULL;
             }
-            args->umask = atoi(temp);
+            /* Parameter must be in octal */
+            args->umask = (int)strtol(temp, NULL, 8);
             if (args->umask < 02) {
                 log_error("Invalid umask specified (min=02)");
                 return NULL;

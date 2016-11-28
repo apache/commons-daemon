@@ -116,6 +116,12 @@ static DWORD WINAPI __apxProcWorkerThread(LPVOID lpParameter)
     if (WaitForSingleObject(lpProc->stProcInfo.hProcess,
                             INFINITE) == WAIT_OBJECT_0) {
         lpProc->dwChildStatus |= CHILD_MAINTREAD_FINISHED;
+
+        /* store worker's exit code as VM exit code for later use */
+        GetExitCodeProcess(lpProc->stProcInfo.hProcess, &dwExitCode);
+        apxLogWrite(APXLOG_MARK_DEBUG "Child process exit code %d", dwExitCode);
+        apxSetVmExitCode(dwExitCode);
+
 #if 0
         if (hProcess->fnCallback)
             (*hProcess->fnCallback)(hProcess, WM_QUIT, (WPARAM)dwExitCode, 0);

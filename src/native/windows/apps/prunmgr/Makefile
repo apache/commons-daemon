@@ -22,10 +22,17 @@ UNICODE = 1
 !include <..\..\include\Makefile.inc>
 
 !IF !DEFINED(PREFIX) || "$(PREFIX)" == ""
-PREFIX = .\..\..\dist
+PREFIX = .\..\..\..\..\..\target
 !ENDIF
 !IF !DEFINED(SRCDIR) || "$(SRCDIR)" == ""
 SRCDIR = .\..\..
+!ENDIF
+
+!IF "$(CPU)" == "X64"
+PREFIX = $(PREFIX)\amd64
+!ENDIF
+!IF "$(CPU)" == "I64"
+PREFIX = $(PREFIX)\ia64
 !ENDIF
 
 LFLAGS = $(LFLAGS) /version:1.0 /DYNAMICBASE /NXCOMPAT

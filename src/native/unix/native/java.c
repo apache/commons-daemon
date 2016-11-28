@@ -203,6 +203,13 @@ bool java_init(arg_data *args, home_data *data)
             return false;
         }
     }
+    if (stat(appf, &sb)) {
+        if (replace(appf, 1024, "$JAVA_HOME/../MacOS/libjli.dylib",
+                    "$JAVA_HOME", data->path) != 0) {
+            log_error("Cannot replace values in loader library");
+            return false;
+        }
+    }
     apph = dso_link(appf);
     if (apph == NULL) {
         log_error("Cannot load required shell library %s", appf);

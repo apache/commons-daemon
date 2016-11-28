@@ -147,7 +147,7 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
         lpService->stServiceEntry.szObjectName[0] = L'\0';
     }
     if (!QueryServiceConfigW(lpService->hService, NULL, 0, &dwNeeded)) {
-        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
         	// This is expected. The call is expected to fail with the required
         	// buffer size set in dwNeeded.
         	// Clear the last error to prevent it being logged if a genuine

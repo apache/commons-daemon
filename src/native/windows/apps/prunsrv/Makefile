@@ -22,7 +22,7 @@ UNICODE = 1
 !include <..\..\include\Makefile.inc>
 
 !IF !DEFINED(PREFIX) || "$(PREFIX)" == ""
-PREFIX = .\..\..\dist
+PREFIX = .\..\..\..\..\..\target
 !ENDIF
 !IF !DEFINED(SRCDIR) || "$(SRCDIR)" == ""
 SRCDIR = .\..\..

@@ -60,6 +60,8 @@ void help(home_data *data)
     printf("        user used to run the daemon (defaults to current user)\n");
     printf("    -verbose[:class|gc|jni]\n");
     printf("        enable verbose output\n");
+    printf("    -cwd </full/path>\n");
+    printf("        set working directory to given location (defaults to /)\n");
     printf("    -outfile </full/path/to/file>\n");
     printf("        Location for output from stdout (defaults to /dev/null)\n");
     printf("        Use the value '&2' to simulate '1>&2'\n");
@@ -99,7 +101,7 @@ void help(home_data *data)
     printf("    -keepstdin\n");
     printf("        does not redirect stdin to /dev/null\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
-    printf("Copyright (c) 1999-2011 Apache Software Foundation.\n");
+    printf("Copyright (c) 1999-2016 Apache Software Foundation.\n");
 
     printf("\n");
 }

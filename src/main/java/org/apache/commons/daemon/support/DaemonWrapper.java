@@ -196,7 +196,7 @@ public class DaemonWrapper implements Daemon
         private String      call = null;
         private String[]    args = null;
         private Method      inst = null;
-        private Class<?>       main = null;
+        private Class<?>    main = null;
 
         protected Invoker()
         {

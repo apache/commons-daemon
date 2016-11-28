@@ -120,6 +120,7 @@
             <descriptor>src/assembly/native-src.xml</descriptor>
             <descriptor>src/assembly/bin.xml</descriptor>
             <descriptor>src/assembly/src.xml</descriptor>
+            <descriptor>src/assembly/win.xml</descriptor>
           </descriptors>
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>

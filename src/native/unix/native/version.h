@@ -28,16 +28,16 @@
  * Minor API changes that do not cause binary compatibility problems.
  * Should be reset to 0 when upgrading JSVC_MAJOR_VERSION
  */
-#define JSVC_MINOR_VERSION      0
+#define JSVC_MINOR_VERSION      1
 
 /** patch level */
-#define JSVC_PATCH_VERSION      8
+#define JSVC_PATCH_VERSION      0
 
 /**
  *  This symbol is defined for internal, "development" copies of JSVC.
  *  This symbol will be #undef'd for releases.
  */
-#define JSVC_IS_DEV_VERSION     0
+#define JSVC_IS_DEV_VERSION     1
 
 /** Properly quote a value as a string in the C preprocessor */
 #define JSVC_STRINGIFY(n) JSVC_STRINGIFY_HELPER(n)

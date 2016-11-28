@@ -47,6 +47,9 @@ static DYNLOAD_FPTR_DECLARE(JNI_CreateJavaVM) = NULL;
 DYNOLAD_TYPE_DECLARE(JNI_GetCreatedJavaVMs, JNICALL, jint)(JavaVM **, jsize, jsize *);
 static DYNLOAD_FPTR_DECLARE(JNI_GetCreatedJavaVMs) = NULL;
 
+DYNOLAD_TYPE_DECLARE(JVM_DumpAllStacks, JNICALL, void)(JNIEnv *, jclass);
+static DYNLOAD_FPTR_DECLARE(JVM_DumpAllStacks) = NULL;
+
 static HANDLE  _st_sys_jvmDllHandle = NULL;
 static JavaVM *_st_sys_jvm = NULL;
 
@@ -113,6 +116,7 @@ typedef struct APXJAVAVM {
     DWORD           dwWorkerStatus;
     SIZE_T          szStackSize;
     HANDLE          hWorkerSync;
+    HANDLE          hWorkerInit;
 } APXJAVAVM, *LPAPXJAVAVM;
 
 /* This is no longer exported in jni.h
@@ -139,31 +143,42 @@ typedef struct APX_JDK1_1InitArgs {
 #define JAVA_CLASSSTRING    "java/lang/String"
 #define MSVCRT71_DLLNAME    L"\\msvcrt71.dll"
 
-static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
+static DWORD vmExitCode = 0;
+
+static __inline BOOL __apxJvmAttachEnv(LPAPXJAVAVM lpJava, JNIEnv **lpEnv,
+                                       LPBOOL lpAttached)
 {
     jint _iStatus;
 
-    if (!_st_sys_jvm)
+    if (!_st_sys_jvm || !lpJava->lpJvm)
       return FALSE;
     _iStatus = (*(lpJava->lpJvm))->GetEnv(lpJava->lpJvm,
-                                          (void **)&(lpJava->lpEnv),
+                                          (void **)lpEnv,
                                           lpJava->iVersion);
     if (_iStatus != JNI_OK) {
-        if (_iStatus == JNI_EDETACHED)
+        if (_iStatus == JNI_EDETACHED) {
             _iStatus = (*(lpJava->lpJvm))->AttachCurrentThread(lpJava->lpJvm,
-                                                (void **)&(lpJava->lpEnv), NULL);
+                                                (void **)lpEnv, NULL);
+            if (lpAttached)
+                *lpAttached = TRUE;
+        }
     }
     if (_iStatus != JNI_OK) {
-        lpJava->lpEnv = NULL;
+        *lpEnv = NULL;
         return FALSE;
     }
     else
         return TRUE;
 }
 
+static __inline BOOL __apxJvmAttach(LPAPXJAVAVM lpJava)
+{
+    return __apxJvmAttachEnv(lpJava, &lpJava->lpEnv, NULL);
+}
+
 static __inline BOOL __apxJvmDetach(LPAPXJAVAVM lpJava)
 {
-    if (!_st_sys_jvm)
+    if (!_st_sys_jvm || !lpJava->lpJvm)
       return FALSE;
     if ((*(lpJava->lpJvm))->DetachCurrentThread(lpJava->lpJvm) != JNI_OK) {
         lpJava->lpEnv = NULL;
@@ -183,10 +198,22 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     if (!IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
         return TRUE;    /* jvm.dll is already loaded */
 
-    if (!dllJvmPath || *dllJvmPath == L'\0')
+    if (dllJvmPath && *dllJvmPath) {
+        /* Explicit JVM path.
+         * Check if provided argument is valid
+         */
+        if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
+            /* DAEMON-247: Invalid RuntimeLib explicitly specified is error.
+             */
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib specified '%S'", dllJvmPath);
+            return FALSE;
+        }
+    }
+    else {
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
-    if (!dllJvmPath)
-        return FALSE;
+        if (!dllJvmPath)
+            return FALSE;
+    }
     if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
         /* DAEMON-184: RuntimeLib registry key is invalid.
          * Check from Jre JavaHome directly
@@ -267,6 +294,7 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     DYNLOAD_FPTR_LOAD(JNI_GetDefaultJavaVMInitArgs, _st_sys_jvmDllHandle);
     DYNLOAD_FPTR_LOAD(JNI_CreateJavaVM,             _st_sys_jvmDllHandle);
     DYNLOAD_FPTR_LOAD(JNI_GetCreatedJavaVMs,        _st_sys_jvmDllHandle);
+    DYNLOAD_FPTR_LOAD(JVM_DumpAllStacks,            _st_sys_jvmDllHandle);
 
     if (!DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs) ||
         !DYNLOAD_FPTR(JNI_CreateJavaVM) ||
@@ -436,6 +464,13 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
     if (apxLogWrite(APXLOG_MARK_INFO "%s", sBuf) == 0)
         fputs(sBuf, stdout);
     return rv;
+}
+
+static void JNICALL __apxJniExit(jint exitCode)
+{
+    apxLogWrite(APXLOG_MARK_DEBUG "Exit hook with exit code %d", exitCode);
+    vmExitCode = exitCode;
+    return;
 }
 
 static LPSTR __apxStrIndexA(LPCSTR szStr, int nCh)
@@ -624,6 +659,9 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (szClassPath && *szClassPath)
             ++sOptions;
+
+        sOptions++; /* unconditionally set for extraInfo exit */
+
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
         if (szClassPath && *szClassPath) {
@@ -641,6 +679,12 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniVfprintf;
             --sOptions;
         }
+
+        /* unconditionally add hook for System.exit() in order to store exit code */
+        lpJvmOptions[nOptions - sOptions].optionString = "exit";
+        lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniExit;
+        --sOptions;
+
         if (dwMs) {
             wsprintfA(iB[0], "-Xms%dm", dwMs);
             lpJvmOptions[nOptions - sOptions].optionString = iB[0];
@@ -897,12 +941,18 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
-    SetEvent(lpJava->hWorkerSync);
+    SetEvent(lpJava->hWorkerInit);
+    /* Ensure apxJavaStart worker has read our status */
+    WaitForSingleObject(lpJava->hWorkerSync, INFINITE);
     JNICALL_3(CallStaticVoidMethod,
               lpJava->clWorker.jClazz,
               lpJava->clWorker.jMethod,
               lpJava->clWorker.jArgs);
     if (JVM_EXCEPTION_CHECK(lpJava)) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Exception has been thrown");
+        vmExitCode = 1;
+        (*((lpJava)->lpEnv))->ExceptionDescribe((lpJava)->lpEnv);
+        __apxJvmDetach(lpJava);
         WORKER_EXIT(6);
     }
     else {
@@ -913,7 +963,7 @@ finished:
         lpJava->dwWorkerStatus = 0;
         apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
                     lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
-        SetEvent(lpJava->hWorkerSync);
+        SetEvent(lpJava->hWorkerInit);
     }
     ExitThread(rv);
     /* never gets here but keep the compiler happy */
@@ -928,6 +978,7 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
     if (!lpJava)
         return FALSE;
     lpJava->dwWorkerStatus = 0;
+    lpJava->hWorkerInit    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerSync    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerThread  = CreateThread(NULL,
                                           lpJava->szStackSize,
@@ -940,9 +991,10 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
     }
     ResumeThread(lpJava->hWorkerThread);
     /* Wait until the worker thread initializes */
-    WaitForSingleObject(lpJava->hWorkerSync, INFINITE);
+    WaitForSingleObject(lpJava->hWorkerInit, INFINITE);
     if (lpJava->dwWorkerStatus == 0)
         return FALSE;
+    SetEvent(lpJava->hWorkerSync);
     if (lstrcmpA(lpJava->clWorker.sClazz, "java/lang/System")) {
         /* Give some time to initialize the thread
          * Unless we are calling System.exit(0).
@@ -1215,3 +1267,30 @@ apxJavaSetOut(APXHANDLE hJava, BOOL setErrorOrOut, LPCWSTR szFilename)
 
 }
 
+DWORD apxGetVmExitCode(void) {
+    return vmExitCode;
+}
+
+void apxSetVmExitCode(DWORD exitCode) {
+    vmExitCode = exitCode;
+    return;
+}
+
+void
+apxJavaDumpAllStacks(APXHANDLE hJava)
+{
+    BOOL bAttached;
+    LPAPXJAVAVM lpJava;
+    JNIEnv *lpEnv = NULL;
+
+    if (DYNLOAD_FPTR(JVM_DumpAllStacks) == NULL ||
+        hJava == NULL ||
+        hJava->dwType != APXHANDLE_TYPE_JVM)
+        return;
+    lpJava = APXHANDLE_DATA(hJava);
+    if (__apxJvmAttachEnv(lpJava, &lpEnv, &bAttached)) {
+        DYNLOAD_FPTR(JVM_DumpAllStacks)(lpEnv, NULL);
+        if (bAttached)
+            (*(lpJava->lpJvm))->DetachCurrentThread(lpJava->lpJvm);
+    }
+}

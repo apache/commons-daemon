@@ -32,7 +32,7 @@ typedef struct stAPXJAVA_THREADARGS
     DWORD       bJniVfprintf;
     LPCSTR      szClassName;
     LPCSTR      szMethodName;
-    LPCVOID     lpArguments;    
+    LPCVOID     lpArguments;
     BOOL        setErrorOrOut;
     LPCWSTR     szStdErrFilename;
     LPCWSTR     szStdOutFilename;
@@ -63,6 +63,11 @@ DWORD       apxJavaSetOptions(APXHANDLE hJava, DWORD dwOptions);
 
 BOOL        apxDestroyJvm(DWORD dwTimeout);
 
+DWORD       apxGetVmExitCode();
+
+void        apxSetVmExitCode(DWORD exitCode);
+
+void        apxJavaDumpAllStacks(APXHANDLE hJava);
 
 __APXEND_DECLS
 

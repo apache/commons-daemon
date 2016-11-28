@@ -199,9 +199,11 @@
 </subsection>
 <subsection name="Command line parameters">
 <p>
-    Each command parameter is prefixed with <b>--</b>.
-    If an environment variable exists with the same name as command line parameter but
-    prefixed with <code>PR_</code> it will take precedence.
+    Each command parameter is prefixed with <b>--</b> (or <b>++</b>, see below).
+    <br/>
+    If an environment variable exists with the same name as a command line parameter but
+    prefixed with <code>PR_</code> it will <b>override</b> the equivalent command line parameter.
+    <br/>
     For example:
 <source>set PR_CLASSPATH=xx.jar</source>
 </p>
@@ -230,7 +232,60 @@ JvmOptions:
 Only multi-valued parameters support this; they are indicated in the table below by <b><code>++</code></b>.
 <br></br>
 If <b><code>++</code></b> is used for a parameter that does not support multiple values,
-then it is treated the same as <b>--</b>. No error is reported.
+then it is treated the same as <b><code>--</code></b>. No error is reported.
+<br/>
+Configuration is overwritten in case <b><code>--</code></b> is used.
+For example:
+<source>
+--JvmOptions=-Dthree=3 ++JvmOptions=-Dfour=4
+</source>
+will always overwrite the JvmOptions. The resulting configuration will be:
+<source>
+Startup:
+auto
+
+JvmOptions:
+-Dthree=3
+-Dfour=4
+</source>
+However if on  <b><code>++</code></b> is used the values will be appended. For example calling the
+following after the first example
+<source>
+++JvmOptions=-Dthree=3 ++JvmOptions=-Dfour=2
+</source>
+will result in the following values being used:
+<source>
+Startup:
+auto
+
+JvmOptions:
+-Done=1
+-Dtwo=2
+-Dthree=3
+-Dfour=4
+</source>
+<br/>
+In case you intermix the <b><code>++</code></b> and <b><code>--</code></b> options, the
+last <b><code>--</code></b> parameter will cause option reset. For example:
+<source>
+--Startup=manual --Startup=auto --JvmOptions=-Done=1 ++JvmOptions=-Dtwo=2 --JvmOptions=-Dthree=3 ++JvmOptions=-Dfour=2
+</source>
+will result in the following values being used:
+<source>
+Startup:
+auto
+
+JvmOptions:
+-Dthree=3
+-Dfour=4
+</source>
+</p>
+<p>
+When updating a service (//US or update command), using <b><code>--</code></b> 
+will replace any existing parameter with the new setting.
+<br/>
+For multi-valued parameters, using the <b><code>++</code></b> option qualifier 
+will add the new value(s) to any existing value(s).
 </p>
 <p>
     <table>

@@ -116,8 +116,9 @@ public final class DaemonConfiguration
         int btoken;
         int ctoken = 0;
 
-        if (propValue == null)
+        if (propValue == null) {
             return null;
+        }
         expanded = new StringBuffer();
         btoken   = propValue.indexOf(BTOKEN);
         while (btoken != -1) {
@@ -175,7 +176,7 @@ public final class DaemonConfiguration
     /**
      * Gets the configuration property array.
      * <p>
-     * Property array is constructed form the lsit of properties
+     * Property array is constructed form the list of properties
      * which end with <code>[index]</code>
      * </p>
      * <pre>

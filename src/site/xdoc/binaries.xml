@@ -29,32 +29,11 @@
 In the directory
 <a href="http://www.apache.org/dist/commons/daemon/binaries/">binaries</a>
 you will find subdirectories containing archives
-corresponding to your operating system. If your machine is not in the list,
-please mail us and we will try to make it available, or you can try to build it on your own.
-The non-Windows files are compressed tar files. They are named <code>commons-daemon-m.n.p-bin-os-hw.tar.gz</code>.
-For example: In the directory <code>linux</code> we have <code>commons-daemon-1.1.0-bin-linux-i686.tar.gz</code>
-That is a file suitable for a Linux system running on Intel hardware.
-Windows builds are provided as a zip file.
+corresponding to your operating system. Only the Windows builds are provided as a zip file.
 </p>
 </section>
 
 <section name="How do I get the executable?">
-<subsection name="jsvc">
-<p>
-Do the following:
-<ul>
-  <li>Find the tar.gz file corresponding to your configuration.</li>
-  <li>Download it.</li>
-  <li>Uncompress the tar file and extract the contents (better with gnu tar).
-  There should be an executable file called <code>jsvc</code> and some text files</li>
-  <li>Copy the executable to the location where you want to run it.</li>
-  <li>Write a suitable shell script
-     (see in <code>src/samples</code> and <code>src/native/unix/native/Tomcat.sh</code>)
-     to get your Java application started as a daemon.
-  </li>
-</ul>
-</p>
-</subsection>
 <subsection name="procrun">
 <p>
 The Windows archive (e.g. commons-daemon-1.1.0-bin-windows.zip) contains 2 different executables:
@@ -67,8 +46,8 @@ The <code>prunsrv.exe</code> executable is available in 3 different versions for
 The version in the top-level directory is for 32-bit (x86) architectures.
 The lower level directories are for 64-bit systems:
 <ul>
-<li>amd64 - AMD 64-bit</li>
-<li>ia64 - Intel 64-bit</li>
+<li>amd64 - AMD/EMT 64-bit</li>
+<li>ia64 - Intel Itanium 64-bit</li>
 </ul>
 The Windows application <code>prunsrv.exe</code> is used to install an application as a service.
 Once installed, <code>prunmgr.exe</code> can be used to monitor and reconfigure the service.

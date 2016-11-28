@@ -212,9 +212,13 @@ static home_data *find(char *path)
     home_data *data = NULL;
     int x = 0;
 
-    if (path == NULL) {
+    if (path == NULL || *path == '\0' || strcmp(path, "/") == 0) {
         log_debug("Home not specified on command line, using environment");
         path = getenv("JAVA_HOME");
+        if (path == NULL || *path == '\0' || strcmp(path, "/") == 0) {
+            /* guard against empty JAVA_HOME */
+            path = NULL;
+        }
     }
 
     if (path == NULL) {
