@@ -67,6 +67,11 @@
       <action issue="DAEMON-358" type="fix" dev="markt" due-to="Gustavo Romero">
         Update apsupport.m4 add support for 64-bit PowerPC architectures.
       </action>
+      <action issue="DAEMON-282" type="fix" dev="markt">
+        Suppress spurious &quot;The data area passed to a system call is too
+        small&quot; error message in the log when procrun fails to stop the
+        service.
+      </action>
     </release>
   </body>
 </document>
