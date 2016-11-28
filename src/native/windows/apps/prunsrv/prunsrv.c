@@ -580,7 +580,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     }
     else
         lstrcpyW(szImage, SO_INSTALL);
-    /* Replace not needed qoutes */
+    /* Replace not needed quotes */
     apxStrQuoteInplaceW(szImage);
     /* Add run-service command line option */
     lstrlcatW(szImage, SIZ_HUGLEN, L" //RS//");
