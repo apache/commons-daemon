@@ -275,20 +275,15 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
     DWORD dwStartTime = GetTickCount();
     /* Use the 30-second time-out */
     DWORD dwTimeout   = 30000;
+    BOOL result = TRUE;
 
     /* Pass a zero-length buffer to get the required buffer size.
      */
-    if (EnumDependentServicesW(lpService->hService,
+    if (!EnumDependentServicesW(lpService->hService,
                                SERVICE_ACTIVE,
                                lpDependencies, 0,
                                &dwBytesNeeded,
                                &dwCount)) {
-         /* If the Enum call succeeds, then there are no dependent
-          * services, so do nothing.
-          */
-         return TRUE;
-    }
-    else  {
         if (GetLastError() != ERROR_MORE_DATA)
             return FALSE; // Unexpected error
 
@@ -300,17 +295,17 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
         if (!lpDependencies)
             return FALSE;
 
-        __try {
-            /* Enumerate the dependencies. */
-            if (!EnumDependentServicesW(lpService->hService,
-                                        SERVICE_ACTIVE,
-                                        lpDependencies,
-                                        dwBytesNeeded,
-                                        &dwBytesNeeded,
-                                        &dwCount))
-            return FALSE;
-
-            for (i = 0; i < dwCount; i++)  {
+        /* Enumerate the dependencies. */
+        if (!EnumDependentServicesW(lpService->hService,
+                                    SERVICE_ACTIVE,
+                                    lpDependencies,
+                                    dwBytesNeeded,
+                                    &dwBytesNeeded,
+                                    &dwCount)) {
+            result = FALSE;
+        } else {
+            BOOL exit = FALSE;
+            for (i = 0; i < dwCount && exit == FALSE; i++) {
                 ess = *(lpDependencies + i);
                 /* Open the service. */
                 hDepService = OpenServiceW(lpService->hManager,
@@ -322,13 +317,14 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
                 if (lstrcmpiW(ess.lpServiceName, L"Tcpip") == 0 ||
                     lstrcmpiW(ess.lpServiceName, L"Afd") == 0)
                     continue;
-                __try {
-                    /* Send a stop code. */
-                    if (!ControlService(hDepService,
-                                        SERVICE_CONTROL_STOP,
-                                        (LPSERVICE_STATUS) &ssp))
-                    return FALSE;
 
+                /* Send a stop code. */
+                if (!ControlService(hDepService,
+                                    SERVICE_CONTROL_STOP,
+                                    (LPSERVICE_STATUS) &ssp)) {
+                    result = FALSE;
+                    exit = TRUE;
+                } else {
                     /* Wait for the service to stop. */
                     while (ssp.dwCurrentState != SERVICE_STOPPED) {
                         Sleep(ssp.dwWaitHint);
@@ -336,28 +332,27 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
                                                   SC_STATUS_PROCESS_INFO,
                                                  (LPBYTE)&ssp,
                                                   sizeof(SERVICE_STATUS_PROCESS),
-                                                 &dwBytesNeeded))
-                        return FALSE;
-
-                        if (ssp.dwCurrentState == SERVICE_STOPPED)
+                                                 &dwBytesNeeded)) {
+                            result = FALSE;
+                            exit = TRUE;
                             break;
-
-                        if (GetTickCount() - dwStartTime > dwTimeout)
-                            return FALSE;
+                        } else if (ssp.dwCurrentState == SERVICE_STOPPED) {
+                             break;
+                        }  else if (GetTickCount() - dwStartTime > dwTimeout) {
+                            result = FALSE;
+                            exit = TRUE;
+                            break;
+                        }
                     }
                 }
-                __finally {
-                    /* Always release the service handle. */
-                    CloseServiceHandle(hDepService);
-                }
+                /* Always release the service handle. */
+                CloseServiceHandle(hDepService);
             }
         }
-        __finally {
-            /* Always free the enumeration buffer. */
-            HeapFree(GetProcessHeap(), 0, lpDependencies);
-        }
+        /* Always free the enumeration buffer. */
+        HeapFree(GetProcessHeap(), 0, lpDependencies);
     }
-    return TRUE;
+    return result;
 }
 
 BOOL
