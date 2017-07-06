@@ -38,7 +38,7 @@
     <title>Release Notes</title>
   </properties>
   <body>
-    <release version="1.1.0" date="2016-MM-DD" description="Feature and bug fix release">
+    <release version="1.1.0" date="2017-MM-DD" description="Feature and bug fix release">
       <action type="update" dev="markt">
         Increase minimum Java version to Java 5.
       </action>
