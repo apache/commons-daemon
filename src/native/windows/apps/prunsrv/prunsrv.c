@@ -740,18 +740,18 @@ static BOOL docmdStartService(LPAPXCMDLINE lpCmdline)
                                NULL,
                                NULL);
         if (rv)
-            apxLogWrite(APXLOG_MARK_INFO "Service '%S' started",
+            apxLogWrite(APXLOG_MARK_INFO "Started service '%S'",
                         lpCmdline->szApplication);
         else
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to start '%S' service",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to start service '%S'",
                         lpCmdline->szApplication);
 
     }
     else
-        apxDisplayError(FALSE, NULL, 0, "Unable to open '%S' service",
+        apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'",
                         lpCmdline->szApplication);
     apxCloseHandle(hService);
-    apxLogWrite(APXLOG_MARK_INFO "Start service finished.");
+    apxLogWrite(APXLOG_MARK_INFO "Start service finished, returning %d", rv);
     return rv;
 }
 
@@ -841,7 +841,7 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: %d, %d, %d, %d",
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d, dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
                dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
@@ -977,19 +977,19 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         /* Create shutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(&gSargs)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed starting java");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed starting Java");
             rv = 3;
         }
         else {
             if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
                 reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 20 * 1000);
-                apxLogWrite(APXLOG_MARK_DEBUG "Forcing java jni System.exit worker to finish...");
+                apxLogWrite(APXLOG_MARK_DEBUG "Forcing java JNI System.exit worker to finish...");
                 return 0;
             }
             else {
-                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java jni stop worker to finish...");
+                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java JNI stop worker to finish...");
                 apxJavaWait(hWorker, INFINITE, FALSE);
-                apxLogWrite(APXLOG_MARK_DEBUG "Java jni stop worker finished.");
+                apxLogWrite(APXLOG_MARK_DEBUG "Java JNI stop worker finished.");
             }
         }
         wait_to_die = TRUE;

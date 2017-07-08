@@ -961,7 +961,7 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
 finished:
     if (lpJava) {
         lpJava->dwWorkerStatus = 0;
-        apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status=%d",
+        apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status = %d",
                     lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
         SetEvent(lpJava->hWorkerInit);
     }

@@ -262,7 +262,9 @@ static DWORD __apxProcessWrite(LPAPXPROCESS lpProc, LPCVOID lpData, DWORD dwLen)
 /** Helper functions */
 static BOOL __apxProcCreateChildPipes(LPAPXPROCESS lpProc)
 {
-    BOOL   rv = FALSE;
+	apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun __apxProcCreateChildPipes()");
+
+	BOOL   rv = FALSE;
 
     if (!CreatePipe(&(lpProc->hChildStdInp),
                     &(lpProc->hChildInpWr),
@@ -568,19 +570,24 @@ apxProcessExecute(APXHANDLE hProcess)
     DWORD id;
     BOOL  bS = FALSE;
 
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
-        return FALSE;
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon apxProcessExecute()");
+	if (hProcess->dwType != APXHANDLE_TYPE_PROCESS) {
+
+		return FALSE;
+	}
 
     lpProc = APXHANDLE_DATA(hProcess);
     /* don't allow multiple execute calls on the same object */
-    if (lpProc->dwChildStatus & PROC_INITIALIZED)
-        return FALSE;
+	if (lpProc->dwChildStatus & PROC_INITIALIZED) {
+		return FALSE;
+	}
     lpProc->bSaveHandles = TRUE;
     SAVE_STD_HANDLES(lpProc);
     if (!__apxProcCreateChildPipes(lpProc))
         goto cleanup;
     REDIRECT_STD_HANDLES(lpProc);
-    AplZeroMemory(&si, sizeof(STARTUPINFO));
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon AplZeroMemory()");
+	AplZeroMemory(&si, sizeof(STARTUPINFO));
 
     si.cb = sizeof(STARTUPINFO);
     si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
@@ -590,13 +597,17 @@ apxProcessExecute(APXHANDLE hProcess)
     si.hStdError  = lpProc->hChildStdErr;
     si.hStdInput  = lpProc->hChildStdInp;
 
-    if (lpProc->lpEnvironment)
-        FreeEnvironmentStringsW(lpProc->lpEnvironment);
-    lpProc->lpEnvironment = GetEnvironmentStringsW();
+	if (lpProc->lpEnvironment) {
+		apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon FreeEnvironmentStringsW()");
+		FreeEnvironmentStringsW(lpProc->lpEnvironment);
+	}
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon GetEnvironmentStringsW()");
+	lpProc->lpEnvironment = GetEnvironmentStringsW();
 
     if (!IS_INVALID_HANDLE(lpProc->hUserToken)) {
         si.lpDesktop = _desktop_name;
-        bS = CreateProcessAsUserW(lpProc->hUserToken,
+		apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateProcessAsUserW()");
+		bS = CreateProcessAsUserW(lpProc->hUserToken,
                                   lpProc->szApplicationExec,
                                   lpProc->szCommandLine,
                                   lpProc->lpSA,
@@ -612,7 +623,8 @@ apxProcessExecute(APXHANDLE hProcess)
         OutputDebugStringW(lpProc->szApplicationExec);
         OutputDebugStringW(lpProc->szCommandLine);
 
-        bS = CreateProcessW(lpProc->szApplicationExec,
+		apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateProcessW()");
+		bS = CreateProcessW(lpProc->szApplicationExec,
                             lpProc->szCommandLine,
                             lpProc->lpSA,
                             NULL,
@@ -627,29 +639,36 @@ apxProcessExecute(APXHANDLE hProcess)
     SAFE_CLOSE_HANDLE(lpProc->hChildStdInp);
     SAFE_CLOSE_HANDLE(lpProc->hChildStdOut);
     SAFE_CLOSE_HANDLE(lpProc->hChildStdErr);
-    if (!bS)
-        goto cleanup;
+	if (!bS) {
+		goto cleanup;
+	}
     /* Set the running flag */
     lpProc->dwChildStatus |= (CHILD_RUNNING | PROC_INITIALIZED);
 
-    lpProc->hWorkerThreads[0] = CreateThread(NULL, 0, __apxProcStdoutThread,
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateThread()");
+	lpProc->hWorkerThreads[0] = CreateThread(NULL, 0, __apxProcStdoutThread,
                                              hProcess, 0, &id);
-    lpProc->hWorkerThreads[1] = CreateThread(NULL, 0, __apxProcStderrThread,
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateThread()");
+	lpProc->hWorkerThreads[1] = CreateThread(NULL, 0, __apxProcStderrThread,
                                              hProcess, 0, &id);
-    ResumeThread(lpProc->stProcInfo.hThread);
-    lpProc->hWorkerThreads[2] = CreateThread(NULL, 0, __apxProcWorkerThread,
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon ResumeThread()");
+	ResumeThread(lpProc->stProcInfo.hThread);
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateThread()");
+	lpProc->hWorkerThreads[2] = CreateThread(NULL, 0, __apxProcWorkerThread,
                                             hProcess, 0, &id);
 
     SAFE_CLOSE_HANDLE(lpProc->stProcInfo.hThread);
     /* Close child handles first */
-    return TRUE;
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon apxProcessExecute() returning TRUE");
+	return TRUE;
 cleanup:
-    /* Close parent side of the pipes */
+	/* Close parent side of the pipes */
     SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
     SAFE_CLOSE_HANDLE(lpProc->hChildOutRd);
     SAFE_CLOSE_HANDLE(lpProc->hChildErrRd);
 
-    return FALSE;
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon apxProcessExecute() returning FALSE");
+	return FALSE;
 }
 
 BOOL

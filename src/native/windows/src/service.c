@@ -378,11 +378,15 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
 
     lpService = APXHANDLE_DATA(hService);
     /* Manager mode cannot handle services */
-    if (lpService->bManagerMode)
-        return FALSE;
+	if (lpService->bManagerMode) {
+		apxLogWrite(APXLOG_MARK_ERROR "apxServiceControl(): Manager mode cannot handle services, returning FALSE");
+		return FALSE;
+	}
     /* Check if the ServiceOpen has been called */
-    if (IS_INVALID_HANDLE(lpService->hService))
-        return FALSE;
+	if (IS_INVALID_HANDLE(lpService->hService)) {
+		apxLogWrite(APXLOG_MARK_ERROR "apxServiceControl(): Service is not open, returning FALSE");
+		return FALSE;
+	}
     switch (dwControl) {
         case SERVICE_CONTROL_CONTINUE:
             dwPending = SERVICE_START_PENDING;
@@ -425,11 +429,17 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
                 break;
         }
     }
-    if (!dwPending && !dwState)
-        return FALSE;
+	if (!dwPending && !dwState) {
+		apxLogWrite(APXLOG_MARK_ERROR
+			"apxServiceControl():  !dwPending(%d) && !dwState(%d); returning FALSE",
+			dwPending,
+			dwState);
+		return FALSE;
+	}
     /* Now lets control */
     if (!QueryServiceStatus(lpService->hService, &stStatus)) {
-        apxLogWrite(APXLOG_MARK_SYSERR);
+		apxLogWrite(APXLOG_MARK_ERROR "apxServiceControl(): QueryServiceStatus failure, returning FALSE");
+		apxLogWrite(APXLOG_MARK_SYSERR);
         return FALSE;
     }
     /* signal that we are about to control the service */
@@ -493,18 +503,36 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     if (fnControlCallback)
         (*fnControlCallback)(lpCbData, uMsg, (WPARAM)3, (LPARAM)0);
     /* Check if we are in the desired state */
-    Sleep(1000);
+	DWORD sleepMillis = 1000;
+	apxLogWrite(APXLOG_MARK_DEBUG "apxServiceControl(): Sleeping %d milliseconds", sleepMillis);
+    Sleep(sleepMillis);
 
     if (QueryServiceStatus(lpService->hService, &stStatus)) {
-        if (fnControlCallback)
-            (*fnControlCallback)(lpCbData, uMsg, (WPARAM)4,
-                                 (LPARAM)&stStatus);
-        if (stStatus.dwCurrentState == dwState)
-            return TRUE;
+		apxLogWrite(APXLOG_MARK_DEBUG "apxServiceControl(): QueryServiceStatus OK");
+		if (fnControlCallback) {
+			apxLogWrite(APXLOG_MARK_DEBUG "apxServiceControl(): Calling fnControlCallback()");
+			(*fnControlCallback)(lpCbData, uMsg, (WPARAM)4, (LPARAM)&stStatus);
+			apxLogWrite(APXLOG_MARK_DEBUG "apxServiceControl(): Returned from fnControlCallback()");
+		}
+		if (stStatus.dwCurrentState == dwState) {
+			return TRUE;
+		} else {
+			apxLogWrite(APXLOG_MARK_ERROR 
+				"apxServiceControl(): dwState(%d) != dwCurrentState(%d); "
+				"dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d", 
+				dwState,
+				stStatus.dwCurrentState,
+				stStatus.dwWin32ExitCode,
+				stStatus.dwWaitHint,
+				stStatus.dwServiceSpecificExitCode);
+		}
 
-    }
+	} else {
+		apxLogWrite(APXLOG_MARK_ERROR "apxServiceControl(): QueryServiceStatus failure");
+	}
 
-    return FALSE;
+	apxLogWrite(APXLOG_MARK_ERROR "apxServiceControl(): returning FALSE");
+	return FALSE;
 }
 
 BOOL
