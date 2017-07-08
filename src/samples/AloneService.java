@@ -15,7 +15,6 @@
  *  limitations under the License.
  */
 
-/* @version $Id$ */
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

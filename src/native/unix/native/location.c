@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/* @version $Id$ */
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since

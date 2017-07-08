@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-/* @version $Id$ */
 #ifndef __JSVC_SIGNALS_H__
 #define __JSVC_SIGNALS_H__
 

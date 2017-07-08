@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/* @version $Id$ */
 #include "jsvc.h"
 
 #ifdef DSO_DLFCN

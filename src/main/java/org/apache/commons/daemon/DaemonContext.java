@@ -23,7 +23,6 @@ package org.apache.commons.daemon;
  * communicate with the Daemon container.
  *
  * @author Pier Fumagalli
- * @version $Id$
  */
 public interface DaemonContext
 {

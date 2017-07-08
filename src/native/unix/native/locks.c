@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* @version $Id: java.c 909069 2010-02-11 16:43:36Z mturk $ */
-
 /*
  * as Cygwin does not support lockf, jsvc uses fcntl to emulate it.
  */

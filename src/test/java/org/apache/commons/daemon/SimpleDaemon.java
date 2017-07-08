@@ -28,7 +28,6 @@ import org.apache.commons.daemon.DaemonController;
 import org.apache.commons.daemon.DaemonContext;
 
 /**
- *  @version $Id$
  */
 public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 

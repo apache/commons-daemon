@@ -16,7 +16,6 @@
 #
 
 # @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-# @version $Id$
 
 CC = @CC@
 CFLAGS = @CFLAGS@

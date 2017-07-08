@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/* @version $Id$ */
 #ifndef __JSVC_HELP_H__
 #define __JSVC_HELP_H__
 

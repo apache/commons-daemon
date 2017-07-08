@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/* @version $Id$ */
 #ifndef __JSVC_ARGUMENTS_H__
 #define __JSVC_ARGUMENTS_H__
 

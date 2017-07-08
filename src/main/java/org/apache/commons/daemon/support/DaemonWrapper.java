@@ -15,8 +15,6 @@
  *  limitations under the License.
  */
 
-/* @version $Id$ */
-
 package org.apache.commons.daemon.support;
 
 import java.lang.reflect.Method;
@@ -32,7 +30,6 @@ import org.apache.commons.daemon.DaemonContext;
  * The applications must have the mechanism to manage
  * the application lifecycle.
  *
- * @version $Id$
  * @author Mladen Turk
  */
 public class DaemonWrapper implements Daemon

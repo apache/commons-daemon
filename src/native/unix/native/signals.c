@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* @version $Id$ */
-
 /*
  * as Windows does not support signal, jsvc uses events to emulate them.
  * The supported signal is SIGTERM.

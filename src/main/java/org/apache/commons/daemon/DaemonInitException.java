@@ -22,7 +22,6 @@ package org.apache.commons.daemon;
  * on stdout, rather than a dirty great stacktrace.
  *
  * @author Nick Griffiths (nicobrevin@gmail.com)
- * @version $Id$
  */
 public class DaemonInitException extends Exception {
 

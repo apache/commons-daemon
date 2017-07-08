@@ -29,7 +29,6 @@ package org.apache.commons.daemon;
  * fashion.
  * </p>
  * @author Pier Fumagalli
- * @version $Id$
  */
 public interface Daemon
 {

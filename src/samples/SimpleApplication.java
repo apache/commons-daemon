@@ -15,8 +15,6 @@
  *  limitations under the License.
  */
 
-/* @version $Id: SimpleApplication.java 937350 2010-04-23 16:03:39Z sebb $ */
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

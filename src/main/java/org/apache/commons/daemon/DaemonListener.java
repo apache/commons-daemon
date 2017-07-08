@@ -21,7 +21,6 @@ import java.util.EventListener;
 
 /**
  * EvenListener type wrapper.
- * @version $Id$
  */
 public interface DaemonListener extends EventListener
 {

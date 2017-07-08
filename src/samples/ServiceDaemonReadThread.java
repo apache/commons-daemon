@@ -15,7 +15,6 @@
  *  limitations under the License.
  */
 
-/* @version $Id$ */
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.Thread;
