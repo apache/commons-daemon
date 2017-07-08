@@ -25,7 +25,7 @@ static LPCWSTR REGPARAMS        = L"Parameters";
 static LPCWSTR REGDESCRIPTION   = L"Description";
 static LPCWSTR REGSEPARATOR     = L"\\";
 static LPCWSTR REGAPACHE_ROOT   = L"Apache Software Foundation";
-/* predefined java keys */
+/* predefined Java keys */
 static LPCWSTR JRE_REGKEY       = L"SOFTWARE\\JavaSoft\\Java Runtime Environment\\";
 static LPCWSTR JDK_REGKEY       = L"SOFTWARE\\JavaSoft\\Java Development Kit\\";
 static LPCWSTR JAVA_CURRENT     = L"CurrentVersion";

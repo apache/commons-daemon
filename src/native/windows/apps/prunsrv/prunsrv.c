@@ -278,7 +278,7 @@ DWORD WINAPI eventThread(LPVOID lpParam)
 }
 
 /* redirect console stdout/stderr to files
- * so that java messages can get logged
+ * so that Java messages can get logged
  * If stderrfile is not specified it will
  * go to stdoutfile.
  */
@@ -955,7 +955,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         hWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(hWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
+            apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java %S", _jni_jvmpath);
             return 1;
         }
         gSargs.hJava            = hWorker;
@@ -983,11 +983,11 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         else {
             if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
                 reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 20 * 1000);
-                apxLogWrite(APXLOG_MARK_DEBUG "Forcing java JNI System.exit worker to finish...");
+                apxLogWrite(APXLOG_MARK_DEBUG "Forcing Java JNI System.exit worker to finish...");
                 return 0;
             }
             else {
-                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for java JNI stop worker to finish...");
+                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for Java JNI stop worker to finish...");
                 apxJavaWait(hWorker, INFINITE, FALSE);
                 apxLogWrite(APXLOG_MARK_DEBUG "Java JNI stop worker finished.");
             }
@@ -1159,7 +1159,7 @@ static DWORD serviceStart()
         /* Create the JVM global worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(gWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed creating java %S", _jni_jvmpath);
+            apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java %S", _jni_jvmpath);
             return 1;
         }
         gRargs.hJava            = gWorker;

@@ -120,7 +120,7 @@ typedef struct APXJAVAVM {
 } APXJAVAVM, *LPAPXJAVAVM;
 
 /* This is no longer exported in jni.h
- * However java uses it internally to get
+ * However Java uses it internally to get
  * the default stack size
  */
 typedef struct APX_JDK1_1InitArgs {
@@ -893,7 +893,7 @@ apxJavaLoadMainClass(APXHANDLE hJava, LPCSTR szClassName,
     return TRUE;
 }
 
-/* Main java application worker thread
+/* Main Java application worker thread
  * It will launch Java main and wait until
  * it finishes.
  */
