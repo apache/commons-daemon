@@ -28,7 +28,6 @@ package org.apache.commons.daemon;
  * with no arguments so that instances can be created in an automated
  * fashion.
  * </p>
- * @author Pier Fumagalli
  */
 public interface Daemon
 {
