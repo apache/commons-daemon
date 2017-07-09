@@ -77,6 +77,17 @@
       <id>mturk</id>
       <email>mturk at apache.org</email>
     </developer>
+
+    <developer>
+      <name>Pier Fumagalli</name>
+      <id>pier</id>
+      <email>pier at apache.org</email>
+    </developer>
+    <developer>
+      <name>Nick Griffiths</name>
+      <email>nicobrevin@gmail.com</email>
+    </developer>
+
   </developers>
 
   <dependencies>
