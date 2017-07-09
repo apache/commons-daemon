@@ -15,10 +15,6 @@ dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
 dnl
 
-dnl -------------------------------------------------------------------------
-dnl Version $Id$
-dnl -------------------------------------------------------------------------
-
 AC_DEFUN([AP_FIND_JAVA],[
   AC_ARG_WITH(java,[  --with-java=DIR         Specify the location of your JDK installation],[
     AC_MSG_CHECKING([JAVA_HOME])
