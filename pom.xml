@@ -79,6 +79,13 @@
     </developer>
   </developers>
 
+  <contributors>
+  <contributor>
+    <name>Amey Jadiye</name>
+    <email>ameyjadiye@gmail.com</email>
+  </contributor>
+  </contributors>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -96,24 +103,40 @@
     <commons.release.version>1.1.0</commons.release.version>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
+
+    <!-- Override default buildNumber timestamp format, needed for coveralls plugin -->
+    <maven.buildNumber.timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssZ}</maven.buildNumber.timestampFormat>
+
+    <!-- Override 01-23-2017 for java 9-ea compatibility -->
+    <commons.jacoco.version>0.7.8</commons.jacoco.version>
+
+    <!-- Use clirr version that works on Java 8 -->
+    <commons.clirr.version>2.8</commons.clirr.version>
+
+    <checkstyle.plugin.version>2.17</checkstyle.plugin.version>
+
   </properties>
 
   <build>
-    <plugins>
-<!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+    <defaultGoal>clean test apache-rat:check clirr:check checkstyle:check findbugs:check javadoc:javadoc</defaultGoal>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
             <excludes>
-              <exclude>**/*AbstractTest.java</exclude>
+              <exclude>site-content/**</exclude>
+              <exclude>src/site/**</exclude>
+              <exclude>src/native/unix/**</exclude>
+              <exclude>HOWTO-RELEASE.txt</exclude>
             </excludes>
-        </configuration>
-      </plugin>
--->
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -126,7 +149,18 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
-    </plugins>
+
+    <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.plugin.version}</version>
+        <configuration>
+          <configLocation>${basedir}/checkstyle.xml</configLocation>
+          <suppressionsLocation>${basedir}/checkstyle-suppressions.xml</suppressionsLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <enableRulesSummary>false</enableRulesSummary>
+        </configuration>
+      </plugin>
+      </plugins>
   </build>
 
 </project>
