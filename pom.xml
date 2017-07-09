@@ -83,12 +83,14 @@
       <id>pier</id>
       <email>pier at apache.org</email>
     </developer>
-    <developer>
-      <name>Nick Griffiths</name>
-      <email>nicobrevin@gmail.com</email>
-    </developer>
-
   </developers>
+
+  <contributors>
+  <contributor>
+    <name>Nick Griffiths</name>
+    <email>nicobrevin@gmail.com</email>
+  </contributor>
+  </contributors>
 
   <dependencies>
     <dependency>
