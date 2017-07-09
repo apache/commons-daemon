@@ -21,8 +21,6 @@ package org.apache.commons.daemon;
 /**
  * Defines a set of methods that a Daemon instance can use to
  * communicate with the Daemon container.
- *
- * @author Pier Fumagalli
  */
 public interface DaemonContext
 {

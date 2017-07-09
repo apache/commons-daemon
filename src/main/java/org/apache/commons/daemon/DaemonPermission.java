@@ -82,7 +82,6 @@ import java.util.StringTokenizer;
  * </table>
  * </p>
  *
- * @author Pier Fumagalli
  */
 public final class DaemonPermission extends Permission
 {
