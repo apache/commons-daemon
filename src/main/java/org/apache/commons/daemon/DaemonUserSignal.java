@@ -25,8 +25,6 @@ package org.apache.commons.daemon;
  * User must implement a signal method that will be called from
  * native upon receiving {@code SIGUSR2} signal from the operating system.
  * </p>
- * @author Nick Griffiths <nicobrevin@gmail.com>
- * @author Mladen Turk <mturk@apache.org>
  */
 public interface DaemonUserSignal
 {

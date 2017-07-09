@@ -13,13 +13,7 @@ dnl distributed under the License is distributed on an "AS IS" BASIS,
 dnl WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
-dnl
 
-dnl -------------------------------------------------------------------------
-dnl Author  Pier Fumagalli
-dnl Author  Mladen Turk
-dnl Version $Id$
-dnl -------------------------------------------------------------------------
 
 AC_DEFUN([AP_FIND_JAVA],[
   AC_ARG_WITH(java,[  --with-java=DIR         Specify the location of your JDK installation],[

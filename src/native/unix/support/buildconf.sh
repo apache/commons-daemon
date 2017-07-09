@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# @author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
-
 # The cache of automake always brings problems when changing *.m4 files.
 rm -rf autom4te.cache
 
