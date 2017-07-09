@@ -16,7 +16,6 @@ dnl limitations under the License.
 dnl
 
 dnl -------------------------------------------------------------------------
-dnl Author  Pier Fumagalli <mailto:pier.fumagalli@eng.sun.com>
 dnl Version $Id$
 dnl -------------------------------------------------------------------------
 

@@ -16,8 +16,6 @@ dnl limitations under the License.
 dnl
 
 dnl -------------------------------------------------------------------------
-dnl Author  Pier Fumagalli
-dnl Author  Mladen Turk
 dnl Version $Id$
 dnl -------------------------------------------------------------------------
 
