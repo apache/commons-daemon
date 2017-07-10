@@ -30,7 +30,6 @@ import org.apache.commons.daemon.DaemonContext;
  * The applications must have the mechanism to manage
  * the application lifecycle.
  *
- * @author Mladen Turk
  */
 public class DaemonWrapper implements Daemon
 {

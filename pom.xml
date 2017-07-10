@@ -77,6 +77,12 @@
       <id>mturk</id>
       <email>mturk at apache.org</email>
     </developer>
+
+    <developer>
+      <name>Pier Fumagalli</name>
+      <id>pier</id>
+      <email>pier at apache.org</email>
+    </developer>
   </developers>
 
   <contributors>
@@ -84,6 +90,10 @@
     <name>Amey Jadiye</name>
     <email>ameyjadiye@gmail.com</email>
   </contributor>
+    <contributor>
+      <name>Nick Griffiths</name>
+      <email>nicobrevin@gmail.com</email>
+    </contributor>
   </contributors>
 
   <dependencies>
