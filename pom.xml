@@ -114,8 +114,8 @@
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
 
-    <!-- Override default buildNumber timestamp format, needed for coveralls plugin -->
-    <maven.buildNumber.timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssZ}</maven.buildNumber.timestampFormat>
+    <!-- Override default buildNumber timestamp format, needed for coveralls plugin
+    <maven.buildNumber.timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssZ}</maven.buildNumber.timestampFormat>-->
 
     <!-- Override 01-23-2017 for java 9-ea compatibility -->
     <commons.jacoco.version>0.7.8</commons.jacoco.version>
@@ -176,6 +176,16 @@
           <suppressionsLocation>${basedir}/checkstyle-suppressions.xml</suppressionsLocation>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <enableRulesSummary>false</enableRulesSummary>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.1</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
       </plugins>

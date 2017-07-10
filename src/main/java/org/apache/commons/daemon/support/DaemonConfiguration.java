@@ -159,7 +159,7 @@ public final class DaemonConfiguration
      * Gets the configuration property.
      *
      * @param name The name of the property to get.
-     *
+     * @return string properties.
      * @throws ParseException if the property is wrongly formatted.
      */
     public String getProperty(String name)
@@ -183,7 +183,7 @@ public final class DaemonConfiguration
      * daemon.arg[2] = argument 3
      * </pre>
      * @param name The name of the property array to get.
-     *
+     * @return String[] array of props.
      * @throws ParseException if the property is wrongly formatted.
      */
     public String[] getPropertyArray(String name)

@@ -29,6 +29,7 @@ public interface DaemonContext
      * Returns  <code>DaemonController</code> object that can be used
      * to control the <code>Daemon</code> instance that this
      * <code>DaemonContext</code> is passed to.
+     * @return DaemonController DaemonController
      */
     public DaemonController getController();
 
@@ -37,6 +38,7 @@ public interface DaemonContext
      * the environment.  corresponding to the array of arguments given
      * in the <code>public static void main()</code> method used as an
      * entry point to most other java programs.
+     * @return String[] all the arguments.
      */
     public String[] getArguments();
 

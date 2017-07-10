@@ -44,18 +44,22 @@ public interface DaemonController
 
     /**
      * Shuts down daemon and logs failed message.
+     * @param message message
      */
     public void fail(String message)
         throws IllegalStateException;
 
     /**
      * Shuts down daemon and logs failed message.
+     * @param exception exception for which the IllegalStateException have to be thrown.
      */
     public void fail(Exception exception)
         throws IllegalStateException;
 
     /**
      * Shuts down daemon and logs failed message.
+     * @param message message
+     * @param exception exception for which the IllegalStateException have to be thrown.
      */
     public void fail(String message, Exception exception)
         throws IllegalStateException;

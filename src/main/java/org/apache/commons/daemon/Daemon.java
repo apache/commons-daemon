@@ -78,6 +78,8 @@ public interface Daemon
      * method are free to start any number of threads, but need to
      * return control after having done that to enable invocation of
      * the stop()-method.
+     * @throws Exception Any exception preventing a successful
+     *                      initialization.
      */
     public void start()
         throws Exception;
@@ -88,6 +90,8 @@ public interface Daemon
      * sockets or file descriptors is in the destroy method, as the
      * container may restart the Daemon by calling start() after
      * stop().
+     * @throws Exception Any exception preventing a successful
+     *                      initialization.
      */
     public void stop()
         throws Exception;
