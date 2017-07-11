@@ -35,58 +35,55 @@ import java.util.StringTokenizer;
  * special &quot;*&quot; value implies all permissions for the given
  * name:
  * </p>
- *
+ * <p>
  * <table width="100%" border="1">
- *  <caption>Represents the permissions to control and query the status of
+ * <caption>Represents the permissions to control and query the status of
  * a Daemon</caption>
- *  <tr>
- *   <th>Target&quot;Name</th>
- *   <th>Action</th>
- *   <th>Description</th>
- *  </tr>
- *  <tr>
- *   <td rowspan="5">&quot;control&quot;</td>
- *   <td>&quot;start&quot;</td>
- *   <td>
- *    The permission to call the <code>start()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
- *   </td>
- *  </tr>
- *  <tr>
- *   <td>&quot;stop&quot;</td>
- *   <td>
- *    The permission to call the <code>stop()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
- *   </td>
- *  </tr>
- *  <tr>
- *   <td>&quot;shutdown&quot;</td>
- *   <td>
- *    The permission to call the <code>shutdown()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
- *   </td>
- *  </tr>
- *  <tr>
- *   <td>&quot;reload&quot;</td>
- *   <td>
- *    The permission to call the <code>reload()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
- *   </td>
- *  </tr>
- *  <tr>
- *   <td>&quot;*&quot;</td>
- *   <td>
- *    The special wildcard action implies all above-mentioned action. This is
- *    equal to construct a permission with the &quot;start, stop, shutdown,
- *    reload&quot; list of actions.
- *   </td>
- *  </tr>
+ * <tr>
+ * <th>Target&quot;Name</th>
+ * <th>Action</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td rowspan="5">&quot;control&quot;</td>
+ * <td>&quot;start&quot;</td>
+ * <td>
+ * The permission to call the <code>start()</code> method in an instance
+ * of a <code>DaemonController</code> interface.
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>&quot;stop&quot;</td>
+ * <td>
+ * The permission to call the <code>stop()</code> method in an instance
+ * of a <code>DaemonController</code> interface.
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>&quot;shutdown&quot;</td>
+ * <td>
+ * The permission to call the <code>shutdown()</code> method in an instance
+ * of a <code>DaemonController</code> interface.
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>&quot;reload&quot;</td>
+ * <td>
+ * The permission to call the <code>reload()</code> method in an instance
+ * of a <code>DaemonController</code> interface.
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>&quot;*&quot;</td>
+ * <td>
+ * The special wildcard action implies all above-mentioned action. This is
+ * equal to construct a permission with the &quot;start, stop, shutdown,
+ * reload&quot; list of actions.
+ * </td>
+ * </tr>
  * </table>
- *
- *
  */
-public final class DaemonPermission extends Permission
-{
+public final class DaemonPermission extends Permission {
 
     /* ====================================================================
      * Constants.
@@ -163,11 +160,17 @@ public final class DaemonPermission extends Permission
      * Instance variables
      */
 
-    /** The type of this permission object. */
+    /**
+     * The type of this permission object.
+     */
     private transient int type = 0;
-    /** The permission mask associated with this permission object. */
+    /**
+     * The permission mask associated with this permission object.
+     */
     private transient int mask = 0;
-    /** The String representation of this permission object. */
+    /**
+     * The String representation of this permission object.
+     */
     private transient String desc = null;
 
     /* ====================================================================
@@ -183,11 +186,10 @@ public final class DaemonPermission extends Permission
      *
      * @param target The target name of this permission.
      * @throws IllegalArgumentException If the specified target name is not
-     *                supported.
+     *                                  supported.
      */
     public DaemonPermission(String target)
-        throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         // Setup the target name of this permission object.
         super(target);
 
@@ -204,22 +206,21 @@ public final class DaemonPermission extends Permission
 
         // If we got here, we have an invalid permission name.
         throw new IllegalArgumentException("Invalid permission name \"" +
-                                           target + "\" specified");
+                target + "\" specified");
     }
 
     /**
      * Creates a new <code>DaemonPermission</code> instance with a specified
      * permission name and a specified list of actions.
      *
-     * @param target The target name of this permission.
+     * @param target  The target name of this permission.
      * @param actions The list of actions permitted by this permission.
      * @throws IllegalArgumentException If the specified target name is not
-     *                supported, or the specified list of actions includes an
-     *                invalid value.
+     *                                  supported, or the specified list of actions includes an
+     *                                  invalid value.
      */
     public DaemonPermission(String target, String actions)
-        throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         // Setup this instance's target name.
         this(target);
 
@@ -241,8 +242,7 @@ public final class DaemonPermission extends Permission
      * @return The canonicalized list of actions.
      */
     @Override
-    public String getActions()
-    {
+    public String getActions() {
         if (this.type == TYPE_CONTROL) {
             return this.createControlActions(this.mask);
         }
@@ -255,8 +255,7 @@ public final class DaemonPermission extends Permission
      * @return An hash code value.
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         this.setupDescription();
         return this.desc.hashCode();
     }
@@ -265,11 +264,10 @@ public final class DaemonPermission extends Permission
      * Checks if a specified object equals <code>DaemonPermission</code>.
      *
      * @return <b>true</b> or <b>false</b> wether the specified object equals
-     *         this <code>DaemonPermission</code> instance or not.
+     * this <code>DaemonPermission</code> instance or not.
      */
     @Override
-    public boolean equals(Object object)
-    {
+    public boolean equals(Object object) {
         if (object == this) {
             return true;
         }
@@ -291,12 +289,11 @@ public final class DaemonPermission extends Permission
      * <code>Permission</code>.
      *
      * @return <b>true</b> or <b>false</b> wether the specified permission
-     *         is implied by this <code>DaemonPermission</code> instance or
-     *         not.
+     * is implied by this <code>DaemonPermission</code> instance or
+     * not.
      */
     @Override
-    public boolean implies(Permission permission)
-    {
+    public boolean implies(Permission permission) {
         if (permission == this) {
             return true;
         }
@@ -317,11 +314,10 @@ public final class DaemonPermission extends Permission
      * Returns a <code>String</code> representation of this instance.
      *
      * @return A <code>String</code> representing this
-     *         <code>DaemonPermission</code> instance.
+     * <code>DaemonPermission</code> instance.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         this.setupDescription();
         return this.desc;
     }
@@ -333,8 +329,7 @@ public final class DaemonPermission extends Permission
     /**
      * Creates a String description for this permission instance.
      */
-    private void setupDescription()
-    {
+    private void setupDescription() {
         if (this.desc != null) {
             return;
         }
@@ -345,10 +340,10 @@ public final class DaemonPermission extends Permission
         switch (this.type) {
             case TYPE_CONTROL:
                 buf.append(CONTROL);
-            break;
+                break;
             default:
                 buf.append("UNKNOWN");
-            break;
+                break;
         }
         buf.append(':');
         buf.append(this.getActions());
@@ -361,8 +356,7 @@ public final class DaemonPermission extends Permission
      * Creates a permission mask for a given control actions string.
      */
     private int createControlMask(String actions)
-        throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         if (actions == null) {
             return 0;
         }
@@ -375,31 +369,27 @@ public final class DaemonPermission extends Permission
 
             if (WILDCARD.equals(val)) {
                 return MASK_CONTROL_START | MASK_CONTROL_STOP |
-                       MASK_CONTROL_SHUTDOWN | MASK_CONTROL_RELOAD;
-            }
-            else if (CONTROL_START.equalsIgnoreCase(val)) {
+                        MASK_CONTROL_SHUTDOWN | MASK_CONTROL_RELOAD;
+            } else if (CONTROL_START.equalsIgnoreCase(val)) {
                 mask = mask | MASK_CONTROL_START;
-            }
-            else if (CONTROL_STOP.equalsIgnoreCase(val)) {
+            } else if (CONTROL_STOP.equalsIgnoreCase(val)) {
                 mask = mask | MASK_CONTROL_STOP;
-            }
-            else if (CONTROL_SHUTDOWN.equalsIgnoreCase(val)) {
+            } else if (CONTROL_SHUTDOWN.equalsIgnoreCase(val)) {
                 mask = mask | MASK_CONTROL_SHUTDOWN;
-            }
-            else if (CONTROL_RELOAD.equalsIgnoreCase(val)) {
+            } else if (CONTROL_RELOAD.equalsIgnoreCase(val)) {
                 mask = mask | MASK_CONTROL_RELOAD;
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Invalid action name \"" +
-                                                   val + "\" specified");
+                        val + "\" specified");
             }
         }
         return mask;
     }
 
-    /** Creates a actions list for a given control permission mask. */
-    private String createControlActions(int mask)
-    {
+    /**
+     * Creates a actions list for a given control permission mask.
+     */
+    private String createControlActions(int mask) {
         StringBuffer buf = new StringBuffer();
         boolean sep = false;
 
@@ -411,8 +401,7 @@ public final class DaemonPermission extends Permission
         if ((mask & MASK_CONTROL_STOP) == MASK_CONTROL_STOP) {
             if (sep) {
                 buf.append(",");
-            }
-            else {
+            } else {
                 sep = true;
             }
             buf.append(CONTROL_STOP);
@@ -421,8 +410,7 @@ public final class DaemonPermission extends Permission
         if ((mask & MASK_CONTROL_SHUTDOWN) == MASK_CONTROL_SHUTDOWN) {
             if (sep) {
                 buf.append(",");
-            }
-            else {
+            } else {
                 sep = true;
             }
             buf.append(CONTROL_SHUTDOWN);
@@ -431,8 +419,7 @@ public final class DaemonPermission extends Permission
         if ((mask & MASK_CONTROL_RELOAD) == MASK_CONTROL_RELOAD) {
             if (sep) {
                 buf.append(",");
-            }
-            else {
+            } else {
                 sep = true;
             }
             buf.append(CONTROL_RELOAD);

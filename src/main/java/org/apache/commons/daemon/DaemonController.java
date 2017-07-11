@@ -21,48 +21,56 @@ package org.apache.commons.daemon;
 /**
  * Defines methods needed by the DaemonLoader.
  */
-public interface DaemonController
-{
+public interface DaemonController {
 
     /**
-     * Shuts down the daemon.     
+     * Shuts down the daemon.
+     * @throws IllegalStateException {@link IllegalStateException}
      */
-    public void shutdown()
-        throws IllegalStateException;
+    void shutdown()
+            throws IllegalStateException;
 
     /**
-     * Reloads daemon
+     * Reloads daemon.
+     * @throws IllegalStateException {@link IllegalStateException}
      */
-    public void reload()
-        throws IllegalStateException;
+    void reload()
+            throws IllegalStateException;
 
     /**
      * Shuts down daemon and logs failed message.
+     * @throws IllegalStateException {@link IllegalStateException}
      */
-    public void fail()
-        throws IllegalStateException;
+    void fail()
+            throws IllegalStateException;
 
     /**
      * Shuts down daemon and logs failed message.
-     * @param message message
+     *
+     * @param message message.
+     * @throws IllegalStateException {@link IllegalStateException}
      */
-    public void fail(String message)
-        throws IllegalStateException;
+    void fail(String message)
+            throws IllegalStateException;
 
     /**
      * Shuts down daemon and logs failed message.
+     *
      * @param exception exception for which the IllegalStateException have to be thrown.
+     * @throws IllegalStateException {@link IllegalStateException}
      */
-    public void fail(Exception exception)
-        throws IllegalStateException;
+    void fail(Exception exception)
+            throws IllegalStateException;
 
     /**
      * Shuts down daemon and logs failed message.
-     * @param message message
+     *
+     * @param message   message
      * @param exception exception for which the IllegalStateException have to be thrown.
+     * @throws IllegalStateException {@link IllegalStateException}
      */
-    public void fail(String message, Exception exception)
-        throws IllegalStateException;
+    void fail(String message, Exception exception)
+            throws IllegalStateException;
 
 }
 

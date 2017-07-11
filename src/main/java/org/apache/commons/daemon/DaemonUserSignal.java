@@ -26,8 +26,7 @@ package org.apache.commons.daemon;
  * native upon receiving {@code SIGUSR2} signal from the operating system.
  * </p>
  */
-public interface DaemonUserSignal
-{
+public interface DaemonUserSignal {
 
     /**
      * Performs a custom action on received user signal.

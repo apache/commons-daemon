@@ -17,7 +17,7 @@
 package org.apache.commons.daemon;
 
 /**
- * Throw this during init if you can't initialise yourself for some expected 
+ * Throw this during init if you can't initialise yourself for some expected
  * reason.  Using this exception will cause the exception's message to come out
  * on stdout, rather than a dirty great stacktrace.
  */
@@ -28,16 +28,29 @@ public class DaemonInitException extends Exception {
     // don't rely on Throwable#getCause (jdk1.4)
     private final Throwable cause;
 
+    /**
+     * Constructor for DaemonInitException.
+     * @param message Message.
+     */
     public DaemonInitException(String message) {
         super(message);
         this.cause = null;
     }
 
+    /**
+     * Constructor for DaemonInitException.
+     * @param message Message.
+     * @param cause cause.
+     */
     public DaemonInitException(String message, Throwable cause) {
         super(message);
         this.cause = cause;
     }
 
+    /**
+     * Method for getting cause.
+     * @return String cause.
+     */
     public String getMessageWithCause() {
         String extra = this.cause == null ? "" : ": " + this.cause.getMessage();
         return getMessage() + extra;

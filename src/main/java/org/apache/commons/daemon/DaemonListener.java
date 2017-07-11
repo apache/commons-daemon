@@ -22,8 +22,7 @@ import java.util.EventListener;
 /**
  * EvenListener type wrapper.
  */
-public interface DaemonListener extends EventListener
-{
+public interface DaemonListener extends EventListener {
 
 }
 

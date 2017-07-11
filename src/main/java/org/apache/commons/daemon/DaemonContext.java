@@ -22,25 +22,26 @@ package org.apache.commons.daemon;
  * Defines a set of methods that a Daemon instance can use to
  * communicate with the Daemon container.
  */
-public interface DaemonContext
-{
+public interface DaemonContext {
 
     /**
      * Returns  <code>DaemonController</code> object that can be used
      * to control the <code>Daemon</code> instance that this
      * <code>DaemonContext</code> is passed to.
+     *
      * @return DaemonController DaemonController
      */
-    public DaemonController getController();
+    DaemonController getController();
 
     /**
      * Returns an array of <code>String</code> arguments supplied by
      * the environment.  corresponding to the array of arguments given
      * in the <code>public static void main()</code> method used as an
      * entry point to most other java programs.
+     *
      * @return String[] all the arguments.
      */
-    public String[] getArguments();
+    String[] getArguments();
 
 }
 
