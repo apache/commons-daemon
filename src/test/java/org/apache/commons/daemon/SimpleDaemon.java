@@ -55,6 +55,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     /**
      * init and destroy were added in jakarta-tomcat-daemon.
      */
+    @Override
     public void init(DaemonContext context)
     throws Exception {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
@@ -77,6 +78,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         this.thread=new Thread(this);
     }
 
+    @Override
     public void start() {
         /* Dump a message */
         System.err.println("SimpleDaemon: starting");
@@ -85,6 +87,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         this.thread.start();
     }
 
+    @Override
     public void stop()
     throws IOException, InterruptedException {
         /* Dump a message */
@@ -99,11 +102,13 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         System.err.println("SimpleDaemon: stopped");
     }
 
+    @Override
     public void destroy() {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " destroy");
     }
 
+    @Override
     public void run() {
         int number=0;
 
@@ -137,6 +142,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         System.err.println("SimpleDaemon: exiting acceptor loop");
     }
 
+    @Override
     public void signal() {
         /* In this example we are using soft reload on
          * custom signal.
@@ -180,6 +186,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
             this.controller=c;
         }
 
+        @Override
         public void run() {
             this.parent.addHandler(this);
             System.err.println("SimpleDaemon: connection "+this.number+

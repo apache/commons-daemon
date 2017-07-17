@@ -81,6 +81,7 @@ public class DaemonWrapper implements Daemon
      * set by the command arguments. <b>However, note that args and stop.args are
      * appended to any existing values.</b>
      */
+    @Override
     public void init(DaemonContext context)
         throws Exception
     {
@@ -163,6 +164,7 @@ public class DaemonWrapper implements Daemon
 
     /**
      */
+    @Override
     public void start()
         throws Exception
     {
@@ -171,6 +173,7 @@ public class DaemonWrapper implements Daemon
 
     /**
      */
+    @Override
     public void stop()
         throws Exception
     {
@@ -179,6 +182,7 @@ public class DaemonWrapper implements Daemon
 
     /**
      */
+    @Override
     public void destroy()
     {
         // Nothing for the moment

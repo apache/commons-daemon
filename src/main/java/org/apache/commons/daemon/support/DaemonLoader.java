@@ -325,6 +325,7 @@ public final class DaemonLoader
             }
         }
 
+        @Override
         public void shutdown()
             throws IllegalStateException
         {
@@ -337,6 +338,7 @@ public final class DaemonLoader
             }
         }
 
+        @Override
         public void reload()
             throws IllegalStateException
         {
@@ -349,21 +351,25 @@ public final class DaemonLoader
             }
         }
 
+        @Override
         public void fail()
         {
             fail(null, null);
         }
 
+        @Override
         public void fail(String message)
         {
             fail(message, null);
         }
 
+        @Override
         public void fail(Exception exception)
         {
             fail(null, exception);
         }
 
+        @Override
         public void fail(String message, Exception exception)
         {
             synchronized (this) {
@@ -391,6 +397,7 @@ public final class DaemonLoader
 
         private String[] args = null;
 
+        @Override
         public DaemonController getController()
         {
             return daemonController;
@@ -401,6 +408,7 @@ public final class DaemonLoader
             this.daemonController = controller;
         }
 
+        @Override
         public String[] getArguments()
         {
             return args;
