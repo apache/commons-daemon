@@ -56,14 +56,14 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
      * init and destroy were added in jakarta-tomcat-daemon.
      */
     @Override
-    public void init(DaemonContext context)
+    public void init(final DaemonContext context)
     throws Exception {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " init");
 
         int port=1200;
 
-        String[] a = context.getArguments();
+        final String[] a = context.getArguments();
 
         if (a.length>0) port=Integer.parseInt(a[0]);
         if (a.length>1) this.directory=a[1];
@@ -116,24 +116,24 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         try {
             while(!this.stopping) {
                 checkForReload();
-                Socket socket=this.server.accept();
+                final Socket socket=this.server.accept();
                 checkForReload();
 
-                Handler handler=new Handler(socket,this,this.controller);
+                final Handler handler=new Handler(socket,this,this.controller);
                 handler.setConnectionNumber(number++);
                 handler.setDirectoryName(this.directory);
                 new Thread(handler).start();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             /* Don't dump any error message if we are stopping. A IOException
                is generated when the ServerSocket is closed in stop() */
             if (!this.stopping) e.printStackTrace(System.err);
         }
 
         /* Terminate all handlers that at this point are still open */
-        Enumeration<Handler> openhandlers=this.handlers.elements();
+        final Enumeration<Handler> openhandlers=this.handlers.elements();
         while (openhandlers.hasMoreElements()) {
-            Handler handler=openhandlers.nextElement();
+            final Handler handler=openhandlers.nextElement();
             System.err.println("SimpleDaemon: dropping connection "+
                                handler.getConnectionNumber());
             handler.close();
@@ -159,13 +159,13 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
       }
     }
 
-    protected void addHandler(Handler handler) {
+    protected void addHandler(final Handler handler) {
         synchronized (handler) {
             this.handlers.add(handler);
         }
     }
 
-    protected void removeHandler(Handler handler) {
+    protected void removeHandler(final Handler handler) {
         synchronized (handler) {
             this.handlers.remove(handler);
         }
@@ -179,7 +179,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         private Socket socket=null;
         private int number=0;
 
-        public Handler(Socket s, SimpleDaemon p, DaemonController c) {
+        public Handler(final Socket s, final SimpleDaemon p, final DaemonController c) {
             super();
             this.socket=s;
             this.parent=p;
@@ -192,11 +192,11 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
             System.err.println("SimpleDaemon: connection "+this.number+
                                " opened from "+this.socket.getInetAddress());
             try {
-                InputStream in=this.socket.getInputStream();
-                OutputStream out=this.socket.getOutputStream();
+                final InputStream in=this.socket.getInputStream();
+                final OutputStream out=this.socket.getOutputStream();
                 handle(in,out);
                 this.socket.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace(System.err);
             }
             System.err.println("SimpleDaemon: connection "+this.number+
@@ -207,12 +207,12 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         public void close() {
             try {
                 this.socket.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace(System.err);
             }
         }
 
-        public void setConnectionNumber(int number) {
+        public void setConnectionNumber(final int number) {
             this.number=number;
         }
 
@@ -220,7 +220,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
             return(this.number);
         }
 
-        public void setDirectoryName(String directory) {
+        public void setDirectoryName(final String directory) {
             this.directory=directory;
         }
 
@@ -228,19 +228,19 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
             return(this.directory);
         }
 
-        public void log(String name)
+        public void log(final String name)
         throws IOException {
-            OutputStream file=new FileOutputStream(name,true);
-            PrintStream out=new PrintStream(file);
-            SimpleDateFormat fmt=new SimpleDateFormat();
+            final OutputStream file=new FileOutputStream(name,true);
+            final PrintStream out=new PrintStream(file);
+            final SimpleDateFormat fmt=new SimpleDateFormat();
 
             out.println(fmt.format(new Date()));
             out.close();
             file.close();
         }
 
-        public void handle(InputStream in, OutputStream os) {
-            PrintStream out=new PrintStream(os);
+        public void handle(final InputStream in, final OutputStream os) {
+            final PrintStream out=new PrintStream(os);
 
             while(true) {
                 try {
@@ -258,7 +258,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
                     }
 
                     /* Read an option from the client */
-                    int x=in.read();
+                    final int x=in.read();
 
                     switch (x) {
                         /* If the socket was closed, we simply return */
@@ -270,7 +270,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
                             out.println("Attempting a shutdown...");
                             try {
                                 this.controller.shutdown();
-                            } catch (IllegalStateException e) {
+                            } catch (final IllegalStateException e) {
                                 out.println();
                                 out.println("Can't shutdown now");
                                 e.printStackTrace(out);
@@ -282,7 +282,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
                             out.println("Attempting a reload...");
                             try {
                                 this.controller.reload();
-                            } catch (IllegalStateException e) {
+                            } catch (final IllegalStateException e) {
                                 out.println();
                                 out.println("Can't reload now");
                                 e.printStackTrace(out);
@@ -291,14 +291,14 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
                         /* Disconnect */
                         case '3':
-                            String name=this.getDirectoryName()+
+                            final String name=this.getDirectoryName()+
                                         "/SimpleDaemon."+
                                         this.getConnectionNumber()+
                                         ".tmp";
                             try {
                                 this.log(name);
                                 out.println("File '"+name+"' created");
-                            } catch (IOException e) {
+                            } catch (final IOException e) {
                                 e.printStackTrace(out);
                             }
                             break;
@@ -325,7 +325,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
                     }
 
                 /* If we get an IOException we return (disconnect) */
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     System.err.println("SimpleDaemon: IOException in "+
                                        "connection "+
                                        this.getConnectionNumber());

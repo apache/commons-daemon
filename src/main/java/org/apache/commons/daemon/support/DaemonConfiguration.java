@@ -91,23 +91,23 @@ public final class DaemonConfiguration
             configurationProperties.load(file);
             ok = true;
         }
-        catch (FileNotFoundException ex) {
+        catch (final FileNotFoundException ex) {
             // fileName does not exist
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
             // Error reading properties file
         } finally {
             try {
                 if (file != null) {
                     file.close();
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
             }
         }
         return ok;
     }
 
-    private String expandProperty(String propValue)
+    private String expandProperty(final String propValue)
         throws ParseException
     {
         StringBuffer expanded;
@@ -127,9 +127,9 @@ public final class DaemonConfiguration
                 btoken = propValue.indexOf(BTOKEN, btoken + BTOKEN.length());
                 continue;
             }
-            int etoken = propValue.indexOf(ETOKEN, btoken);
+            final int etoken = propValue.indexOf(ETOKEN, btoken);
             if (etoken != -1) {
-                String variable = propValue.substring(btoken + BTOKEN.length(), etoken);
+                final String variable = propValue.substring(btoken + BTOKEN.length(), etoken);
                 String sysvalue = systemProperties.getProperty(variable);
                 if (sysvalue == null) {
                     // Try with the environment if there was no
@@ -137,7 +137,7 @@ public final class DaemonConfiguration
                     sysvalue = System.getenv(variable); // N.B. Deprecated in Java 1.3/1.4, but re-instated in Java 1.5+
                 }
                 if (sysvalue != null) {
-                    String strtoken = propValue.substring(ctoken, btoken);
+                    final String strtoken = propValue.substring(ctoken, btoken);
                     expanded.append(strtoken);
                     expanded.append(sysvalue);
                     ctoken = etoken + ETOKEN.length();
@@ -162,7 +162,7 @@ public final class DaemonConfiguration
      *
      * @throws ParseException if the property is wrongly formatted.
      */
-    public String getProperty(String name)
+    public String getProperty(final String name)
         throws ParseException
     {
         if (name == null) {
@@ -186,10 +186,10 @@ public final class DaemonConfiguration
      *
      * @throws ParseException if the property is wrongly formatted.
      */
-    public String[] getPropertyArray(String name)
+    public String[] getPropertyArray(final String name)
         throws ParseException
     {
-        ArrayList<String> list = new ArrayList<String>();
+        final ArrayList<String> list = new ArrayList<String>();
         String    args;
 
         // Load daemon.arg[0] ... daemon.arg[n] into the String array.

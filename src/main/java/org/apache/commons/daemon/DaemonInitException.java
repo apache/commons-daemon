@@ -28,18 +28,18 @@ public class DaemonInitException extends Exception {
     // don't rely on Throwable#getCause (jdk1.4)
     private final Throwable cause;
 
-    public DaemonInitException(String message) {
+    public DaemonInitException(final String message) {
         super(message);
         this.cause = null;
     }
 
-    public DaemonInitException(String message, Throwable cause) {
+    public DaemonInitException(final String message, final Throwable cause) {
         super(message);
         this.cause = cause;
     }
 
     public String getMessageWithCause() {
-        String extra = this.cause == null ? "" : ": " + this.cause.getMessage();
+        final String extra = this.cause == null ? "" : ": " + this.cause.getMessage();
         return getMessage() + extra;
     }
 

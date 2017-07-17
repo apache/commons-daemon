@@ -59,7 +59,7 @@ public final class DaemonLoader
                            System.getProperty("commons.daemon.process.parent") + ")");
     }
 
-    public static boolean check(String cn)
+    public static boolean check(final String cn)
     {
         try {
             /* Check the class name */
@@ -68,14 +68,14 @@ public final class DaemonLoader
             }
 
             /* Get the ClassLoader loading this class */
-            ClassLoader cl = DaemonLoader.class.getClassLoader();
+            final ClassLoader cl = DaemonLoader.class.getClassLoader();
             if (cl == null) {
                 System.err.println("Cannot retrieve ClassLoader instance");
                 return false;
             }
 
             /* Find the required class */
-            Class<?> c = cl.loadClass(cn);
+            final Class<?> c = cl.loadClass(cn);
 
             /* This should _never_ happen, but doublechecking doesn't harm */
             if (c == null) {
@@ -85,7 +85,7 @@ public final class DaemonLoader
             /* Create a new instance of the daemon */
             c.newInstance();
 
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
              */
@@ -105,14 +105,14 @@ public final class DaemonLoader
                 return true;
             }
             System.out.println("Daemon doesn't support signaling");
-        } catch (Throwable ex) {
+        } catch (final Throwable ex) {
             System.err.println("Cannot send signal: " + ex);
             ex.printStackTrace(System.err);
         }
         return false;
     }
 
-    public static boolean load(String className, String args[])
+    public static boolean load(final String className, String args[])
     {
         try {
             /* Check if the underlying library supplied a valid list of
@@ -127,7 +127,7 @@ public final class DaemonLoader
             }
 
             /* Get the ClassLoader loading this class */
-            ClassLoader cl = DaemonLoader.class.getClassLoader();
+            final ClassLoader cl = DaemonLoader.class.getClassLoader();
             if (cl == null) {
                 System.err.println("Cannot retrieve ClassLoader instance");
                 return false;
@@ -138,7 +138,7 @@ public final class DaemonLoader
                  * and modify arguments to include the real class name.
                  */
                 c = DaemonWrapper.class;
-                String[] a = new String[args.length + 2];
+                final String[] a = new String[args.length + 2];
                 a[0] = "-start";
                 a[1] = className.substring(1);
                 System.arraycopy(args, 0, a, 2, args.length);
@@ -155,10 +155,10 @@ public final class DaemonLoader
             boolean isdaemon = false;
 
             try {
-                Class<?> dclass = cl.loadClass("org.apache.commons.daemon.Daemon");
+                final Class<?> dclass = cl.loadClass("org.apache.commons.daemon.Daemon");
                 isdaemon = dclass.isAssignableFrom(c);
             }
-            catch (Exception cnfex) {
+            catch (final Exception cnfex) {
                 // Swallow if Daemon not found.
             }
 
@@ -180,7 +180,7 @@ public final class DaemonLoader
 
             try {
                 signal = c.getMethod("signal", myclass);
-            } catch (NoSuchMethodException e) {
+            } catch (final NoSuchMethodException e) {
                 // Signalling will be disabled.
             }
 
@@ -195,24 +195,24 @@ public final class DaemonLoader
                 controller.setAvailable(false);
 
                 /* Create context */
-                Context context = new Context();
+                final Context context = new Context();
                 context.setArguments(args);
                 context.setController(controller);
 
                 /* Now we want to call the init method in the class */
-                Object arg[] = new Object[1];
+                final Object arg[] = new Object[1];
                 arg[0] = context;
                 init.invoke(daemon, arg);
             }
             else {
-                Object arg[] = new Object[1];
+                final Object arg[] = new Object[1];
                 arg[0] = args;
                 init.invoke(daemon, arg);
             }
 
         }
-        catch (InvocationTargetException e) {
-            Throwable thrown = e.getTargetException();
+        catch (final InvocationTargetException e) {
+            final Throwable thrown = e.getTargetException();
             /* DaemonInitExceptions can fail with a nicer message */
             if (thrown instanceof DaemonInitException) {
                 failed(((DaemonInitException) thrown).getMessageWithCause());
@@ -222,7 +222,7 @@ public final class DaemonLoader
             }
             return false;
         }
-        catch (Throwable t) {
+        catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
              */
@@ -237,7 +237,7 @@ public final class DaemonLoader
     {
         try {
             /* Attempt to start the daemon */
-            Object arg[] = null;
+            final Object arg[] = null;
             start.invoke(daemon, arg);
 
             /* Set the availability flag in the controller */
@@ -245,7 +245,7 @@ public final class DaemonLoader
                 controller.setAvailable(true);
             }
 
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
              */
@@ -264,10 +264,10 @@ public final class DaemonLoader
             }
 
             /* Attempt to stop the daemon */
-            Object arg[] = null;
+            final Object arg[] = null;
             stop.invoke(daemon, arg);
         }
-        catch (Throwable t) {
+        catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
              */
@@ -281,12 +281,12 @@ public final class DaemonLoader
     {
         try {
             /* Attempt to stop the daemon */
-            Object arg[] = null;
+            final Object arg[] = null;
             destroy.invoke(daemon, arg);
 
             daemon = null;
             controller = null;
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
              * return false (load, start and stop won't be called).
              */
@@ -318,7 +318,7 @@ public final class DaemonLoader
             }
         }
 
-        private void setAvailable(boolean available)
+        private void setAvailable(final boolean available)
         {
             synchronized (this) {
                 this.available = available;
@@ -358,19 +358,19 @@ public final class DaemonLoader
         }
 
         @Override
-        public void fail(String message)
+        public void fail(final String message)
         {
             fail(message, null);
         }
 
         @Override
-        public void fail(Exception exception)
+        public void fail(final Exception exception)
         {
             fail(null, exception);
         }
 
         @Override
-        public void fail(String message, Exception exception)
+        public void fail(final String message, final Exception exception)
         {
             synchronized (this) {
                 this.setAvailable(false);
@@ -403,7 +403,7 @@ public final class DaemonLoader
             return daemonController;
         }
 
-        public void setController(DaemonController controller)
+        public void setController(final DaemonController controller)
         {
             this.daemonController = controller;
         }
@@ -414,7 +414,7 @@ public final class DaemonLoader
             return args;
         }
 
-        public void setArguments(String[]args)
+        public void setArguments(final String[]args)
         {
             this.args = args;
         }

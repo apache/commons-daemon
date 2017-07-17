@@ -82,10 +82,10 @@ public class DaemonWrapper implements Daemon
      * appended to any existing values.</b>
      */
     @Override
-    public void init(DaemonContext context)
+    public void init(final DaemonContext context)
         throws Exception
     {
-        String[] args = context.getArguments();
+        final String[] args = context.getArguments();
 
         if (args != null) {
             int i;
@@ -131,7 +131,7 @@ public class DaemonWrapper implements Daemon
                     if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
                     }
-                    String[] aa = new String[1];
+                    final String[] aa = new String[1];
                     aa[0] = args[i];
                     shutdown.addArguments(aa);
                 }
@@ -142,7 +142,7 @@ public class DaemonWrapper implements Daemon
                 }
             }
             if (args.length > i) {
-                String[] copy = new String[args.length - i];
+                final String[] copy = new String[args.length - i];
                 System.arraycopy(args, i, copy, 0, copy.length);
                 startup.addArguments(copy);
             }
@@ -202,22 +202,22 @@ public class DaemonWrapper implements Daemon
         {
         }
 
-        protected void setClassName(String name)
+        protected void setClassName(final String name)
         {
             if (this.name == null) {
                 this.name = name;
             }
         }
-        protected void setMethodName(String name)
+        protected void setMethodName(final String name)
         {
             if (this.call == null) {
                 this.call = name;
             }
         }
-        protected void addArguments(String[] args)
+        protected void addArguments(final String[] args)
         {
             if (args != null) {
-                ArrayList<String> aa = new ArrayList<String>();
+                final ArrayList<String> aa = new ArrayList<String>();
                 if (this.args != null) {
                     aa.addAll(Arrays.asList(this.args));
                 }
@@ -241,7 +241,7 @@ public class DaemonWrapper implements Daemon
                     // We only need object instance for non-static methods.
                     obj = main.newInstance();
                 }
-                Object arg[] = new Object[1];
+                final Object arg[] = new Object[1];
 
                 arg[0] = args;
                 inst.invoke(obj, arg);
@@ -265,11 +265,11 @@ public class DaemonWrapper implements Daemon
             }
 
             // Get the ClassLoader loading this class
-            ClassLoader cl = DaemonWrapper.class.getClassLoader();
+            final ClassLoader cl = DaemonWrapper.class.getClassLoader();
             if (cl == null) {
                 throw new NullPointerException("Cannot retrieve ClassLoader instance");
             }
-            Class<?>[] ca = new Class[1];
+            final Class<?>[] ca = new Class[1];
             ca[0]      = args.getClass();
             // Find the required class
             main = cl.loadClass(name);

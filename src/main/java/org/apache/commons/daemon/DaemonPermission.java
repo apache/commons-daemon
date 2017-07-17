@@ -183,7 +183,7 @@ public final class DaemonPermission extends Permission
      * @throws IllegalArgumentException If the specified target name is not
      *                supported.
      */
-    public DaemonPermission(String target)
+    public DaemonPermission(final String target)
         throws IllegalArgumentException
     {
         // Setup the target name of this permission object.
@@ -217,7 +217,7 @@ public final class DaemonPermission extends Permission
      *                supported, or the specified list of actions includes an
      *                invalid value.
      */
-    public DaemonPermission(String target, String actions)
+    public DaemonPermission(final String target, final String actions)
         throws IllegalArgumentException
     {
         // Setup this instance's target name.
@@ -268,7 +268,7 @@ public final class DaemonPermission extends Permission
      *         this <code>DaemonPermission</code> instance or not.
      */
     @Override
-    public boolean equals(Object object)
+    public boolean equals(final Object object)
     {
         if (object == this) {
             return true;
@@ -278,7 +278,7 @@ public final class DaemonPermission extends Permission
             return false;
         }
 
-        DaemonPermission that = (DaemonPermission) object;
+        final DaemonPermission that = (DaemonPermission) object;
 
         if (this.type != that.type) {
             return false;
@@ -295,7 +295,7 @@ public final class DaemonPermission extends Permission
      *         not.
      */
     @Override
-    public boolean implies(Permission permission)
+    public boolean implies(final Permission permission)
     {
         if (permission == this) {
             return true;
@@ -305,7 +305,7 @@ public final class DaemonPermission extends Permission
             return false;
         }
 
-        DaemonPermission that = (DaemonPermission) permission;
+        final DaemonPermission that = (DaemonPermission) permission;
 
         if (this.type != that.type) {
             return false;
@@ -339,7 +339,7 @@ public final class DaemonPermission extends Permission
             return;
         }
 
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         buf.append(this.getClass().getName());
         buf.append('[');
         switch (this.type) {
@@ -360,7 +360,7 @@ public final class DaemonPermission extends Permission
     /**
      * Creates a permission mask for a given control actions string.
      */
-    private int createControlMask(String actions)
+    private int createControlMask(final String actions)
         throws IllegalArgumentException
     {
         if (actions == null) {
@@ -368,10 +368,10 @@ public final class DaemonPermission extends Permission
         }
 
         int mask = 0;
-        StringTokenizer tok = new StringTokenizer(actions, ",", false);
+        final StringTokenizer tok = new StringTokenizer(actions, ",", false);
 
         while (tok.hasMoreTokens()) {
-            String val = tok.nextToken().trim();
+            final String val = tok.nextToken().trim();
 
             if (WILDCARD.equals(val)) {
                 return MASK_CONTROL_START | MASK_CONTROL_STOP |
@@ -398,9 +398,9 @@ public final class DaemonPermission extends Permission
     }
 
     /** Creates a actions list for a given control permission mask. */
-    private String createControlActions(int mask)
+    private String createControlActions(final int mask)
     {
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         boolean sep = false;
 
         if ((mask & MASK_CONTROL_START) == MASK_CONTROL_START) {
