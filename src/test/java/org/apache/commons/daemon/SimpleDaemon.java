@@ -65,9 +65,14 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
         final String[] a = context.getArguments();
 
-        if (a.length>0) port=Integer.parseInt(a[0]);
-        if (a.length>1) this.directory=a[1];
-        else this.directory="/tmp";
+        if (a.length>0) {
+            port=Integer.parseInt(a[0]);
+        }
+        if (a.length>1) {
+            this.directory=a[1];
+        } else {
+            this.directory="/tmp";
+        }
 
         /* Dump a message */
         System.err.println("SimpleDaemon: loading on port "+port);
@@ -127,7 +132,9 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         } catch (final IOException e) {
             /* Don't dump any error message if we are stopping. A IOException
                is generated when the ServerSocket is closed in stop() */
-            if (!this.stopping) e.printStackTrace(System.err);
+            if (!this.stopping) {
+                e.printStackTrace(System.err);
+            }
         }
 
         /* Terminate all handlers that at this point are still open */
