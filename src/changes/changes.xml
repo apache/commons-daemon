@@ -42,6 +42,9 @@
       <action issue="DAEMON-368" type="add" dev="ggregory">
         Add DEBUG and ERROR logging to help diagnose problems when starting a Windows Service.
       </action>
+      <action issue="DAEMON-371" type="update" dev="ggregory">
+        IUpdate Java requirement from version 5 to 6.
+      </action>
       <action type="update" dev="markt">
         Increase minimum Java version to Java 5.
       </action>
