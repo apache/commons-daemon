@@ -87,6 +87,11 @@
       <action issue="DAEMON-324" type="fix" dev="markt">
         Fix a resource leak opening the JVM configuration file.
       </action>
+      <action issue="DAEMON-339" type="fix" dev="markt" due-to="John Wehle">
+        Improve the jsvc code that restarts the process if the JVM crashes so
+        that if the JVM crashes after a signal has been received to shut down
+        jsvc does not attempt to restart the JVM.
+      </action>
     </release>
   </body>
 </document>

@@ -48,18 +48,13 @@ extern char **environ;
 
 static mode_t envmask;          /* mask to create the files */
 
+pid_t controller_pid = 0;       /* The parent process pid */
 pid_t controlled = 0;           /* the child process pid */
 pid_t logger_pid = 0;           /* the logger process pid */
-static bool stopping = false;
-static bool doreload = false;
+static volatile bool stopping = false;
+static volatile bool doreload = false;
 static bool doreopen = false;
 static bool dosignal = false;
-typedef void (*sighandler_t)(int);
-static sighandler_t handler_int  = NULL;
-static sighandler_t handler_usr1 = NULL;
-static sighandler_t handler_usr2 = NULL;
-static sighandler_t handler_hup  = NULL;
-static sighandler_t handler_trm  = NULL;
 
 static int run_controller(arg_data *args, home_data *data, uid_t uid,
                           gid_t gid);
@@ -103,6 +98,8 @@ static void handler(int sig)
             }
             else {
                 stopping = true;
+                /* Ensure the controller knows a shutdown was requested. */
+                kill(controller_pid,sig);
             }
         break;
         case SIGINT:
@@ -112,6 +109,8 @@ static void handler(int sig)
             }
             else {
                 stopping = true;
+                /* Ensure the controller knows a shutdown was requested. */
+                kill(controller_pid,sig);
             }
         break;
         case SIGHUP:
@@ -462,39 +461,40 @@ static void cygwincontroller(void)
     raise(SIGTERM);
 }
 #endif
-static void controller(int sig)
+static void controller(int sig, siginfo_t *sip, void *ucp)
 {
     switch (sig) {
         case SIGTERM:
         case SIGINT:
+            if (!stopping) {
+                /*
+                 * Only forward a signal that requests shutdown once (the
+                 * issue being that the child also forwards the signal to
+                 * the parent and we need to avoid loops).
+                 *
+                 * Note that there are * two * instances of the stopping
+                 * variable ... one in the parent and the second in the
+                 * child.
+                 */
+                stopping = true;
+                if (sip == NULL
+                    || !(sip->si_code <= 0 && sip->si_pid == controlled)) {
+                    log_debug("Forwarding signal %d to process %d", sig,
+                               controlled);
+                    kill(controlled, sig);
+                }
+            }
+            break;
         case SIGHUP:
         case SIGUSR1:
         case SIGUSR2:
             log_debug("Forwarding signal %d to process %d", sig, controlled);
             kill(controlled, sig);
-            signal(sig, controller);
-        break;
+            break;
         default:
             log_debug("Caught unknown signal %d", sig);
-        break;
+            break;
     }
-}
-
-/*
- * Return the address of the current signal handler and set the new one.
- */
-static sighandler_t signal_set(int sig, sighandler_t newHandler)
-{
-    sighandler_t hand;
-
-    hand = signal(sig, newHandler);
-#ifdef SIG_ERR
-    if (hand == SIG_ERR)
-        hand = NULL;
-#endif
-    if (hand == handler || hand == controller)
-        hand = NULL;
-    return hand;
 }
 
 static int mkdir0(const char *name, int perms)
@@ -780,6 +780,7 @@ static int stop_child(arg_data *args)
 static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
 {
     int ret = 0;
+    struct sigaction act;
 
     /* check the pid file */
     ret = check_pid(args);
@@ -857,12 +858,16 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
         log_debug("java_start done");
 
     /* Install signal handlers */
-    handler_hup = signal_set(SIGHUP, handler);
-    handler_usr1 = signal_set(SIGUSR1, handler);
-    handler_usr2 = signal_set(SIGUSR2, handler);
-    handler_trm = signal_set(SIGTERM, handler);
-    handler_int = signal_set(SIGINT, handler);
-    controlled = getpid();
+    memset(&act, '\0', sizeof(act));
+    act.sa_handler = handler;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+
+    sigaction(SIGHUP, &act, NULL);
+    sigaction(SIGUSR1, &act, NULL);
+    sigaction(SIGUSR2, &act, NULL);
+    sigaction(SIGTERM, &act, NULL);
+    sigaction(SIGINT, &act, NULL);
 
     log_debug("Waiting for a signal to be delivered");
     create_tmp_file(args);
@@ -1258,7 +1263,24 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
                           gid_t gid)
 {
     pid_t pid = 0;
+    struct sigaction act;
 
+    controller_pid = getpid();
+
+    /*
+     * Install signal handlers for the parent process.
+     * These will be replaced in the child process.
+     */
+    memset(&act, '\0', sizeof(act));
+    act.sa_handler = controller;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = SA_RESTART | SA_NOCLDSTOP | SA_SIGINFO;
+
+    sigaction(SIGHUP, &act, NULL);
+    sigaction(SIGUSR1, &act, NULL);
+    sigaction(SIGUSR2, &act, NULL);
+    sigaction(SIGTERM, &act, NULL);
+    sigaction(SIGINT, &act, NULL);
 
     /* We have to fork: this process will become the controller and the other
        will be the child */
@@ -1273,17 +1295,13 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
         /* We are in the controller, we have to forward all interesting signals
            to the child, and wait for it to die */
         controlled = pid;
+
 #ifdef OS_CYGWIN
         SetTerm(cygwincontroller);
 #endif
-        signal(SIGHUP, controller);
-        signal(SIGUSR1, controller);
-        signal(SIGUSR2, controller);
-        signal(SIGTERM, controller);
-        signal(SIGINT, controller);
 
         while (waitpid(pid, &status, 0) != pid) {
-            /* Waith for process */
+            /* Wait for process */
         }
 
         /* The child must have exited cleanly */
@@ -1296,14 +1314,16 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
 
             /* If the child got out with 123 he wants to be restarted */
             /* See java_abort123 (we use this return code to restart when the JVM aborts) */
-            if (status == 123) {
-                log_debug("Reloading service");
-                /* prevent looping */
-                if (laststart + 60 > time(NULL)) {
-                    log_debug("Waiting 60 s to prevent looping");
-                    sleep(60);
+            if (!stopping) {
+                if (status == 123) {
+                    log_debug("Reloading service");
+                    /* prevent looping */
+                    if (laststart + 60 > time(NULL)) {
+                        log_debug("Waiting 60 s to prevent looping");
+                        sleep(60);
+                    }
+                    continue;
                 }
-                continue;
             }
             /* If the child got out with 0 he is shutting down */
             if (status == 0) {
@@ -1319,11 +1339,13 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
             if (WIFSIGNALED(status)) {
                 log_error("Service killed by signal %d", WTERMSIG(status));
                 /* prevent looping */
-                if (laststart + 60 > time(NULL)) {
-                    log_debug("Waiting 60 s to prevent looping");
-                    sleep(60);
+                if (!stopping) {
+                    if (laststart + 60 > time(NULL)) {
+                        log_debug("Waiting 60 s to prevent looping");
+                        sleep(60);
+                    }
+                    continue;
                 }
-                continue;
             }
             log_error("Service did not exit cleanly", status);
             return 1;
