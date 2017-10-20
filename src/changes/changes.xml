@@ -81,6 +81,9 @@
       <action issue="DAEMON-370" type="update" dev="ggregory" due-to="Amey Jadiye">
       	Move attributions from @author in Javadocs to POM.
       </action>
+      <action issue="DAEMON-373" type="fix" dev="markt">
+        Enable jsvc to start when running on Java 9.
+      </action>
     </release>
   </body>
 </document>

@@ -142,12 +142,14 @@ char *location_jvm_default[] = {
  */
 char *location_jvm_configured[] = {
 #if defined(OS_DARWIN)
+    "$JAVA_HOME/lib/$VM_NAME/libjvm.dylib",             /* Java 9 */
     "$JAVA_HOME/jre/lib/$VM_NAME/libjvm.dylib",
     "$JAVA_HOME/../Libraries/lib$VM_NAME.dylib",
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/$VM_NAME/jvm.dll",              /* Sun JDK 1.3 */
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD) || defined(OS_TRU64)
-    "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JDK 1.3 */
+    "$JAVA_HOME/lib/$VM_NAME/libjvm.so",                /* Java 9 */
+	"$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",        /* Sun JRE 1.3 */
 #elif defined(OS_HPUX)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm." SO_EXT,
