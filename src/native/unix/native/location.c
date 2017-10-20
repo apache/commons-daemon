@@ -17,14 +17,14 @@
 #include "jsvc.h"
 
 /* Locations of various JVM files. We have to deal with all this madness since
- * we're not distributed togheter (yet!) with an official VM distribution. All
+ * we're not distributed together (yet!) with an official VM distribution. All
  * this CRAP needs improvement, and based on the observation of default
  * distributions of VMs and OSes. If it doesn't work for you, please report
  * your VM layout (ls -laR) and system details (build/config.guess) so that we
  * can improve the search algorithms.
  */
 
-/* If JAVA_HOME is not defined we search this list of paths (OS-dependant)
+/* If JAVA_HOME is not defined we search this list of paths (OS-dependent)
  * to find the default location of the JVM.
  */
 char *location_home[] = {
