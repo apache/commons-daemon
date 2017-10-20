@@ -849,7 +849,6 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
 #endif
 
     /* Start the service */
-    umask(envmask);
     if (java_start() != true) {
         log_debug("java_start failed");
         return 5;

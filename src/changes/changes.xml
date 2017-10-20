@@ -92,6 +92,9 @@
         that if the JVM crashes after a signal has been received to shut down
         jsvc does not attempt to restart the JVM.
       </action>
+      <action issue="DAEMON-318" type="fix" dev="markt" due-to="Markus Schneider">
+        Ensure that the child process is started with the correct umask. 
+      </action>
     </release>
   </body>
 </document>
