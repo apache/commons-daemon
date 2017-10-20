@@ -262,9 +262,9 @@ static DWORD __apxProcessWrite(LPAPXPROCESS lpProc, LPCVOID lpData, DWORD dwLen)
 /** Helper functions */
 static BOOL __apxProcCreateChildPipes(LPAPXPROCESS lpProc)
 {
-	apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun __apxProcCreateChildPipes()");
+    BOOL   rv = FALSE;
 
-	BOOL   rv = FALSE;
+    apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun __apxProcCreateChildPipes()");
 
     if (!CreatePipe(&(lpProc->hChildStdInp),
                     &(lpProc->hChildInpWr),
