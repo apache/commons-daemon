@@ -95,6 +95,10 @@
       <action issue="DAEMON-318" type="fix" dev="markt" due-to="Markus Schneider">
         Ensure that the child process is started with the correct umask. 
       </action>
+      <action issue="DAEMON-309" type="fix" dev="markt">
+        Correct conflicting information for the behaviour of procrun when using
+        jvm mode.
+      </action>
     </release>
   </body>
 </document>

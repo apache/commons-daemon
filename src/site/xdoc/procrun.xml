@@ -656,9 +656,8 @@ This should be configured as follows:
 --StartMode jvm --StartClass MyClass --StartMethod start
 --StopMode  jvm --StopClass  MyClass --StopMethod  stop
 </source>
-Note that the method handling service start should create and start a separate thread
-to carry out the processing, and then return.
-The start and stop methods are called from different threads.
+Note: in jvm mode, the start method should not return until the stop method has
+been called. The start and stop methods are called from different threads.
 </p>
 </section>
 
