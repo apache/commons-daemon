@@ -370,7 +370,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     DWORD          dwPending = 0;
     DWORD          dwState = 0;
     DWORD          dwTick  = 0;
-    DWORD          dwWait, dwCheck, dwStart;
+    DWORD          dwWait, dwCheck, dwStart, sleepMillis;
     BOOL           bStatus;
 
     if (hService->dwType != APXHANDLE_TYPE_SERVICE)
@@ -503,7 +503,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     if (fnControlCallback)
         (*fnControlCallback)(lpCbData, uMsg, (WPARAM)3, (LPARAM)0);
     /* Check if we are in the desired state */
-    DWORD sleepMillis = 1000;
+    sleepMillis = 1000;
     apxLogWrite(APXLOG_MARK_DEBUG "apxServiceControl(): Sleeping %d milliseconds", sleepMillis);
     Sleep(sleepMillis);
 
