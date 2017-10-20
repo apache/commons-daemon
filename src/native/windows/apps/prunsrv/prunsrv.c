@@ -1016,6 +1016,12 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating process");
             return 1;
         }
+        /* If the service process completes before the stop process does the
+         * cleanup code below will free structures required by the stop process
+         * which will, in all probability, trigger a crash. Wait for the stop
+         * process to complete before cleaning up.
+         */
+        gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxProcessSetExecutableW(hWorker, SO_STOPIMAGE)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
                         SO_STOPIMAGE);

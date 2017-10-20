@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements. See the NOTICE file distributed with
@@ -98,6 +98,11 @@
       <action issue="DAEMON-309" type="fix" dev="markt">
         Correct conflicting information for the behaviour of procrun when using
         jvm mode.
+      </action>
+      <action issue="DAEMON-372" type="fix" dev="markt" due-to="Sérgio Ozaki">
+        Ensure that, when using procrun in java or exe mode, the service process
+        waits for the stop process to complete before starting clean-up to avoid
+        a crash in the stop process. 
       </action>
     </release>
   </body>
