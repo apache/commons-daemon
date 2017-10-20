@@ -84,6 +84,9 @@
       <action issue="DAEMON-373" type="fix" dev="markt">
         Enable jsvc to start when running on Java 9.
       </action>
+      <action issue="DAEMON-324" type="fix" dev="markt">
+        Fix a resource leak opening the JVM configuration file.
+      </action>
     </release>
   </body>
 </document>

@@ -126,6 +126,7 @@ static bool parse(home_data *data)
             }
         }
     }
+    fclose(cfgf);
     return (true);
 }
 
