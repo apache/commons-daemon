@@ -422,32 +422,6 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
     return TRUE;
 }
 
-/** Create the process but don't start it
- *
- APXHANDLE
-apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
-                  LPAPXFNCALLBACK fnCallback,
-                  LPCWSTR szUsername, LPCWSTR szPassword,
-                  BOOL bLogonAsService)
-{
-    APXHANDLE hProcess;
-    LPAPXPROCESS lpProc;
-    HANDLE hUserToken = NULL;
-    if (szUsername && (APX_GET_OSLEVEL() >= APX_WINVER_NT_4)) {
-        HANDLE hUser;
-#ifndef _UNICODE
-        WCHAR wsUsername[256];
-        WCHAR wsPassword[256];
-        AsciiToWide(szUsername, wsUsername);
-        AsciiToWide(szPassword, wsPassword);
-#else
-        LPCWSTR wsUsername = szUsername;
-        LPCWSTR wsPassword = szPassword;
-#endif
-
- */
-
-
  APXHANDLE
 apxCreateProcessA(APXHANDLE hPool, DWORD dwOptions,
                   LPAPXFNCALLBACK fnCallback,
