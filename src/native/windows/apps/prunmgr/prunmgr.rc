@@ -26,10 +26,6 @@ IDI_ICONRUN          ICON                   "../../resources/procrunr.ico"
 IDR_LICENSE          RTF                    "../../resources/license.rtf"
 BMP_JAKARTA          BITMAP                 "../../resources/commons.bmp"
 
-#if 0
-BMP_APMNUHDR         BITMAP                 "../../resources/apmnuhdr.bmp"
-#endif
-
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunmgr.manifest"
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 337, 187

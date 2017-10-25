@@ -368,61 +368,6 @@ apxMultiSzToArrayA(APXHANDLE hPool, LPCSTR lpString, LPSTR **lppArray)
 
 #define QSTR_DATA(q)    ((char *)(q) + sizeof(APXMULTISZ))
 
-#if 0
-LPAPXMULTISZ apxMultiSzStrdup(LPCTSTR szSrc)
-{
-    LPAPXMULTISZ q;
-
-    if (szSrc) {
-        DWORD l = lstrlen(szSrc);
-        q = (LPAPXMULTISZ)apxAlloc(QSTR_ALIGN(l));
-        q->dwAllocated = QSTR_SIZE(l);
-        q->dwInsert    = l + 1;
-        AplMoveMemory(QSTR_DATA(q), szSrc, l);
-        RtlZeroMemory(QSTR_DATA(q) + l, q->dwAllocated - l);
-    }
-    else {
-        q = (LPAPXMULTISZ)apxCalloc(QSTR_ALIGN(0));
-        q->dwAllocated = QSTR_SIZE(0);
-    }
-
-    return q;
-}
-
-LPTSTR  apxMultiSzStrcat(LPAPXMULTISZ lpmSz, LPCTSTR szSrc)
-{
-    DWORD l = lstrlen(szSrc);
-    LPTSTR p;
-
-    if (lpmSz->dwInsert + l + 2 > lpmSz->dwAllocated) {
-        if ((lpmSz = (LPAPXMULTISZ )apxRealloc(lpmSz, QSTR_ALIGN(lpmSz->dwInsert + l))) == NULL)
-            return NULL;
-
-        lpmSz->dwAllocated = QSTR_SIZE(lpmSz->dwInsert + l);
-        AplZeroMemory(QSTR_DATA(lpmSz) + lpmSz->dwInsert + l,
-                   lpmSz->dwAllocated - (lpmSz->dwInsert + l));
-    }
-    p = (LPTSTR)QSTR_DATA(lpmSz) + lpmSz->dwInsert;
-    AplMoveMemory(p, szSrc, l);
-
-    lpmSz->dwInsert += (l + 1);
-    return p;
-}
-
-DWORD apxMultiSzLen(LPAPXMULTISZ lpmSz)
-{
-    if (lpmSz->dwInsert)
-        return lpmSz->dwInsert - 1;
-    else
-        return 0;
-}
-
-LPCTSTR apxMultiSzGet(LPAPXMULTISZ lpmSz)
-{
-    return (LPCTSTR)QSTR_DATA(lpmSz);
-}
-#endif
-
 LPTSTR apxStrCharRemove(LPTSTR szString, TCHAR chSkip)
 {
   LPTSTR p = szString;
