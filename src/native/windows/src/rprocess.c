@@ -121,15 +121,6 @@ static DWORD WINAPI __apxProcWorkerThread(LPVOID lpParameter)
         GetExitCodeProcess(lpProc->stProcInfo.hProcess, &dwExitCode);
         apxLogWrite(APXLOG_MARK_DEBUG "Child process exit code %d", dwExitCode);
         apxSetVmExitCode(dwExitCode);
-
-#if 0
-        if (hProcess->fnCallback)
-            (*hProcess->fnCallback)(hProcess, WM_QUIT, (WPARAM)dwExitCode, 0);
-        lpProc->dwChildStatus &= ~CHILD_RUNNING;
-        GetExitCodeProcess(lpProc->stProcInfo.hProcess, &dwExitCode);
-
-        /* Close that handle */
-#endif
     }
     ExitThread(0);
     return 0;
