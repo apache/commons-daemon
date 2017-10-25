@@ -1313,12 +1313,6 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
                                       serviceStop,
                                       (LPVOID)dwCtrlCode,
                                       0, &threadId);
-#if 0
-            /* Seems we don't need to wait for the stop thread
-             * to finish
-             */
-            WaitForSingleObject(stopThread, INFINITE);
-#endif
             CloseHandle(stopThread);
             return;
         case SERVICE_CONTROL_INTERROGATE:
