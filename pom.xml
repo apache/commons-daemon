@@ -102,6 +102,10 @@
   </dependencies>
 
   <properties>
+    <!-- Apache Commons Daemon is used by Apache Tomcat. The oldest currently
+         supported Tomcat version is Tomcat 7 which has a minimum Java version
+         of Java 6. It is therefore advisable to check with the Apache Tomcat
+         community before increasing these values. -->
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <commons.componentid>daemon</commons.componentid>
