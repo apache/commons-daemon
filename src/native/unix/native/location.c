@@ -31,7 +31,7 @@ char *location_home[] = {
 #if defined(OS_DARWIN)
     "/System/Library/Frameworks/JavaVM.framework/Home",
     "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/",
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_AIX)
     "/usr/java/default",
     "/usr/java",
     "/usr/local/java",
@@ -74,7 +74,11 @@ char *location_jvm_cfg[] = {
     "$JAVA_HOME/lib/jvm.cfg",               /* JRE */
     "$JAVA_HOME/jre/lib/" CPU "/jvm.cfg",   /* JDK */
     "$JAVA_HOME/lib/" CPU "/jvm.cfg",       /* JRE */
-    NULL,
+#if defined(OS_AIX)
+    "$JAVA_HOME/jre/lib/ppc/jvm.cfg",       /* JDK */
+    "$JAVA_HOME/lib/ppc/jvm.cfg",           /* JRE */
+#endif
+	NULL,
 };
 
 /* This is the list of "defaults" VM (searched when jvm.cfg is not found, as
@@ -88,7 +92,7 @@ char *location_jvm_default[] = {
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/classic/jvm.dll",               /* Sun JDK 1.3 */
     "$JAVA_HOME/jre/bin/client/jvm.dll",                /* Sun JDK 1.4 */
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD) || defined(OS_TRU64)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD) || defined(OS_TRU64) || defined(OS_AIX)
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so",     /* Sun JDK 1.2 */
     "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.so",      /* Sun JDK 1.4 */
     "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",      /* Sun JDK 1.3 */
@@ -147,10 +151,14 @@ char *location_jvm_configured[] = {
     "$JAVA_HOME/../Libraries/lib$VM_NAME.dylib",
 #elif defined(OS_CYGWIN)
     "$JAVA_HOME/jre/bin/$VM_NAME/jvm.dll",              /* Sun JDK 1.3 */
-#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD) || defined(OS_TRU64)
+#elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD) || defined(OS_TRU64) || defined(OS_AIX)
     "$JAVA_HOME/lib/$VM_NAME/libjvm.so",                /* Java 9 */
 	"$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",        /* Sun JRE 1.3 */
+#if defined(OS_AIX)
+    "$JAVA_HOME/jre/lib/ppc/$VM_NAME/libjvm.so",        /* Sun JDK 1.3 */
+    "$JAVA_HOME/lib/ppc/$VM_NAME/libjvm.so",            /* Sun JRE 1.3 */
+#endif
 #elif defined(OS_HPUX)
     "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm." SO_EXT,
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm." SO_EXT,

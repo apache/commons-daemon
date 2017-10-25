@@ -104,6 +104,9 @@
         waits for the stop process to complete before starting clean-up to avoid
         a crash in the stop process. 
       </action>
+      <action issue="DAEMON-310" type="fix" dev="markt" due-to="John Wehle">
+        Enable jsvc to find the jvm when running on AIX.
+      </action>
     </release>
   </body>
 </document>
