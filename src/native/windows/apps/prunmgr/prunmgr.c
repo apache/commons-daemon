@@ -1637,7 +1637,7 @@ static DWORD WINAPI refreshThread(LPVOID lpParam)
 }
 
 /* Main program entry
- * Since we are inependant from CRT
+ * Since we are independent from CRT
  * the arguments are not used
  */
 #ifdef _NO_CRTLIBRARY
