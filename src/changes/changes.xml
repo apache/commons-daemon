@@ -107,6 +107,10 @@
       <action issue="DAEMON-310" type="fix" dev="markt" due-to="John Wehle">
         Enable jsvc to find the jvm when running on AIX.
       </action>
+      <action issue="DAEMON-302" type="fix" dev="markt">
+        Ensure that procun treats JVM crashes as service failures so the
+        recovery options will apply.
+      </action>
     </release>
   </body>
 </document>
