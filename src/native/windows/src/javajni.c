@@ -473,6 +473,14 @@ static void JNICALL __apxJniExit(jint exitCode)
     return;
 }
 
+static void JNICALL __apxJniAbort()
+{
+    apxLogWrite(APXLOG_MARK_DEBUG "JVM aborted");
+    // Set the exit code to a non-zero value to indicate a non-standard exit
+    vmExitCode = 1;
+    return;
+}
+
 static LPSTR __apxStrIndexA(LPCSTR szStr, int nCh)
 {
     LPSTR pStr;
@@ -660,7 +668,8 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         if (szClassPath && *szClassPath)
             ++sOptions;
 
-        sOptions++; /* unconditionally set for extraInfo exit */
+        sOptions++; /* unconditionally set for extraInfo exit  */
+        sOptions++; /* unconditionally set for extraInfo abort */
 
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
                                             &lpJvmOptions, sOptions);
@@ -683,6 +692,11 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         /* unconditionally add hook for System.exit() in order to store exit code */
         lpJvmOptions[nOptions - sOptions].optionString = "exit";
         lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniExit;
+        --sOptions;
+
+        /* unconditionally add hook for abort in order to store exit code */
+        lpJvmOptions[nOptions - sOptions].optionString = "abort";
+        lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniAbort;
         --sOptions;
 
         if (dwMs) {
