@@ -1729,7 +1729,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     if (lpCmdline->dwCmdIndex == 4) {
         HANDLE hOther = FindWindow(_gui_store->szWndClass, NULL);
         if (hOther)
-            SendMessage(hOther, WM_CLOSE, 0, 0);
+            SendNotifyMessage(hOther, WM_CLOSE, 0, 0);
         goto cleanup;
     }
 
@@ -1739,7 +1739,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
             HANDLE hOther = FindWindow(_gui_store->szWndClass, NULL);
             if (hOther) {
                 SetForegroundWindow(hOther);
-                SendMessage(hOther, WM_COMMAND, MAKEWPARAM(IDM_TM_CONFIG, 0), 0);
+                SendNotifyMessage(hOther, WM_COMMAND, MAKEWPARAM(IDM_TM_CONFIG, 0), 0);
             }
             else {
                 /* Skip sytem error message */
