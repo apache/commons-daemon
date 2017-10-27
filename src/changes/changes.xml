@@ -111,6 +111,10 @@
         Ensure that procun treats JVM crashes as service failures so the
         recovery options will apply.
       </action>
+      <action issue="DAEMON-312" type="fix" dev="markt">
+        Ensure that the //MQ command closes the prunmgr process even if the 
+        configuration dialog is open when the //MQ command is used.
+      </action>
     </release>
   </body>
 </document>

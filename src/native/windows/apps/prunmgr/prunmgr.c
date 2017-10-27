@@ -1595,6 +1595,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
         case WM_DESTROY:
             if (bEnableTry)
                 apxManageTryIconA(hWnd, NIM_DELETE, NULL, NULL, NULL);
+            /* Setting this to false ensures that the process closes down
+             * cleanly when the configuration window is open and the process
+             * is closed via MQ,
+             */
+            bEnableTry = FALSE;
             PostQuitMessage(0);
         break;
         default:
