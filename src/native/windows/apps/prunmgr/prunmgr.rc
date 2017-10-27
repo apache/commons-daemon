@@ -24,7 +24,7 @@ IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
 IDI_ICONSTOP         ICON                   "../../resources/procruns.ico"
 IDI_ICONRUN          ICON                   "../../resources/procrunr.ico"
 IDR_LICENSE          RTF                    "../../resources/license.rtf"
-BMP_JAKARTA          BITMAP                 "../../resources/commons.bmp"
+BMP_COMMONS          BITMAP                 "../../resources/commons.bmp"
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunmgr.manifest"
 
@@ -36,7 +36,7 @@ BEGIN
     DEFPUSHBUTTON   "&OK",IDOK,285,150,50,14
     CONTROL         "",IDC_LICENSE,"RichEdit20A",ES_MULTILINE |
                     ES_READONLY | WS_BORDER | WS_VSCROLL,0,31,335,115
-    CONTROL         "BMP_JAKARTA",IDC_STATIC,"Static",SS_BITMAP|0x00000040L,0,0,337,30
+    CONTROL         "BMP_COMMONS",IDC_STATIC,"Static",SS_BITMAP|0x00000040L,0,0,337,30
     LTEXT           " ",IDC_ABOUTAPP,2,150,270,12
     LTEXT           "Copyright (c) 2000-2017 The Apache Software Foundation.",IDC_STATIC,2,160,270,12
     LTEXT           "http://commons.apache.org",IDC_STATIC,2,170,270,12
