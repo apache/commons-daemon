@@ -115,6 +115,18 @@
         Ensure that the //MQ command closes the prunmgr process even if the 
         configuration dialog is open when the //MQ command is used.
       </action>
+      <action issue="DAEMON-311" type="fix" dev="markt">
+        When looking in the Windows registry for JRE and JDK installation
+        locations, additionally check the registry keys used by IBM provided
+        JREs and JDKs. Do this after checking the keys used by Oracle provided
+        JREs and JDKs.
+      </action>
+      <action issue="DAEMON-376" type="fix" dev="markt">
+        When looking in the Windows registry for JRE and JDK installation
+        locations, additionally check the registry keys used by Oracle provided
+        Java 9 and later JREs and JDKs. Do this after checking the keys used by
+        Oracle provided Java 8 and earlier JREs and JDKs.
+      </action>
     </release>
   </body>
 </document>
