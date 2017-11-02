@@ -21,17 +21,13 @@
 
 #include <jni.h>
 
-#ifndef JNI_VERSION_1_2
+#ifndef JNI_VERSION_1_6
 #error -------------------------------------------------------
-#error JAVA 1.1 IS NO LONGER SUPPORTED
+#error JAVA 5 AND EARLIER ARE NO LONGER SUPPORTED
 #error -------------------------------------------------------
 #endif
 
-#ifdef JNI_VERSION_1_4
-#define JNI_VERSION_DEFAULT JNI_VERSION_1_4
-#else
-#define JNI_VERSION_DEFAULT JNI_VERSION_1_2
-#endif
+#define JNI_VERSION_DEFAULT JNI_VERSION_1_6
 
 /* Standard jvm.dll prototypes
  * since only single jvm can exist per process
