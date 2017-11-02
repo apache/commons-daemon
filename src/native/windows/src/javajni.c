@@ -631,19 +631,19 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
 
     if (lpJava->iVmCount) {
         if (!lpJava->lpEnv && !__apxJvmAttach(lpJava)) {
-            if (lpJava->iVersion == JNI_VERSION_1_2) {
+            if (lpJava->iVersion == JNI_VERSION_1_6) {
                 apxLogWrite(APXLOG_MARK_ERROR "Unable To Attach the JVM");
                 return FALSE;
             }
             else
-                lpJava->iVersion = JNI_VERSION_1_2;
+                lpJava->iVersion = JNI_VERSION_1_6;
             if (!__apxJvmAttach(lpJava)) {
                 apxLogWrite(APXLOG_MARK_ERROR "Unable To Attach the JVM");
                 return FALSE;
             }
         }
         lpJava->iVersion = JNICALL_0(GetVersion);
-        if (lpJava->iVersion < JNI_VERSION_1_2) {
+        if (lpJava->iVersion < JNI_VERSION_1_6) {
             apxLogWrite(APXLOG_MARK_ERROR "Unsupported JNI version %#08x", lpJava->iVersion);
             return FALSE;
         }
