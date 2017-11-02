@@ -236,15 +236,9 @@ bool java_init(arg_data *args, home_data *data)
 
     /* Prepare the VM initialization arguments */
 
-    /*
-     * Mac OS X Java will load JVM 1.3.1 instead of 1.4.2 if JNI_VERSION_1_2
-     * is specified. So use JNI_VERSION_1_4 if we can.
-     */
-#if defined(JNI_VERSION_1_4)
-    arg.version = JNI_VERSION_1_4;
-#else
-    arg.version = JNI_VERSION_1_2;
-#endif
+    /* Minimum Java version is Java 6 */
+    arg.version = JNI_VERSION_1_6;
+
 #if defined(OSD_POSIX)
     if (JNI_GetDefaultJavaVMInitArgs(&arg) < 0) {
         log_error("Cannot init default JVM default args");
