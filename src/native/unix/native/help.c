@@ -95,6 +95,9 @@ void help(home_data *data)
     printf("    -wait <waittime>\n");
     printf("        wait waittime seconds for the service to start\n");
     printf("        waittime should multiple of 10 (min=10)\n");
+    printf("    -restarts <maxrestarts>\n");
+    printf("        maximum automatic restarts (integer)\n");
+    printf("        -1=infinite (default), 0=none, 1..(INT_MAX-1)=fixed restart count\n");
     printf("    -stop\n");
     printf("        stop the service using the file given in the -pidfile option\n");
     printf("    -keepstdin\n");

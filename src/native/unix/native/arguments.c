@@ -158,6 +158,7 @@ static arg_data *parse(int argc, char *argv[])
     args->chck    = false;        /* Don't do a check-only startup */
     args->stop    = false;        /* Stop a running jsvc */
     args->wait    = 0;            /* Wait until jsvc has started the JVM */
+    args->restarts = -1;          /* Infinite restarts by default */
     args->install = false;        /* Don't install as a service */
     args->remove  = false;        /* Don't remove the installed service */
     args->service = false;        /* Don't run as a service */
@@ -271,6 +272,15 @@ static arg_data *parse(int argc, char *argv[])
                 args->wait = atoi(temp);
             if (args->wait < 10) {
                 log_error("Invalid wait time specified (min=10)");
+                return NULL;
+            }
+        }
+        else if (!strcmp(argv[x], "-restarts")) {
+            temp = optional(argc, argv, x++);
+            if (temp)
+                args->restarts = atoi(temp);
+            if (args->restarts < -1) {
+                log_error("Invalid max restarts [-1,0,...)");
                 return NULL;
             }
         }
@@ -488,6 +498,7 @@ arg_data *arguments(int argc, char *argv[])
         log_debug("| Check Only:      %s", IsEnabledDisabled(args->chck));
         log_debug("| Stop:            %s", IsTrueFalse(args->stop));
         log_debug("| Wait:            %d", args->wait);
+        log_debug("| Restarts:        %d", args->restarts);
         log_debug("| Run as service:  %s", IsYesNo(args->service));
         log_debug("| Install service: %s", IsYesNo(args->install));
         log_debug("| Remove service:  %s", IsYesNo(args->remove));

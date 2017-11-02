@@ -181,11 +181,31 @@ Where options include:
     -wait &lt;waittime&gt;
         wait waittime seconds for the service to start
         waittime should multiple of 10 (min=10)
+    -restarts &lt;maxrestarts&gt;
+        maximum automatic restarts (integer)
+        -1=infinite (default), 0=none, 1..(INT_MAX-1)=fixed restart count
     -stop
         stop the service using the file given in the -pidfile option
     -keepstdin
         does not redirect stdin to /dev/null
-
+    --add-modules=&lt;module name&gt;
+        Java 9 --add-modules option. Passed as it is to JVM
+    --module-path=&lt;module path&gt;
+        Java 9 --module-path option. Passed as it is to JVM
+    --upgrade-module-path=&lt;module path&gt;
+        Java 9 --upgrade-module-path option. Passed as it is to JVM
+    --add-reads=&lt;module name&gt;
+        Java 9 --add-reads option. Passed as it is to JVM
+    --add-exports=&lt;module name&gt;
+        Java 9 --add-exports option. Passed as it is to JVM
+    --add-opens=&lt;module name&gt;
+        Java 9 --add-opens option. Passed as it is to JVM
+    --limit-modules=&lt;module name&gt;
+        Java 9 --limit-modules option. Passed as it is to JVM
+    --patch-module=&lt;module name&gt;
+        Java 9 --patch-module option. Passed as it is to JVM
+    --illegal-access=&lt;value&gt;
+        Java 9 --illegal-access option. Passed as it is to JVM. Refer java help for possible values.
 </source>
 </p>
 <subsection name="Mac OS X universal binaries">

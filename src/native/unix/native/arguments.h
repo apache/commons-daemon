@@ -60,6 +60,8 @@ typedef struct {
     bool stop;
     /** number of seconds to until service started */
     int wait;
+    /** max restarts **/
+    int restarts;
     /** Install as a service (win32) */
     bool install;
     /** Remove when installed as a service (win32) */

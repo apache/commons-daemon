@@ -126,9 +126,9 @@ static void handler(int sig)
         case SIGUSR1:
              log_debug("Caught SIGUSR1: Reopening logs");
              doreopen = true;
-	break;
+        break;
         case SIGUSR2:
-	     log_debug("Caught SIGUSR2: Scheduling a custom signal");
+             log_debug("Caught SIGUSR2: Scheduling a custom signal");
              dosignal = true;
         break;
         default:
@@ -1262,6 +1262,7 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
                           gid_t gid)
 {
     pid_t pid = 0;
+    int restarts = 0;
     struct sigaction act;
 
     controller_pid = getpid();
@@ -1315,7 +1316,16 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
             /* See java_abort123 (we use this return code to restart when the JVM aborts) */
             if (!stopping) {
                 if (status == 123) {
+                    if (args->restarts == 0) {
+                        log_debug("Service failure, restarts disabled");
+                        return 1;
+                    }
+                    if (args->restarts != -1 && args->restarts <= restarts) {
+                        log_debug("Service failure, restart limit reached, aborting");
+                        return 1;
+                    }
                     log_debug("Reloading service");
+                    restarts++;
                     /* prevent looping */
                     if (laststart + 60 > time(NULL)) {
                         log_debug("Waiting 60 s to prevent looping");
@@ -1343,6 +1353,8 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
                         log_debug("Waiting 60 s to prevent looping");
                         sleep(60);
                     }
+                    /* Normal or user controlled termination, reset restart counter */
+                    restarts = 0;
                     continue;
                 }
             }

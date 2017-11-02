@@ -47,6 +47,7 @@
       <arg choice='opt'>-check</arg>
       <arg choice='opt'>-user <replaceable>user</replaceable></arg>
       <arg choice='opt'>-wait <replaceable>waittime</replaceable></arg>
+      <arg choice='opt'>-restarts <replaceable>max restart count</replaceable></arg>
       <arg choice='opt'>-umask <replaceable>mask</replaceable></arg>
       <arg choice='opt'>-stop</arg>
       <arg choice='opt'>-verbose<replaceable>:class|gc|jni</replaceable></arg>
@@ -143,6 +144,14 @@
         <listitem>
           <para>wait up to waittime seconds for the service to start
                                        waittime should multiple of 10 (min=10)
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-restarts</option> max restart count</term>
+        <listitem>
+          <para>maximum automatic restart count
+             -1=infinite (default), 0=none, 1..(INT_MAX-1)=fixed count
           </para>
         </listitem>
       </varlistentry>

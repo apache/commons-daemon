@@ -130,6 +130,10 @@
       <action issue="DAEMON-374" type="fix" dev="markt" due-to="Rashmi Ranjan Mohanty">
         Add support for Java 9 commoand line arguments to jsvc.
       </action>
+      <action issue="DAEMON-334" type="add" dev="markt" due-to="Brett Delle Grazie">
+        Add a restarts options to jsvc to control the number of permitted
+        restarts after a system crash.
+      </action>
     </release>
   </body>
 </document>
