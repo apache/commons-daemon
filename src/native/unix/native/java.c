@@ -179,29 +179,14 @@ bool java_init(arg_data *args, home_data *data)
     /*
        MacOS/X actually has two libraries, one with the REAL vm, and one for
        the VM startup.
-       before JVM 1.4.1 The first one (libappshell.dyld) contains CreateVM
-       JVM 1.4.1 through 1.5.* The library name is libjvm_compat.dylib
-       starting with JVM 1.6 on OS X 10.6 the library name is libverify.dylib.
+       - JVM 1.6, the library name is libverify.dylib
+       - JVM 1.7 onwards, the library name is libjli.dylib
      */
-    if (replace(appf, 1024, "$JAVA_HOME/../Libraries/libappshell.dylib",
-                "$JAVA_HOME", data->path) != 0) {
-        log_error("Cannot replace values in loader library");
-        return false;
-    }
-    if (stat(appf, &sb)) {
-        if (replace(appf, 1024, "$JAVA_HOME/../Libraries/libjvm_compat.dylib",
-                    "$JAVA_HOME", data->path) != 0) {
-            log_error("Cannot replace values in loader library");
-            return false;
-        }
-    }
-    if (stat(appf, &sb)) {
-        if (replace(appf, 1024, "$JAVA_HOME/../Libraries/libverify.dylib",
-                    "$JAVA_HOME", data->path) != 0) {
-            log_error("Cannot replace values in loader library");
-            return false;
-        }
-    }
+	if (replace(appf, 1024, "$JAVA_HOME/../Libraries/libverify.dylib",
+				"$JAVA_HOME", data->path) != 0) {
+		log_error("Cannot replace values in loader library");
+		return false;
+	}
     if (stat(appf, &sb)) {
         if (replace(appf, 1024, "$JAVA_HOME/../MacOS/libjli.dylib",
                     "$JAVA_HOME", data->path) != 0) {
