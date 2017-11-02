@@ -388,6 +388,34 @@ static arg_data *parse(int argc, char *argv[])
         else if (!strncmp(argv[x], "-javaagent:", 11)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
+	/* Java 9 specific options */
+        else if (!strncmp(argv[x], "--add-modules=", 14)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--module-path=", 14)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--upgrade-module-path=", 22)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--add-reads=", 12)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--add-exports=", 14)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--add-opens=", 12)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--limit-modules=", 16)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--patch-module=", 15)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
+        else if (!strncmp(argv[x], "--illegal-access=", 17)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
         else if (*argv[x] == '-') {
             log_error("Invalid option %s",argv[x]);
             return NULL;

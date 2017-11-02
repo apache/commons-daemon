@@ -99,6 +99,24 @@ void help(home_data *data)
     printf("        stop the service using the file given in the -pidfile option\n");
     printf("    -keepstdin\n");
     printf("        does not redirect stdin to /dev/null\n");
+    printf("    --add-modules=<module name>\n");
+    printf("        Java 9 --add-modules option. Passed as it is to JVM\n");
+    printf("    --module-path=<module path>\n");
+    printf("        Java 9 --module-path option. Passed as it is to JVM\n");
+    printf("    --upgrade-module-path=<module path>\n");
+    printf("        Java 9 --upgrade-module-path option. Passed as it is to JVM\n");
+    printf("    --add-reads=<module name>\n");
+    printf("        Java 9 --add-reads option. Passed as it is to JVM\n");
+    printf("    --add-exports=<module name>\n");
+    printf("        Java 9 --add-exports option. Passed as it is to JVM\n");
+    printf("    --add-opens=<module name>\n");
+    printf("        Java 9 --add-opens option. Passed as it is to JVM\n");
+    printf("    --limit-modules=<module name>\n");
+    printf("        Java 9 --limit-modules option. Passed as it is to JVM\n");
+    printf("    --patch-module=<module name>\n");
+    printf("        Java 9 --patch-module option. Passed as it is to JVM\n");
+    printf("    --illegal-access=<value>\n");
+    printf("        Java 9 --illegal-access option. Passed as it is to JVM. Refer java help for possible values.\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
     printf("Copyright (c) 1999-2016 Apache Software Foundation.\n");
 

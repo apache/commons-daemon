@@ -127,6 +127,9 @@
         Java 9 and later JREs and JDKs. Do this after checking the keys used by
         Oracle provided Java 8 and earlier JREs and JDKs.
       </action>
+      <action issue="DAEMON-374" type="fix" dev="markt" due-to="Rashmi Ranjan Mohanty">
+        Add support for Java 9 commoand line arguments to jsvc.
+      </action>
     </release>
   </body>
 </document>
