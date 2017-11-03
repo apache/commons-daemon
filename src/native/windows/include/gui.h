@@ -141,14 +141,6 @@ BOOL        apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop);
 
 BOOL        apxCalcStringEllipsis(HDC hDC, LPTSTR  szString, 
                                   int cchMax, UINT uColWidth);
-LPWSTR      apxGetDlgTextW(APXHANDLE hPool, HWND hDlg, int nIDDlgItem);
-LPSTR       apxGetDlgTextA(APXHANDLE hPool, HWND hDlg, int nIDDlgItem);
-
-#ifdef _UNICODE
-#define apxGetDlgText  apxGetDlgTextW
-#else
-#define apxGetDlgText  apxGetDlgTextA
-#endif
 
 LPSTR       apxBrowseForFolderA(HWND hWnd, LPCSTR szTitle, LPCSTR szName);
 LPWSTR      apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName);

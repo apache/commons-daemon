@@ -481,40 +481,6 @@ BOOL apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop)
     return (rv == IDYES);
 }
 
-LPWSTR apxGetDlgTextW(APXHANDLE hPool, HWND hDlg, int nIDDlgItem)
-{
-    DWORD l, n;
-    LPWSTR szT = NULL;
-
-    l = (DWORD)SendMessageW(GetDlgItem(hDlg, nIDDlgItem), WM_GETTEXTLENGTH, 0, 0);
-    if (l > 0) {
-        szT = apxPoolAlloc(hPool, (l + 1) * sizeof(WCHAR));
-        n = GetDlgItemTextW(hDlg, nIDDlgItem, szT, l + 1);
-        if (n == 0) {
-            apxFree(szT);
-            szT = NULL;
-        }
-    }
-    return szT;
-}
-
-LPSTR apxGetDlgTextA(APXHANDLE hPool, HWND hDlg, int nIDDlgItem)
-{
-    DWORD l, n;
-    LPSTR szT = NULL;
-
-    l = (DWORD)SendMessageA(GetDlgItem(hDlg, nIDDlgItem), WM_GETTEXTLENGTH, 0, 0);
-    if (l > 0) {
-        szT = apxPoolAlloc(hPool, (l + 1));
-        n = GetDlgItemTextA(hDlg, nIDDlgItem, szT, l + 1);
-        if (n == 0) {
-            apxFree(szT);
-            szT = NULL;
-        }
-    }
-    return szT;
-}
-
 /* Browse for folder dialog.
  */
 LPSTR apxBrowseForFolderA(HWND hWnd, LPCSTR szTitle, LPCSTR szName)
