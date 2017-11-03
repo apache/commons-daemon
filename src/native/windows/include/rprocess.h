@@ -26,15 +26,12 @@ APXHANDLE   apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
                               LPCWSTR szUsername, LPCWSTR szPassword,
                               BOOL bLogonAsService);
 
-BOOL        apxProcessSetExecutableA(APXHANDLE hProcess, LPCSTR szName);
 BOOL        apxProcessSetExecutableW(APXHANDLE hProcess, LPCWSTR szName);
 
-BOOL        apxProcessSetCommandLineA(APXHANDLE hProcess, LPCSTR szCmdline);
 BOOL        apxProcessSetCommandLineW(APXHANDLE hProcess, LPCWSTR szCmdline);
 BOOL        apxProcessSetCommandArgsW(APXHANDLE hProcess, LPCWSTR szTitle,
                                       DWORD dwArgc, LPCWSTR *lpArgs);
 
-BOOL        apxProcessSetWorkingPathA(APXHANDLE hProcess, LPCSTR szPath);
 BOOL        apxProcessSetWorkingPathW(APXHANDLE hProcess, LPCWSTR szPath);
 
 DWORD       apxProcessWrite(APXHANDLE hProcess, LPCVOID lpData, DWORD dwLen);

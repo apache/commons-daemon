@@ -617,21 +617,6 @@ cleanup:
 }
 
 BOOL
-apxProcessSetExecutableA(APXHANDLE hProcess, LPCSTR szName)
-{
-    LPAPXPROCESS lpProc;
-
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
-        return FALSE;
-
-    lpProc = APXHANDLE_DATA(hProcess);
-    apxFree(lpProc->szApplicationExec);
-    lpProc->szApplicationExec = apxPoolWStrdupA(hProcess->hPool, szName);
-    OutputDebugStringW(lpProc->szApplicationExec);
-    return lpProc->szApplicationExec != NULL;
-}
-
-BOOL
 apxProcessSetExecutableW(APXHANDLE hProcess, LPCWSTR szName)
 {
     LPAPXPROCESS lpProc;
@@ -647,21 +632,6 @@ apxProcessSetExecutableW(APXHANDLE hProcess, LPCWSTR szName)
 }
 
 BOOL
-apxProcessSetCommandLineA(APXHANDLE hProcess, LPCSTR szCmdline)
-{
-    LPAPXPROCESS lpProc;
-
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
-        return FALSE;
-
-    lpProc = APXHANDLE_DATA(hProcess);
-    apxFree(lpProc->szCommandLine);
-    lpProc->szCommandLine = apxPoolWStrdupA(hProcess->hPool, szCmdline);
-
-    return lpProc->szCommandLine != NULL;
-}
-
-BOOL
 apxProcessSetCommandLineW(APXHANDLE hProcess, LPCWSTR szCmdline)
 {
     LPAPXPROCESS lpProc;
@@ -674,21 +644,6 @@ apxProcessSetCommandLineW(APXHANDLE hProcess, LPCWSTR szCmdline)
     lpProc->szCommandLine = apxPoolStrdupW(hProcess->hPool, szCmdline);
 
     return lpProc->szCommandLine != NULL;
-}
-
-BOOL
-apxProcessSetWorkingPathA(APXHANDLE hProcess, LPCSTR szPath)
-{
-    LPAPXPROCESS lpProc;
-
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
-        return FALSE;
-
-    lpProc = APXHANDLE_DATA(hProcess);
-    apxFree(lpProc->szWorkingPath);
-    lpProc->szWorkingPath = apxPoolWStrdupA(hProcess->hPool, szPath);
-
-    return lpProc->szWorkingPath != NULL;
 }
 
 BOOL
