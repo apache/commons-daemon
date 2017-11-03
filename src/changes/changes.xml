@@ -137,6 +137,9 @@
       <action type="remove" dev="markt">
         Remove support for building Procrun for the Itanium platform.
       </action>
+      <action type="update" dev="markt">
+        Make Windows XP the minimum support target platform.
+      </action>
     </release>
   </body>
 </document>

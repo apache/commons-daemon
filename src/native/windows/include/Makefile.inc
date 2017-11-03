@@ -29,12 +29,12 @@
 #                           PROCESSOR_ARCHITECTURE/ARCHITEW6432 environment variables
 #                           or failing that it will default to X86.
 #                 WINVER    Compile for specified Windows version
-#                           WINNT   for Windows 2000 and up
 #                           WINXP   for Windows XP and up (default)
 #                           WIN2003 for Windows 2003 and up
 #                           VISTA   for Windows Vista and up
 #                           WIN7    for Windows 7 and up
 #                           Deprecated targets (may not even compile):
+#                               WINNT   for Windows 2000 and up
 #                               NT4     for Windows NT4 and up
 #                               WIN9X   for Windows 95, 98 and Me
 #                 BUILD     Build version
@@ -145,22 +145,17 @@ WINVER=WINXP
 !ENDIF
 
 
-!IF "$(WINVER)" != "WINNT"
 !IF "$(WINVER)" != "WINXP"
 !IF "$(WINVER)" != "WIN2003"
 !IF "$(WINVER)" != "VISTA"
 !IF "$(WINVER)" != "WIN7"
-!ERROR Must specify WINVER environment variable (WINNT, WINXP, WIN2003, VISTA, WIN7)
-!ENDIF
+!ERROR Must specify WINVER environment variable (WINXP, WIN2003, VISTA, WIN7)
 !ENDIF
 !ENDIF
 !ENDIF
 !ENDIF
 
-!IF "$(WINVER)" == "WINNT"
-NMAKE_WINVER = 0x0500
-_WIN32_IE = 0x0500
-!ELSEIF "$(WINVER)" == "WINXP"
+!IF "$(WINVER)" == "WINXP"
 NMAKE_WINVER = 0x0501
 _WIN32_IE = 0x0600
 !ELSEIF "$(WINVER)" == "WIN2003"
@@ -173,7 +168,7 @@ _WIN32_IE = 0x0700
 NMAKE_WINVER = 0x0700
 _WIN32_IE = 0x0800
 !ELSE
-!ERROR Must specify WINVER environment variable (WINNT, WINXP, WIN2003, VISTA, WIN7)
+!ERROR Must specify WINVER environment variable (WINXP, WIN2003, VISTA, WIN7)
 !ENDIF
 
 NMAKE_WINNT = -D_WINNT -D_WIN32_WINNT=$(NMAKE_WINVER) -DWINVER=$(NMAKE_WINVER) -D_WIN32_IE=$(_WIN32_IE)
