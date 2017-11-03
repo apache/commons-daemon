@@ -79,20 +79,6 @@ LPWSTR    apxRegistryGetStringW(APXHANDLE hRegistry, DWORD dwFrom,
 #define apxRegistryGetString    apxRegistryGetStringA
 #endif
 
-LPBYTE    apxRegistryGetBinaryA(APXHANDLE hRegistry, DWORD dwFrom,
-                                LPCSTR szSubkey, LPCSTR szValueName,
-                                LPBYTE lpData, LPDWORD lpdwLength);
-
-LPBYTE    apxRegistryGetBinaryW(APXHANDLE hRegistry, DWORD dwFrom,
-                                LPCWSTR szSubkey, LPCWSTR szValueName,
-                                LPBYTE lpData, LPDWORD lpdwLength);
-
-#ifdef _UNICODE
-#define apxRegistryGetBinary    apxRegistryGetBinaryW
-#else
-#define apxRegistryGetBinary    apxRegistryGetBinaryA
-#endif
-
 BOOL    apxRegistrySetBinaryA(APXHANDLE hRegistry, DWORD dwFrom,
                               LPCSTR szSubkey, LPCSTR szValueName,
                               const LPBYTE lpData, DWORD dwLength);
