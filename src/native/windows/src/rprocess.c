@@ -431,8 +431,7 @@ apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
     APXHANDLE hProcess;
     LPAPXPROCESS lpProc;
     HANDLE hUserToken = NULL;
-    /* CreateProcessAsUser is supported only on NT */
-    if (szUsername && (APX_GET_OSLEVEL() >= APX_WINVER_NT_4)) {
+    if (szUsername) {
         HANDLE hUser;
         if (!LogonUserW(szUsername,
                         NULL,
