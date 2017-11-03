@@ -160,8 +160,6 @@ LPVOID      apxRealloc(LPVOID lpMem, DWORD dwNewSize);
 LPWSTR      apxStrdupW(LPCWSTR szSource);
 LPWSTR      apxPoolStrdupW(APXHANDLE hPool, LPCWSTR szSource);
 
-LPWSTR      apxPoolWStrdupA(APXHANDLE hPool, LPCSTR szSource);
-
 #define     apxPoolWStrdupW apxPoolStrdupW
 
 /** Free the allocated memory

@@ -403,23 +403,6 @@ apxFree(LPVOID lpMem)
 }
 
 LPWSTR
-apxPoolWStrdupA(APXHANDLE hPool, LPCSTR szSource)
-{
-    if (szSource) {
-        LPWSTR szDest;
-        int cch = MultiByteToWideChar(CP_UTF8, 0, szSource, -1, NULL, 0);
-        szDest = (LPWSTR)apxPoolAlloc(hPool, cch * sizeof(WCHAR));
-        if (!MultiByteToWideChar(CP_UTF8, 0, szSource, -1, szDest, cch)) {
-            apxFree(szDest);
-            return NULL;
-        }
-        return szDest;
-    }
-    else
-        return NULL;
-}
-
-LPWSTR
 apxPoolStrdupW(APXHANDLE hPool, LPCWSTR szSource)
 {
     if (szSource) {
