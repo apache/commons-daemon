@@ -330,35 +330,6 @@ apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray)
     return n;
 }
 
-DWORD
-apxMultiSzToArrayA(APXHANDLE hPool, LPCSTR lpString, LPSTR **lppArray)
-{
-    DWORD i, n, l;
-    char *buff;
-    LPSTR p;
-
-    l = __apxGetMultiSzLengthA(lpString, &n);
-    if (!n || !l)
-        return 0;
-    if (IS_INVALID_HANDLE(hPool))
-        buff = apxPoolAlloc(hPool, (n + 2) * sizeof(LPTSTR) + (l + 1));
-    else
-        buff = apxAlloc((n + 2) * sizeof(LPSTR) + (l + 1) * sizeof(CHAR));
-
-    *lppArray = (LPSTR *)buff;
-    p = (LPSTR)(buff + (n + 2) * sizeof(LPSTR));
-    AplCopyMemory(p, lpString, (l + 1) * sizeof(CHAR));
-    for (i = 0; i < n; i++) {
-        (*lppArray)[i] = p;
-        while (*p)
-            p++;
-        p++;
-    }
-    (*lppArray)[++i] = NULL;
-
-    return n;
-}
-
 #define QSTR_BOUNDARY 127
 #define QSTR_ALIGN(size) \
     (((size) + QSTR_BOUNDARY + sizeof(APXMULTISZ) + 2) & ~(QSTR_BOUNDARY))
@@ -498,92 +469,6 @@ BOOL apxUptohex(ULONG_PTR n, LPTSTR lpBuff, DWORD dwBuffLength)
     return TRUE;
 }
 
-ULONG apxStrToul(LPCTSTR szNum)
-{
-    ULONG rv = 0;
-    DWORD sh = 0;
-    LPCTSTR p = szNum;
-    ++p;
-    while (*p && (*p != TEXT('x')) && (*(p - 1) != TEXT('0')))
-        p++;
-    if (*p != 'x')
-        return 0;
-    /* go to the last digit */
-    while (*(p + 1)) p++;
-
-    /* go back to 'x' */
-    while (*p != TEXT('x')) {
-        ULONG v = 0;
-        switch (*p--) {
-            case TEXT('0'): v = 0UL; break;
-            case TEXT('1'): v = 1UL; break;
-            case TEXT('2'): v = 2UL; break;
-            case TEXT('3'): v = 3UL; break;
-            case TEXT('4'): v = 4UL; break;
-            case TEXT('5'): v = 5UL; break;
-            case TEXT('6'): v = 6UL; break;
-            case TEXT('7'): v = 7UL; break;
-            case TEXT('8'): v = 8UL; break;
-            case TEXT('9'): v = 9UL; break;
-            case TEXT('a'): case TEXT('A'): v = 10UL; break;
-            case TEXT('b'): case TEXT('B'): v = 11UL; break;
-            case TEXT('c'): case TEXT('C'): v = 12UL; break;
-            case TEXT('d'): case TEXT('D'): v = 13UL; break;
-            case TEXT('e'): case TEXT('E'): v = 14UL; break;
-            case TEXT('f'): case TEXT('F'): v = 15UL; break;
-            default:
-                return 0;
-            break;
-        }
-        rv |= rv + (v << sh);
-        sh += 4;
-    }
-    return rv;
-}
-
-ULONG apxStrToulW(LPCWSTR szNum)
-{
-    ULONG rv = 0;
-    DWORD sh = 0;
-    LPCWSTR p = szNum;
-    ++p;
-    while (*p && (*p != L'x') && (*(p - 1) != L'0'))
-        p++;
-    if (*p != L'x')
-        return 0;
-    /* go to the last digit */
-    while (*(p + 1)) p++;
-
-    /* go back to 'x' */
-    while (*p != L'x') {
-        ULONG v = 0;
-        switch (*p--) {
-            case L'0': v = 0UL; break;
-            case L'1': v = 1UL; break;
-            case L'2': v = 2UL; break;
-            case L'3': v = 3UL; break;
-            case L'4': v = 4UL; break;
-            case L'5': v = 5UL; break;
-            case L'6': v = 6UL; break;
-            case L'7': v = 7UL; break;
-            case L'8': v = 8UL; break;
-            case L'9': v = 9UL; break;
-            case L'a': case L'A': v = 10UL; break;
-            case L'b': case L'B': v = 11UL; break;
-            case L'c': case L'C': v = 12UL; break;
-            case L'd': case L'D': v = 13UL; break;
-            case L'e': case L'E': v = 14UL; break;
-            case L'f': case L'F': v = 15UL; break;
-            default:
-                return 0;
-            break;
-        }
-        rv |= rv + (v << sh);
-        sh += 4;
-    }
-    return rv;
-}
-
 ULONG apxAtoulW(LPCWSTR szNum)
 {
     ULONG rv = 0;
@@ -635,43 +520,6 @@ apxMakeResourceName(LPCTSTR szPrefix, LPTSTR lpBuff, DWORD dwBuffLength)
         return FALSE;
     lstrcpy(lpBuff, szPrefix);
     return apxUltohex(GetCurrentProcessId(), lpBuff + pl, dwBuffLength - pl);
-}
-/** apxStrMatchA ANSI string pattern matching
- * Match = 0, NoMatch = 1, Abort = -1
- * Based loosely on sections of wildmat.c by Rich Salz
- */
-INT apxStrMatchA(LPCSTR szString, LPCSTR szPattern, BOOL bIgnoreCase)
-{
-    int x, y;
-
-    for (x = 0, y = 0; szPattern[y]; ++y, ++x) {
-        if (!szPattern[x] && (szPattern[y] != '*' || szPattern[y] != '?'))
-            return -1;
-        if (szPattern[y] == '*') {
-            while (szPattern[++y] == '*');
-            if (!szPattern[y])
-                return 0;
-            while (szString[x]) {
-                INT rc;
-                if ((rc = apxStrMatchA(&szString[x++], &szPattern[y],
-                                       bIgnoreCase)) != 1)
-                    return rc;
-            }
-            return -1;
-        }
-        else if (szPattern[y] != '?') {
-            if (bIgnoreCase) {
-                if (CharLowerA((LPSTR)((SIZE_T)szString[x])) !=
-                    CharLowerA((LPSTR)((SIZE_T)szPattern[y])))
-                    return 1;
-            }
-            else {
-                if (szString[x] != szPattern[y])
-                    return 1;
-            }
-        }
-    }
-    return (szString[x] != '\0');
 }
 
 INT apxStrMatchW(LPCWSTR szString, LPCWSTR szPattern, BOOL bIgnoreCase)
@@ -739,27 +587,6 @@ INT apxMultiStrMatchW(LPCWSTR szString, LPCWSTR szPattern,
         return apxStrMatchW(szString, szM, bIgnoreCase);
     else
         return m;
-}
-
-LPSTR apxArrayToMultiSzA(APXHANDLE hPool, DWORD nArgs, LPCSTR *lpArgs)
-{
-    DWORD  i, l = 0;
-    LPSTR lpSz, p;
-    if (!nArgs)
-        return NULL;
-    for (i = 0; i < nArgs; i++)
-        l += lstrlenA(lpArgs[i]);
-    l += (nArgs + 2);
-
-    p = lpSz = (LPSTR)apxPoolAlloc(hPool, l);
-    for (i = 0; i < nArgs; i++) {
-        lstrcpyA(p, lpArgs[i]);
-        p += lstrlenA(lpArgs[i]);
-        *p++ = '\0';
-    }
-    *p++ = '\0';
-    *p++ = '\0';
-    return lpSz;
 }
 
 void apxStrQuoteInplaceW(LPWSTR szString)
@@ -877,36 +704,6 @@ apxCRLFToMszW(APXHANDLE hPool, LPCWSTR szStr, LPDWORD lpdwBytes)
     if (lpdwBytes)
         *lpdwBytes = (n + 2) * sizeof(WCHAR);
     return rv;
-}
-
-LPSTR
-apxExpandStrA(APXHANDLE hPool, LPCSTR szString)
-{
-    LPCSTR p = szString;
-    while (*p) {
-        if (*p == '%') {
-            p = szString;
-            break;
-        }
-        ++p;
-    }
-    if (p != szString)
-        return apxPoolStrdupA(hPool, szString);
-    else {
-        DWORD l = ExpandEnvironmentStringsA(szString, NULL, 0);
-        if (l) {
-            LPSTR rv = apxPoolAlloc(hPool, l);
-            l = ExpandEnvironmentStringsA(szString, rv, l);
-            if (l)
-                return rv;
-            else {
-                apxFree(rv);
-                return NULL;
-            }
-        }
-        else
-            return NULL;
-    }
 }
 
 LPWSTR

@@ -152,7 +152,6 @@ LPSTR       MzWideToANSI(LPCWSTR ws);
 typedef struct APXMULTISZ APXMULTISZ;
 typedef APXMULTISZ*       LPAPXMULTISZ;
 
-DWORD   apxMultiSzToArrayA(APXHANDLE hPool, LPCSTR lpString, LPSTR **lppArray);
 DWORD   apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray);
 LPWSTR  apxMultiSzCombine(APXHANDLE hPool, LPCWSTR lpStrA, LPCWSTR lpStrB,
                           LPDWORD lpdwLength);
@@ -169,22 +168,17 @@ DWORD           apxStrUnQuoteInplaceW(LPWSTR szString);
 
 BOOL            apxUltohex(ULONG n, LPTSTR lpBuff, DWORD dwBuffLength);
 BOOL            apxUptohex(ULONG_PTR n, LPTSTR lpBuff, DWORD dwBuffLength);
-ULONG           apxStrToul(LPCTSTR szNum);
-ULONG           apxStrToulW(LPCWSTR szNum);
 ULONG           apxAtoulW(LPCWSTR szNum);
 
 BOOL            apxMakeResourceName(LPCTSTR szPrefix, LPTSTR lpBuff,
                                     DWORD dwBuffLength);
 
-INT             apxStrMatchA(LPCSTR szString, LPCSTR szPattern, BOOL bIgnoreCase);
 INT             apxStrMatchW(LPCWSTR szString, LPCWSTR szPattern, BOOL bIgnoreCase);
 INT             apxMultiStrMatchW(LPCWSTR szString, LPCWSTR szPattern,
                                   WCHAR chSeparator, BOOL bIgnoreCase);
-LPSTR           apxArrayToMultiSzA(APXHANDLE hPool, DWORD nArgs, LPCSTR *lpArgs);
 void            apxStrQuoteInplaceW(LPWSTR szString);
 LPWSTR          apxMszToCRLFW(APXHANDLE hPool, LPCWSTR szStr);
 LPWSTR          apxCRLFToMszW(APXHANDLE hPool, LPCWSTR szStr, LPDWORD lpdwBytes);
-LPSTR           apxExpandStrA(APXHANDLE hPool, LPCSTR szString);
 LPWSTR          apxExpandStrW(APXHANDLE hPool, LPCWSTR szString);
 void            apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith);
 void            apxStrCharReplaceW(LPWSTR szString, WCHAR chReplace, WCHAR chReplaceWith);
