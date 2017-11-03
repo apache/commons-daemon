@@ -134,6 +134,9 @@
         Add a restarts options to jsvc to control the number of permitted
         restarts after a system crash.
       </action>
+      <action type="remove" dev="markt">
+        Remove support for building Procrun for the Itanium platform.
+      </action>
     </release>
   </body>
 </document>

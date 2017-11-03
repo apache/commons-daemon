@@ -22,7 +22,6 @@
 
 #define X86_SUFFIX      L".X86"
 #define X64_SUFFIX      L".X64"
-#define A64_SUFFIX      L".I64"
 
 /* Those two are declared in handles.c */
 extern LPWSTR   *_st_sys_argvw;
@@ -79,9 +78,6 @@ LPAPXCMDLINE apxCmdlineParse(
             *p = L'\0';
         }
         else if (lstrcmpiW(p, X64_SUFFIX) == 0) {
-            *p = L'\0';
-        }
-        else if (lstrcmpiW(p, A64_SUFFIX) == 0) {
             *p = L'\0';
         }
     }

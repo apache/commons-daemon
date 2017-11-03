@@ -55,5 +55,3 @@ Step by Step
      nmake CPU=X86
    - x64
      nmake CPU=X64
-   - ia64
-     nmake CPU=I64

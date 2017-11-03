@@ -28,9 +28,6 @@ SRCDIR = .\..\..
 !IF "$(CPU)" == "X64"
 PREFIX = $(PREFIX)\amd64
 !ENDIF
-!IF "$(CPU)" == "I64"
-PREFIX = $(PREFIX)\ia64
-!ENDIF
 
 LFLAGS = $(LFLAGS) /version:1.0 /DYNAMICBASE /NXCOMPAT
 LIBS = $(LIBS) user32.lib gdi32.lib winspool.lib comdlg32.lib comctl32.lib shlwapi.lib netapi32.lib
@@ -55,8 +52,6 @@ BUILDEXE = $(WORKDIR)\$(PROJECT).exe
 BUILDLOC = $(PREFIX)
 !IF "$(CPU)" == "X64"
 BUILDLOC = $(PREFIX)\amd64
-!ELSEIF "$(CPU)" == "I64"
-BUILDLOC = $(PREFIX)\ia64
 !ENDIF
 BUILDPDB = $(WORKDIR)\$(PROJECT).pdb
 BUILDRES = $(WORKDIR)\$(PROJECT).res
