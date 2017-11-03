@@ -17,58 +17,6 @@
 #include "apxwin.h"
 #include "private.h"
 
-APX_OSLEVEL _st_apx_oslevel = APX_WINVER_UNK;
-
-/* Apache's APR stripped Os level detection */
-APX_OSLEVEL apxGetOsLevel()
-{
-    if (_st_apx_oslevel == APX_WINVER_UNK) {
-        static OSVERSIONINFO oslev;
-        oslev.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        GetVersionEx(&oslev);
-
-        if (oslev.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-            if (oslev.dwMajorVersion < 4)
-                _st_apx_oslevel = APX_WINVER_UNSUP;
-            else if (oslev.dwMajorVersion == 4)
-               _st_apx_oslevel = APX_WINVER_NT_4;
-            else if (oslev.dwMajorVersion == 5) {
-                if (oslev.dwMinorVersion == 0)
-                    _st_apx_oslevel = APX_WINVER_2000;
-                else
-                    _st_apx_oslevel = APX_WINVER_XP;
-            }
-            else
-                _st_apx_oslevel = APX_WINVER_XP;
-        }
-#ifndef WINNT
-        else if (oslev.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-            if (oslev.dwMinorVersion < 10)
-                _st_apx_oslevel = APX_WINVER_95;
-            else if (oslev.dwMinorVersion < 90)
-                _st_apx_oslevel = APX_WINVER_98;
-            else
-                _st_apx_oslevel = APX_WINVER_ME;
-        }
-#endif
-#ifdef _WIN32_WCE
-        else if (oslev.dwPlatformId == VER_PLATFORM_WIN32_CE) {
-            if (oslev.dwMajorVersion < 3)
-                _st_apx_oslevel = APX_WINVER_UNSUP;
-            else
-                _st_apx_oslevel = APX_WINVER_CE_3;
-        }
-#endif
-        else
-            _st_apx_oslevel = APX_WINVER_UNSUP;
-    }
-
-    if (_st_apx_oslevel < APX_WINVER_UNSUP)
-        return APX_WINVER_UNK;
-    else
-        return _st_apx_oslevel;
-}
-
 LPWSTR __apxGetEnvironmentVariableW(APXHANDLE hPool, LPCWSTR wsName)
 {
     LPWSTR wsRet;

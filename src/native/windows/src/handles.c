@@ -239,7 +239,6 @@ static BOOL __apxCreateSystemPool()
     HANDLE    hHeap;
 
     GetSystemInfo(&_st_sys_info);
-    apxGetOsLevel();
     /* First create the shared data segment */
     _st_sys_page = VirtualAlloc(NULL, _st_sys_info.dwAllocationGranularity,
                                 MEM_RESERVE, PAGE_NOACCESS);

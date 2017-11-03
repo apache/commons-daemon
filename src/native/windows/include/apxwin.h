@@ -112,38 +112,6 @@ typedef _W64 int            intptr_t;
 
 __APXBEGIN_DECLS
 
-typedef enum {
-        APX_WINVER_UNK =       0,
-        APX_WINVER_UNSUP =     1,
-        APX_WINVER_95 =       10,
-        APX_WINVER_95_B =     11,
-        APX_WINVER_95_OSR2 =  12,
-        APX_WINVER_98 =       14,
-        APX_WINVER_98_SE =    16,
-        APX_WINVER_ME =       18,
-
-        APX_WINVER_UNICODE =  20, /* Prior versions support only narrow chars */
-
-        APX_WINVER_CE_3 =     23, /* CE is an odd beast, not supporting */
-                               /* some pre-NT features, such as the    */
-        APX_WINVER_NT =       30, /* narrow charset APIs (fooA fns), while  */
-        APX_WINVER_NT_3_5 =   35, /* not supporting some NT-family features.  */
-        APX_WINVER_NT_3_51 =  36,
-
-        APX_WINVER_NT_4 =     40,
-        APX_WINVER_NT_4_SP2 = 42,
-        APX_WINVER_NT_4_SP3 = 43,
-        APX_WINVER_NT_4_SP4 = 44,
-        APX_WINVER_NT_4_SP5 = 45,
-        APX_WINVER_NT_4_SP6 = 46,
-
-        APX_WINVER_2000 =     50,
-        APX_WINVER_2000_SP1 = 51,
-        APX_WINVER_2000_SP2 = 52,
-        APX_WINVER_XP =       60
-} APX_OSLEVEL;
-
-APX_OSLEVEL apxGetOsLevel();
 LPWSTR      AsciiToWide(LPCSTR s, LPWSTR ws);
 LPSTR       MzWideToAscii(LPCWSTR ws, LPSTR s);
 LPSTR       WideToANSI(LPCWSTR ws);
