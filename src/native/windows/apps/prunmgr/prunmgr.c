@@ -1711,15 +1711,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
                             lpCmdline->szApplication);
         goto cleanup;
     }
-#ifdef _UNICODE
     _gui_store = apxGuiInitialize(MainWndProc, lpCmdline->szApplication);
-#else
-    {
-        CHAR szApp[MAX_PATH];
-        _gui_store = apxGuiInitialize(MainWndProc,
-                                  WideToAscii(lpCmdline->szApplication, szApp));
-    }
-#endif
     if (!_gui_store) {
         if (!quiet)
             apxDisplayError(TRUE, NULL, 0, "Unable to initialize GUI manager");

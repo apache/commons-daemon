@@ -846,10 +846,6 @@ static void __apxSelectUserCreateCbex(HWND hDlg)
     DWORD               res;
     HWND hCombo = GetDlgItem(hDlg, IDSU_COMBO);
 
-#ifndef _UNICODE
-    SendMessageW(hCombo, CBEM_SETUNICODEFORMAT, TRUE, 0);    
-#endif
-
     cbEi.mask = CBEIF_TEXT | CBEIF_INDENT |
                 CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
 
