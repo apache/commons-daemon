@@ -219,7 +219,7 @@ static BOOL __restartServiceCallback(APXHANDLE hObject, UINT uMsg,
             hDlg = (HWND)lParam;
             if (IS_INVALID_HANDLE(hService))
                 return FALSE;
-            /* TODO: use 128 as controll code */
+            /* TODO: use 128 as control code */
             if (apxServiceControl(hService, 128, WM_USER+2,
                                   __restartServiceCallback, hDlg)) {
 
