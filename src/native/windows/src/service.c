@@ -704,7 +704,7 @@ apxServiceBrowse(APXHANDLE hService,
 											 (LPBYTE)(&(stEntry.stStatusProcess)),
 											 sizeof(SERVICE_STATUS_PROCESS),
 											 &dwNeed);
-                        /* finaly call the provided callback */
+                        /* finally call the provided callback */
                         rv = (*fnDisplayCallback)(lpCbData, uMsg,
                                                   (WPARAM)&stEntry,
                                                   (LPARAM)nFound++);
