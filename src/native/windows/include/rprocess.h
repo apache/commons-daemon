@@ -37,19 +37,6 @@ BOOL        apxProcessSetCommandArgsW(APXHANDLE hProcess, LPCWSTR szTitle,
 BOOL        apxProcessSetWorkingPathA(APXHANDLE hProcess, LPCSTR szPath);
 BOOL        apxProcessSetWorkingPathW(APXHANDLE hProcess, LPCWSTR szPath);
 
-DWORD       apxProcessPutcA(APXHANDLE hProcess, INT ch);
-DWORD       apxProcessPutcW(APXHANDLE hProcess, INT ch);
-DWORD       apxProcessPutsA(APXHANDLE hProcess, LPCSTR szString);
-DWORD       apxProcessPutsW(APXHANDLE hProcess, LPCWSTR szString);
-
-#ifndef _UNICODE
-#define     apxProcessPutc  apxProcessPutcA
-#define     apxProcessPuts  apxProcessPutsA
-#else
-#define     apxProcessPutc  apxProcessPutcW
-#define     apxProcessPuts  apxProcessPutsW
-#endif
-
 DWORD       apxProcessWrite(APXHANDLE hProcess, LPCVOID lpData, DWORD dwLen);
 
 VOID        apxProcessCloseInputStream(APXHANDLE hProcess);

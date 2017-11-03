@@ -712,66 +712,6 @@ apxProcessSetWorkingPathW(APXHANDLE hProcess, LPCWSTR szPath)
 }
 
 DWORD
-apxProcessPutcA(APXHANDLE hProcess, INT ch)
-{
-   LPAPXPROCESS lpProc;
-
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
-        return 0;
-
-    lpProc = APXHANDLE_DATA(hProcess);
-    return __apxProcessPutc(lpProc, ch, sizeof(CHAR));
-}
-
-DWORD
-apxProcessPutcW(APXHANDLE hProcess, INT ch)
-{
-   LPAPXPROCESS lpProc;
-
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
-        return 0;
-
-    lpProc = APXHANDLE_DATA(hProcess);
-    return __apxProcessPutc(lpProc, ch, sizeof(WCHAR));
-}
-
-DWORD
-apxProcessPutsA(APXHANDLE hProcess, LPCSTR szString)
-{
-    LPAPXPROCESS lpProc;
-    DWORD len;
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS || !szString)
-        return 0;
-    lpProc = APXHANDLE_DATA(hProcess);
-    len = lstrlenA(szString);
-    len = __apxProcessWrite(lpProc, szString, len);
-    if (len) {
-        FlushFileBuffers(lpProc->hChildInpWr);
-        return len;
-    }
-    else
-        return 0;
-}
-
-DWORD
-apxProcessPutsW(APXHANDLE hProcess, LPCWSTR szString)
-{
-    LPAPXPROCESS lpProc;
-    DWORD len;
-    if (hProcess->dwType != APXHANDLE_TYPE_PROCESS || !szString)
-        return 0;
-    lpProc = APXHANDLE_DATA(hProcess);
-    len = lstrlenW(szString);
-    len = __apxProcessWrite(lpProc, szString, len * 2);
-    if (len) {
-        FlushFileBuffers(lpProc->hChildInpWr);
-        return (len / sizeof(WCHAR));
-    }
-    else
-        return 0;
-}
-
-DWORD
 apxProcessWrite(APXHANDLE hProcess, LPCVOID lpData, DWORD dwLen)
 {
     LPAPXPROCESS lpProc;
