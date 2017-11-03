@@ -160,8 +160,6 @@ LPVOID      apxRealloc(LPVOID lpMem, DWORD dwNewSize);
 LPWSTR      apxStrdupW(LPCWSTR szSource);
 LPWSTR      apxPoolStrdupW(APXHANDLE hPool, LPCWSTR szSource);
 
-#define     apxPoolWStrdupW apxPoolStrdupW
-
 /** Free the allocated memory
  * It will call te correct pool if the address is valid
  */

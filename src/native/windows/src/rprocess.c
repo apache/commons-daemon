@@ -661,7 +661,7 @@ apxProcessSetWorkingPathW(APXHANDLE hProcess, LPCWSTR szPath)
         lpProc->szWorkingPath = NULL;
         return TRUE;
     }
-    lpProc->szWorkingPath = apxPoolWStrdupW(hProcess->hPool, szPath);
+    lpProc->szWorkingPath = apxPoolStrdupW(hProcess->hPool, szPath);
 
     return lpProc->szWorkingPath != NULL;
 }
