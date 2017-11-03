@@ -29,8 +29,8 @@
 #                           PROCESSOR_ARCHITECTURE/ARCHITEW6432 environment variables
 #                           or failing that it will default to X86.
 #                 WINVER    Compile for specified Windows version
-#                           WINNT   for Windows 2000 and up(default)
-#                           WINXP   for Windows XP and up
+#                           WINNT   for Windows 2000 and up
+#                           WINXP   for Windows XP and up (default)
 #                           WIN2003 for Windows 2003 and up
 #                           VSITA   for Windows Vista and up
 #                           Deprecated targets (may not even compile):
