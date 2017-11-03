@@ -279,20 +279,6 @@ ApcMemSearch(LPCVOID lpMem, LPCVOID lpFind, SIZE_T dwLen, SIZE_T dwSize)
     return (LPBYTE)s;
 }
 
-LPSTR
-AplRindexA(LPCSTR lpStr, int ch)
-{
-    LPSTR save;
-
-    for (save = NULL;; ++lpStr) {
-        if (*lpStr == ch)
-            save = (LPSTR)lpStr;
-        if (!*lpStr)
-            return save;
-    }
-    /* NOTREACHED */
-}
-
 /*
  * Appends src to string dst of size siz (unlike strncat, siz is the
  * full size of dst, not space left).  At most siz-1 characters

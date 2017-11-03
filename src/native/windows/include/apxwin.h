@@ -194,7 +194,6 @@ LPVOID  AplCopyMemory(PVOID Destination, const VOID* Source, SIZE_T Length);
  * dwSize:  The length of lpMem
  */
 LPBYTE  ApcMemSearch(LPCVOID lpMem, LPCVOID lpFind, SIZE_T dwLen, SIZE_T dwSize);
-LPSTR   AplRindexA(LPCSTR lpStr, int ch);
 
 #define AplMoveMemory   AplCopyMemory
 
