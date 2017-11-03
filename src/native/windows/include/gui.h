@@ -120,6 +120,7 @@ LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName);
 
 BOOL        apxCenterWindow(HWND hwndChild, HWND hwndParent);
 
+LPSTR       apxLoadResourceA(UINT wID, UINT nBuf);
 LPWSTR      apxLoadResourceW(UINT wID, UINT nBuf);
 
 

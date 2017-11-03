@@ -171,6 +171,18 @@ BOOL apxCenterWindow(HWND hwndChild, HWND hwndParent)
  * the string must be used before this call is made a second time.
  */
 
+LPSTR apxLoadResourceA(UINT wID, UINT nBuf)
+
+{
+    static CHAR szBuf[4][SIZ_BUFLEN];
+    if (nBuf > 4)
+        return "";
+    if (LoadStringA(_st_sys_gui.hInstance,wID ,szBuf[nBuf], SIZ_BUFMAX) > 0)
+        return szBuf[nBuf];
+    else
+        return "";
+}
+
 LPWSTR apxLoadResourceW(UINT wID, UINT nBuf)
 
 {
