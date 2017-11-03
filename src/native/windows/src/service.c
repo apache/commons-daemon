@@ -670,7 +670,7 @@ apxServiceBrowse(APXHANDLE hService,
                 QueryServiceConfigW(hSrv, NULL, 0, &dwNeeded);
                 stEntry.lpConfig = (LPQUERY_SERVICE_CONFIGW)apxPoolAlloc(hService->hPool,
                                                                          dwNeeded);
-                /* Call the QueryServiceConfig againg with allocated config */
+                /* Call the QueryServiceConfig again with allocated config */
                 if (QueryServiceConfigW(hSrv, stEntry.lpConfig, dwNeeded, &dwNeeded)) {
                     /* Make that customizable so that kernel mode drivers can be
                      * displayed and maintained. For now skip the
