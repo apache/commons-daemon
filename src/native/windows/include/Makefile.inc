@@ -32,7 +32,7 @@
 #                           WINNT   for Windows 2000 and up
 #                           WINXP   for Windows XP and up (default)
 #                           WIN2003 for Windows 2003 and up
-#                           VSITA   for Windows Vista and up
+#                           VISTA   for Windows Vista and up
 #                           Deprecated targets (may not even compile):
 #                               NT4     for Windows NT4 and up
 #                               WIN9X   for Windows 95, 98 and Me
