@@ -422,26 +422,6 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
     return TRUE;
 }
 
- APXHANDLE
-apxCreateProcessA(APXHANDLE hPool, DWORD dwOptions,
-                  LPAPXFNCALLBACK fnCallback,
-                  LPCSTR szUsername, LPCSTR szPassword,
-                  BOOL bLogonAsService)
-{
-
-    if (szUsername && szPassword) {
-        WCHAR wsUsername[256];
-        WCHAR wsPassword[256];
-        AsciiToWide(szUsername, wsUsername);
-        AsciiToWide(szPassword, wsPassword);
-        return apxCreateProcessW(hPool, dwOptions, fnCallback,
-                                 wsUsername, wsPassword, bLogonAsService);
-    }
-    else
-        return apxCreateProcessW(hPool, dwOptions, fnCallback,
-                                 NULL, NULL, bLogonAsService);
-}
-
 APXHANDLE
 apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
                   LPAPXFNCALLBACK fnCallback,

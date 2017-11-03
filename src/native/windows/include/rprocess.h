@@ -21,20 +21,10 @@ __APXBEGIN_DECLS
 
 BOOL        apxProcessExecute(APXHANDLE hProcess);
 
-APXHANDLE   apxCreateProcessA(APXHANDLE hPool, DWORD dwOptions,
-                              LPAPXFNCALLBACK fnCallback,
-                              LPCSTR szUsername, LPCSTR szPassword,
-                              BOOL bLogonAsService);
 APXHANDLE   apxCreateProcessW(APXHANDLE hPool, DWORD dwOptions,
                               LPAPXFNCALLBACK fnCallback,
                               LPCWSTR szUsername, LPCWSTR szPassword,
                               BOOL bLogonAsService);
-
-#ifdef _UNICODE
-#define apxCreateProcess    apxCreateProcessW
-#else
-#define apxCreateProcess    apxCreateProcessA
-#endif
 
 BOOL        apxProcessSetExecutableA(APXHANDLE hProcess, LPCSTR szName);
 BOOL        apxProcessSetExecutableW(APXHANDLE hProcess, LPCWSTR szName);
