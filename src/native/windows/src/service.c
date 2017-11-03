@@ -698,15 +698,12 @@ apxServiceBrowse(APXHANDLE hService,
                                                 szExcludeImagePattern, L';', TRUE);
                     }
                     if (!fm) {
+                        DWORD dwNeed;
                         QueryServiceStatus(hSrv, &(stEntry.stServiceStatus));
-                        /* WIN2K + extended service info */
-                        if (_st_apx_oslevel >= 4) {
-                            DWORD dwNeed;
-                            QueryServiceStatusEx(hSrv, SC_STATUS_PROCESS_INFO,
-                                                 (LPBYTE)(&(stEntry.stStatusProcess)),
-                                                 sizeof(SERVICE_STATUS_PROCESS),
-                                                 &dwNeed);
-                        }
+						QueryServiceStatusEx(hSrv, SC_STATUS_PROCESS_INFO,
+											 (LPBYTE)(&(stEntry.stStatusProcess)),
+											 sizeof(SERVICE_STATUS_PROCESS),
+											 &dwNeed);
                         /* finaly call the provided callback */
                         rv = (*fnDisplayCallback)(lpCbData, uMsg,
                                                   (WPARAM)&stEntry,
