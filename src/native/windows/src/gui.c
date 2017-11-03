@@ -44,35 +44,6 @@ APXLVITEM lvUsers[] = {
 
 #define NUMLVUSERS    (sizeof(lvUsers) / sizeof(lvUsers[0]))
 
-static UINT __getWhellScrollLines()
-{
-    HWND hdlMsWheel;
-    UINT ucNumLines = 3;  /* 3 is the default */
-    UINT uiMsh_MsgScrollLines;
-   
-    APX_OSLEVEL os = apxGetOsLevel();
-    /* In Windows 9x & Windows NT 3.51, query MSWheel for the
-     * number of scroll lines. In Windows NT 4.0 and later,
-     * use SystemParametersInfo.
-     */
-    if (os < APX_WINVER_NT_4) {
-        hdlMsWheel = FindWindow(MSH_WHEELMODULE_CLASS, 
-                                MSH_WHEELMODULE_TITLE);
-        if (hdlMsWheel) {
-            uiMsh_MsgScrollLines = RegisterWindowMessage(MSH_SCROLL_LINES);
-            if (uiMsh_MsgScrollLines)
-                ucNumLines = (int)SendMessage(hdlMsWheel,
-                                              uiMsh_MsgScrollLines, 
-                                              0, 0);
-        }
-    }
-    else {
-        SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0,
-                             &ucNumLines, 0);
-    }
-    return ucNumLines;
-}
-
 /* Initialize the Gui
  */
 LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName)
@@ -111,7 +82,7 @@ LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName)
     _st_sys_gui.stState.rcPosition.right  = CW_USEDEFAULT;
     _st_sys_gui.stState.rcPosition.bottom = CW_USEDEFAULT;
 
-    _st_sys_gui.nWhellScroll = __getWhellScrollLines();
+    SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &_st_sys_gui.nWhellScroll, 0);
 
     wcex.cbSize = sizeof(WNDCLASSEX); 
 
