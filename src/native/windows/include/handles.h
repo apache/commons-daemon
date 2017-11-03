@@ -149,7 +149,6 @@ DWORD       apxHandleWait(APXHANDLE hHandle, DWORD dwMilliseconds,
 LPVOID      apxPoolAlloc(APXHANDLE hPool, DWORD dwSize);
 LPVOID      apxPoolCalloc(APXHANDLE hPool, DWORD dwSize);
 LPVOID      apxPoolRealloc(APXHANDLE hPool, LPVOID lpMem, DWORD dwNewSize);
-LPTSTR      apxPoolStrdup(APXHANDLE hPool, LPCTSTR szSource);
 
 /** General system pool memory allocation functions
  */
@@ -158,30 +157,13 @@ LPVOID      apxAlloc(DWORD dwSize);
 LPVOID      apxCalloc(DWORD dwSize);
 LPVOID      apxRealloc(LPVOID lpMem, DWORD dwNewSize);
 
-LPSTR       apxStrdupA(LPCSTR szSource);
 LPWSTR      apxStrdupW(LPCWSTR szSource);
-LPSTR       apxPoolStrdupA(APXHANDLE hPool, LPCSTR szSource);
 LPWSTR      apxPoolStrdupW(APXHANDLE hPool, LPCWSTR szSource);
 
 LPWSTR      apxPoolWStrdupA(APXHANDLE hPool, LPCSTR szSource);
 
 #define     apxPoolWStrdupW apxPoolStrdupW
 
-#ifdef _UNICODE
-#define apxStrdup       apxStrdupW
-#define apxPoolStrdup   apxPoolStrdupW
-#else
-#define apxStrdup       apxStrdupA
-#define apxPoolStrdup   apxPoolStrdupW
-#endif
-
-#ifndef _UNICODE
-#define     apxPoolWStrdup  apxPoolWStrdupA
-#define     apxWStrdup      apxWStrdupA
-#else
-#define     apxPoolWStrdup  apxPoolStrdupW
-#define     apxWStrdup      apxStrdupW
-#endif
 /** Free the allocated memory
  * It will call te correct pool if the address is valid
  */

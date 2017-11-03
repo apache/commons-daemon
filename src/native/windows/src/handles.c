@@ -419,25 +419,6 @@ apxPoolWStrdupA(APXHANDLE hPool, LPCSTR szSource)
         return NULL;
 }
 
-LPWSTR apxWStrdupA(LPCTSTR szSource)
-{
-    return apxPoolWStrdup(_st_sys_pool, szSource);
-}
-
-LPSTR
-apxPoolStrdupA(APXHANDLE hPool, LPCSTR szSource)
-{
-    if (szSource) {
-        LPSTR szDest;
-        DWORD l = lstrlenA(szSource);
-        szDest = apxPoolAlloc(hPool, l + 1);
-        lstrcpyA(szDest, szSource);
-        return szDest;
-    }
-    else
-        return NULL;
-}
-
 LPWSTR
 apxPoolStrdupW(APXHANDLE hPool, LPCWSTR szSource)
 {
@@ -450,12 +431,6 @@ apxPoolStrdupW(APXHANDLE hPool, LPCWSTR szSource)
     }
     else
         return NULL;
-}
-
-LPSTR
-apxStrdupA(LPCSTR szSource)
-{
-    return apxPoolStrdupA(_st_sys_pool, szSource);
 }
 
 LPWSTR
