@@ -232,8 +232,6 @@ struct stAPXHANDLE {
 
 extern APX_OSLEVEL  _st_apx_oslevel;
 
-#define APX_GET_OSLEVEL()   ((_st_apx_oslevel == APX_WINVER_UNK) ? apxGetOsLevel() : _st_apx_oslevel)
-
 /* zero separated, double zero terminated string */
 struct APXMULTISZ {
     DWORD   dwAllocated;  /* length including terminators */
