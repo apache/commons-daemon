@@ -120,7 +120,6 @@ LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName);
 
 BOOL        apxCenterWindow(HWND hwndChild, HWND hwndParent);
 
-LPSTR       apxLoadResourceA(UINT wID, UINT nBuf);
 LPWSTR      apxLoadResourceW(UINT wID, UINT nBuf);
 
 
@@ -132,11 +131,6 @@ void        apxManageTryIconA(HWND hWnd, DWORD dwMessage, LPCSTR szInfoTitle,
                               LPCSTR szInfo, HICON hIcon);
 void        apxManageTryIconW(HWND hWnd, DWORD dwMessage, LPCWSTR szInfoTitle,
                               LPCWSTR szInfo, HICON hIcon);
-#ifdef _UNICODE
-#define apxLoadResource apxLoadResourceW
-#else
-#define apxLoadResource apxLoadResourceA
-#endif
 
 void        apxAboutBox(HWND hWnd);
 int         apxProgressBox(HWND hWnd, LPCTSTR szHeader,

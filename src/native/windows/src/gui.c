@@ -200,18 +200,6 @@ BOOL apxCenterWindow(HWND hwndChild, HWND hwndParent)
  * the string must be used before this call is made a second time.
  */
 
-LPSTR apxLoadResourceA(UINT wID, UINT nBuf)
-
-{
-    static CHAR szBuf[4][SIZ_BUFLEN];
-    if (nBuf > 4)
-        return "";
-    if (LoadStringA(_st_sys_gui.hInstance,wID ,szBuf[nBuf], SIZ_BUFMAX) > 0)
-        return szBuf[nBuf];
-    else
-        return "";
-}
-
 LPWSTR apxLoadResourceW(UINT wID, UINT nBuf)
 
 {
@@ -347,10 +335,10 @@ static void __apxShellAbout(HWND hWnd)
     TCHAR szApplication[512];
 
     wsprintf(szApplication , TEXT("About - %s#Windows"), 
-             apxLoadResource(IDS_APPLICATION, 0));
+             apxLoadResourceW(IDS_APPLICATION, 0));
 
     ShellAbout(hWnd, szApplication,
-               apxLoadResource(IDS_APPDESCRIPTION, 1),
+               apxLoadResourceW(IDS_APPDESCRIPTION, 1),
                _st_sys_gui.hIconHg);
 }
 
@@ -374,7 +362,7 @@ static LRESULT CALLBACK __apxAboutDlgProc(HWND hDlg, UINT uMsg,
             szTxt = (LPSTR)LockResource(hGlob);
             
             SendMessageA(hRich, WM_SETTEXT, 0, (LPARAM)szTxt);
-            SetDlgItemText(hDlg, IDC_ABOUTAPP, apxLoadResource(IDS_APPFULLNAME, 0));
+            SetDlgItemText(hDlg, IDC_ABOUTAPP, apxLoadResourceW(IDS_APPFULLNAME, 0));
             ptScroll.x = 0;
             ptScroll.y = 0;
             return TRUE;

@@ -638,25 +638,25 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                     }
                 break;
                 case IDC_PPSGSTART:
-                    apxProgressBox(hDlg, apxLoadResource(IDS_HSSTART, 0),
+                    apxProgressBox(hDlg, apxLoadResourceW(IDS_HSSTART, 0),
                                    _currentEntry->lpConfig->lpDisplayName,
                                    __startServiceCallback, NULL);
                     __generalPropertyRefresh(hDlg);
                 break;
                 case IDC_PPSGSTOP:
-                    apxProgressBox(hDlg, apxLoadResource(IDS_HSSTOP, 0),
+                    apxProgressBox(hDlg, apxLoadResourceW(IDS_HSSTOP, 0),
                                    _currentEntry->lpConfig->lpDisplayName,
                                    __stopServiceCallback, NULL);
                     __generalPropertyRefresh(hDlg);
                 break;
                 case IDC_PPSGPAUSE:
-                    apxProgressBox(hDlg, apxLoadResource(IDS_HSPAUSE, 0),
+                    apxProgressBox(hDlg, apxLoadResourceW(IDS_HSPAUSE, 0),
                                    _currentEntry->lpConfig->lpDisplayName,
                                    __pauseServiceCallback, NULL);
                     __generalPropertyRefresh(hDlg);
                 break;
                 case IDC_PPSGRESTART:
-                    apxProgressBox(hDlg, apxLoadResource(IDS_HSRESTART, 0),
+                    apxProgressBox(hDlg, apxLoadResourceW(IDS_HSRESTART, 0),
                                    _currentEntry->lpConfig->lpDisplayName,
                                    __restartServiceCallback, NULL);
                     __generalPropertyRefresh(hDlg);
@@ -1520,7 +1520,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                 }
                 else {
                     apxManageTryIconA(hWnd, NIM_ADD, NULL,
-                                      apxLoadResourceA(IDS_APPLICATION, 0),
+                                      apxLoadResourceW(IDS_APPLICATION, 0),
                                       NULL);
                 }
             }
@@ -1541,25 +1541,25 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                 break;
                 case IDM_TM_START:
                     if (!_propertyOpened)
-                        apxProgressBox(hWnd, apxLoadResource(IDS_HSSTART, 0),
+                        apxProgressBox(hWnd, apxLoadResourceW(IDS_HSSTART, 0),
                                        _currentEntry->lpConfig->lpDisplayName,
                                        __startServiceCallback, NULL);
                 break;
                 case IDM_TM_STOP:
                     if (!_propertyOpened)
-                        apxProgressBox(hWnd, apxLoadResource(IDS_HSSTOP, 0),
+                        apxProgressBox(hWnd, apxLoadResourceW(IDS_HSSTOP, 0),
                                        _currentEntry->lpConfig->lpDisplayName,
                                        __stopServiceCallback, NULL);
                 break;
                 case IDM_TM_PAUSE:
                     if (!_propertyOpened)
-                        apxProgressBox(hWnd, apxLoadResource(IDS_HSPAUSE, 0),
+                        apxProgressBox(hWnd, apxLoadResourceW(IDS_HSPAUSE, 0),
                                        _currentEntry->lpConfig->lpDisplayName,
                                        __pauseServiceCallback, NULL);
                 break;
                 case IDM_TM_RESTART:
                     if (!_propertyOpened)
-                        apxProgressBox(hWnd, apxLoadResource(IDS_HSRESTART, 0),
+                        apxProgressBox(hWnd, apxLoadResourceW(IDS_HSRESTART, 0),
                                        _currentEntry->lpConfig->lpDisplayName,
                                        __restartServiceCallback, NULL);
                 break;
@@ -1673,7 +1673,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         /* Skip sytem error message */
         SetLastError(ERROR_SUCCESS);
         apxDisplayError(TRUE, NULL, 0,
-                        apxLoadResourceA(IDS_ERRORCMD, 0),
+                        apxLoadResourceW(IDS_ERRORCMD, 0),
                         lpCmdLine);
         goto cleanup;
     }
@@ -1742,14 +1742,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
                 /* Skip sytem error message */
                 SetLastError(ERROR_SUCCESS);
                 if (!quiet)
-                    apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ALREAY_RUNING, 0),
+                    apxDisplayError(TRUE, NULL, 0, apxLoadResourceW(IDS_ALREAY_RUNING, 0),
                                     lpCmdline->szApplication);
             }
             goto cleanup;
         }
     }
     hRegistry = apxCreateRegistryW(hPool, KEY_ALL_ACCESS, NULL,
-                                  apxLoadResource(IDS_APPLICATION, 0),
+                                  apxLoadResourceW(IDS_APPLICATION, 0),
                                   APXREG_USER);
     loadConfiguration();
     hRegserv = apxCreateRegistryW(hPool, KEY_READ | KEY_WRITE | KREG_WOW6432,
@@ -1759,14 +1759,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
     if (IS_INVALID_HANDLE(hRegserv)) {
         if (!quiet)
-            apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ERRSREG, 0));
+            apxDisplayError(TRUE, NULL, 0, apxLoadResourceW(IDS_ERRSREG, 0));
         return FALSE;
     }
     isManagerRunning = TRUE;
     CreateThread(NULL, 0, refreshThread, NULL, 0, NULL);
     /* Create main invisible window */
     _gui_store->hMainWnd = CreateWindow(_gui_store->szWndClass,
-                                        apxLoadResource(IDS_APPLICATION, 0),
+                                        apxLoadResourceW(IDS_APPLICATION, 0),
                                         0, 0, 0, 0, 0,
                                         NULL, NULL,
                                         _gui_store->hInstance,
