@@ -1748,7 +1748,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
             goto cleanup;
         }
     }
-    hRegistry = apxCreateRegistry(hPool, KEY_ALL_ACCESS, NULL,
+    hRegistry = apxCreateRegistryW(hPool, KEY_ALL_ACCESS, NULL,
                                   apxLoadResource(IDS_APPLICATION, 0),
                                   APXREG_USER);
     loadConfiguration();
