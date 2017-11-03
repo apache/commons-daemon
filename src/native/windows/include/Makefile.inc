@@ -45,9 +45,6 @@
 #                           GUI Windows GUI executable
 #                           DLL Dynamic Link Library
 #                           LIB Static library
-#               UNICODE     Build unicode version
-#                           If definded and not empty -D_UNICODE is added
-#                           to CFLAGS; -D_MBCS is added otherwise
 # Environment variables  used:
 #           EXTRA_CFLAGS    Added to the common CFLAGS
 #           EXTRA_CXXFLAGS  Added to the common CXXFLAGS
@@ -200,11 +197,8 @@ CMN_CFLAGS = $(CMN_CFLAGS) -D_CONSOLE
 # Mark that extern C newer throws C++ exception
 CMN_CFLAGS = $(CMN_CFLAGS) -EHsc
 
-!IF !DEFINED(UNICODE) || "$(UNICODE)" == ""
-CMN_CFLAGS = $(CMN_CFLAGS) -D_MBCS -DMBCS
-!ELSE
+# All supported platforms support unicode
 CMN_CFLAGS = $(CMN_CFLAGS) -D_UNICODE -DUNICODE
-!ENDIF
 
 !IF "$(CPU)" == "X86"
 CPU_CFLAGS = -D_X86_=1

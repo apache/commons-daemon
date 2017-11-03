@@ -15,7 +15,6 @@
 
 TARGET = GUI
 PROJECT = prunmgr
-UNICODE = 1
 !include <..\..\include\Makefile.inc>
 
 !IF !DEFINED(PREFIX) || "$(PREFIX)" == ""

@@ -15,7 +15,6 @@
 
 TARGET = EXE
 PROJECT = prunsrv
-UNICODE = 1
 !include <..\..\include\Makefile.inc>
 
 !IF !DEFINED(PREFIX) || "$(PREFIX)" == ""
