@@ -483,37 +483,6 @@ BOOL apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop)
 
 /* Browse for folder dialog.
  */
-LPSTR apxBrowseForFolderA(HWND hWnd, LPCSTR szTitle, LPCSTR szName)
-{
-    BROWSEINFOA  bi;
-    LPITEMIDLIST il, ir;
-    LPMALLOC     pMalloc;
-    CHAR         szPath[MAX_PATH+1];
-    LPSTR        rv = NULL;
-
-    AplZeroMemory(&bi, sizeof(BROWSEINFOW));
-    SHGetSpecialFolderLocation(hWnd, CSIDL_DRIVES, &il);
-    bi.lpszTitle      = szTitle;
-    bi.pszDisplayName = szPath;
-    bi.hwndOwner      = hWnd;
-    bi.ulFlags        = BIF_EDITBOX;
-    bi.lpfn           = NULL;
-    bi.lParam         = 0;
-    bi.iImage         = 0;
-    bi.pidlRoot       = il;
-    
-    if ((ir = SHBrowseForFolderA(&bi)) != NULL) {
-        if (SHGetPathFromIDListA(ir, szPath))
-            rv = apxStrdupA(szPath);
-    }
-    if (SHGetMalloc(&pMalloc)) {
-        pMalloc->lpVtbl->Free(pMalloc, il);
-        pMalloc->lpVtbl->Release(pMalloc);
-    }
-
-    return rv;    
-} 
-
 LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName)
 {
     BROWSEINFOW  bi;
@@ -544,41 +513,6 @@ LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName)
 
     return rv;    
 } 
-
-LPSTR apxGetFileNameA(HWND hWnd, LPCSTR szTitle, LPCSTR szFilter,
-                      LPCSTR szDefExt, LPCSTR szDefPath, BOOL bOpenOrSave,
-                      LPDWORD lpdwFindex)
-{
-    OPENFILENAMEA lpOf;
-    CHAR    szFile[SIZ_BUFLEN];
-    BOOL    rv;
-
-    AplZeroMemory(&lpOf, sizeof(OPENFILENAMEA));
-    szFile[0] = '\0';
-    lpOf.lStructSize     = sizeof(OPENFILENAMEA); 
-    lpOf.hwndOwner       = hWnd;
-    lpOf.hInstance       = _st_sys_gui.hInstance;
-    lpOf.lpstrTitle      = szTitle;
-    lpOf.lpstrFilter     = szFilter;
-    lpOf.lpstrDefExt     = szDefExt;
-    lpOf.lpstrInitialDir = szDefPath;
-    lpOf.lpstrFile       = szFile;
-    lpOf.nMaxFile        = SIZ_BUFMAX;
-    lpOf.Flags = OFN_LONGNAMES | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-
-    if (bOpenOrSave)
-        rv = GetOpenFileNameA(&lpOf);
-    else
-        rv = GetSaveFileNameA(&lpOf);
-    
-    if (rv) {
-        if (lpdwFindex)
-            *lpdwFindex = lpOf.nFilterIndex;
-        return apxStrdupA(szFile);
-    }
-    else
-        return NULL;
-}
 
 LPWSTR apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
                        LPCWSTR szDefExt, LPCWSTR szDefPath, BOOL bOpenOrSave,

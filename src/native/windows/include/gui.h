@@ -142,28 +142,11 @@ BOOL        apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop);
 BOOL        apxCalcStringEllipsis(HDC hDC, LPTSTR  szString, 
                                   int cchMax, UINT uColWidth);
 
-LPSTR       apxBrowseForFolderA(HWND hWnd, LPCSTR szTitle, LPCSTR szName);
 LPWSTR      apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName);
-
-#ifdef _UNICODE
-#define apxBrowseForFolder  apxBrowseForFolderW
-#else
-#define apxBrowseForFolder  apxBrowseForFolderA
-#endif
-
-LPSTR       apxGetFileNameA(HWND hWnd, LPCSTR szTitle, LPCSTR szFilter,
-                            LPCSTR szDefExt, LPCSTR szDefPath, BOOL bOpenOrSave,
-                            LPDWORD lpdwFindex);
 
 LPWSTR      apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
                             LPCWSTR szDefExt, LPCWSTR szDefPath, BOOL bOpenOrSave,
                             LPDWORD lpdwFindex);
-
-#ifdef _UNICODE
-#define apxGetFileName  apxGetFileNameW
-#else
-#define apxGetFileName  apxGetFileNameA
-#endif
 
 LPCWSTR     apxDlgSelectUser(HWND hWnd, LPWSTR szUser);
 
