@@ -1519,7 +1519,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                                       isRunning ? hIcoRun : hIcoStop);
                 }
                 else {
-                    apxManageTryIconA(hWnd, NIM_ADD, NULL,
+                    apxManageTryIconW(hWnd, NIM_ADD, NULL,
                                       apxLoadResourceW(IDS_APPLICATION, 0),
                                       NULL);
                 }
@@ -1673,7 +1673,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         /* Skip sytem error message */
         SetLastError(ERROR_SUCCESS);
         apxDisplayError(TRUE, NULL, 0,
-                        apxLoadResourceW(IDS_ERRORCMD, 0),
+                        apxLoadResourceA(IDS_ERRORCMD, 0),
                         lpCmdLine);
         goto cleanup;
     }
@@ -1742,7 +1742,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
                 /* Skip sytem error message */
                 SetLastError(ERROR_SUCCESS);
                 if (!quiet)
-                    apxDisplayError(TRUE, NULL, 0, apxLoadResourceW(IDS_ALREAY_RUNING, 0),
+                    apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ALREAY_RUNING, 0),
                                     lpCmdline->szApplication);
             }
             goto cleanup;
@@ -1759,7 +1759,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
     if (IS_INVALID_HANDLE(hRegserv)) {
         if (!quiet)
-            apxDisplayError(TRUE, NULL, 0, apxLoadResourceW(IDS_ERRSREG, 0));
+            apxDisplayError(TRUE, NULL, 0, apxLoadResourceA(IDS_ERRSREG, 0));
         return FALSE;
     }
     isManagerRunning = TRUE;
