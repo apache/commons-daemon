@@ -321,7 +321,7 @@ static void __apxShellAbout(HWND hWnd)
              apxLoadResourceW(IDS_APPLICATION, 0));
 
     ShellAbout(hWnd, szApplication,
-               apxLoadResourceA(IDS_APPDESCRIPTION, 1),
+               apxLoadResourceW(IDS_APPDESCRIPTION, 1),
                _st_sys_gui.hIconHg);
 }
 
@@ -345,7 +345,7 @@ static LRESULT CALLBACK __apxAboutDlgProc(HWND hDlg, UINT uMsg,
             szTxt = (LPSTR)LockResource(hGlob);
             
             SendMessageA(hRich, WM_SETTEXT, 0, (LPARAM)szTxt);
-            SetDlgItemText(hDlg, IDC_ABOUTAPP, apxLoadResourceA(IDS_APPFULLNAME, 0));
+            SetDlgItemText(hDlg, IDC_ABOUTAPP, apxLoadResourceW(IDS_APPFULLNAME, 0));
             ptScroll.x = 0;
             ptScroll.y = 0;
             return TRUE;
