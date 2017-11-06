@@ -268,7 +268,7 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
     DWORD dwCount;
 
     LPENUM_SERVICE_STATUSW  lpDependencies = NULL;
-    ENUM_SERVICE_STATUS     ess;
+    ENUM_SERVICE_STATUSW    ess;
     SC_HANDLE               hDepService;
     SERVICE_STATUS_PROCESS  ssp;
 
@@ -294,9 +294,9 @@ __apxStopDependentServices(LPAPXSERVICE lpService)
 
         /* Allocate a buffer for the dependencies.
          */
-        lpDependencies = (LPENUM_SERVICE_STATUS) HeapAlloc(GetProcessHeap(),
-                                                           HEAP_ZERO_MEMORY,
-                                                           dwBytesNeeded);
+        lpDependencies = (LPENUM_SERVICE_STATUSW) HeapAlloc(GetProcessHeap(),
+                                                            HEAP_ZERO_MEMORY,
+                                                            dwBytesNeeded);
         if (!lpDependencies)
             return FALSE;
 
