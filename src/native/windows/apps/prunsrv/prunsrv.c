@@ -117,34 +117,35 @@ static APXCMDLINEOPT _options[] = {
 /* 12 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 13 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 14 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 15 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 16 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
-/* 17 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 15 */    { L"Jvm9Options",       L"Options9",        L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0 },
+/* 16 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 17 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 18 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 /* 19 */    { L"JvmSs",             L"JvmSs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 19 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 20 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 21 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 22 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 23 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 24 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 25 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 20 */    { L"StopImage",         L"Image",           L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 21 */    { L"StopPath",          L"WorkingPath",     L"Stop",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 22 */    { L"StopClass",         L"Class",           L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 23 */    { L"StopParams",        L"Params",          L"Stop",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 24 */    { L"StopMethod",        L"Method",          L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 25 */    { L"StopMode",          L"Mode",            L"Stop",        APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 26 */    { L"StopTimeout",       L"Timeout",         L"Stop",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 
-/* 26 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 27 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 28 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 29 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 30 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 31 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 27 */    { L"StartImage",        L"Image",           L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 28 */    { L"StartPath",         L"WorkingPath",     L"Start",       APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 29 */    { L"StartClass",        L"Class",           L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 30 */    { L"StartParams",       L"Params",          L"Start",       APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
+/* 31 */    { L"StartMethod",       L"Method",          L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 32 */    { L"StartMode",         L"Mode",            L"Start",       APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
 
-/* 32 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 33 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 34 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 35 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 36 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
-/* 37 */    { L"LogJniMessages",    L"LogJniMessages",  L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 1},
-/* 38 */    { L"PidFile",           L"PidFile",         L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
-/* 39 */    { L"Rotate",            L"Rotate",          L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
+/* 33 */    { L"LogPath",           L"Path",            L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 34 */    { L"LogPrefix",         L"Prefix",          L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 35 */    { L"LogLevel",          L"Level",           L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 36 */    { L"StdError",          L"StdError",        L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 37 */    { L"StdOutput",         L"StdOutput",       L"Log",         APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
+/* 38 */    { L"LogJniMessages",    L"LogJniMessages",  L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 1},
+/* 39 */    { L"PidFile",           L"PidFile",         L"Log",         APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
+/* 40 */    { L"Rotate",            L"Rotate",          L"Log",         APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
             /* NULL terminate the array */
             { NULL }
 };
@@ -179,35 +180,36 @@ static APXCMDLINEOPT _options[] = {
 #define SO_JAVAHOME         GET_OPT_V(12)
 #define SO_JVM              GET_OPT_V(13)
 #define SO_JVMOPTIONS       GET_OPT_V(14)
-#define SO_CLASSPATH        GET_OPT_V(15)
-#define SO_JVMMS            GET_OPT_I(16)
-#define SO_JVMMX            GET_OPT_I(17)
-#define SO_JVMSS            GET_OPT_I(18)
+#define SO_JVM9OPTIONS      GET_OPT_V(15)
+#define SO_CLASSPATH        GET_OPT_V(16)
+#define SO_JVMMS            GET_OPT_I(17)
+#define SO_JVMMX            GET_OPT_I(18)
+#define SO_JVMSS            GET_OPT_I(19)
 
-#define SO_STOPIMAGE        GET_OPT_V(19)
-#define SO_STOPPATH         GET_OPT_V(20)
-#define SO_STOPCLASS        GET_OPT_V(21)
-#define SO_STOPPARAMS       GET_OPT_V(22)
-#define SO_STOPMETHOD       GET_OPT_V(23)
-#define SO_STOPMODE         GET_OPT_V(24)
-#define SO_STOPTIMEOUT      GET_OPT_I(25)
+#define SO_STOPIMAGE        GET_OPT_V(20)
+#define SO_STOPPATH         GET_OPT_V(21)
+#define SO_STOPCLASS        GET_OPT_V(22)
+#define SO_STOPPARAMS       GET_OPT_V(23)
+#define SO_STOPMETHOD       GET_OPT_V(24)
+#define SO_STOPMODE         GET_OPT_V(25)
+#define SO_STOPTIMEOUT      GET_OPT_I(26)
 
-#define SO_STARTIMAGE       GET_OPT_V(26)
-#define SO_STARTPATH        GET_OPT_V(27)
-#define SO_STARTCLASS       GET_OPT_V(28)
-#define SO_STARTPARAMS      GET_OPT_V(29)
-#define SO_STARTMETHOD      GET_OPT_V(30)
-#define SO_STARTMODE        GET_OPT_V(31)
+#define SO_STARTIMAGE       GET_OPT_V(27)
+#define SO_STARTPATH        GET_OPT_V(28)
+#define SO_STARTCLASS       GET_OPT_V(29)
+#define SO_STARTPARAMS      GET_OPT_V(30)
+#define SO_STARTMETHOD      GET_OPT_V(31)
+#define SO_STARTMODE        GET_OPT_V(32)
 
-#define SO_LOGPATH          GET_OPT_V(32)
-#define SO_LOGPREFIX        GET_OPT_V(33)
-#define SO_LOGLEVEL         GET_OPT_V(34)
+#define SO_LOGPATH          GET_OPT_V(33)
+#define SO_LOGPREFIX        GET_OPT_V(34)
+#define SO_LOGLEVEL         GET_OPT_V(35)
 
-#define SO_STDERROR         GET_OPT_V(35)
-#define SO_STDOUTPUT        GET_OPT_V(36)
-#define SO_JNIVFPRINTF      GET_OPT_I(37)
-#define SO_PIDFILE          GET_OPT_V(38)
-#define SO_LOGROTATE        GET_OPT_I(39)
+#define SO_STDERROR         GET_OPT_V(36)
+#define SO_STDOUTPUT        GET_OPT_V(37)
+#define SO_JNIVFPRINTF      GET_OPT_I(38)
+#define SO_PIDFILE          GET_OPT_V(39)
+#define SO_LOGROTATE        GET_OPT_I(40)
 
 static SERVICE_STATUS        _service_status;
 static SERVICE_STATUS_HANDLE _service_status_handle = NULL;
@@ -229,7 +231,8 @@ static int          gExitval;
 static LPWSTR       gStartPath;
 
 static LPWSTR   _jni_jvmpath              = NULL;   /* Path to jvm dll */
-static LPSTR    _jni_jvmoptions           = NULL;   /* Path to jvm options */
+static LPSTR    _jni_jvmoptions           = NULL;   /* jvm options */
+static LPSTR    _jni_jvm9options          = NULL;   /* java 9+ options */
 
 static LPSTR    _jni_classpath            = NULL;
 static LPCWSTR  _jni_rparam               = NULL;    /* Startup  arguments */
@@ -1501,6 +1504,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         if (IS_VALID_STRING(SO_STOPMETHOD))
             _jni_smethod   = WideToANSI(SO_STOPMETHOD);
         _jni_jvmoptions    = MzWideToANSI(SO_JVMOPTIONS);
+        _jni_jvm9options   = MzWideToANSI(SO_JVM9OPTIONS);
     }
     if (_service_mode) {
         /* Register Service Control handler */
