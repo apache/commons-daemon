@@ -29,6 +29,13 @@
 
 #define JNI_VERSION_DEFAULT JNI_VERSION_1_6
 
+/* Need to be able to detect Java 9 without requiring compilation against Java 9
+ * headers.
+ */
+#ifndef JNI_VERSION_9
+#define JNI_VERSION_9  0x00090000
+#endif
+
 /* Standard jvm.dll prototypes
  * since only single jvm can exist per process
  * make those global
@@ -613,6 +620,20 @@ static LPSTR __apxEvalClasspath(APXHANDLE hPool, LPCSTR szCp)
         return pCpy;
 }
 
+BOOL
+__apxIsJavaNine()
+{
+    JavaVMInitArgs  vmArgs;
+    vmArgs.version = JNI_VERSION_9;
+    /* Returns an error if requested version is not supported */
+    if (DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&vmArgs) != JNI_OK) {
+        return FALSE;
+    }
+    else {
+        return TRUE;
+    }
+}
+
 /* ANSI version only */
 BOOL
 apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
@@ -624,6 +645,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
     JavaVMOption    *lpJvmOptions;
     DWORD           i, nOptions, sOptions = 0;
     BOOL            rv = FALSE;
+
     if (hJava->dwType != APXHANDLE_TYPE_JVM)
         return FALSE;
 
@@ -663,6 +685,10 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
             ++sOptions;
         if (szClassPath && *szClassPath)
             ++sOptions;
+
+        if (__apxIsJavaNine()) {
+            apxLogWrite(APXLOG_MARK_ERROR "TODO: Merge additional Java 9 JVM options");
+        }
 
         sOptions++; /* unconditionally set for extraInfo exit  */
         sOptions++; /* unconditionally set for extraInfo abort */
