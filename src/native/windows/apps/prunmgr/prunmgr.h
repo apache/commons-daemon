@@ -85,9 +85,10 @@
 #define IDC_PPJBJVM                     2663
 #define IDC_PPJCLASSPATH                2664
 #define IDC_PPJOPTIONS                  2665
-#define IDC_PPJMS                       2666
-#define IDC_PPJMX                       2667
-#define IDC_PPJSS                       2668
+#define IDC_PPJOPTIONS9                 2666
+#define IDC_PPJMS                       2667
+#define IDC_PPJMX                       2668
+#define IDC_PPJSS                       2669
 
 #define IDD_PROPPAGE_START              2680
 #define IDC_PPRCLASS                    2681

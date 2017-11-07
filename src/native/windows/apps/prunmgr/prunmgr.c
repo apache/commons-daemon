@@ -428,6 +428,16 @@ BOOL __generalJvmSave(HWND hDlg)
     if (!GetDlgItemTextW(hDlg, IDC_PPJMS,  szB, SIZ_HUGMAX))
         szB[0] = L'\0';
 
+    l = GetWindowTextLength(GetDlgItem(hDlg, IDC_PPJOPTIONS9));
+    p = apxPoolAlloc(hPool, (l + 2) * sizeof(WCHAR));
+    GetDlgItemTextW(hDlg, IDC_PPJOPTIONS9, p, l + 1);
+    s = apxCRLFToMszW(hPool, p, &l);
+    apxFree(p);
+    apxRegistrySetMzStrW(hRegserv, APXREG_PARAMSOFTWARE,
+        _s_java, L"Options9", s, l);
+    if (!GetDlgItemTextW(hDlg, IDC_PPJMS, szB, SIZ_HUGMAX))
+        szB[0] = L'\0';
+
     apxRegistrySetNumW(hRegserv, APXREG_PARAMSOFTWARE, _s_java, L"JvmMs",
                        apxAtoulW(szB));
     if (!GetDlgItemTextW(hDlg, IDC_PPJMX,  szB, SIZ_DESMAX))
@@ -1043,6 +1053,13 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                     apxFree(lpBuf);
                     apxFree(p);
                 }
+                if ((lpBuf = apxRegistryGetMzStrW(hRegserv, APXREG_PARAMSOFTWARE,
+                                               _s_java, L"Options9", NULL, NULL)) != NULL) {
+                    LPWSTR p = apxMszToCRLFW(hPool, lpBuf);
+                    SetDlgItemTextW(hDlg, IDC_PPJOPTIONS9, p);
+                    apxFree(lpBuf);
+                    apxFree(p);
+                }
                 v = apxRegistryGetNumberW(hRegserv, APXREG_PARAMSOFTWARE,
                                           _s_java, L"JvmMs");
                 if (v && v != 0xFFFFFFFF) {
@@ -1100,7 +1117,8 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
                 case IDC_PPJJVM:
                 case IDC_PPJCLASSPATH:
                 case IDC_PPJOPTIONS:
-                case IDC_PPJMX:
+                case IDC_PPJOPTIONS9:
+				case IDC_PPJMX:
                 case IDC_PPJMS:
                 case IDC_PPJSS:
                     if (HIWORD(wParam) == EN_CHANGE) {
