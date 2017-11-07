@@ -24,6 +24,7 @@
 /* Force the JNI vprintf functions */
 #define _DEBUG_JNI  1
 #include "apxwin.h"
+#include "private.h"
 #include "prunsrv.h"
 
 #include <stdio.h>
@@ -67,6 +68,7 @@ static LPCWSTR  PRSRV_MANUAL      = L"manual";
 static LPCWSTR  PRSRV_JBIN        = L"\\bin\\java.exe";
 static LPCWSTR  PRSRV_PBIN        = L"\\bin";
 static LPCWSTR  PRSRV_SIGNAL      = L"SIGNAL";
+static LPCWSTR  PRSV_JVMOPTS9     = L"JDK_JAVA_OPTIONS=";
 static LPCWSTR  STYPE_INTERACTIVE = L"interactive";
 
 static LPWSTR       _service_name = NULL;
@@ -422,6 +424,42 @@ static void setInprocEnvironment()
         while (*p)
             p++;
     }
+}
+
+static void setInprocEnvironment9(LPCWSTR szOptions9)
+{
+    DWORD l, c;
+    LPWSTR e, b;
+    LPCWSTR p;
+
+    l = __apxGetMultiSzLengthW(szOptions9, &c);
+
+    if (!c)
+        return;
+
+    /* environment variable name */
+    l += lstrlen(PRSV_JVMOPTS9);
+
+    b = e = apxPoolCalloc(gPool, (l + 1) * sizeof(WCHAR));
+
+    p = PRSV_JVMOPTS9;
+    while (*p) {
+        *b++ = *p++;
+    }
+
+    p = szOptions9;
+    while (c > 0) {
+        if (*p)
+            *b++ = *p;
+        else {
+            *b++ = L' ';
+            c--;
+        }
+        p++;
+    }
+
+    _wputenv(e);
+    apxFree(e);
 }
 
 /* Load the configuration from Registry
@@ -1210,6 +1248,7 @@ static DWORD serviceStart()
         }
         /* Set the environment using putenv, so JVM can use it */
         setInprocEnvironment();
+        setInprocEnvironment9(SO_JVMOPTIONS9);
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,
                                     0,
