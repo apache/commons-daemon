@@ -117,7 +117,7 @@ static APXCMDLINEOPT _options[] = {
 /* 12 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 13 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 14 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 15 */    { L"Jvm9Options",       L"Options9",        L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0 },
+/* 15 */    { L"JvmOptions9",       L"Options9",        L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0 },
 /* 16 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 17 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 /* 18 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
@@ -180,7 +180,7 @@ static APXCMDLINEOPT _options[] = {
 #define SO_JAVAHOME         GET_OPT_V(12)
 #define SO_JVM              GET_OPT_V(13)
 #define SO_JVMOPTIONS       GET_OPT_V(14)
-#define SO_JVM9OPTIONS      GET_OPT_V(15)
+#define SO_JVMOPTIONS9      GET_OPT_V(15)
 #define SO_CLASSPATH        GET_OPT_V(16)
 #define SO_JVMMS            GET_OPT_I(17)
 #define SO_JVMMX            GET_OPT_I(18)
@@ -232,7 +232,7 @@ static LPWSTR       gStartPath;
 
 static LPWSTR   _jni_jvmpath              = NULL;   /* Path to jvm dll */
 static LPSTR    _jni_jvmoptions           = NULL;   /* jvm options */
-static LPSTR    _jni_jvm9options          = NULL;   /* java 9+ options */
+static LPSTR    _jni_jvmoptions9          = NULL;   /* java 9+ options */
 
 static LPSTR    _jni_classpath            = NULL;
 static LPCWSTR  _jni_rparam               = NULL;    /* Startup  arguments */
@@ -964,6 +964,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         gSargs.hJava            = hWorker;
         gSargs.szClassPath      = _jni_classpath;
         gSargs.lpOptions        = _jni_jvmoptions;
+        gSargs.lpOptions9       = _jni_jvmoptions9;
         gSargs.dwMs             = SO_JVMMS;
         gSargs.dwMx             = SO_JVMMX;
         gSargs.dwSs             = SO_JVMSS;
@@ -1174,6 +1175,7 @@ static DWORD serviceStart()
         gRargs.hJava            = gWorker;
         gRargs.szClassPath      = _jni_classpath;
         gRargs.lpOptions        = _jni_jvmoptions;
+        gRargs.lpOptions9       = _jni_jvmoptions9;
         gRargs.dwMs             = SO_JVMMS;
         gRargs.dwMx             = SO_JVMMX;
         gRargs.dwSs             = SO_JVMSS;
@@ -1504,7 +1506,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         if (IS_VALID_STRING(SO_STOPMETHOD))
             _jni_smethod   = WideToANSI(SO_STOPMETHOD);
         _jni_jvmoptions    = MzWideToANSI(SO_JVMOPTIONS);
-        _jni_jvm9options   = MzWideToANSI(SO_JVM9OPTIONS);
+        _jni_jvmoptions9   = MzWideToANSI(SO_JVMOPTIONS9);
     }
     if (_service_mode) {
         /* Register Service Control handler */

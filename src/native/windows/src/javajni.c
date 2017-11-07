@@ -427,26 +427,56 @@ apxDestroyJvm(DWORD dwTimeout)
         return FALSE;
 }
 
+static BOOL __apxIsJava9()
+{
+    JavaVMInitArgs  vmArgs;
+    vmArgs.version = JNI_VERSION_9;
+    /* Returns an error if requested version is not supported */
+    if (DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&vmArgs) != JNI_OK) {
+        return FALSE;
+    }
+    else {
+        return TRUE;
+    }
+}
+
 static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
                                       LPCSTR lpString,
+                                      LPCSTR lpString9,
                                       JavaVMOption **lppArray,
                                       DWORD  nExtra)
 {
-    DWORD i, n = 0, l = 0;
+    DWORD i, n = 0, n9 = 0, nTotal, l = 0, l9 = 0, lTotal;
     char *buff;
     LPSTR p;
 
     if (lpString) {
         l = __apxGetMultiSzLengthA(lpString, &n);
     }
-    n += nExtra;
-    buff = apxPoolAlloc(hPool, (n + 1) * sizeof(JavaVMOption) + (l + 1));
+    if (__apxIsJava9() && lpString9) {
+        l9 = __apxGetMultiSzLengthA(lpString9, &n9);
+    }
+
+    nTotal = n + n9 + nExtra;
+    lTotal = l + l9;
+
+    buff = apxPoolAlloc(hPool, (nTotal + 1) * sizeof(JavaVMOption) + (lTotal + 1));
 
     *lppArray = (JavaVMOption *)buff;
-    p = (LPSTR)(buff + (n + 1) * sizeof(JavaVMOption));
+    p = (LPSTR)(buff + (nTotal + 1) * sizeof(JavaVMOption));
     if (lpString)
         AplCopyMemory(p, lpString, l + 1);
-    for (i = 0; i < (n - nExtra); i++) {
+    for (i = 0; i < n; i++) {
+        DWORD qr = apxStrUnQuoteInplaceA(p);
+        (*lppArray)[i].optionString = p;
+        while (*p)
+            p++;
+        p++;
+        p += qr;
+    }
+    if (lpString9)
+        AplCopyMemory(p, lpString9, l9 + 1);
+    for (i = n; i < (n + n9); i++) {
         DWORD qr = apxStrUnQuoteInplaceA(p);
         (*lppArray)[i].optionString = p;
         while (*p)
@@ -455,7 +485,7 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
         p += qr;
     }
 
-    return n;
+    return nTotal;
 }
 
 /* a hook for a function that redirects all VM messages. */
@@ -620,25 +650,12 @@ static LPSTR __apxEvalClasspath(APXHANDLE hPool, LPCSTR szCp)
         return pCpy;
 }
 
-BOOL
-__apxIsJavaNine()
-{
-    JavaVMInitArgs  vmArgs;
-    vmArgs.version = JNI_VERSION_9;
-    /* Returns an error if requested version is not supported */
-    if (DYNLOAD_FPTR(JNI_GetDefaultJavaVMInitArgs)(&vmArgs) != JNI_OK) {
-        return FALSE;
-    }
-    else {
-        return TRUE;
-    }
-}
-
 /* ANSI version only */
 BOOL
 apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
-                  LPCVOID lpOptions, DWORD dwMs, DWORD dwMx,
-                  DWORD dwSs, DWORD bJniVfprintf)
+                  LPCVOID lpOptions, LPCVOID lpOptions9,
+                  DWORD dwMs, DWORD dwMx, DWORD dwSs,
+                  DWORD bJniVfprintf)
 {
     LPAPXJAVAVM     lpJava;
     JavaVMInitArgs  vmArgs;
@@ -686,14 +703,10 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         if (szClassPath && *szClassPath)
             ++sOptions;
 
-        if (__apxIsJavaNine()) {
-            apxLogWrite(APXLOG_MARK_ERROR "TODO: Merge additional Java 9 JVM options");
-        }
-
         sOptions++; /* unconditionally set for extraInfo exit  */
         sOptions++; /* unconditionally set for extraInfo abort */
 
-        nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions,
+        nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions, lpOptions9,
                                             &lpJvmOptions, sOptions);
         if (szClassPath && *szClassPath) {
             szCp = __apxEvalClasspath(hJava->hPool, szClassPath);
@@ -949,7 +962,7 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
         WORKER_EXIT(1);
     if (!apxJavaInitialize(pArgs->hJava,
                            pArgs->szClassPath,
-                           pArgs->lpOptions,
+                           pArgs->lpOptions, pArgs->lpOptions9,
                            pArgs->dwMs, pArgs->dwMx, pArgs->dwSs,
                            pArgs->bJniVfprintf)) {
         WORKER_EXIT(2);

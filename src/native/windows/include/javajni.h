@@ -26,6 +26,7 @@ typedef struct stAPXJAVA_THREADARGS
     LPVOID      hJava;
     LPCSTR      szClassPath;
     LPCVOID     lpOptions;
+    LPCVOID     lpOptions9;
     DWORD       dwMs;
     DWORD       dwMx;
     DWORD       dwSs;
@@ -42,8 +43,9 @@ typedef struct stAPXJAVA_THREADARGS
 APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath);
 
 BOOL        apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
-                              LPCVOID lpOptions, DWORD dwMs, DWORD dwMx,
-                              DWORD dwSs, DWORD bJniVfprintf);
+                              LPCVOID lpOptions, LPCVOID lpOptions9,
+                              DWORD dwMs, DWORD dwMx, DWORD dwSs,
+                              DWORD bJniVfprintf);
 DWORD
 apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
                      LPCWSTR szOptions, DWORD dwMs, DWORD dwMx,
