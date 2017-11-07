@@ -117,7 +117,7 @@ static APXCMDLINEOPT _options[] = {
 /* 12 */    { L"JavaHome",          L"JavaHome",        L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 13 */    { L"Jvm",               L"Jvm",             L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 14 */    { L"JvmOptions",        L"Options",         L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
-/* 15 */    { L"JvmOptions9",       L"Options9",        L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0 },
+/* 15 */    { L"JvmOptions9",       L"Options9",        L"Java",        APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
 /* 16 */    { L"Classpath",         L"Classpath",       L"Java",        APXCMDOPT_STE | APXCMDOPT_REG, NULL, 0},
 /* 17 */    { L"JvmMs",             L"JvmMs",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
 /* 18 */    { L"JvmMx",             L"JvmMx",           L"Java",        APXCMDOPT_INT | APXCMDOPT_REG, NULL, 0},
