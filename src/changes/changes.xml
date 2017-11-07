@@ -140,6 +140,10 @@
       <action type="update" dev="markt">
         Make Windows XP the minimum support target platform.
       </action>
+      <action type="add" dev="markt">
+        Add support to Procrun for separate JVM options for use when running on
+        Java 9 and above. 
+      </action>
     </release>
   </body>
 </document>
