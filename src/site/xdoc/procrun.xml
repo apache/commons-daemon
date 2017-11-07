@@ -386,8 +386,17 @@ will add the new value(s) to any existing value(s).
     <td>-Xrs</td>
     <td>List of options in the form of <b>-D</b> or <b>-X</b> that will be
         passed to the JVM. The options are separated using either
-        <b>#</b> or <b>;</b> characters. if you need to embed either # or ;
+        <b>#</b> or <b>;</b> characters. If you need to embed either # or ;
         character put them inside single quotes. (Not used in <b>exe</b> mode.)</td>
+    </tr>
+    <tr>
+    <td>++JvmOptions9</td>
+    <td></td>
+    <td>List of options in the form of <b>-D</b> or <b>-X</b> that will be
+        passed to the JVM when running on Java 9 or later. The options are
+        separated using either <b>#</b> or <b>;</b> characters. If you need to
+        embed either # or ; character put them inside single quotes.
+        (Not used in <b>exe</b> mode.)</td>
     </tr>
     <tr>
     <td>--Classpath</td>
