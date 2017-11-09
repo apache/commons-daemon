@@ -1,5 +1,7 @@
-How to do a Apache Commons Deamon release
+How to do a Apache Commons Daemon release
 =========================================
+
+Use Java 7.
 
 Check out a clean copy of commons daemon from subversion to
 make sure you don't have any lingering configure or build files.
@@ -18,18 +20,32 @@ Update version numbers as needed
 Do a find for all the docs which include the previous version string
 and replace it with the new version.
 
-TODO: explain what exactly needs to be changed.
+These include:
+ - /pom.xml                             (remove -SNAPSHOT)
+ - /src/native/unix/native/version.h    (JSVC_IS_DEV_VERION 0)
+ - TODO list other files
+
+
+Create native build scripts
+---------------------------
+
+cd /src/native/unix
+sh support/buildconf.sh
+rm -rf automate.cache
+
+
+Native build
+------------
+
+Build and sign the Windows binaries.
+Place the signed Windows binaries in:
+target/prunsrv.exe
+target/prunmgr.exe
+target/amd64/prunsrv.exe
 
 
 Maven tasks
 -----------
-
-To build the documentation: (See http://commons.apache.org/building.html).
-mvn site:generate
-(Do not forget to get ../commons-build: (cd ..; svn co http://svn.apache.org/repos/asf/commons/proper/commons-build/trunk/ commons-build))
-
-To deploy the documentation to the apache site:
-mvn -Dmaven.username=${user.name} site:deploy
 
 To deploy the Java jars to the Nexus staging repo:
 
@@ -41,3 +57,9 @@ The test-deploy profile will deploy to target/deploy; omit for the live deploy
 Note: do not use clean in the same invocation.
 Not sure why, but with Commons-Parent v21 this results deploying the non-Maven archives (zip and tar.gz) as well.
 They can be deleted before closing the repo, but it is easier not to create them.
+
+
+Updating the site
+-----------------
+
+See http://commons.apache.org/site-publish.html
