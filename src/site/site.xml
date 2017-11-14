@@ -24,20 +24,20 @@
 
     <body>
         <menu name="Daemon">
-            <item name="Overview"                href="/index.html"/>
-            <item name="Download"                href="/download_daemon.cgi"/>
-            <item name="Procrun"                 href="/procrun.html"/>
-            <item name="Jsvc"                    href="/jsvc.html"/>
-            <item name="Native binaries"         href="/binaries.html"/>
-            <item name="FAQ"                     href="/faq.html"/>
-            <item name="Wiki"                    href="http://wiki.apache.org/commons/Daemon"/>
+            <item name="Overview"                 href="/index.html"/>
+            <item name="Download"                 href="/download_daemon.cgi"/>
+            <item name="Procrun"                  href="/procrun.html"/>
+            <item name="Jsvc"                     href="/jsvc.html"/>
+            <item name="Native binaries"          href="/binaries.html"/>
+            <item name="Javadoc (latest release)" href="apidocs/index.html"/>
+            <item name="FAQ"                      href="/faq.html"/>
+            <item name="Wiki"                     href="http://wiki.apache.org/commons/Daemon"/>
         </menu>
 
         <menu name="Development">
-            <item name="Mailing Lists"           href="/mail-lists.html"/>
-            <item name="Issue Tracking"          href="/issue-tracking.html"/>
-            <item name="Source Repository"       href="/source-repository.html"/>
-            <item name="Javadoc (SVN latest)"    href="apidocs/index.html"/>
+            <item name="Mailing Lists"            href="/mail-lists.html"/>
+            <item name="Issue Tracking"           href="/issue-tracking.html"/>
+            <item name="Source Repository"        href="/source-repository.html"/>
         </menu>
 
     </body>
