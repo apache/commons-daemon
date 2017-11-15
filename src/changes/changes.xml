@@ -144,6 +144,9 @@
         Add support to Procrun for separate JVM options for use when running on
         Java 9 and above. 
       </action>
+      <action issue="DAEMON-377" type="fix" dev="markt" due-to="Rustam Abdullaev">
+        Fix race conditions in PID file handling in jsvc.
+      </action> 
     </release>
   </body>
 </document>

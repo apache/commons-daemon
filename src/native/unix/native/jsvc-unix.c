@@ -560,6 +560,11 @@ static int check_pid(arg_data *args)
     int i, pid;
     int once = 0;
 
+    /* skip writing the pid file if version or check */
+    if (args->vers || args->chck) {
+        return 0;
+    }
+
 retry:
     fd = open(args->pidf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0) {
@@ -585,23 +590,47 @@ retry:
                 return 122;
             }
         }
-
-        /* skip writing the pid file if version or check */
-        if (args->vers != true && args->chck != true) {
-            lseek(fd, SEEK_SET, 0);
-            pidf = fdopen(fd, "r+");
-            fprintf(pidf, "%d\n", (int)getpid());
-            fflush(pidf);
-            lockf(fd, F_ULOCK, 0);
-            fclose(pidf);
-            close(fd);
-        }
-        else {
-            lockf(fd, F_ULOCK, 0);
-            close(fd);
-        }
+        lseek(fd, SEEK_SET, 0);
+        pidf = fdopen(fd, "r+");
+        fprintf(pidf, "%d\n", (int)getpid());
+        fflush(pidf);
+        fclose(pidf);
+        lockf(fd, F_ULOCK, 0);
+        close(fd);
     }
     return 0;
+}
+
+/*
+ * Delete the pid file
+ */
+static void remove_pid_file(arg_data *args, int pidn)
+{
+    char buff[80];
+    int fd, i, pid;
+
+    fd = open(args->pidf, O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    log_debug("remove_pid_file: open %s: fd=%d", args->pidf, fd);
+    if (fd < 0) {
+        return;
+    }
+    lockf(fd, F_LOCK, 0);
+    i = read(fd, buff, sizeof(buff));
+    if (i > 0) {
+        buff[i] = '\0';
+        pid = atoi(buff);
+    } else {
+        pid = -1;
+    }
+    if (pid == pidn) {
+        /* delete the file while it's still locked */
+        unlink(args->pidf);
+    } else {
+        log_debug("remove_pid_file: pid changed (%d->%d), not removing pid file %s",
+                  pidn, pid, args->pidf);
+    }
+    lockf(fd, F_ULOCK, 0);
+    close(fd);
 }
 
 /*
@@ -1310,7 +1339,7 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid,
 
             /* Delete the pid file */
             if (args->vers != true && args->chck != true && status != 122)
-                unlink(args->pidf);
+                remove_pid_file(args, pid);
 
             /* If the child got out with 123 he wants to be restarted */
             /* See java_abort123 (we use this return code to restart when the JVM aborts) */
