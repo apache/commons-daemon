@@ -40,12 +40,20 @@ and replace it with the new version.
 
 These include:
 Before tagging:
- - /src/changes/changes.xml             (Set date)
- - /src/native/unix/man/jsvc1.xml       (Set date & version)
- - TODO list other files
+ - /src/changes/changes.xml             		(Set date)
+ - /src/native/unix/man/jsvc1.xml       		(Set date & version)
+ - /src/native/windows/apps/prunmgr/prunmgr.h	(version)
+ - /src/native/windows/apps/prunmgr/prunmgr.rc	(version x3)
+ - /pom.xml			                            (version)
+ - /src/native/unix/native/version.h    		(version)
+ - /src/native/windows/apps/prunsrv/prunsrv.h	(version)
+ - /src/native/windows/apps/prunsrv/prunsrv.rc	(version x2)
+ - /src/samples/SimpleApplication.sh            (version)
+ - /src/site/xdoc/binaries.xml                  (version)
+ - /build.xml                                   (version)
 Only in tag:
- - /pom.xml                             (remove -SNAPSHOT)
- - /src/native/unix/native/version.h    (JSVC_IS_DEV_VERION 0)
+ - /pom.xml			                            (remove -SNAPSHOT)
+ - /src/native/unix/native/version.h    		(JSVC_IS_DEV_VERION 0)
 
 
 Create native build scripts
