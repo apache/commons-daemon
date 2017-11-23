@@ -61,7 +61,7 @@ public interface Daemon
      *
      * @param context A <code>DaemonContext</code> object used to
      * communicate with the container.
-     * @throws DaemonInitException An exception that prevented 
+     * @throws DaemonInitException An exception that prevented
      * initialization where you want to display a nice message to the user,
      * rather than a stack trace.
      * @throws Exception Any exception preventing a successful
@@ -78,6 +78,8 @@ public interface Daemon
      * method are free to start any number of threads, but need to
      * return control after having done that to enable invocation of
      * the stop()-method.
+     *
+     * @throws Exception If the start was not successful
      */
     public void start()
         throws Exception;
@@ -88,6 +90,8 @@ public interface Daemon
      * sockets or file descriptors is in the destroy method, as the
      * container may restart the Daemon by calling start() after
      * stop().
+     *
+     * @throws Exception If the stop was not successful
      */
     public void stop()
         throws Exception;

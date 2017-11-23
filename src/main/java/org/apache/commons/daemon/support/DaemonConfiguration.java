@@ -161,6 +161,8 @@ public final class DaemonConfiguration
      * @param name The name of the property to get.
      *
      * @throws ParseException if the property is wrongly formatted.
+     *
+     * @return  Configuration property including any expansion/replacement
      */
     public String getProperty(final String name)
         throws ParseException
@@ -185,6 +187,8 @@ public final class DaemonConfiguration
      * @param name The name of the property array to get.
      *
      * @throws ParseException if the property is wrongly formatted.
+     *
+     * @return  Configuration property array including any expansion/replacement
      */
     public String[] getPropertyArray(final String name)
         throws ParseException

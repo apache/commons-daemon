@@ -35,8 +35,8 @@ import java.util.StringTokenizer;
  * special &quot;*&quot; value implies all permissions for the given
  * name:
  * </p>
- * <p>
  * <table width="100%" border="1">
+ *  <caption>Supported Actions</caption>
  *  <tr>
  *   <th>Target&quot;Name</th>
  *   <th>Action</th>
@@ -80,8 +80,6 @@ import java.util.StringTokenizer;
  *   </td>
  *  </tr>
  * </table>
- * </p>
- *
  */
 public final class DaemonPermission extends Permission
 {
@@ -208,8 +206,6 @@ public final class DaemonPermission extends Permission
     /**
      * Creates a new <code>DaemonPermission</code> instance with a specified
      * permission name and a specified list of actions.
-     * <p>
-     * </p>
      *
      * @param target The target name of this permission.
      * @param actions The list of actions permitted by this permission.
