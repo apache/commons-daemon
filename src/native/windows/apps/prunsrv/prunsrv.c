@@ -1160,7 +1160,9 @@ cleanup:
     }
 
     apxLogWrite(APXLOG_MARK_INFO "Service stop thread completed.");
-    SetEvent(gShutdownEvent);
+    if (gShutdownEvent) {
+        SetEvent(gShutdownEvent);
+    }
     return rv;
 }
 
@@ -1588,6 +1590,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         WaitForSingleObject(gShutdownEvent, ONE_MINUTE);
         apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
         CloseHandle(gShutdownEvent);
+        gShutdownEvent = NULL;
 
         /* This will cause to wait for all threads to exit
          */

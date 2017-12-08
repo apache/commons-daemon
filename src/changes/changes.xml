@@ -39,6 +39,9 @@
   </properties>
   <body>
     <release version="1.1.1" date="TBD" description="Bug fix release">
+      <action type="fix" dev="markt" due-to="mturk" >
+        Only set the global shutdown event if the event is created.
+      </action>
       <action issue="DAEMON-379" type="fix" dev="sebb">
         Unable to build with java-9 using ant; dropped Ant build files
       </action>
