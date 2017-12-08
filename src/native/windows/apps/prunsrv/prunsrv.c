@@ -1018,7 +1018,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         if (!apxProcessSetExecutableW(hWorker, SO_STOPIMAGE)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
-                        SO_STARTIMAGE);
+                        SO_STOPIMAGE);
             rv = 2;
             goto cleanup;
         }
@@ -1112,7 +1112,9 @@ cleanup:
     }
 
     apxLogWrite(APXLOG_MARK_INFO "Service stop thread completed.");
-    SetEvent(gShutdownEvent);
+    if (gShutdownEvent) {
+        SetEvent(gShutdownEvent);
+    }
     return rv;
 }
 
@@ -1544,6 +1546,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         WaitForSingleObject(gShutdownEvent, ONE_MINUTE);
         apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
         CloseHandle(gShutdownEvent);
+        gShutdownEvent = NULL;
 
         /* This will cause to wait for all threads to exit
          */
@@ -1768,6 +1771,10 @@ cleanup:
     _service_mode = FALSE;
     _flushall();
     apxLogClose(NULL);
+#if 0
+    /* Memory will be destoyed uppon exit
+     */
     apxHandleManagerDestroy();
+#endif
     ExitProcess(rv);
 }

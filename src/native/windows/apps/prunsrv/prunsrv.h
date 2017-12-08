@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-/* ====================================================================
- * jar2exe -- convert .jar file to WIN32 executable.
- * Contributed by Mladen Turk <mturk@apache.org>
- * 05 Aug 2003
- * ====================================================================
- */
-
 #ifndef _PRUNSRV_H
 #define _PRUNSRV_H
 
 #undef  PRG_VERSION
-#define PRG_VERSION    "1.0.15.0"
+#define PRG_VERSION    "1.0.16.0"
 #define PRG_REGROOT   L"Apache Software Foundation\\Procrun 2.0"
 
 #endif /* _PRUNSRV_H */
