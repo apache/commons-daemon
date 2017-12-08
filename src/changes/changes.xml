@@ -39,6 +39,9 @@
   </properties>
   <body>
     <release version="1.1.1" date="TBD" description="Bug fix release">
+      <action issue="DAEMON-379" type="fix" dev="sebb">
+        Unable to build with java-9 using ant; dropped Ant build files
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">
