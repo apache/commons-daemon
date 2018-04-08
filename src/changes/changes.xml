@@ -47,7 +47,10 @@
         Only set the global shutdown event if the event is created.
       </action>
       <action issue="DAEMON-379" type="fix" dev="sebb">
-        Unable to build with java-9 using ant; dropped Ant build files
+        Unable to build with Java 9 using ant; dropped Ant build files
+      </action>
+      <action issue="DAEMON-384" type="fix" dev="ggregory" due-to="blassmegod">
+        prunsrv stopping with error due to hardcoded timeout.
       </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">

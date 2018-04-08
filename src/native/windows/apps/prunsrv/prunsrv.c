@@ -1353,7 +1353,12 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
         case SERVICE_CONTROL_SHUTDOWN:
             apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signalled");
         case SERVICE_CONTROL_STOP:
-            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3 * 1000);
+            if (SO_STOPTIMEOUT > 0) {
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 1000);
+            }
+            else {
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 3 * 1000);
+            }
             /* Stop the service asynchronously */
             stopThread = CreateThread(NULL, 0,
                                       serviceStop,
