@@ -243,6 +243,7 @@ static LPSTR    _jni_rmethod              = NULL;    /* Startup  method */
 static LPSTR    _jni_smethod              = NULL;    /* Shutdown method */
 static LPSTR    _jni_rclass               = NULL;    /* Startup  class */
 static LPSTR    _jni_sclass               = NULL;    /* Shutdown class */
+static HANDLE gFailureEvent  = NULL;
 static HANDLE gShutdownEvent = NULL;
 static HANDLE gSignalEvent   = NULL;
 static HANDLE gSignalThread  = NULL;
@@ -1573,6 +1574,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         }
     }
     reportServiceStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
+    DWORD vmExitCode;
     if ((rc = serviceStart()) == 0) {
         /* Service is started */
         reportServiceStatus(SERVICE_RUNNING, NO_ERROR, 0);
@@ -1581,14 +1583,16 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
 
         apxHandleWait(gWorker, INFINITE, FALSE);
-        apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
+        vmExitCode = apxGetVmExitCode();
+        apxLogWrite(APXLOG_MARK_DEBUG "Worker finished with exit code %d", vmExitCode);
     }
     else {
         apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d", rc);
         goto cleanup;
     }
+    BOOL serviceFailed;
     if (gShutdownEvent) {
-
+        serviceFailed = FALSE;
         /* Ensure that shutdown thread exits before us */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
@@ -1608,12 +1612,22 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
          * Probably because main() returned without ensuring all threads
          * have finished
          */
+        serviceFailed = 0 == vmExitCode ? FALSE : TRUE;
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for all threads to exit");
         apxDestroyJvm(INFINITE);
-        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+        if (!serviceFailed) {
+            reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+        }
     }
     apxLogWrite(APXLOG_MARK_DEBUG "JVM destroyed.");
-    reportServiceStatusStopped(apxGetVmExitCode());
+    if (serviceFailed) {
+        gExitval = (int)vmExitCode;
+        SetEvent(gFailureEvent);
+    }
+    else {
+        gExitval = 0;
+        reportServiceStatusStopped(vmExitCode);
+    }
 
     return;
 cleanup:
@@ -1623,6 +1637,20 @@ cleanup:
     return;
 }
 
+static DWORD WINAPI serviceCtrlDispatcherThread(LPVOID lpParam) {
+    LPAPXCMDLINE lpCmdline = (LPAPXCMDLINE)lpParam;
+    SERVICE_TABLE_ENTRYW dispatch_table[] = {
+        { lpCmdline->szApplication, (LPSERVICE_MAIN_FUNCTIONW)serviceMain },
+        { NULL, NULL }
+    };
+    if (StartServiceCtrlDispatcherW(dispatch_table)) {
+        EndThread(0);
+    }
+    else {
+        EndThread(1);
+    }
+    return 0;
+}
 
 /* Run the service in the debug mode */
 BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
@@ -1641,22 +1669,51 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 
 BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
 {
-    BOOL rv;
-    SERVICE_TABLE_ENTRYW dispatch_table[] = {
-        { lpCmdline->szApplication, (LPSERVICE_MAIN_FUNCTIONW)serviceMain },
-        { NULL, NULL }
-    };
-    _service_mode = TRUE;
-    _service_name = lpCmdline->szApplication;
-    apxLogWrite(APXLOG_MARK_INFO "Running '%S' Service...", _service_name);
-    if (StartServiceCtrlDispatcherW(dispatch_table)) {
-        apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
-        rv = TRUE;
+    BOOL rv = FALSE;
+    gFailureEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!gFailureEvent) {
+        apxLogWrite(APXLOG_MARK_ERROR "Failed to create event object for failure signal");
     }
     else {
-        apxLogWrite(APXLOG_MARK_ERROR "StartServiceCtrlDispatcher for '%S' failed",
-                    lpCmdline->szApplication);
-        rv = FALSE;
+        HANDLE dispatcherThread;
+        _service_mode = TRUE;
+        _service_name = lpCmdline->szApplication;
+        apxLogWrite(APXLOG_MARK_INFO "Running '%S' Service...", _service_name);
+        dispatcherThread = CreateThread(NULL, 0, serviceCtrlDispatcherThread, lpCmdline, 0, NULL);
+        if (!dispatcherThread) {
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to start service control dispatcher thread");
+        } else {
+            BOOL dispatcherRunning = TRUE;
+            const HANDLE objectsToWait[2] = {gFailureEvent, dispatcherThread};
+            const DWORD waitResult = WaitForMultipleObjects(2, objectsToWait, FALSE, INFINITE);
+            if (waitResult == WAIT_OBJECT_0) {
+                apxLogWrite(APXLOG_MARK_INFO "Run service finished with exit code %d", gExitval);
+                rv = gExitval == 0 ? TRUE : FALSE;
+            }
+            else if (waitResult == WAIT_OBJECT_0 + 1) {
+                DWORD threadExitCode = 0;
+                dispatcherRunning = FALSE;
+                if (!GetExitCodeThread(dispatcherThread, &threadExitCode)) {
+                    apxLogWrite(APXLOG_MARK_ERROR "Failed to retrieve exit code of service control dispatcher thread");
+                }
+                else if (threadExitCode == 0) {
+                    apxLogWrite(APXLOG_MARK_INFO "Run service finished with exit code %d", gExitval);
+                    rv = gExitval == 0 ? TRUE : FALSE;
+                }
+                else {
+                    apxLogWrite(APXLOG_MARK_ERROR "StartServiceCtrlDispatcher for '%S' failed", lpCmdline->szApplication);
+                }
+            }
+            else {
+                apxLogWrite(APXLOG_MARK_ERROR "Failed to monitor service control dispatcher thread and failure signal event");
+            }
+            if (dispatcherRunning) {
+                apxLogWrite(APXLOG_MARK_DEBUG "Terminating service control dispatcher thread");
+                TerminateThread(dispatcherThread, 2);
+            }
+            CloseHandle(dispatcherThread);
+        }
+        CloseHandle(gFailureEvent);
     }
     SAFE_CLOSE_HANDLE(gPidfileHandle);
     if (gPidfileName) {
