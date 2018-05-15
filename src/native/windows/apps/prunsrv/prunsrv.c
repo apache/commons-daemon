@@ -1421,6 +1421,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     _service_status.dwCheckPoint       = 0;
     _service_status.dwWaitHint         = 0;
     _service_status.dwServiceSpecificExitCode = 0;
+    DWORD vmExitCode;
 
     apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
 
@@ -1574,7 +1575,6 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         }
     }
     reportServiceStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
-    DWORD vmExitCode;
     if ((rc = serviceStart()) == 0) {
         /* Service is started */
         reportServiceStatus(SERVICE_RUNNING, NO_ERROR, 0);
