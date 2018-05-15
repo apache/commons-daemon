@@ -52,7 +52,7 @@ Documentation
 -------------
 
 More information can be found on the [Apache Commons Daemon homepage](https://commons.apache.org/proper/commons-daemon).
-The [JavaDoc](https://commons.apache.org/proper/commons-daemon/javadocs/api-release) can be browsed.
+The [Javadoc](https://commons.apache.org/proper/commons-daemon/javadocs/api-release) can be browsed.
 Questions related to the usage of Apache Commons Daemon should be posted to the [user mailing list][ml].
 
 Where can I get the latest release?
