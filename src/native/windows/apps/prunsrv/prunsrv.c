@@ -1413,6 +1413,8 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
 /* Main service execution loop */
 void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 {
+    DWORD vmExitCode = 0;
+    BOOL serviceFailed = FALSE;
     DWORD rc = 0;
     _service_status.dwServiceType      = SERVICE_WIN32_OWN_PROCESS;
     _service_status.dwCurrentState     = SERVICE_START_PENDING;
@@ -1421,7 +1423,6 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     _service_status.dwCheckPoint       = 0;
     _service_status.dwWaitHint         = 0;
     _service_status.dwServiceSpecificExitCode = 0;
-    DWORD vmExitCode;
 
     apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
 
@@ -1590,9 +1591,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d", rc);
         goto cleanup;
     }
-    BOOL serviceFailed;
     if (gShutdownEvent) {
-        serviceFailed = FALSE;
         /* Ensure that shutdown thread exits before us */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
