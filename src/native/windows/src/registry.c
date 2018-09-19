@@ -779,7 +779,7 @@ LPWSTR apxGetJavaSoftHome(APXHANDLE hPool, BOOL bPreferJre)
             lstrcpyW(wsBuf, JRE_REGKEYS[dwRegKey]);
         else
             lstrcpyW(wsBuf, JDK_REGKEYS[dwRegKey]);
-        dwRegKey = dwRegKey++;
+        dwRegKey++;
         dwLen = lstrlenW(wsBuf);
         off = &wsBuf[dwLen];
         dwLen = SIZ_RESMAX;
