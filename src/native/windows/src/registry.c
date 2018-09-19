@@ -29,14 +29,14 @@ static LPCWSTR REGAPACHE_ROOT   = L"Apache Software Foundation";
  * The code below assumes the JRE and JDK arrays are the same length
  */
 static LPCWSTR JRE_REGKEYS[] = {
-    L"SOFTWARE\\JavaSoft\\JRE\\",                       /* Oracle Java 8 and earlier */
-    L"SOFTWARE\\JavaSoft\\Java Runtime Environment\\",  /* Oracle Java 9 (and hopefully later) */
+    L"SOFTWARE\\JavaSoft\\JRE\\",                       /* Oracle Java 9 (and hopefully later) */
+    L"SOFTWARE\\JavaSoft\\Java Runtime Environment\\",  /* Oracle Java 8 (and older) */
     L"SOFTWARE\\IBM\\Java2 Runtime Environment\\",      /* IBM */
     NULL
 };
 static LPCWSTR JDK_REGKEYS[] = {
-    L"SOFTWARE\\JavaSoft\\JDK\\",                       /* Oracle Java 8 and ealier */
-    L"SOFTWARE\\JavaSoft\\Java Development Kit\\",      /* Oracle Java 9 (and hopefully later) */
+    L"SOFTWARE\\JavaSoft\\JDK\\",                       /* Oracle Java 9 and (and hopefully later) */
+    L"SOFTWARE\\JavaSoft\\Java Development Kit\\",      /* Oracle Java 8 (and older) */
     L"SOFTWARE\\IBM\\Java2 Development Kit\\",          /* IBM */
     NULL
 };
