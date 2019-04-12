@@ -467,22 +467,18 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
     if (lpString)
         AplCopyMemory(p, lpString, l + 1);
     for (i = 0; i < n; i++) {
-        DWORD qr = apxStrUnQuoteInplaceA(p);
         (*lppArray)[i].optionString = p;
         while (*p)
             p++;
         p++;
-        p += qr;
     }
     if (lpString9)
         AplCopyMemory(p, lpString9, l9 + 1);
     for (i = n; i < (n + n9); i++) {
-        DWORD qr = apxStrUnQuoteInplaceA(p);
         (*lppArray)[i].optionString = p;
         while (*p)
             p++;
         p++;
-        p += qr;
     }
 
     return nTotal;
