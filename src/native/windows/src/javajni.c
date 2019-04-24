@@ -41,22 +41,22 @@
  * make those global
  */
 
-DYNOLAD_TYPE_DECLARE(JNI_GetDefaultJavaVMInitArgs, JNICALL, jint)(void *);
+DYNLOAD_TYPE_DECLARE(JNI_GetDefaultJavaVMInitArgs, JNICALL, jint)(void *);
 static DYNLOAD_FPTR_DECLARE(JNI_GetDefaultJavaVMInitArgs) = NULL;
 
-DYNOLAD_TYPE_DECLARE(JNI_CreateJavaVM, JNICALL, jint)(JavaVM **, void **, void *);
+DYNLOAD_TYPE_DECLARE(JNI_CreateJavaVM, JNICALL, jint)(JavaVM **, void **, void *);
 static DYNLOAD_FPTR_DECLARE(JNI_CreateJavaVM) = NULL;
 
-DYNOLAD_TYPE_DECLARE(JNI_GetCreatedJavaVMs, JNICALL, jint)(JavaVM **, jsize, jsize *);
+DYNLOAD_TYPE_DECLARE(JNI_GetCreatedJavaVMs, JNICALL, jint)(JavaVM **, jsize, jsize *);
 static DYNLOAD_FPTR_DECLARE(JNI_GetCreatedJavaVMs) = NULL;
 
-DYNOLAD_TYPE_DECLARE(JVM_DumpAllStacks, JNICALL, void)(JNIEnv *, jclass);
+DYNLOAD_TYPE_DECLARE(JVM_DumpAllStacks, JNICALL, void)(JNIEnv *, jclass);
 static DYNLOAD_FPTR_DECLARE(JVM_DumpAllStacks) = NULL;
 
 static HANDLE  _st_sys_jvmDllHandle = NULL;
 static JavaVM *_st_sys_jvm = NULL;
 
-DYNOLAD_TYPE_DECLARE(SetDllDirectoryW, WINAPI, BOOL)(LPCWSTR);
+DYNLOAD_TYPE_DECLARE(SetDllDirectoryW, WINAPI, BOOL)(LPCWSTR);
 static DYNLOAD_FPTR_DECLARE(SetDllDirectoryW) = NULL;
 
 #define JVM_DELETE_CLAZZ(jvm, cl)                                               \

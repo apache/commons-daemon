@@ -23,12 +23,12 @@
 #define PROC_INITIALIZED            0x0008
 #define CHILD_TERMINATE_CODE        19640323 /* Could be any value like my birthday ;-)*/
 
-DYNOLAD_TYPE_DECLARE(CreateRemoteThread,
+DYNLOAD_TYPE_DECLARE(CreateRemoteThread,
                      __stdcall, HANDLE)(HANDLE, LPSECURITY_ATTRIBUTES,
                                         DWORD, LPTHREAD_START_ROUTINE,
                                         LPVOID, DWORD, LPDWORD);
 
-DYNOLAD_TYPE_DECLARE(ExitProcess, __stdcall, void)(UINT);
+DYNLOAD_TYPE_DECLARE(ExitProcess, __stdcall, void)(UINT);
 
 #define CHECK_IF_ACTIVE(proc) \
     APXMACRO_BEGIN                                                      \
