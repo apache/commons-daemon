@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "apxwin.h"
 #include "private.h"
 
@@ -65,16 +65,16 @@ LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName)
     stCmn.dwSize = sizeof(INITCOMMONCONTROLSEX);
     stCmn.dwICC = ICC_WIN95_CLASSES | ICC_USEREX_CLASSES | ICC_COOL_CLASSES |
                   ICC_INTERNET_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_BAR_CLASSES;
-                  
+
     InitCommonControlsEx(&stCmn);
 
-    _st_sys_riched      = LoadLibraryA("RICHED32.DLL"); 
+    _st_sys_riched      = LoadLibraryA("RICHED32.DLL");
     _st_sys_gui.hIconSm = LoadImage(_st_sys_gui.hInstance, MAKEINTRESOURCE(IDI_MAINICON),
-                                     IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR); 
+                                     IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     _st_sys_gui.hIcon   = LoadImage(_st_sys_gui.hInstance, MAKEINTRESOURCE(IDI_MAINICON),
-                                     IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR); 
+                                     IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR);
     _st_sys_gui.hIconHg = LoadImage(_st_sys_gui.hInstance, MAKEINTRESOURCE(IDI_MAINICON),
-                                     IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR); 
+                                     IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR);
     _st_sys_gui.hAccel  = LoadAccelerators(_st_sys_gui.hInstance,
                                             MAKEINTRESOURCE(IDC_APPLICATION));
     _st_sys_gui.stState.rcPosition.left   = CW_USEDEFAULT;
@@ -84,7 +84,7 @@ LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName)
 
     SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &_st_sys_gui.nWhellScroll, 0);
 
-    wcex.cbSize = sizeof(WNDCLASSEX); 
+    wcex.cbSize = sizeof(WNDCLASSEX);
 
     wcex.style          = 0;
     wcex.lpfnWndProc    = lpfnWndProc;
@@ -201,7 +201,7 @@ void apxAppendMenuItem(HMENU hMenu, UINT idMenu, LPCTSTR szName,
                        BOOL bDefault, BOOL bEnabled)
 {
     MENUITEMINFO miI;
-    
+
     AplZeroMemory(&miI, sizeof(MENUITEMINFO));
     miI.cbSize = sizeof(MENUITEMINFO);
     miI.fMask  = MIIM_TYPE | MIIM_STATE;
@@ -255,7 +255,7 @@ void apxManageTryIconA(HWND hWnd, DWORD dwMessage, LPCSTR szInfoTitle,
     nId.uID = 0xFF;
     nId.uCallbackMessage = WM_TRAYMESSAGE;
     nId.uFlags =  NIF_MESSAGE;
-    
+
     if (dwMessage == NIM_ADD && inTry)
         return;
     if (dwMessage != NIM_DELETE) {
@@ -279,12 +279,12 @@ void apxManageTryIconA(HWND hWnd, DWORD dwMessage, LPCSTR szInfoTitle,
         inTry = FALSE;
 
     Shell_NotifyIconA(dwMessage, &nId);
-} 
+}
 
 void apxManageTryIconW(HWND hWnd, DWORD dwMessage, LPCWSTR szInfoTitle,
                        LPCWSTR szInfo, HICON hIcon)
 {
-    
+
     NOTIFYICONDATAW nId;
     AplZeroMemory(&nId, sizeof(NOTIFYICONDATAW));
 
@@ -311,13 +311,13 @@ void apxManageTryIconW(HWND hWnd, DWORD dwMessage, LPCWSTR szInfoTitle,
     }
 
     Shell_NotifyIconW(dwMessage, &nId);
-} 
+}
 
 static void __apxShellAbout(HWND hWnd)
 {
     TCHAR szApplication[512];
 
-    wsprintf(szApplication , TEXT("About - %s#Windows"), 
+    wsprintf(szApplication , TEXT("About - %s#Windows"),
              apxLoadResourceW(IDS_APPLICATION, 0));
 
     ShellAbout(hWnd, szApplication,
@@ -343,7 +343,7 @@ static LRESULT CALLBACK __apxAboutDlgProc(HWND hDlg, UINT uMsg,
                                  TEXT("RTF"));
             hGlob = LoadResource(GetModuleHandleA(NULL), hRsrc);
             szTxt = (LPSTR)LockResource(hGlob);
-            
+
             SendMessageA(hRich, WM_SETTEXT, 0, (LPARAM)szTxt);
             SetDlgItemText(hDlg, IDC_ABOUTAPP, apxLoadResourceW(IDS_APPFULLNAME, 0));
             ptScroll.x = 0;
@@ -377,7 +377,7 @@ static LRESULT CALLBACK __apxAboutDlgProc(HWND hDlg, UINT uMsg,
 
     }
     return FALSE;
-} 
+}
 
 void apxAboutBox(HWND hWnd)
 {
@@ -391,7 +391,7 @@ static DWORD WINAPI __apxProgressWorkerThread(LPVOID lpParameter)
 {
     LPPROGRESS_DLGPARAM lpDlgParam = (LPPROGRESS_DLGPARAM)lpParameter;
 
-    (*lpDlgParam->fnCb)(NULL, WM_USER+1, 0, (LPARAM)lpDlgParam->hDialog); 
+    (*lpDlgParam->fnCb)(NULL, WM_USER+1, 0, (LPARAM)lpDlgParam->hDialog);
     CloseHandle(lpDlgParam->hThread);
     ExitThread(0);
     return 0;
@@ -411,7 +411,7 @@ static LRESULT CALLBACK __apxProgressDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam
             }
             lpDlgParam->hDialog = hDlg;
             lpDlgParam->hThread = CreateThread(NULL, 0, __apxProgressWorkerThread,
-                                               lpDlgParam, 0, &dwId); 
+                                               lpDlgParam, 0, &dwId);
         break;
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
@@ -426,7 +426,7 @@ static LRESULT CALLBACK __apxProgressDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam
         break;
     }
     return FALSE;
-} 
+}
 
 int apxProgressBox(HWND hWnd, LPCTSTR szHeader,
                    LPCWSTR szText,
@@ -459,8 +459,8 @@ BOOL apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop)
     else
         uType |= MB_DEFBUTTON1 | MB_ICONQUESTION;
 
-    rv = MessageBox(_st_sys_gui.hMainWnd, szMessage, szTitle, uType); 
-    
+    rv = MessageBox(_st_sys_gui.hMainWnd, szMessage, szTitle, uType);
+
     return (rv == IDYES);
 }
 
@@ -484,7 +484,7 @@ LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName)
     bi.lParam         = 0;
     bi.iImage         = 0;
     bi.pidlRoot       = il;
-    
+
     if ((ir = SHBrowseForFolderW(&bi)) != NULL) {
         if (SHGetPathFromIDListW(ir, szPath))
             rv = apxStrdupW(szPath);
@@ -494,8 +494,8 @@ LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName)
         pMalloc->lpVtbl->Release(pMalloc);
     }
 
-    return rv;    
-} 
+    return rv;
+}
 
 LPWSTR apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
                        LPCWSTR szDefExt, LPCWSTR szDefPath, BOOL bOpenOrSave,
@@ -507,7 +507,7 @@ LPWSTR apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
 
     AplZeroMemory(&lpOf, sizeof(OPENFILENAMEW));
     szFile[0] = L'\0';
-    lpOf.lStructSize     = sizeof(OPENFILENAMEW); 
+    lpOf.lStructSize     = sizeof(OPENFILENAMEW);
     lpOf.hwndOwner       = hWnd;
     lpOf.hInstance       = _st_sys_gui.hInstance;
     lpOf.lpstrTitle      = szTitle;
@@ -522,7 +522,7 @@ LPWSTR apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
         rv = GetOpenFileNameW(&lpOf);
     else
         rv = GetSaveFileNameW(&lpOf);
-    
+
     if (rv) {
         if (lpdwFindex)
             *lpdwFindex = lpOf.nFilterIndex;
@@ -536,13 +536,13 @@ static __apxSelectUserDlgResize(HWND hDlg, INT nWidth, INT nHeight)
 {
     /* Combo box */
     MoveWindow(GetDlgItem(hDlg, IDSU_COMBO),
-        70, 10, 
+        70, 10,
         nWidth - 70,
         120,
         TRUE);
     /* List Window */
     MoveWindow(GetDlgItem(hDlg, IDSU_LIST),
-        0, 36, 
+        0, 36,
         nWidth,
         nHeight - 74,
         TRUE);
@@ -550,15 +550,15 @@ static __apxSelectUserDlgResize(HWND hDlg, INT nWidth, INT nHeight)
     /* Name label */
     MoveWindow(GetDlgItem(hDlg, IDSU_SELNAME),
         16,
-        nHeight - 30, 
+        nHeight - 30,
         50,
         24,
         TRUE);
 
     /* Edit Box */
     MoveWindow(GetDlgItem(hDlg, IDSU_SELECTED),
-        70, 
-        nHeight - 32, 
+        70,
+        nHeight - 32,
         nWidth - 300,
         24,
         TRUE);
@@ -566,7 +566,7 @@ static __apxSelectUserDlgResize(HWND hDlg, INT nWidth, INT nHeight)
     /* OK Button */
     MoveWindow(GetDlgItem(hDlg, IDOK),
         nWidth - 200,
-        nHeight - 32, 
+        nHeight - 32,
         80,
         24,
         TRUE);
@@ -574,7 +574,7 @@ static __apxSelectUserDlgResize(HWND hDlg, INT nWidth, INT nHeight)
     /* Cancel Button */
     MoveWindow(GetDlgItem(hDlg, IDCANCEL),
         nWidth - 110,
-        nHeight - 32, 
+        nHeight - 32,
         80,
         24,
         TRUE);
@@ -645,12 +645,12 @@ static void __apxSelectUserCreateLv(HWND hDlg)
         lvC.cx       = lvUsers[i].iWidth;
         lvC.pszText  = lvUsers[i].szLabel;
         lvC.fmt      = lvUsers[i].iFmt;
-        ListView_InsertColumn(hList, i, &lvC ); 
+        ListView_InsertColumn(hList, i, &lvC );
     }
 #ifdef LVS_EX_FULLROWSELECT
     ListView_SetExtendedListViewStyleEx(hList, 0,
     LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
-#endif 
+#endif
     _st_sel_users_il = ImageList_Create(16, 16, ILC_COLOR4, 0, 16);
     hBmp = LoadImage(GetModuleHandleA(NULL), MAKEINTRESOURCE(IDB_SUSERS),
                      IMAGE_BITMAP, 0, 0, LR_LOADTRANSPARENT);
@@ -659,8 +659,8 @@ static void __apxSelectUserCreateLv(HWND hDlg)
     DeleteObject(hBmp);
 
     ListView_SetImageList(hList, _st_sel_users_il, LVSIL_SMALL);
-    _st_sel_users_lvm = (WNDPROC)((SIZE_T)SetWindowLong(hList, GWLP_WNDPROC, 
-                                                        (LONG)((SIZE_T)__apxSelectUserCreateLvSubclass))); 
+    _st_sel_users_lvm = (WNDPROC)((SIZE_T)SetWindowLong(hList, GWLP_WNDPROC,
+                                                        (LONG)((SIZE_T)__apxSelectUserCreateLvSubclass)));
 
 }
 
@@ -671,17 +671,17 @@ static void __apxSelectUserPopulate(HWND hDlg, LPCWSTR szComputer)
     DWORD           res, dwRec, i = 0;
 
     HWND        hList = GetDlgItem(hDlg, IDSU_LIST);
-   
+
     ListView_DeleteAllItems(hList);
 
-    do { 
+    do {
         res = NetQueryDisplayInformation(szComputer, 1, i, 1000, MAX_PREFERRED_LENGTH,
                                          &dwRec, &pBuff);
         if ((res == ERROR_SUCCESS) || (res == ERROR_MORE_DATA)) {
             p = pBuff;
             for (;dwRec > 0; dwRec--) {
                 LV_ITEMW        lvI;
-                AplZeroMemory(&lvI, sizeof(LV_ITEMW)); 
+                AplZeroMemory(&lvI, sizeof(LV_ITEMW));
                 lvI.mask        = LVIF_IMAGE | LVIF_TEXT;
                 lvI.iItem       = 0x7FFFFFFF;
                 lvI.pszText     = p->usri1_name;
@@ -749,7 +749,7 @@ static void __apxSelectUserCreateCbex(HWND hDlg)
     }
     else
         EnableWindow(hCombo, FALSE);
-    
+
     SendMessageW(hCombo, CBEM_SETIMAGELIST, 0, (LPARAM)_st_sel_users_il);
 }
 
@@ -765,9 +765,9 @@ static LRESULT CALLBACK __apxSelectUserDlgProc(HWND hDlg, UINT uMsg,
             /* Set the application icon */
             SetClassLong(hDlg, GCLP_HICON,
                          (LONG)(SIZE_T)LoadIcon(_st_sys_gui.hInstance,
-                                        MAKEINTRESOURCE(IDI_MAINICON))); 
+                                        MAKEINTRESOURCE(IDI_MAINICON)));
             apxCenterWindow(hDlg, _st_sys_gui.hMainWnd);
-            hList = GetDlgItem(hDlg, IDSU_LIST); 
+            hList = GetDlgItem(hDlg, IDSU_LIST);
             __apxSelectUserCreateLv(hDlg);
             __apxSelectUserCreateCbex(hDlg);
             GetClientRect(hDlg, &r);
@@ -871,7 +871,7 @@ static LRESULT CALLBACK __apxSelectUserDlgProc(HWND hDlg, UINT uMsg,
 
     }
     return FALSE;
-} 
+}
 
 
 LPCWSTR apxDlgSelectUser(HWND hWnd, LPWSTR szUser)
