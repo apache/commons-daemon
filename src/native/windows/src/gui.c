@@ -68,7 +68,7 @@ LPAPXGUISTORE apxGuiInitialize(WNDPROC lpfnWndProc, LPCTSTR szAppName)
 
     InitCommonControlsEx(&stCmn);
 
-    _st_sys_riched      = LoadLibraryA("RICHED32.DLL");
+    _st_sys_riched      = LoadLibraryExA("RICHED32.DLL", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
     _st_sys_gui.hIconSm = LoadImage(_st_sys_gui.hInstance, MAKEINTRESOURCE(IDI_MAINICON),
                                      IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     _st_sys_gui.hIcon   = LoadImage(_st_sys_gui.hInstance, MAKEINTRESOURCE(IDI_MAINICON),
