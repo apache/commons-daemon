@@ -83,6 +83,10 @@
         Procrun. Log the error code returned if JVM creation fails to aid
         debugging.
       </action>
+      <action type="add" dev="markt">
+        Harden the Windows binaries against DLL hijacking in the directory where
+        the binaries are located. 
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">

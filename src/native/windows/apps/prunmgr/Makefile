@@ -29,7 +29,7 @@ PREFIX = $(PREFIX)\amd64
 !ENDIF
 
 LFLAGS = $(LFLAGS) /version:1.0 /DYNAMICBASE /NXCOMPAT
-LIBS = $(LIBS) user32.lib gdi32.lib winspool.lib comdlg32.lib comctl32.lib shlwapi.lib netapi32.lib
+LIBS = $(LIBS) user32.lib gdi32.lib winspool.lib comdlg32.lib comctl32.lib shlwapi.lib
 INCLUDES = -I$(SRCDIR)\include -I$(SRCDIR)\src $(JAVA_INCLUDES)
 
 PDBFLAGS = -Fo$(WORKDIR)\ -Fd$(WORKDIR)\$(PROJECT)-src

@@ -21,6 +21,25 @@
 /* Offset for listview dots */
 #define DOTOFFSET       0
 
+#define	LOAD_LIBRARY_SEARCH_SYSTEM32	0x00000800
+
+/* To harden against DLL hijacking, dynamic loading is used for any DLL that is
+ * not one of the standard known DDLs pre-loaded by Windows.
+ * Currently, the only DLL this applies to is NETAPI32.dll
+ */
+DYNLOAD_TYPE_DECLARE(NetApiBufferFree, WINAPI, DWORD)(LPVOID);
+static DYNLOAD_FPTR_DECLARE(NetApiBufferFree) = NULL;
+
+DYNLOAD_TYPE_DECLARE(NetQueryDisplayInformation, WINAPI, DWORD)(LPCWSTR, DWORD, DWORD, DWORD, DWORD,
+																LPDWORD, PVOID);
+static DYNLOAD_FPTR_DECLARE(NetQueryDisplayInformation) = NULL;
+
+DYNLOAD_TYPE_DECLARE(NetGetDCName, WINAPI, DWORD)(LPCWSTR, LPCWSTR, LPBYTE *);
+static DYNLOAD_FPTR_DECLARE(NetGetDCName) = NULL;
+
+DYNLOAD_TYPE_DECLARE(NetWkstaGetInfo, WINAPI, DWORD)(LMSTR, DWORD, LPBYTE *);
+static DYNLOAD_FPTR_DECLARE(NetWkstaGetInfo) = NULL;
+
 static HMODULE      _st_sys_riched;
 static APXGUISTORE  _st_sys_gui;
 static HIMAGELIST   _st_sel_users_il = NULL;
@@ -675,8 +694,9 @@ static void __apxSelectUserPopulate(HWND hDlg, LPCWSTR szComputer)
     ListView_DeleteAllItems(hList);
 
     do {
-        res = NetQueryDisplayInformation(szComputer, 1, i, 1000, MAX_PREFERRED_LENGTH,
-                                         &dwRec, &pBuff);
+        DYNLOAD_FPTR_ADDRESS(NetQueryDisplayInformation, NETAPI32);
+        res = DYNLOAD_CALL(NetQueryDisplayInformation)(szComputer, 1, i, 1000, MAX_PREFERRED_LENGTH,
+                                                       &dwRec, &pBuff);
         if ((res == ERROR_SUCCESS) || (res == ERROR_MORE_DATA)) {
             p = pBuff;
             for (;dwRec > 0; dwRec--) {
@@ -703,7 +723,8 @@ static void __apxSelectUserPopulate(HWND hDlg, LPCWSTR szComputer)
                 i = p->usri1_next_index;
                 p++;
             }
-            NetApiBufferFree(pBuff);
+            DYNLOAD_FPTR_ADDRESS(NetApiBufferFree, NETAPI32);
+            DYNLOAD_CALL(NetApiBufferFree)(pBuff);
         }
     } while (res == ERROR_MORE_DATA);
 
@@ -716,11 +737,13 @@ static void __apxSelectUserCreateCbex(HWND hDlg)
     LPWKSTA_INFO_100    lpWksta;
     DWORD               res;
     HWND hCombo = GetDlgItem(hDlg, IDSU_COMBO);
+    DYNLOAD_FPTR_DECLARE(NetApiBufferFree);
 
     cbEi.mask = CBEIF_TEXT | CBEIF_INDENT |
                 CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
 
-    res = NetWkstaGetInfo(NULL, 101, (LPBYTE *)&lpWksta);
+    DYNLOAD_FPTR_ADDRESS(NetWkstaGetInfo, NETAPI32);
+    res = DYNLOAD_CALL(NetWkstaGetInfo)(NULL, 101, (LPBYTE *)&lpWksta);
     if (res != ERROR_SUCCESS) {
         EnableWindow(hCombo, FALSE);
         return;
@@ -732,10 +755,12 @@ static void __apxSelectUserCreateCbex(HWND hDlg)
     cbEi.iImage         = 1;
     cbEi.iSelectedImage = 1;
     SendMessageW(hCombo, CBEM_INSERTITEMW, 0, (LPARAM)&cbEi);
-    NetApiBufferFree(lpWksta);
+    DYNLOAD_FPTR_ADDRESS(NetApiBufferFree, NETAPI32);
+    DYNLOAD_CALL(NetApiBufferFree)(lpWksta);
 
     ComboBox_SetCurSel(hCombo, 0);
-    res = NetGetDCName(NULL, NULL, &lpNetBuf);
+    DYNLOAD_FPTR_ADDRESS(NetGetDCName, NETAPI32);
+    res = DYNLOAD_CALL(NetGetDCName)(NULL, NULL, &lpNetBuf);
     if ((res == ERROR_SUCCESS) || (res == ERROR_MORE_DATA)) {
 
         cbEi.iItem      = 1;
@@ -745,7 +770,7 @@ static void __apxSelectUserCreateCbex(HWND hDlg)
         cbEi.iSelectedImage = 0;
         SendMessageW(hCombo, CBEM_INSERTITEMW, 0, (LPARAM)&cbEi);
         EnableWindow(hCombo, TRUE);
-        NetApiBufferFree(lpNetBuf);
+        DYNLOAD_CALL(NetApiBufferFree)(lpNetBuf);
     }
     else
         EnableWindow(hCombo, FALSE);
@@ -759,6 +784,10 @@ static LRESULT CALLBACK __apxSelectUserDlgProc(HWND hDlg, UINT uMsg,
     static HWND     hList;
     static LPWSTR   lpUser;
     RECT r, *l;
+
+    // Ensure NETAPI32.DLL is loaded as the functions that populate the user
+    // dialogue box depend on it.
+    LoadLibraryExA("NETAPI32.DLL", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
 
     switch (uMsg) {
         case WM_INITDIALOG:
