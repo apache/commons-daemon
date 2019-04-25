@@ -77,7 +77,7 @@ bool dso_init()
 /* Attempt to link a library from a specified filename */
 dso_handle dso_link(const char *path)
 {
-    /* We need to load the library publically as NSModuleFileImage is not
+    /* We need to load the library publicly as NSModuleFileImage is not
        yet implemented (at least for non MH_BUNDLE libraries */
     if (NSAddLibrary(path) != TRUE)
         return (NULL);
