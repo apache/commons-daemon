@@ -386,7 +386,7 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
 
 static void printVersion(void)
 {
-    fwprintf(stderr, L"Commons Daemon Service Runner version %S/Win%d (%S)\n",
+    fwprintf(stderr, L"Apache Commons Daemon Service Runner version %S/Win%d (%S)\n",
             PRG_VERSION, PRG_BITS, __DATE__);
     fwprintf(stderr, L"Copyright (c) 2000-2017 The Apache Software Foundation.\n\n"
                      L"For bug reporting instructions, please see:\n"
@@ -1734,11 +1734,11 @@ void __cdecl main(int argc, char **argv)
 
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
-    apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun log initialized");
+    apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun log initialized");
     if (SO_LOGROTATE)
         apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
 
-    apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun (%s %d-bit) started",
+    apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun (%s %d-bit) started",
                 PRG_VERSION, PRG_BITS);
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
@@ -1754,11 +1754,11 @@ void __cdecl main(int argc, char **argv)
         SYSTEMTIME t;
         GetLocalTime(&t);
         fprintf(stdout, "\n%d-%02d-%02d %02d:%02d:%02d "
-                        "Commons Daemon procrun stdout initialized\n",
+                        "Apache Commons Daemon procrun stdout initialized\n",
                         t.wYear, t.wMonth, t.wDay,
                         t.wHour, t.wMinute, t.wSecond);
         fprintf(stderr, "\n%d-%02d-%02d %02d:%02d:%02d "
-                        "Commons Daemon procrun stderr initialized\n",
+                        "Apache Commons Daemon procrun stderr initialized\n",
                         t.wYear, t.wMonth, t.wDay,
                         t.wHour, t.wMinute, t.wSecond);
     }
@@ -1810,7 +1810,7 @@ cleanup:
         int ix = 0;
         if (rv > 0 && rv < 10)
             ix = rv;
-        apxLogWrite(APXLOG_MARK_ERROR "Commons Daemon procrun failed "
+        apxLogWrite(APXLOG_MARK_ERROR "Apache Commons Daemon procrun failed "
                                       "with exit value: %d (Failed to %s)",
                                       rv, gSzProc[ix]);
         if (ix > 2 && !_service_mode) {
@@ -1819,7 +1819,7 @@ cleanup:
         }
     }
     else
-        apxLogWrite(APXLOG_MARK_INFO "Commons Daemon procrun finished");
+        apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun finished");
     if (lpCmdline)
         apxCmdlineFree(lpCmdline);
     _service_status_handle = NULL;

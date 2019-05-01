@@ -17,7 +17,7 @@
 #include "apxwin.h"
 #include "prunsrv.h"
 
-#define RSTR_PRUNSRV "Commons Daemon Service Runner"
+#define RSTR_PRUNSRV "Apache Commons Daemon Service Runner"
 
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunsrv.manifest"

@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Create Commons Daemon native package distribution on UNIX systems.
+# Create Apache Commons Daemon native package distribution on UNIX systems.
 # You should execute this script from the src/native/unix directory
 #
 # support/mkdist.sh <arch> [os]

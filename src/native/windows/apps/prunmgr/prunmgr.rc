@@ -17,7 +17,7 @@
 #include "apxwin.h"
 #include "prunmgr.h"
 
-#define RSTR_PSM        "Commons Daemon Service Manager"
+#define RSTR_PSM        "Apache Commons Daemon Service Manager"
 #define RSTR_SCMATS     "Service Manager is attempting to "
 
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
@@ -274,7 +274,7 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "Comments", "Commons Daemon Service Management Tool\0"
+      VALUE "Comments", "Apache Commons Daemon Service Management Tool\0"
       VALUE "CompanyName", "Apache Software Foundation\0"
       VALUE "FileDescription", RSTR_PSM "\0"
       VALUE "FileVersion", PRG_VERSION

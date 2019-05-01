@@ -255,7 +255,7 @@ static BOOL __apxProcCreateChildPipes(LPAPXPROCESS lpProc)
 {
     BOOL   rv = FALSE;
 
-    apxLogWrite(APXLOG_MARK_DEBUG "Commons Daemon procrun __apxProcCreateChildPipes()");
+    apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun __apxProcCreateChildPipes()");
 
     if (!CreatePipe(&(lpProc->hChildStdInp),
                     &(lpProc->hChildInpWr),

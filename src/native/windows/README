@@ -1,7 +1,7 @@
-Configuring and Building Commons Daemon on Windows
-==================================================
+Configuring and Building Apache Commons Daemon on Windows
+=========================================================
 
-Using Visual Studio, you can build the Commons Daemon.
+Using Visual Studio, you can build Apache Commons Daemon.
 The Makefile make file has a bunch of documentation about its
 options, but a trivial build is simply;
 
