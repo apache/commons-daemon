@@ -47,6 +47,7 @@ public class SimpleApplication implements Runnable {
         this.handlers = new Vector<Handler>();
     }
 
+    @Override
     protected void finalize() {
         System.err.println("SimpleApplication: instance "+this.hashCode()+
                            " garbage collected");
@@ -114,6 +115,7 @@ public class SimpleApplication implements Runnable {
                            " destroy");
     }
 
+    @Override
     public void run()
     {
         int number=0;
@@ -165,6 +167,7 @@ public class SimpleApplication implements Runnable {
         {
             this.instance = instance;
         }
+        @Override
         public void run()
         {
             System.out.println("Shutting down");
@@ -190,6 +193,7 @@ public class SimpleApplication implements Runnable {
             this.parent=p;
         }
 
+        @Override
         public void run() {
             this.parent.addHandler(this);
             System.err.println("SimpleApplication: connection "+this.number+

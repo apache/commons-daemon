@@ -32,6 +32,7 @@ public class AloneService {
     private ServiceDaemonReadThread readout[] = null;
     private ServiceDaemonReadThread readerr[] = null;
 
+    @Override
     protected void finalize() {
         System.err.println("ServiceDaemon: instance "+this.hashCode()+
                            " garbage collected");

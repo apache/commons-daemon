@@ -26,6 +26,7 @@ public class ServiceDaemonReadThread extends Thread {
     ServiceDaemonReadThread(InputStream in) {
             this.in = new BufferedReader(new InputStreamReader(in));
         }
+    @Override
     public void run() {
         String buff;
         for (;;) {

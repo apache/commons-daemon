@@ -218,6 +218,7 @@ public class ProcrunService implements Runnable {
      * This method performs the work of the service.
      * In this case, it just logs a message every so often.
      */
+    @Override
     public void run() {
         log("Started thread in "+System.getProperty("user.dir"));
         logSystemEnvironment();
@@ -237,6 +238,7 @@ public class ProcrunService implements Runnable {
         System.out.println(df.format(new Date())+msg);
     }
 
+    @Override
     protected void finalize(){
         log("Finalize called from thread "+Thread.currentThread());
     }

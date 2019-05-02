@@ -39,6 +39,7 @@ public class ServiceDaemon implements Daemon {
                            " created");
     }
 
+    @Override
     protected void finalize() {
         System.err.println("ServiceDaemon: instance "+this.hashCode()+
                            " garbage collected");
@@ -47,6 +48,7 @@ public class ServiceDaemon implements Daemon {
     /**
      * init and destroy were added in jakarta-tomcat-daemon.
      */
+    @Override
     public void init(DaemonContext context)
     throws Exception {
         /* Set the err */
@@ -78,6 +80,7 @@ public class ServiceDaemon implements Daemon {
         System.err.println("ServiceDaemon: init done ");
     }
 
+    @Override
     public void start() {
         /* Dump a message */
         System.err.println("ServiceDaemon: starting");
@@ -103,6 +106,7 @@ public class ServiceDaemon implements Daemon {
         }
     }
 
+    @Override
     public void stop()
     throws IOException, InterruptedException {
         /* Dump a message */
@@ -123,6 +127,7 @@ public class ServiceDaemon implements Daemon {
         System.err.println("ServiceDaemon: stopped");
     }
 
+    @Override
     public void destroy() {
         System.err.println("ServiceDaemon: instance "+this.hashCode()+
                            " destroy");
