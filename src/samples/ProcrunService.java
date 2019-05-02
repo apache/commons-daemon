@@ -52,8 +52,7 @@ public class ProcrunService implements Runnable {
     /**
      *
      * @param wait seconds to wait in loop
-     * @param filename optional filename - if non-null, run loop will stop when it disappears
-     * @throws IOException
+     * @param file optional file - if non-null, run loop will stop when it disappears
      */
     private ProcrunService(long wait, File file) {
         pause=wait;

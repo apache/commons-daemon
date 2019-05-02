@@ -40,9 +40,12 @@ public class AloneService {
 
     /**
      * init and destroy were added in jakarta-tomcat-daemon.
+     *
+     * @param arguments Unused
+     *
+     * @throws Exception If the daemon cannot be initialised
      */
-    public void init(String[] arguments)
-    throws Exception {
+    public void init(String[] arguments) throws Exception {
         /* Set the err */
         System.setErr(new PrintStream(new FileOutputStream("/ServiceDaemon.err",true)));
         System.err.println("ServiceDaemon: instance "+this.hashCode()+

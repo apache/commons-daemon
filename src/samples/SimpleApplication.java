@@ -54,11 +54,13 @@ public class SimpleApplication implements Runnable {
     }
 
     /**
-     * Main methos
+     * Main method
+     *
+     * @param args Optional port and directory configuration
+     *
+     * @throws Exception If the daemon cannot be set up
      */
-    public static void main(String[] args)
-        throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         SimpleApplication app = new SimpleApplication();
         System.err.println("SimpleApplication: instance " + app.hashCode()+
                            " init " + args.length);
