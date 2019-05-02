@@ -64,23 +64,18 @@ public class ServiceDaemon implements Daemon {
             // XXX: Should we print something?
         }
         /* create an array to store the processes */
-        int i=0;
-        for (Enumeration e = prop.keys(); e.hasMoreElements() ;) {
-            e.nextElement();
-            i++;
-        }
-        System.err.println("ServiceDaemon: init for " + i + " processes");
-        proc = new Process[i];
-        readout = new ServiceDaemonReadThread[i];
-        readerr = new ServiceDaemonReadThread[i];
-        for (i=0;i<proc.length;i++) {
+        int processCount = prop.size();
+        System.err.println("ServiceDaemon: init for " + processCount + " processes");
+        proc = new Process[processCount];
+        readout = new ServiceDaemonReadThread[processCount];
+        readerr = new ServiceDaemonReadThread[processCount];
+        for (int i = 0 ; i < processCount; i++) {
             proc[i] = null;
             readout[i] = null;
             readerr[i] = null;
         }
 
         System.err.println("ServiceDaemon: init done ");
-
     }
 
     public void start() {
