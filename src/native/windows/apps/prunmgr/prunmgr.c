@@ -46,7 +46,7 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define LOGL_ERROR          L"Error"
 #define LOGL_DEBUG          L"Debug"
 #define LOGL_INFO           L"Info"
-#define LOGL_WARN           L"Warning"
+#define LOGL_WARN           L"Warn"
 
 
 #define START_AUTO           L"Automatic"
@@ -869,8 +869,8 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     apxCenterWindow(GetParent(hDlg), NULL);
                 bpropCentered = TRUE;
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_ERROR);
-                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_INFO);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_WARN);
+                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_INFO);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_DEBUG);
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"Level")) != NULL) {
