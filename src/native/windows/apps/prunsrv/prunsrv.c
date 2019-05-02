@@ -410,6 +410,8 @@ static void dumpCmdline()
     }
 }
 
+// TODO: Figure out a way to move apxSetInprocEnvironment from here and
+// prunmgr.c to utils.c
 void apxSetInprocEnvironment()
 {
     LPWSTR p, e;

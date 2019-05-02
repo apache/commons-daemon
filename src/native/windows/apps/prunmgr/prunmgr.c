@@ -1820,3 +1820,9 @@ cleanup:
     return 0;
 }
 
+// TODO: Figure out a way to move apxSetInprocEnvironment from here and
+// prunsrv.c to utils.c
+void apxSetInprocEnvironment()
+{
+	// NO-OP.
+}
