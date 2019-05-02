@@ -40,31 +40,32 @@
   <body>
     <release version="1.1.1" date="TBD" description="Bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >
-        Add to OPT_LFLAGS rather than overwrite OPT_LFLAGS when setting /OPT:REF
-        in the make file for Windows.
+        Procrun. Add to OPT_LFLAGS rather than overwrite OPT_LFLAGS when setting
+        /OPT:REF in the make file for Windows.
       </action>
       <action type="fix" dev="markt" due-to="mturk" >
-        Only set the global shutdown event if the event is created.
+        Procrun. Only set the global shutdown event if the event is created.
       </action>
       <action issue="DAEMON-379" type="fix" dev="sebb">
         Unable to build with Java 9 using ant; dropped Ant build files
       </action>
       <action issue="DAEMON-384" type="fix" dev="ggregory" due-to="blassmegod">
-        prunsrv stopping with error due to hard-coded timeout.
+        Procrun. prunsrv stopping with error due to hard-coded timeout.
       </action>
       <action issue="DAEMON-393" type="fix" dev="ggregory" due-to="Daniel Hofmann">
-        Revered code comments for JRE and JDK locations in the registry.
+        Procrun. Revered code comments for JRE and JDK locations in the
+        registry.
       </action>
       <action issue="DAEMON-392" type="fix" dev="ggregory" due-to="Daniel Hofmann">
-        Undefined behaviour in registry.c dwRegKey = dwRegKey++
+        Procrun. Undefined behaviour in registry.c dwRegKey = dwRegKey++
       </action>
       <action issue="DAEMON-396" type="fix" dev="markt" due-to="Gerwin">
-        Fix a bug that meant a value provided for LibraryPath replaced the value
-        of the PATH environment variable rather than prepended to it.
+        Procrun. Fix a bug that meant a value provided for LibraryPath replaced
+        the value of the PATH environment variable rather than prepended to it.
       </action>
       <action issue="DAEMON-396" type="fix" dev="markt" due-to="Gerwin">
-        Ensure that JAVA_HOME/bin is on the path when running in jvm mode so
-        additional DLLs, such as awt.dll, can be found if required.
+        Procrun. Ensure that JAVA_HOME/bin is on the path when running in jvm
+        mode so that additional DLLs, such as awt.dll, can be found if required.
       </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
