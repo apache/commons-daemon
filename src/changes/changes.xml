@@ -58,6 +58,10 @@
       <action issue="DAEMON-392" type="fix" dev="ggregory" due-to="Daniel Hofmann">
         Undefined behaviour in registry.c dwRegKey = dwRegKey++
       </action>
+      <action issue="DAEMON-396" type="fix" dev="markt" due-to="Gerwin">
+        Fix a bug that meant a value provided for LibraryPath replaced the value
+        of the PATH environment variable rather than prepended to it.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">

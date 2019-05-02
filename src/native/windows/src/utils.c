@@ -60,17 +60,17 @@ BOOL apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd)
     LPWSTR wsAdd;
     DWORD  rc;
     DWORD  al;
-    
+
     rc = GetEnvironmentVariableW(L"PATH", NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
         return FALSE;
-    al = lstrlenW(szAdd) + 6;
-    if (!(wsAdd = apxPoolAlloc(hPool, (al + rc + 1) * sizeof(WCHAR))))
+    al = 5 + lstrlenW(szAdd) + 1;
+    if (!(wsAdd = apxPoolAlloc(hPool, (al + rc) * sizeof(WCHAR))))
         return FALSE;
-    lstrcpyW(wsAdd, L"PATH=");        
-    lstrcatW(wsAdd, szAdd);        
-    lstrcatW(wsAdd, L";");        
-    if (!GetEnvironmentVariableW(L"PATH", wsAdd + al, rc - al)) {
+    lstrcpyW(wsAdd, L"PATH=");
+    lstrcatW(wsAdd, szAdd);
+    lstrcatW(wsAdd, L";");
+    if (GetEnvironmentVariableW(L"PATH", wsAdd + al, rc) != rc - 1) {
         apxLogWrite(APXLOG_MARK_SYSERR);
         apxFree(wsAdd);
         return FALSE;
@@ -346,7 +346,7 @@ apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith)
 {
   LPSTR p = szString;
   LPSTR q = szString;
-  
+
   if (IS_EMPTY_STRING(szString))
     return;
   while (*p) {
