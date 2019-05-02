@@ -77,7 +77,7 @@ public class AloneService {
 
         /* Start */
         int i=0;
-        for (Enumeration e = prop.keys(); e.hasMoreElements() ;) {
+        for (Enumeration<Object> e = prop.keys(); e.hasMoreElements() ;) {
            String name = (String) e.nextElement();
            System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getProperty(name));
            try {

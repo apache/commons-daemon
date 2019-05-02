@@ -35,7 +35,7 @@ public class SimpleApplication implements Runnable {
     private Thread thread=null;
     private volatile boolean stopping=false;
     private String directory=null;
-    private final Vector handlers;
+    private final Vector<Handler> handlers;
 
     public static native void toto();
 
@@ -44,7 +44,7 @@ public class SimpleApplication implements Runnable {
         super();
         System.err.println("SimpleApplication: instance "+this.hashCode()+
                            " created");
-        this.handlers=new Vector();
+        this.handlers = new Vector<Handler>();
     }
 
     protected void finalize() {
@@ -134,9 +134,9 @@ public class SimpleApplication implements Runnable {
         }
 
         /* Terminate all handlers that at this point are still open */
-        Enumeration openhandlers=this.handlers.elements();
+        Enumeration<Handler> openhandlers = this.handlers.elements();
         while (openhandlers.hasMoreElements()) {
-            Handler handler=(Handler)openhandlers.nextElement();
+            Handler handler = openhandlers.nextElement();
             System.err.println("SimpleApplication: dropping connection "+
                                handler.getConnectionNumber());
             handler.close();

@@ -41,7 +41,7 @@ public class SimpleDaemon implements Daemon, Runnable {
     private DaemonController controller=null;
     private volatile boolean stopping=false;
     private String directory=null;
-    private final Vector handlers;
+    private final Vector<Handler> handlers;
 
     public static native void toto();
 
@@ -49,7 +49,7 @@ public class SimpleDaemon implements Daemon, Runnable {
         super();
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.handlers=new Vector();
+        this.handlers = new Vector<Handler>();
     }
 
     protected void finalize() {
@@ -133,9 +133,9 @@ public class SimpleDaemon implements Daemon, Runnable {
         }
 
         /* Terminate all handlers that at this point are still open */
-        Enumeration openhandlers=this.handlers.elements();
+        Enumeration<Handler> openhandlers = this.handlers.elements();
         while (openhandlers.hasMoreElements()) {
-            Handler handler=(Handler)openhandlers.nextElement();
+            Handler handler = openhandlers.nextElement();
             System.err.println("SimpleDaemon: dropping connection "+
                                handler.getConnectionNumber());
             handler.close();
