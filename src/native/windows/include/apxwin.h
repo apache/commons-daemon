@@ -148,6 +148,7 @@ LPWSTR          apxExpandStrW(APXHANDLE hPool, LPCWSTR szString);
 void            apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith);
 void            apxStrCharReplaceW(LPWSTR szString, WCHAR chReplace, WCHAR chReplaceWith);
 BOOL            apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd);
+void            apxSetInprocEnvironment();
 
 
 LPVOID  AplFillMemory(PVOID Destination, SIZE_T Length, BYTE Fill);

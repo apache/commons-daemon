@@ -410,7 +410,7 @@ static void dumpCmdline()
     }
 }
 
-static void setInprocEnvironment()
+void apxSetInprocEnvironment()
 {
     LPWSTR p, e;
 
@@ -1204,8 +1204,6 @@ static DWORD serviceStart()
             /* Add LibraryPath to the PATH */
            apxAddToPathW(gPool, SO_LIBPATH);
         }
-        /* Set the environment using putenv, so JVM can use it */
-        setInprocEnvironment();
         /* Create the JVM global worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath);
         if (IS_INVALID_HANDLE(gWorker)) {
@@ -1249,7 +1247,7 @@ static DWORD serviceStart()
            apxAddToPathW(gPool, SO_LIBPATH);
         }
         /* Set the environment using putenv, so JVM can use it */
-        setInprocEnvironment();
+        apxSetInprocEnvironment();
         setInprocEnvironment9(SO_JVMOPTIONS9);
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,

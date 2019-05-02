@@ -191,12 +191,14 @@ static __inline BOOL __apxJvmDetach(LPAPXJAVAVM lpJava)
         return TRUE;
 }
 
-static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
+static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath)
 {
     UINT errMode;
     WCHAR  jreAltPath[SIZ_PATHLEN];
     LPWSTR dllJvmPath = (LPWSTR)szJvmDllPath;
     DYNLOAD_FPTR_DECLARE(SetDllDirectoryW);
+    DWORD  i, l = 0;
+    WCHAR  jreBinPath[SIZ_PATHLEN];
 
     if (!IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
         return TRUE;    /* jvm.dll is already loaded */
@@ -233,6 +235,21 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
     /* Suppress the not found system popup message */
     errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
+    lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
+
+    for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
+        if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
+            jreBinPath[i] = L'\0';
+            l++;
+        }
+    }
+
+    /* Add java bin path to the PATH to fix loading of awt.dll */
+    apxAddToPathW(hPool, jreBinPath);
+
+    /* Set the environment using putenv, so JVM can use it */
+    apxSetInprocEnvironment();
+
     apxLogWrite(APXLOG_MARK_DEBUG "loading jvm '%S'", dllJvmPath);
     _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle) &&
@@ -240,26 +257,19 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
         /* There is a file but cannot be loaded.
          * Try to load the MSVCRTxx.dll before JVM.dll
          */
-        WCHAR  jreBinPath[SIZ_PATHLEN];
         WCHAR  crtBinPath[SIZ_PATHLEN];
-        DWORD  i, l = 0;
 
         lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
-        for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
-            if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
-                jreBinPath[i] = L'\0';
-                lstrlcpyW(crtBinPath, SIZ_PATHLEN, jreBinPath);
-                lstrlcatW(crtBinPath, SIZ_PATHLEN, MSVCRT71_DLLNAME);
-                if (GetFileAttributesW(crtBinPath) != INVALID_FILE_ATTRIBUTES) {
-                    if (LoadLibraryW(crtBinPath)) {
-                        /* Found MSVCRTxx.dll
-                         */
-                        apxLogWrite(APXLOG_MARK_DEBUG "preloaded '%S'",
-                                    crtBinPath);
-                        break;
-                    }
+        if(l == 2) {
+            lstrlcpyW(crtBinPath, SIZ_PATHLEN, jreBinPath);
+            lstrlcatW(crtBinPath, SIZ_PATHLEN, MSVCRT71_DLLNAME);
+            if (GetFileAttributesW(crtBinPath) != INVALID_FILE_ATTRIBUTES) {
+                if (LoadLibraryW(crtBinPath)) {
+                    /* Found MSVCRTxx.dll
+                     */
+                    apxLogWrite(APXLOG_MARK_DEBUG "preloaded '%S'",
+                                crtBinPath);
                 }
-                l++;
             }
         }
     }
@@ -269,19 +279,11 @@ static BOOL __apxLoadJvmDll(LPCWSTR szJvmDllPath)
                                               LOAD_WITH_ALTERED_SEARCH_PATH);
 
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
-        WCHAR  jreBinPath[SIZ_PATHLEN];
-        DWORD  i, l = 0;
-
-        lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
         DYNLOAD_FPTR_ADDRESS(SetDllDirectoryW, KERNEL32);
-        for (i = lstrlenW(jreBinPath); i > 0, l < 2; i--) {
-            if (jreBinPath[i] == L'\\' || jreBinPath[i] == L'/') {
-                jreBinPath[i] = L'\0';
-                DYNLOAD_CALL(SetDllDirectoryW)(jreBinPath);
-                apxLogWrite(APXLOG_MARK_DEBUG "Setting DLL search path to '%S'",
+        if(l == 2) {
+            DYNLOAD_CALL(SetDllDirectoryW)(jreBinPath);
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting DLL search path to '%S'",
                             jreBinPath);
-                l++;
-            }
         }
         _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
         if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
@@ -358,7 +360,7 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     JavaVM       *lpJvm = NULL;
     struct       APX_JDK1_1InitArgs jArgs1_1;
 
-    if (!__apxLoadJvmDll(szJvmDllPath))
+    if (!__apxLoadJvmDll(hPool, szJvmDllPath))
         return NULL;
 
 

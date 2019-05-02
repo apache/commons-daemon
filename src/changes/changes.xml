@@ -62,6 +62,10 @@
         Fix a bug that meant a value provided for LibraryPath replaced the value
         of the PATH environment variable rather than prepended to it.
       </action>
+      <action issue="DAEMON-396" type="fix" dev="markt" due-to="Gerwin">
+        Ensure that JAVA_HOME/bin is on the path when running in jvm mode so
+        additional DLLs, such as awt.dll, can be found if required.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">
