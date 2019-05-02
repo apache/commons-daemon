@@ -50,7 +50,7 @@
         Unable to build with Java 9 using ant; dropped Ant build files
       </action>
       <action issue="DAEMON-384" type="fix" dev="ggregory" due-to="blassmegod">
-        prunsrv stopping with error due to hardcoded timeout.
+        prunsrv stopping with error due to hard-coded timeout.
       </action>
       <action issue="DAEMON-393" type="fix" dev="ggregory" due-to="Daniel Hofmann">
         Revered code comments for JRE and JDK locations in the registry.
@@ -96,7 +96,7 @@
       </action>
       <action issue="DAEMON-282" type="fix" dev="markt">
         Suppress spurious &quot;The data area passed to a system call is too
-        small&quot; error message in the log when procrun fails to stop the
+        small&quot; error message in the log when Procrun fails to stop the
         service.
       </action>
       <action issue="DAEMON-370" type="update" dev="ggregory" due-to="Amey Jadiye">
@@ -117,11 +117,11 @@
         Ensure that the child process is started with the correct umask. 
       </action>
       <action issue="DAEMON-309" type="fix" dev="markt">
-        Correct conflicting information for the behaviour of procrun when using
+        Correct conflicting information for the behaviour of Procrun when using
         jvm mode.
       </action>
       <action issue="DAEMON-372" type="fix" dev="markt" due-to="Sérgio Ozaki">
-        Ensure that, when using procrun in java or exe mode, the service process
+        Ensure that, when using Procrun in java or exe mode, the service process
         waits for the stop process to complete before starting clean-up to avoid
         a crash in the stop process. 
       </action>
@@ -129,7 +129,7 @@
         Enable jsvc to find the jvm when running on AIX.
       </action>
       <action issue="DAEMON-302" type="fix" dev="markt">
-        Ensure that procun treats JVM crashes as service failures so the
+        Ensure that Procrun treats JVM crashes as service failures so the
         recovery options will apply.
       </action>
       <action issue="DAEMON-312" type="fix" dev="markt">
@@ -149,7 +149,7 @@
         Oracle provided Java 8 and earlier JREs and JDKs.
       </action>
       <action issue="DAEMON-374" type="fix" dev="markt" due-to="Rashmi Ranjan Mohanty">
-        Add support for Java 9 commoand line arguments to jsvc.
+        Add support for Java 9 command line arguments to jsvc.
       </action>
       <action issue="DAEMON-334" type="add" dev="markt" due-to="Brett Delle Grazie">
         Add a restarts options to jsvc to control the number of permitted
