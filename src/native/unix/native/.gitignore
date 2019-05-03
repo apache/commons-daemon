@@ -1,1 +1,3 @@
 /Makefile
+/*.o
+/libservice.a
