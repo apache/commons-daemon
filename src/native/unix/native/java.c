@@ -231,7 +231,7 @@ bool java_init(arg_data *args, home_data *data)
     }
 #endif
     arg.ignoreUnrecognized = FALSE;
-    arg.nOptions = args->onum + 4; /* pid, ppid and abort */
+    arg.nOptions = args->onum + 5; /* pid, ppid, version, class and abort */
     opt = (JavaVMOption *) malloc(arg.nOptions * sizeof(JavaVMOption));
     for (x = 0; x < args->onum; x++) {
         opt[x].optionString = strdup(args->opts[x]);
@@ -244,19 +244,30 @@ bool java_init(arg_data *args, home_data *data)
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
     opt[x++].extraInfo  = NULL;
+
     snprintf(daemonprocid, sizeof(daemonprocid),
              "-Dcommons.daemon.process.parent=%d", (int)getppid());
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
     opt[x++].extraInfo  = NULL;
+
     snprintf(daemonprocid, sizeof(daemonprocid),
              "-Dcommons.daemon.version=%s", JSVC_VERSION_STRING);
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
     opt[x++].extraInfo  = NULL;
+
+    /* DBCP-388. For the benefit of jconsole. */
+    snprintf(daemonprocid, sizeof(daemonprocid),
+             "-Dsun.java.command=%s", args->clas);
+    opt[x].optionString = strdup(daemonprocid);
+    jsvc_xlate_to_ascii(opt[x].optionString);
+    opt[x++].extraInfo  = NULL;
+
     opt[x].optionString = strdup("abort");
     jsvc_xlate_to_ascii(opt[x].optionString);
     opt[x].extraInfo = (void *)java_abort123;
+
     arg.options = opt;
 
     /* Do some debugging */

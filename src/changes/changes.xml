@@ -53,7 +53,11 @@
         Procrun. prunsrv stopping with error due to hard-coded timeout.
       </action>
       <action issue="DAEMON-385" type="fix" dev="markt">
-        Update config.guess and config.sub. 
+        Update config.guess and config.sub.
+      </action>
+      <action issue="DAEMON-388" type="fix" dev="markt">
+        Jsvc. Set the sun.java.command system property when starting via jsvc so
+        that tools like jconsole show something meaningful for the process name.
       </action>
       <action issue="DAEMON-391" type="fix" dev="markt" due-to="Thorsten Schöning">
         Procrun. Correct the level name used in the GUI for WARN so that changes
