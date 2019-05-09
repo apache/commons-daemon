@@ -693,6 +693,7 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
     else {
         CHAR  iB[3][64];
         LPSTR szCp = NULL;
+        int result;
         lpJava->iVersion = JNI_VERSION_DEFAULT;
         if (dwMs)
             ++sOptions;
@@ -759,10 +760,11 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         vmArgs.nOptions = nOptions;
         vmArgs.version  = lpJava->iVersion;
         vmArgs.ignoreUnrecognized = JNI_FALSE;
-        if (DYNLOAD_FPTR(JNI_CreateJavaVM)(&(lpJava->lpJvm),
+        result = DYNLOAD_FPTR(JNI_CreateJavaVM)(&(lpJava->lpJvm),
                                            (void **)&(lpJava->lpEnv),
-                                           &vmArgs) != JNI_OK) {
-            apxLogWrite(APXLOG_MARK_ERROR "CreateJavaVM Failed");
+                                           &vmArgs);
+        if (result != JNI_OK) {
+            apxLogWrite(APXLOG_MARK_ERROR "CreateJavaVM Failed with error [%d]", result);
             rv = FALSE;
         }
         else {

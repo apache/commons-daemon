@@ -79,6 +79,10 @@
         Procrun. Ensure that JAVA_HOME/bin is on the path when running in jvm
         mode so that additional DLLs, such as awt.dll, can be found if required.
       </action>
+      <action type="add" dev="markt">
+        Procrun. Log the error code returned if JVM creation fails to aid
+        debugging.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">
