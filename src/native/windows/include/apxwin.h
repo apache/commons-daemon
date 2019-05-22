@@ -118,10 +118,10 @@ LPSTR       MzWideToAscii(LPCWSTR ws, LPSTR s);
 LPSTR       WideToANSI(LPCWSTR ws);
 LPSTR       MzWideToANSI(LPCWSTR ws);
 
-typedef struct APXMULTISZ APXMULTISZ;
-typedef APXMULTISZ*       LPAPXMULTISZ;
 typedef int (__stdcall *WPUTENV) (const wchar_t *env);
 
+typedef struct APXMULTISZ APXMULTISZ;
+typedef APXMULTISZ*       LPAPXMULTISZ;
 
 DWORD   apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray);
 LPWSTR  apxMultiSzCombine(APXHANDLE hPool, LPCWSTR lpStrA, LPCWSTR lpStrB,

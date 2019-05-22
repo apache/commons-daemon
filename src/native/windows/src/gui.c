@@ -29,7 +29,7 @@ DYNLOAD_TYPE_DECLARE(NetApiBufferFree, WINAPI, DWORD)(LPVOID);
 static DYNLOAD_FPTR_DECLARE(NetApiBufferFree) = NULL;
 
 DYNLOAD_TYPE_DECLARE(NetQueryDisplayInformation, WINAPI, DWORD)(LPCWSTR, DWORD, DWORD, DWORD, DWORD,
-																LPDWORD, PVOID);
+                                                                LPDWORD, PVOID);
 static DYNLOAD_FPTR_DECLARE(NetQueryDisplayInformation) = NULL;
 
 DYNLOAD_TYPE_DECLARE(NetGetDCName, WINAPI, DWORD)(LPCWSTR, LPCWSTR, LPBYTE *);
