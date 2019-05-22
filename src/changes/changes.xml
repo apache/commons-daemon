@@ -79,6 +79,11 @@
         Procrun. Ensure that JAVA_HOME/bin is on the path when running in jvm
         mode so that additional DLLs, such as awt.dll, can be found if required.
       </action>
+      <action issue="DAEMON-396" type="fix" dev="markt">
+        Procrun. Ensure that the java.library.path environment variable is
+        correctly configured when running on a JRE that depends on the Universal
+        CRT.
+      </action>
       <action type="add" dev="markt">
         Procrun. Log the error code returned if JVM creation fails to aid
         debugging.

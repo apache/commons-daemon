@@ -58,8 +58,6 @@ typedef struct APX_STDWRAP {
     FILE   *fpStdErrFile;
 } APX_STDWRAP;
 
-typedef int (__stdcall *WPUTENV) (const wchar_t *env);
-
 /* Use static variables instead of #defines */
 static LPCWSTR  PRSRV_AUTO        = L"auto";
 static LPCWSTR  PRSRV_JAVA        = L"java";

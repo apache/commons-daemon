@@ -60,6 +60,8 @@ BOOL apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd)
     LPWSTR wsAdd;
     DWORD  rc;
     DWORD  al;
+    HMODULE hmodUcrt;
+    WPUTENV wputenv_ucrt;
 
     rc = GetEnvironmentVariableW(L"PATH", NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
@@ -75,8 +77,18 @@ BOOL apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd)
         apxFree(wsAdd);
         return FALSE;
     }
+
+    hmodUcrt = LoadLibraryExA("ucrtbase.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (hmodUcrt != NULL) {
+    	wputenv_ucrt =  (WPUTENV) GetProcAddress(hmodUcrt, "_wputenv");
+    }
+
     SetEnvironmentVariableW(L"PATH", wsAdd + 5);
     _wputenv(wsAdd);
+    if (wputenv_ucrt != NULL) {
+    	wputenv_ucrt(wsAdd);
+    }
+
     apxFree(wsAdd);
     return TRUE;
 }
