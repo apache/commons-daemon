@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _APXWIN_H_INCLUDED_
 #define _APXWIN_H_INCLUDED_
 
 
 #ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#ifndef LOAD_LIBRARY_SEARCH_SYSTEM32
+#define	LOAD_LIBRARY_SEARCH_SYSTEM32	0x00000800
 #endif
 
 #include <windows.h>
@@ -73,12 +77,12 @@ typedef _W64 int            intptr_t;
 #define DYNLOAD_FPTR_ADDRESS(fnName, dllName)                       \
     FP_##fnName = (PFN_##fnName)GetProcAddress(                     \
                                 GetModuleHandle(TEXT(#dllName)),    \
-                                #fnName)    
+                                #fnName)
 
 #define DYNLOAD_FPTR_LOAD(fnName, dllHandle)                        \
     FP_##fnName = (PFN_##fnName)GetProcAddress(                     \
                                 dllHandle,                          \
-                                #fnName)    
+                                #fnName)
 
 #define DYNLOAD_CALL(fnName)    (*FP_##fnName)
 

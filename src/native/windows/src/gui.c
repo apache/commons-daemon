@@ -21,8 +21,6 @@
 /* Offset for listview dots */
 #define DOTOFFSET       0
 
-#define	LOAD_LIBRARY_SEARCH_SYSTEM32	0x00000800
-
 /* To harden against DLL hijacking, dynamic loading is used for any DLL that is
  * not one of the standard known DDLs pre-loaded by Windows.
  * Currently, the only DLL this applies to is NETAPI32.dll

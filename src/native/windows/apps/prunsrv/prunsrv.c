@@ -58,6 +58,8 @@ typedef struct APX_STDWRAP {
     FILE   *fpStdErrFile;
 } APX_STDWRAP;
 
+typedef int (__stdcall *WPUTENV) (const wchar_t *env);
+
 /* Use static variables instead of #defines */
 static LPCWSTR  PRSRV_AUTO        = L"auto";
 static LPCWSTR  PRSRV_JAVA        = L"java";
@@ -415,13 +417,23 @@ static void dumpCmdline()
 void apxSetInprocEnvironment()
 {
     LPWSTR p, e;
+    HMODULE hmodUcrt;
+    WPUTENV wputenv_ucrt;
 
     if (!SO_ENVIRONMENT)
         return;    /* Nothing to do */
 
+    hmodUcrt = LoadLibraryExA("ucrtbase.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (hmodUcrt != NULL) {
+    	wputenv_ucrt =  (WPUTENV) GetProcAddress(hmodUcrt, "_wputenv");
+    }
+
     for (p = SO_ENVIRONMENT; *p; p++) {
         e = apxExpandStrW(gPool, p);
         _wputenv(e);
+        if (wputenv_ucrt != NULL) {
+        	wputenv_ucrt(e);
+        }
         apxFree(e);
         while (*p)
             p++;

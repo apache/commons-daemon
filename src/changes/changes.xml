@@ -87,6 +87,10 @@
         Harden the Windows binaries against DLL hijacking in the directory where
         the binaries are located. 
       </action>
+      <action issue="DAEMON-401" type="fix" dev="markt" due-to="Jonathan Gallimore">
+        Procrun. Ensure that environment variables set via prunsrv are visible
+        to native libraries that depend on the Universal CRT.
+      </action> 
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">
