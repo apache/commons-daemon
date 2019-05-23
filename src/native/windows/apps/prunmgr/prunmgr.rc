@@ -108,7 +108,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Log on as:",IDC_STATIC,10,8,51,8
-    CONTROL         "&Local System account",IDC_PPSLLS,"Button",
+    CONTROL         "&Local System account",IDC_PPSLLSYS,"Button",
                     BS_AUTORADIOBUTTON,10,23,85,10
     CONTROL         "Allo&w service to interact with desktop",IDC_PPSLID,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,37,135,10

@@ -58,7 +58,7 @@
 #define IDC_PPSGRESTART                 2610
 
 #define IDD_PROPPAGE_LOGON              2620
-#define IDC_PPSLLS                      2621
+#define IDC_PPSLLSYS                    2621
 #define IDC_PPSLID                      2622
 #define IDC_PPSLUA                      2623
 #define IDC_PPSLUSER                    2624

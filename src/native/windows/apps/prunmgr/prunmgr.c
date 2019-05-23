@@ -721,13 +721,13 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                 /* Check if we use LocalSystem or user defined account */
                 if (lstrcmpiW(_currentEntry->szObjectName, STAT_SYSTEM)) {
                     bAccount = TRUE;
-                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, IDC_PPSLUA);
+                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, IDC_PPSLUA);
                     SetDlgItemTextW(hDlg, IDC_PPSLUSER, _currentEntry->szObjectName);
                     SetDlgItemTextW(hDlg, IDC_PPSLPASS, EMPTY_PASSWORD);
                     SetDlgItemTextW(hDlg, IDC_PPSLCPASS, EMPTY_PASSWORD);
                 }
                 else {
-                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, IDC_PPSLLS);
+                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, IDC_PPSLLSYS);
                     if (_currentEntry->lpConfig->dwServiceType &
                         SERVICE_INTERACTIVE_PROCESS)
                         CheckDlgButton(hDlg, IDC_PPSLID, BST_CHECKED);
@@ -743,7 +743,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
         break;
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
-                case IDC_PPSLLS:
+                case IDC_PPSLLSYS:
                     SetDlgItemTextW(hDlg, IDC_PPSLUSER, L"");
                     SetDlgItemTextW(hDlg, IDC_PPSLPASS, L"");
                     SetDlgItemTextW(hDlg, IDC_PPSLCPASS, L"");
@@ -754,7 +754,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), FALSE);
                     EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), FALSE);
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), FALSE);
-                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, (INT)wParam);
+                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, (INT)wParam);
                     if (lstrcmpiW(_currentEntry->szObjectName, STAT_SYSTEM)) {
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 2);
@@ -775,7 +775,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), TRUE);
                     EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), TRUE);
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), TRUE);
-                    CheckRadioButton(hDlg, IDC_PPSLLS, IDC_PPSLUA, (INT)wParam);
+                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, (INT)wParam);
                     if (lstrcmpW(_currentEntry->szObjectName, STAT_SYSTEM)) {
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 2);
