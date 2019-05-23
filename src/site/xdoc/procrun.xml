@@ -354,6 +354,10 @@ will add the new value(s) to any existing value(s).
         Use an account name in the form <i>DomainName\UserName</i>.
         The service process will be logged on as this user.
         if the account belongs to the built-in domain, you can specify <i>.\UserName</i>
+        Note that the Service Control Manager does not accept localised forms of
+        the standard names so to use them you need to specify
+        <i>NT Authority\LocalService</i>, <i>NT Authority\NetworkService</i> or
+        <i>LocalSystem</i> as appropriate.
     </td>
     </tr>
     <tr>

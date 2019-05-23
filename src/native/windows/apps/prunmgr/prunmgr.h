@@ -58,15 +58,17 @@
 #define IDC_PPSGRESTART                 2610
 
 #define IDD_PROPPAGE_LOGON              2620
-#define IDC_PPSLLSYS                    2621
-#define IDC_PPSLID                      2622
-#define IDC_PPSLUA                      2623
-#define IDC_PPSLUSER                    2624
-#define IDC_PPSLBROWSE                  2625
-#define IDC_PPSLPASS                    2626
-#define IDC_PPSLCPASS                   2627
-#define IDL_PPSLPASS                    2628
-#define IDL_PPSLCPASS                   2629
+#define IDC_PPSLLSRV                    2621
+#define IDC_PPSLNSRV                    2622
+#define IDC_PPSLLSYS                    2623
+#define IDC_PPSLID                      2624
+#define IDC_PPSLUA                      2625
+#define IDC_PPSLUSER                    2626
+#define IDC_PPSLBROWSE                  2627
+#define IDC_PPSLPASS                    2628
+#define IDC_PPSLCPASS                   2629
+#define IDL_PPSLPASS                    2630
+#define IDL_PPSLCPASS                   2631
 
 #define IDD_PROPPAGE_LOGGING            2640
 #define IDC_PPLGLEVEL                   2641

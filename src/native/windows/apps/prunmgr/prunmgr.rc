@@ -108,18 +108,22 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Log on as:",IDC_STATIC,10,8,51,8
-    CONTROL         "&Local System account",IDC_PPSLLSYS,"Button",
+    CONTROL         "&Local Service account",IDC_PPSLLSRV,"Button",
                     BS_AUTORADIOBUTTON,10,23,85,10
+    CONTROL         "&Network Service account",IDC_PPSLNSRV,"Button",
+                    BS_AUTORADIOBUTTON,10,45,95,10
+    CONTROL         "Local &System account",IDC_PPSLLSYS,"Button",
+                    BS_AUTORADIOBUTTON,10,67,85,10
     CONTROL         "Allo&w service to interact with desktop",IDC_PPSLID,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,37,135,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,81,135,10
     CONTROL         "&This account:",IDC_PPSLUA,"Button",BS_AUTORADIOBUTTON,
-                    10,59,61,10
-    EDITTEXT        IDC_PPSLUSER,86,58,114,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Browse...",IDC_PPSLBROWSE,205,57,50,14
-    LTEXT           "&Password:",IDL_PPSLPASS,21,76,36,8
-    EDITTEXT        IDC_PPSLPASS,86,75,114,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "&Confirm Password:",IDL_PPSLCPASS,20,93,63,8
-    EDITTEXT        IDC_PPSLCPASS,86,92,114,12,ES_PASSWORD | ES_AUTOHSCROLL
+                    10,103,61,10
+    EDITTEXT        IDC_PPSLUSER,86,102,114,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Browse...",IDC_PPSLBROWSE,205,101,50,14
+    LTEXT           "&Password:",IDL_PPSLPASS,21,120,36,8
+    EDITTEXT        IDC_PPSLPASS,86,119,114,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "&Confirm Password:",IDL_PPSLCPASS,20,137,63,8
+    EDITTEXT        IDC_PPSLCPASS,86,136,114,12,ES_PASSWORD | ES_AUTOHSCROLL
 END
 
 IDD_PROPPAGE_LOGGING DIALOGEX 0, 0, 260, 243

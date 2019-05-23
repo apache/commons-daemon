@@ -41,13 +41,15 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define STAT_STOPPED        TEXT("Stopped")
 #define STAT_DISABLED       TEXT("Disabled")
 #define STAT_NONE           TEXT("")
+
+#define STAT_SERVICE        L"NT AUTHORITY\\LocalService"
+#define STAT_NET_SERVICE    L"NT AUTHORITY\\NetworkService"
 #define STAT_SYSTEM         L"LocalSystem"
 
 #define LOGL_ERROR          L"Error"
 #define LOGL_DEBUG          L"Debug"
 #define LOGL_INFO           L"Info"
 #define LOGL_WARN           L"Warn"
-
 
 #define START_AUTO           L"Automatic"
 #define START_MANUAL         L"Manual"
@@ -340,7 +342,28 @@ BOOL __generalLogonSave(HWND hDlg)
     GetDlgItemTextW(hDlg, IDC_PPSLPASS,  szP, SIZ_RESMAX);
     GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, SIZ_RESMAX);
 
-    if (lstrlenW(szU) && lstrcmpiW(szU, STAT_SYSTEM)) {
+    if (lstrlenW(szU) == 0 || lstrcmpiW(szU, STAT_SERVICE) == 0) {
+        apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SERVICE, L"");
+        lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SERVICE);
+    }
+    else if (lstrcmpiW(szU, STAT_NET_SERVICE) == 0) {
+        apxServiceSetNames(hService, NULL, NULL, NULL, STAT_NET_SERVICE, L"");
+        lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_NET_SERVICE);
+    }
+    else if (lstrcmpiW(szU, STAT_SYSTEM) == 0) {
+        apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SYSTEM, L"");
+        lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SYSTEM);
+        if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED) {
+            apxServiceSetOptions(hService,
+                _currentEntry->stServiceStatus.dwServiceType | SERVICE_INTERACTIVE_PROCESS,
+                SERVICE_NO_CHANGE, SERVICE_NO_CHANGE);
+        }
+        else {
+            apxServiceSetOptions(hService,
+                _currentEntry->stServiceStatus.dwServiceType & ~SERVICE_INTERACTIVE_PROCESS,
+                SERVICE_NO_CHANGE, SERVICE_NO_CHANGE);
+        }
+    } else {
         if (szP[0] != L' ' &&  szC[0] != L' ' && !lstrcmpW(szP, szC)) {
             apxServiceSetNames(hService, NULL, NULL, NULL, szU, szP);
             lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, szU);
@@ -352,18 +375,7 @@ BOOL __generalLogonSave(HWND hDlg)
             return FALSE;
         }
     }
-    else {
-        apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SYSTEM, L"");
-        lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SYSTEM);
-        if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED)
-            apxServiceSetOptions(hService,
-                _currentEntry->stServiceStatus.dwServiceType | SERVICE_INTERACTIVE_PROCESS,
-                SERVICE_NO_CHANGE, SERVICE_NO_CHANGE);
-        else
-            apxServiceSetOptions(hService,
-                _currentEntry->stServiceStatus.dwServiceType & ~SERVICE_INTERACTIVE_PROCESS,
-                SERVICE_NO_CHANGE, SERVICE_NO_CHANGE);
-    }
+
     if (!(TST_BIT_FLAG(_propertyChanged, 1)))
         PostMessage(_gui_store->hMainWnd, WM_COMMAND, MAKEWPARAM(IDMS_REFRESH, 0), 0);
     return TRUE;
@@ -709,7 +721,9 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
     switch (uMessage) {
         case WM_INITDIALOG:
             {
-                BOOL           bAccount = FALSE;
+                BOOL           bNamedAccount = FALSE;
+                BOOL           bLocalServiceAccount = FALSE;
+
                 startPage = 1;
                 if (!bpropCentered)
                     apxCenterWindow(GetParent(hDlg), NULL);
@@ -718,33 +732,44 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                 SendMessage(GetDlgItem(hDlg, IDC_PPSLUSER), EM_LIMITTEXT, 63, 0);
                 SendMessage(GetDlgItem(hDlg, IDC_PPSLPASS), EM_LIMITTEXT, 63, 0);
                 SendMessage(GetDlgItem(hDlg, IDC_PPSLCPASS), EM_LIMITTEXT, 63, 0);
-                /* Check if we use LocalSystem or user defined account */
-                if (lstrcmpiW(_currentEntry->szObjectName, STAT_SYSTEM)) {
-                    bAccount = TRUE;
+
+                // LocalService
+                if (lstrcmpiW(_currentEntry->szObjectName, STAT_SERVICE) == 0) {
+                	CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, IDC_PPSLLSRV);
+                }
+                // NetworkService
+                else if (lstrcmpiW(_currentEntry->szObjectName, STAT_NET_SERVICE) == 0) {
+                	CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, IDC_PPSLNSRV);
+                }
+                // LocalSystem
+                else if (lstrcmpiW(_currentEntry->szObjectName, STAT_SYSTEM) == 0) {
+                	CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, IDC_PPSLLSYS);
+                	bLocalServiceAccount = TRUE;
+                    if (_currentEntry->lpConfig->dwServiceType & SERVICE_INTERACTIVE_PROCESS) {
+                        CheckDlgButton(hDlg, IDC_PPSLID, BST_CHECKED);
+                    }
+                }
+                else {
+                	bNamedAccount = TRUE;
                     CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, IDC_PPSLUA);
                     SetDlgItemTextW(hDlg, IDC_PPSLUSER, _currentEntry->szObjectName);
                     SetDlgItemTextW(hDlg, IDC_PPSLPASS, EMPTY_PASSWORD);
                     SetDlgItemTextW(hDlg, IDC_PPSLCPASS, EMPTY_PASSWORD);
                 }
-                else {
-                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, IDC_PPSLLSYS);
-                    if (_currentEntry->lpConfig->dwServiceType &
-                        SERVICE_INTERACTIVE_PROCESS)
-                        CheckDlgButton(hDlg, IDC_PPSLID, BST_CHECKED);
-                }
-                EnableWindow(GetDlgItem(hDlg, IDC_PPSLID), !bAccount);
-                EnableWindow(GetDlgItem(hDlg, IDC_PPSLUSER), bAccount);
-                EnableWindow(GetDlgItem(hDlg, IDC_PPSLBROWSE), bAccount);
-                EnableWindow(GetDlgItem(hDlg, IDL_PPSLPASS), bAccount);
-                EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), bAccount);
-                EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), bAccount);
-                EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), bAccount);
+
+                EnableWindow(GetDlgItem(hDlg, IDC_PPSLID), !bLocalServiceAccount);
+                EnableWindow(GetDlgItem(hDlg, IDC_PPSLUSER), bNamedAccount);
+                EnableWindow(GetDlgItem(hDlg, IDC_PPSLBROWSE), bNamedAccount);
+                EnableWindow(GetDlgItem(hDlg, IDL_PPSLPASS), bNamedAccount);
+                EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), bNamedAccount);
+                EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), bNamedAccount);
+                EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), bNamedAccount);
             }
         break;
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
-                case IDC_PPSLLSYS:
-                    SetDlgItemTextW(hDlg, IDC_PPSLUSER, L"");
+                case IDC_PPSLLSRV:
+                    SetDlgItemTextW(hDlg, IDC_PPSLUSER, STAT_SERVICE);
                     SetDlgItemTextW(hDlg, IDC_PPSLPASS, L"");
                     SetDlgItemTextW(hDlg, IDC_PPSLCPASS, L"");
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLID), TRUE);
@@ -754,7 +779,49 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), FALSE);
                     EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), FALSE);
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), FALSE);
-                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, (INT)wParam);
+                    CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, (INT)wParam);
+                    if (lstrcmpiW(_currentEntry->szObjectName, STAT_SERVICE)) {
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 2);
+                    }
+                    else {
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
+                        CLR_BIT_FLAG(_propertyChanged, 2);
+                    }
+                break;
+                case IDC_PPSLNSRV:
+                    SetDlgItemTextW(hDlg, IDC_PPSLUSER, STAT_NET_SERVICE);
+                    SetDlgItemTextW(hDlg, IDC_PPSLPASS, L"");
+                    SetDlgItemTextW(hDlg, IDC_PPSLCPASS, L"");
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLID), TRUE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLUSER), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLBROWSE), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDL_PPSLPASS), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), FALSE);
+                    CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, (INT)wParam);
+                    if (lstrcmpiW(_currentEntry->szObjectName, STAT_NET_SERVICE)) {
+                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                        SET_BIT_FLAG(_propertyChanged, 2);
+                    }
+                    else {
+                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
+                        CLR_BIT_FLAG(_propertyChanged, 2);
+                    }
+                break;
+                case IDC_PPSLLSYS:
+                    SetDlgItemTextW(hDlg, IDC_PPSLUSER, STAT_SYSTEM);
+                    SetDlgItemTextW(hDlg, IDC_PPSLPASS, L"");
+                    SetDlgItemTextW(hDlg, IDC_PPSLCPASS, L"");
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLID), TRUE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLUSER), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLBROWSE), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDL_PPSLPASS), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), FALSE);
+                    EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), FALSE);
+                    CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, (INT)wParam);
                     if (lstrcmpiW(_currentEntry->szObjectName, STAT_SYSTEM)) {
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 2);
@@ -763,7 +830,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                         PropSheet_UnChanged(GetParent(hDlg), hDlg);
                         CLR_BIT_FLAG(_propertyChanged, 2);
                     }
-                    break;
+                break;
                 case IDC_PPSLUA:
                     SetDlgItemTextW(hDlg, IDC_PPSLUSER, _currentEntry->szObjectName);
                     SetDlgItemTextW(hDlg, IDC_PPSLPASS, EMPTY_PASSWORD);
@@ -775,16 +842,10 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLPASS), TRUE);
                     EnableWindow(GetDlgItem(hDlg, IDL_PPSLCPASS), TRUE);
                     EnableWindow(GetDlgItem(hDlg, IDC_PPSLCPASS), TRUE);
-                    CheckRadioButton(hDlg, IDC_PPSLLSYS, IDC_PPSLUA, (INT)wParam);
-                    if (lstrcmpW(_currentEntry->szObjectName, STAT_SYSTEM)) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg);
-                        SET_BIT_FLAG(_propertyChanged, 2);
-                    }
-                    else {
-                        PropSheet_UnChanged(GetParent(hDlg), hDlg);
-                        CLR_BIT_FLAG(_propertyChanged, 2);
-                    }
-                    break;
+                    CheckRadioButton(hDlg, IDC_PPSLLSRV, IDC_PPSLUA, (INT)wParam);
+					PropSheet_UnChanged(GetParent(hDlg), hDlg);
+					CLR_BIT_FLAG(_propertyChanged, 2);
+                break;
                 case IDC_PPSLID:
                     PropSheet_Changed(GetParent(hDlg), hDlg);
                     SET_BIT_FLAG(_propertyChanged, 2);
