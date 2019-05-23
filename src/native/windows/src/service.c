@@ -517,9 +517,9 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
         if (stStatus.dwCurrentState == dwState) {
             return TRUE;
         } else {
-            apxLogWrite(APXLOG_MARK_ERROR 
+            apxLogWrite(APXLOG_MARK_ERROR
                 "apxServiceControl(): dwState(%d) != dwCurrentState(%d); "
-                "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d", 
+                "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
                 dwState,
                 stStatus.dwCurrentState,
                 stStatus.dwWin32ExitCode,
@@ -579,7 +579,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                                          NULL,
                                          NULL,
                                          lpDependencies,
-                                         NULL,
+                                         L"NT Authority\\LocalService",
                                          NULL);
 
     if (IS_INVALID_HANDLE(lpService->hService)) {

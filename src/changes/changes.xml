@@ -100,6 +100,10 @@
         Procrun. Add 'NT Authority\LocalService' and
         'NT Authority\NetworkService' as options to the Log On user interface.
       </action>
+      <action type="update" dev="markt">
+        Procrun. Change the default service user from LocalSystem to
+        'NT Authority\LocalService'.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">
