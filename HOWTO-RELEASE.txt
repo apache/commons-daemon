@@ -61,7 +61,13 @@ Create native build scripts
 
 cd /src/native/unix
 sh support/buildconf.sh
-rm -rf automate.cache
+rm -rf autom4te.cache
+
+
+Clean the build directories
+---------------------------
+
+mvn clean
 
 
 Native build
@@ -79,7 +85,6 @@ Maven tasks
 
 To deploy the Java jars to the Nexus staging repo:
 
-mvn clean
 mvn deploy -Prelease [-Ptest-deploy]
 
 The test-deploy profile will deploy to target/deploy; omit for the live deploy
