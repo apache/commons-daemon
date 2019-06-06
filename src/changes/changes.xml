@@ -35,7 +35,7 @@
 
 <document>
   <properties>
-    <title>Release Notes</title>
+    <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
     <release version="1.1.1" date="TBD" description="Bug fix release">
