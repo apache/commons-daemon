@@ -376,6 +376,8 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
         (*lpProc->fnUserCallback)(hObject, uMsg, wParam, lParam);
     switch (uMsg) {
         case WM_CLOSE:
+        	/* Avoid processing the WM_CLOSE message multiple times */
+        	if (lpProc->stProcInfo.hProcess == NULL) break;
             if (lpProc->dwChildStatus & CHILD_RUNNING) {
                 __apxProcessClose(hObject);
                 /* Wait for all worker threads to exit */
