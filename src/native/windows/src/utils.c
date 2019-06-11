@@ -648,17 +648,25 @@ apxCRLFToMszW(APXHANDLE hPool, LPCWSTR szStr, LPDWORD lpdwBytes)
 {
     DWORD l, c, n = 0;
     LPWSTR rv, b;
+    int eol = 0;
 
     l = lstrlenW(szStr);
     b = rv = apxPoolCalloc(hPool, (l + 2) * sizeof(WCHAR));
     for (c = 0; c < l; c++) {
         if (szStr[c] == L'\r') {
-            *b++ = '\0';
-            n++;
+        	if (eol) {
+        	    // Blank line. Ignore it. See DAEMON-394.
+        	}
+        	else {
+                *b++ = '\0';
+                n++;
+                eol = TRUE;
+        	}
         }
         else if (szStr[c] != L'\n') {
             *b++ = szStr[c];
             n++;
+            eol = FALSE;
         }
     }
     if (lpdwBytes)
