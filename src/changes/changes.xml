@@ -113,6 +113,10 @@
         Options text areas. This prevents settings after the first blank line
         from being lost when saved to the registry.
       </action>
+      <action issue="DAEMON-399" type="fix" dev="markt">
+        Procrun. Remove the code that removed quotes from configured Java and
+        Java 9 Options.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">

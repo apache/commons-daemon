@@ -299,60 +299,6 @@ apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray)
 
 #define QSTR_DATA(q)    ((char *)(q) + sizeof(APXMULTISZ))
 
-LPTSTR apxStrCharRemove(LPTSTR szString, TCHAR chSkip)
-{
-  LPTSTR p = szString;
-  LPTSTR q = szString;
-  if (IS_EMPTY_STRING(szString))
-    return szString;
-  while (*p) {
-    if(*p != chSkip)
-      *q++ = *p;
-    ++p;
-  }
-  *q = TEXT('\0');
-
-  return szString;
-}
-
-DWORD apxStrCharRemoveA(LPSTR szString, CHAR chSkip)
-{
-  LPSTR p = szString;
-  LPSTR q = szString;
-  DWORD c = 0;
-  if (IS_EMPTY_STRING(szString))
-    return c;
-  while (*p) {
-    if(*p != chSkip)
-      *q++ = *p;
-    else
-        ++c;
-    ++p;
-  }
-  *q = '\0';
-
-  return c;
-}
-
-DWORD apxStrCharRemoveW(LPWSTR szString, WCHAR chSkip)
-{
-  LPWSTR p = szString;
-  LPWSTR q = szString;
-  DWORD  c = 0;
-  if (IS_EMPTY_STRING(szString))
-    return c;
-  while (*p) {
-    if(*p != chSkip)
-      *q++ = *p;
-    else
-        ++c;
-    ++p;
-  }
-  *q = L'\0';
-
-  return c;
-}
-
 void
 apxStrCharReplaceA(LPSTR szString, CHAR chReplace, CHAR chReplaceWith)
 {
@@ -566,58 +512,6 @@ void apxStrQuoteInplaceW(LPWSTR szString)
         szString[++l] = L'"';
         szString[++l] = L'\0';
     }
-}
-
-DWORD apxStrUnQuoteInplaceA(LPSTR szString)
-{
-    LPSTR p = szString;
-    BOOL needsQuote = FALSE;
-    BOOL inQuote = FALSE;
-    while (*p) {
-        if (*p == '"') {
-            if (inQuote)
-                break;
-            else
-                inQuote = TRUE;
-        }
-        else if (*p == ' ') {
-            if (inQuote) {
-                needsQuote = TRUE;
-                break;
-            }
-        }
-        ++p;
-    }
-    if (!needsQuote)
-        return apxStrCharRemoveA(szString, '"');
-    else
-        return 0;
-}
-
-DWORD apxStrUnQuoteInplaceW(LPWSTR szString)
-{
-    LPWSTR p = szString;
-    BOOL needsQuote = FALSE;
-    BOOL inQuote = FALSE;
-    while (*p) {
-        if (*p == L'"') {
-            if (inQuote)
-                break;
-            else
-                inQuote = TRUE;
-        }
-        else if (*p == L' ') {
-            if (inQuote) {
-                needsQuote = TRUE;
-                break;
-            }
-        }
-        ++p;
-    }
-    if (!needsQuote)
-        return apxStrCharRemoveW(szString, L'"');
-    else
-        return 0;
 }
 
 LPWSTR

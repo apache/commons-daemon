@@ -130,12 +130,6 @@ LPWSTR  apxMultiSzCombine(APXHANDLE hPool, LPCWSTR lpStrA, LPCWSTR lpStrB,
 LPAPXMULTISZ    apxMultiSzStrdup(LPCTSTR szSrc);
 LPTSTR          apxMultiSzStrcat(LPAPXMULTISZ lpmSz, LPCTSTR szSrc);
 LPCTSTR         apxMultiSzGet(LPAPXMULTISZ lpmSz);
-/** Remove the specified character from the string
- * Replacement is done in-place.
- */
-LPTSTR          apxStrCharRemove(LPTSTR szString, TCHAR chSkip);
-DWORD           apxStrUnQuoteInplaceA(LPSTR szString);
-DWORD           apxStrUnQuoteInplaceW(LPWSTR szString);
 
 BOOL            apxUltohex(ULONG n, LPTSTR lpBuff, DWORD dwBuffLength);
 BOOL            apxUptohex(ULONG_PTR n, LPTSTR lpBuff, DWORD dwBuffLength);
