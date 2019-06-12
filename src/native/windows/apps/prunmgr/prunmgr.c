@@ -54,8 +54,7 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define START_AUTO           L"Automatic"
 #define START_MANUAL         L"Manual"
 #define START_DISABLED       L"Disabled"
-#define START_BOOT           L"Boot"
-#define START_SYSTEM         L"SystemInit"
+
 #define EMPTY_PASSWORD       L"               "
 
 #ifdef WIN64
