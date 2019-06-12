@@ -667,17 +667,17 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         LPCWSTR sp = NULL;
         if (ST_DESCRIPTION & APXCMDOPT_FOUND) {
             sd = SO_DESCRIPTION;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service description %S",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service description '%S'",
                         SO_DESCRIPTION);
         }
         if (ST_SUSER & APXCMDOPT_FOUND) {
             su = SO_SUSER;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user %S",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user '%S'",
                         SO_SUSER);
         }
         if (ST_SPASSWORD & APXCMDOPT_FOUND) {
             sp = SO_SPASSWORD;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password %S",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password '%S'",
                         SO_SPASSWORD);
         }
         apxServiceSetNames(hService, NULL, NULL, sd, su, sp);
@@ -689,7 +689,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
                     lpCmdline->szApplication);
     }
     else
-        apxLogWrite(APXLOG_MARK_ERROR "Failed installing '%S' service",
+        apxLogWrite(APXLOG_MARK_ERROR "Failed installing service '%S'",
                     lpCmdline->szApplication);
 
     return rv;
@@ -725,7 +725,7 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
                     lpCmdline->szApplication);
     }
     else {
-        apxDisplayError(FALSE, NULL, 0, "Unable to delete '%S' service",
+        apxDisplayError(FALSE, NULL, 0, "Unable to delete service '%S'",
                         lpCmdline->szApplication);
     }
     apxCloseHandle(hService);
@@ -738,7 +738,7 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
     APXHANDLE hService;
     BOOL  rv = FALSE;
 
-    apxLogWrite(APXLOG_MARK_INFO "Stopping service '%S' ...",
+    apxLogWrite(APXLOG_MARK_INFO "Stopping service '%S'...",
                 lpCmdline->szApplication);
     hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
@@ -759,12 +759,12 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
             apxLogWrite(APXLOG_MARK_INFO "Service '%S' stopped",
                         lpCmdline->szApplication);
         else
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to stop '%S' service",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to stop service '%S'",
                         lpCmdline->szApplication);
 
     }
     else
-        apxDisplayError(FALSE, NULL, 0, "Unable to open '%S' service",
+        apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'",
                         lpCmdline->szApplication);
     apxCloseHandle(hService);
     apxLogWrite(APXLOG_MARK_INFO "Stop service finished.");
@@ -776,7 +776,7 @@ static BOOL docmdStartService(LPAPXCMDLINE lpCmdline)
     APXHANDLE hService;
     BOOL  rv = FALSE;
 
-    apxLogWrite(APXLOG_MARK_INFO "Starting service '%S' ...",
+    apxLogWrite(APXLOG_MARK_INFO "Starting service '%S'...",
                 lpCmdline->szApplication);
     hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
@@ -805,7 +805,7 @@ static BOOL docmdStartService(LPAPXCMDLINE lpCmdline)
         apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'",
                         lpCmdline->szApplication);
     apxCloseHandle(hService);
-    apxLogWrite(APXLOG_MARK_INFO "Start service finished, returning %d", rv);
+    apxLogWrite(APXLOG_MARK_INFO "Finished starting service '%S', returning %d", lpCmdline->szApplication, rv);
     return rv;
 }
 
@@ -841,12 +841,12 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
         LPCWSTR sp = NULL;
         if (ST_SUSER & APXCMDOPT_FOUND) {
             su = SO_SUSER;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user %S",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user '%S'",
                         SO_SUSER);
         }
         if (ST_SPASSWORD & APXCMDOPT_FOUND) {
             sp = SO_SPASSWORD;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password %S",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password '%S'",
                         SO_SPASSWORD);
         }
         rv = (rv && apxServiceSetNames(hService,
@@ -876,16 +876,16 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 										 bDelayedStart,
                                          SERVICE_NO_CHANGE));
 
-        apxLogWrite(APXLOG_MARK_INFO "Service '%S' updated",
+        apxLogWrite(APXLOG_MARK_INFO "Updated service '%S'",
                     lpCmdline->szApplication);
 
         rv = (rv && saveConfiguration(lpCmdline));
     }
     apxCloseHandle(hService);
     if (rv)
-        apxLogWrite(APXLOG_MARK_INFO "Update service finished.");
+        apxLogWrite(APXLOG_MARK_INFO "Finished updating service '%S'.", lpCmdline->szApplication);
     else
-        apxLogWrite(APXLOG_MARK_INFO "Update service '%S' failed.",
+        apxLogWrite(APXLOG_MARK_INFO "Failed updating service '%S'.",
                                      lpCmdline->szApplication);
     return rv;
 }
@@ -1665,7 +1665,7 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     };
     _service_mode = TRUE;
     _service_name = lpCmdline->szApplication;
-    apxLogWrite(APXLOG_MARK_INFO "Running '%S' Service...", _service_name);
+    apxLogWrite(APXLOG_MARK_INFO "Running Service '%S'...", _service_name);
     if (StartServiceCtrlDispatcherW(dispatch_table)) {
         apxLogWrite(APXLOG_MARK_INFO "Run service finished.");
         rv = TRUE;
