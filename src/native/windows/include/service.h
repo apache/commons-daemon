@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _SERVICE_H_INCLUDED_
 #define _SERVICE_H_INCLUDED_
 
@@ -58,15 +58,6 @@ LPAPXSERVENTRY  apxServiceEntry(APXHANDLE hService, BOOL bRequeryStatus);
  * Stops the service if running
  */
 BOOL        apxServiceDelete(APXHANDLE hService);
-
-DWORD       apxServiceBrowse(APXHANDLE hService,
-                             LPCWSTR szIncludeNamePattern,
-                             LPCWSTR szIncludeImagePattern,
-                             LPCWSTR szExcludeNamePattern,
-                             LPCWSTR szExcludeImagePattern,
-                             UINT uMsg,
-                             LPAPXFNCALLBACK fnDisplayCallback,
-                             LPVOID lpCbData);
 
 DWORD       apxGetMaxServiceTimeout(APXHANDLE hPool);
 
