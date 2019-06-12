@@ -446,9 +446,10 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
                                       LPCSTR lpString,
                                       LPCSTR lpString9,
                                       JavaVMOption **lppArray,
-                                      DWORD  nExtra)
+                                      DWORD  nExtra,
+									  DWORD bJniVfprintf)
 {
-    DWORD i, n = 0, n9 = 0, nTotal, l = 0, l9 = 0, lTotal;
+    DWORD i = 0, n = 0, n9 = 0, nTotal, l = 0, l9 = 0, lTotal;
     char *buff;
     LPSTR p;
 
@@ -468,7 +469,13 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
     p = (LPSTR)(buff + (nTotal + 1) * sizeof(JavaVMOption));
     if (lpString)
         AplCopyMemory(p, lpString, l + 1);
-    for (i = 0; i < n; i++) {
+    if (bJniVfprintf) {
+    	// If present, vfprintf is set first so it can be used to report errors
+    	// in later options. Increment indexes to account for this.
+    	i++;
+    	n++;
+    }
+    for (; i < n; i++) {
         (*lppArray)[i].optionString = p;
         while (*p)
             p++;
@@ -476,7 +483,7 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
     }
     if (lpString9)
         AplCopyMemory(p, lpString9, l9 + 1);
-    for (i = n; i < (n + n9); i++) {
+    for (; i < (n + n9); i++) {
         (*lppArray)[i].optionString = p;
         while (*p)
             p++;
@@ -706,7 +713,14 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
         sOptions++; /* unconditionally set for extraInfo abort */
 
         nOptions = __apxMultiSzToJvmOptions(hJava->hPool, lpOptions, lpOptions9,
-                                            &lpJvmOptions, sOptions);
+                                            &lpJvmOptions, sOptions, bJniVfprintf);
+        if (bJniVfprintf) {
+            /* Default JNI error printer. Hard-coded to position zero if present */
+            lpJvmOptions[0].optionString = "vfprintf";
+            lpJvmOptions[0].extraInfo    = __apxJniVfprintf;
+            --sOptions;
+        }
+
         if (szClassPath && *szClassPath) {
             szCp = __apxEvalClasspath(hJava->hPool, szClassPath);
             if (szCp == NULL) {
@@ -714,12 +728,6 @@ apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                 return FALSE;
             }
             lpJvmOptions[nOptions - sOptions].optionString = szCp;
-            --sOptions;
-        }
-        if (bJniVfprintf) {
-            /* default JNI error printer */
-            lpJvmOptions[nOptions - sOptions].optionString = "vfprintf";
-            lpJvmOptions[nOptions - sOptions].extraInfo    = __apxJniVfprintf;
             --sOptions;
         }
 
