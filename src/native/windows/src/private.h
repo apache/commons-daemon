@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _PRIVATE_H_INCLUDED_
 #define _PRIVATE_H_INCLUDED_
 
@@ -139,7 +139,7 @@ struct {                                                                \
         }                                                               \
         *(elm)->field.tqe_prev = TAILQ_NEXT((elm), field);              \
 } while (0)
-  
+
 /** Some usefull macros */
 
 #define APXHANDLE_SPINLOCK(h)               \
@@ -169,7 +169,7 @@ struct {                                                                \
 /*
  * Define a union with types which are likely to have the longest
  * *relevant* CPU-specific memory word alignment restrictions...
- */ 
+ */
 typedef union APXMEMWORD {
     void  *vp;
     void (*fp)(void);
@@ -187,36 +187,36 @@ struct APXCALLHOOK {
 };
 
 struct stAPXHANDLE {
-    /** The type of the handle */ 
-    DWORD               dwType;         
-    /** Handle Flags */ 
+    /** The type of the handle */
+    DWORD               dwType;
+    /** Handle Flags */
     DWORD               dwFlags;
-    /** Handle user data size */ 
+    /** Handle user data size */
     DWORD               dwSize;
-    /** parameters for event callback */ 
+    /** parameters for event callback */
     WPARAM              wParam;
     LPARAM              lParam;
     UINT                uMsg;
-    /** main callback function (using default if not specified) */ 
+    /** main callback function (using default if not specified) */
     LPAPXFNCALLBACK     fnCallback;
     /** callback functions hook list */
     TAILQ_HEAD(_lCallbacks, APXCALLHOOK) lCallbacks;
     /** allocation pool  */
     APXHANDLE           hPool;
-    /** interlocking value */ 
+    /** interlocking value */
     LONG volatile       lvSpin;
 
-    /** message event handle  */ 
+    /** message event handle  */
     HANDLE              hEventHandle;
-    /** message event thread  */ 
+    /** message event thread  */
     HANDLE              hEventThread;
-    /** message event thread id  */ 
+    /** message event thread id  */
     DWORD               hEventThreadId;
     /** private local heap */
     HANDLE              hHeap;
-    /** list enty for pool  */ 
+    /** list enty for pool  */
     TAILQ_ENTRY(stAPXHANDLE)  queue;
-    /** small userdata pointer  */ 
+    /** small userdata pointer  */
     union   {
         LPVOID          lpPtr;
         HANDLE          hWinHandle;
@@ -236,19 +236,6 @@ struct APXMULTISZ {
     DWORD   dwInsert;     /* next insert position */
 };
 
-typedef struct APXREGENUM {
-    HKEY     hServicesKey;
-    DWORD    dwIndex;                   /* current enum index           */
-    DWORD    cSubKeys;                  /* number of subkeys            */
-    DWORD    cbMaxSubKey;               /* longest subkey size          */
-    DWORD    cchMaxClass;               /* longest class string         */
-    DWORD    cValues;                   /* number of values for key     */
-    DWORD    cchMaxValue;               /* longest value name           */
-    DWORD    cbMaxValueData;            /* longest value data           */
-
-} APXREGENUM, *LPAPXREGENUM;
-
-BOOL    apxRegistryEnumServices(LPAPXREGENUM lpEnum, LPAPXSERVENTRY lpEntry);
 BOOL    apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,
                                   DWORD dwDescriptionLength);
 BOOL    apxGetServiceUserW(LPCWSTR szServiceName, LPWSTR szUser,
