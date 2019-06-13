@@ -64,6 +64,7 @@ static LPCWSTR  PRSRV_JAVA        = L"java";
 static LPCWSTR  PRSRV_JVM         = L"jvm";
 static LPCWSTR  PRSRV_JDK         = L"jdk";
 static LPCWSTR  PRSRV_JRE         = L"jre";
+static LPCWSTR  PRSRV_DELAYED     = L"delayed";
 static LPCWSTR  PRSRV_MANUAL      = L"manual";
 static LPCWSTR  PRSRV_JBIN        = L"\\bin\\java.exe";
 static LPCWSTR  PRSRV_PBIN        = L"\\bin";
@@ -834,6 +835,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
     }
     else {
         DWORD dwStart = SERVICE_NO_CHANGE;
+        BOOL  bDelayedStart = FALSE;
         DWORD dwType  = SERVICE_NO_CHANGE;
         LPCWSTR su = NULL;
         LPCWSTR sp = NULL;
@@ -855,7 +857,11 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
                                        sp));
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
-            if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
+            if (!lstrcmpiW(SO_STARTUP, PRSRV_DELAYED)) {
+                dwStart = SERVICE_AUTO_START;
+                bDelayedStart = TRUE;
+            }
+            else if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
                 dwStart = SERVICE_AUTO_START;
             else if (!lstrcmpiW(SO_STARTUP, PRSRV_MANUAL))
                 dwStart = SERVICE_DEMAND_START;
@@ -867,6 +873,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
         rv = (rv && apxServiceSetOptions(hService,
                                          dwType,
                                          dwStart,
+										 bDelayedStart,
                                          SERVICE_NO_CHANGE));
 
         apxLogWrite(APXLOG_MARK_INFO "Service '%S' updated",

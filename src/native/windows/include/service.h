@@ -24,6 +24,7 @@ typedef struct APXSERVENTRY {
     WCHAR   szObjectName[SIZ_RESLEN];
     WCHAR   szServiceDescription[SIZ_DESLEN];
     LPQUERY_SERVICE_CONFIGW lpConfig;
+    BOOL					bDelayedStart;
     SERVICE_STATUS          stServiceStatus;
     SERVICE_STATUS_PROCESS  stStatusProcess;
 
@@ -41,7 +42,8 @@ BOOL        apxServiceSetNames(APXHANDLE hService, LPCWSTR szImagePath,
                                LPCWSTR szUsername, LPCWSTR szPassword);
 
 BOOL        apxServiceSetOptions(APXHANDLE hService, DWORD dwServiceType,
-                                 DWORD dwStartType, DWORD dwErrorControl);
+								 DWORD dwStartType, BOOL bDelayedStart,
+								 DWORD dwErrorControl);
 
 BOOL        apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
                               LPAPXFNCALLBACK fnControlCallback,

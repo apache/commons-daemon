@@ -107,6 +107,7 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
 {
     LPAPXSERVICE lpService;
     DWORD dwNeeded;
+    LPSERVICE_DELAYED_AUTO_START_INFO lpDelayedInfo;
 
     if (hService->dwType != APXHANDLE_TYPE_SERVICE)
         return FALSE;
@@ -157,11 +158,36 @@ apxServiceOpen(APXHANDLE hService, LPCWSTR szServiceName, DWORD dwOptions)
             apxLogWrite(APXLOG_MARK_SYSERR);
         }
     }
-    lpService->stServiceEntry.lpConfig =  (LPQUERY_SERVICE_CONFIGW)apxPoolAlloc(hService->hPool,
-                                                                                dwNeeded);
-    return QueryServiceConfigW(lpService->hService,
-                               lpService->stServiceEntry.lpConfig,
-                               dwNeeded, &dwNeeded);
+    lpService->stServiceEntry.lpConfig = (LPQUERY_SERVICE_CONFIGW)apxPoolAlloc(hService->hPool,
+                                                                               dwNeeded);
+    if (!QueryServiceConfigW(lpService->hService,
+                             lpService->stServiceEntry.lpConfig,
+                             dwNeeded, &dwNeeded)) {
+    	return FALSE;
+    }
+
+    if (!QueryServiceConfig2W(lpService->hService, SERVICE_CONFIG_DELAYED_AUTO_START_INFO,
+                              NULL, 0, &dwNeeded)) {
+        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+            // This is expected. The call is expected to fail with the required
+            // buffer size set in dwNeeded.
+            // Clear the last error to prevent it being logged if a genuine
+            // error occurs
+            SetLastError(ERROR_SUCCESS);
+        } else {
+            apxLogWrite(APXLOG_MARK_SYSERR);
+        }
+    }
+    lpDelayedInfo = (LPSERVICE_DELAYED_AUTO_START_INFO) apxPoolAlloc(hService->hPool, dwNeeded);
+
+    if (!QueryServiceConfig2W(lpService->hService, SERVICE_CONFIG_DELAYED_AUTO_START_INFO,
+                              (LPBYTE) lpDelayedInfo, dwNeeded, &dwNeeded)) {
+    	return FALSE;
+    }
+
+    lpService->stServiceEntry.bDelayedStart = lpDelayedInfo->fDelayedAutostart;
+    apxFree(lpDelayedInfo);
+    return TRUE;
 }
 
 LPAPXSERVENTRY
@@ -240,9 +266,11 @@ BOOL
 apxServiceSetOptions(APXHANDLE hService,
                      DWORD dwServiceType,
                      DWORD dwStartType,
+					 BOOL bDelayedStart,
                      DWORD dwErrorControl)
 {
     LPAPXSERVICE lpService;
+    SERVICE_DELAYED_AUTO_START_INFO sDelayedInfo;
 
     if (hService->dwType != APXHANDLE_TYPE_SERVICE)
         return FALSE;
@@ -254,10 +282,22 @@ apxServiceSetOptions(APXHANDLE hService,
     /* Check if the ServixeOpen has been called */
     if (IS_INVALID_HANDLE(lpService->hService))
         return FALSE;
-    return ChangeServiceConfig(lpService->hService, dwServiceType,
-                               dwStartType, dwErrorControl,
-                               NULL, NULL, NULL, NULL, NULL,
-                               NULL, NULL);
+
+    if (!ChangeServiceConfig(lpService->hService, dwServiceType,
+                                   dwStartType, dwErrorControl,
+                                   NULL, NULL, NULL, NULL, NULL,
+                                   NULL, NULL)) {
+    	return FALSE;
+    }
+
+    if (dwStartType == SERVICE_AUTO_START) {
+    	sDelayedInfo.fDelayedAutostart = bDelayedStart;
+    	return ChangeServiceConfig2A(lpService->hService,
+                                     SERVICE_CONFIG_DELAYED_AUTO_START_INFO,
+                                     &sDelayedInfo);
+    }
+
+    return TRUE;
 }
 
 static BOOL

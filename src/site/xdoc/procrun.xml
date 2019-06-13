@@ -312,7 +312,7 @@ will add the new value(s) to any existing value(s).
     <tr>
     <td>--Startup</td>
     <td>manual</td>
-    <td>Service startup mode can be either <b>auto</b> or <b>manual</b></td>
+    <td>Service startup mode can be either <b>delayed</b>, <b>auto</b> or <b>manual</b></td>
     </tr>
     <tr>
     <td>--Type</td>

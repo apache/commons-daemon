@@ -51,6 +51,7 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define LOGL_INFO           L"Info"
 #define LOGL_WARN           L"Warn"
 
+#define START_DELAYED        L"Automatic (Delayed Start)"
 #define START_AUTO           L"Automatic"
 #define START_MANUAL         L"Manual"
 #define START_DISABLED       L"Disabled"
@@ -298,6 +299,8 @@ BOOL __generalPropertySave(HWND hDlg)
     WCHAR szN[SIZ_RESLEN];
     WCHAR szD[SIZ_DESLEN];
     DWORD dwStartType = SERVICE_NO_CHANGE;
+    BOOL  bDelayedStart = FALSE;
+
     int i;
 
     if (!(TST_BIT_FLAG(_propertyChanged, 1)))
@@ -309,14 +312,18 @@ BOOL __generalPropertySave(HWND hDlg)
     GetDlgItemTextW(hDlg, IDC_PPSGDISP, szN, SIZ_RESMAX);
     GetDlgItemTextW(hDlg, IDC_PPSGDESC, szD, SIZ_DESMAX);
     i = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST));
-    if (i == 0)
+    if (i == 0) {
         dwStartType = SERVICE_AUTO_START;
+        bDelayedStart = TRUE;
+    }
     else if (i == 1)
-        dwStartType = SERVICE_DEMAND_START;
+            dwStartType = SERVICE_AUTO_START;
     else if (i == 2)
+        dwStartType = SERVICE_DEMAND_START;
+    else if (i == 3)
         dwStartType = SERVICE_DISABLED;
     apxServiceSetNames(hService, NULL, szN, szD, NULL, NULL);
-    apxServiceSetOptions(hService, SERVICE_NO_CHANGE, dwStartType, SERVICE_NO_CHANGE);
+    apxServiceSetOptions(hService, SERVICE_NO_CHANGE, dwStartType, bDelayedStart, SERVICE_NO_CHANGE);
 
     if (!(TST_BIT_FLAG(_propertyChanged, 2)))
         PostMessage(_gui_store->hMainWnd, WM_COMMAND, MAKEWPARAM(IDMS_REFRESH, 0), 0);
@@ -355,12 +362,12 @@ BOOL __generalLogonSave(HWND hDlg)
         if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED) {
             apxServiceSetOptions(hService,
                 _currentEntry->stServiceStatus.dwServiceType | SERVICE_INTERACTIVE_PROCESS,
-                SERVICE_NO_CHANGE, SERVICE_NO_CHANGE);
+                SERVICE_NO_CHANGE, FALSE, SERVICE_NO_CHANGE);
         }
         else {
             apxServiceSetOptions(hService,
                 _currentEntry->stServiceStatus.dwServiceType & ~SERVICE_INTERACTIVE_PROCESS,
-                SERVICE_NO_CHANGE, SERVICE_NO_CHANGE);
+                SERVICE_NO_CHANGE, FALSE, SERVICE_NO_CHANGE);
         }
     } else {
         if (szP[0] != L' ' &&  szC[0] != L' ' && !lstrcmpW(szP, szC)) {
@@ -607,15 +614,22 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
                 SendMessage(GetDlgItem(hDlg, IDC_PPSGDISP), EM_LIMITTEXT, SIZ_RESMAX, 0);
                 SendMessage(GetDlgItem(hDlg, IDC_PPSGDESC), EM_LIMITTEXT, SIZ_DESMAX, 0);
 
+                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSGCMBST), START_DELAYED);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSGCMBST), START_AUTO);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSGCMBST), START_MANUAL);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPSGCMBST), START_DISABLED);
-                if (_currentEntry->lpConfig->dwStartType == SERVICE_AUTO_START)
-                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST), 0);
+                if (_currentEntry->lpConfig->dwStartType == SERVICE_AUTO_START) {
+                	if (_currentEntry->bDelayedStart) {
+                		ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST), 0);
+                	}
+                	else {
+                		ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST), 1);
+                	}
+                }
                 else if (_currentEntry->lpConfig->dwStartType == SERVICE_DEMAND_START)
-                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST), 1);
-                else if (_currentEntry->lpConfig->dwStartType == SERVICE_DISABLED)
                     ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST), 2);
+                else if (_currentEntry->lpConfig->dwStartType == SERVICE_DISABLED)
+                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSGCMBST), 3);
 
                 SetDlgItemTextW(hDlg, IDC_PPSGNAME, _currentEntry->szServiceName);
                 SetDlgItemTextW(hDlg, IDC_PPSGDISP, _currentEntry->lpConfig->lpDisplayName);

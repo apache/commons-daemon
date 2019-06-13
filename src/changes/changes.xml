@@ -38,7 +38,7 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.1.1" date="TBD" description="Bug fix release">
+    <release version="1.1.1" date="TBD" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >
         Procrun. Add to OPT_LFLAGS rather than overwrite OPT_LFLAGS when setting
         /OPT:REF in the make file for Windows.
@@ -121,6 +121,10 @@
         Procrun. Ensure that vfprintf is the first parameter passed when using
         JNI to create the JVM as a workaround for startup error messages not
         being visible on stdout or stderr.
+      </action>
+      <action issue="DAEMON-303" type="add" dev="markt">
+        Procrun. Add an option to configure the service to use the 'Automatic
+        (Delayed Start)' startup mode.
       </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
