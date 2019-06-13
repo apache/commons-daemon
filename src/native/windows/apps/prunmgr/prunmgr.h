@@ -100,7 +100,6 @@
 #define IDC_PPRBWPATH                   2685
 #define IDC_PPRMETHOD                   2686
 #define IDC_PPRARGS                     2687
-#define IDC_PPRTIMEOUT                  2688
 #define IDC_PPRMODE                     2689
 
 #define IDD_PROPPAGE_STOP               2700
