@@ -40,7 +40,7 @@ typedef struct stAPXJAVA_THREADARGS
     LPCWSTR     szLibraryPath;
 } APXJAVA_THREADARGS, *LPAPXJAVA_THREADARGS;
 
-APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath);
+APXHANDLE   apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJavaHome);
 
 BOOL        apxJavaInitialize(APXHANDLE hJava, LPCSTR szClassPath,
                               LPCVOID lpOptions, LPCVOID lpOptions9,

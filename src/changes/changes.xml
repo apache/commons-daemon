@@ -126,6 +126,11 @@
         Procrun. Add an option to configure the service to use the 'Automatic
         (Delayed Start)' startup mode.
       </action>
+      <action issue="DAEMON-329" type="add" dev="markt">
+        Procrun. When running in jre mode, if the standard Java registry entries
+        for JavaHome and RuntimeLib are not present, attempt to use the Procrun
+        JavaHome key to find the runtime library.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">

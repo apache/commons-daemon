@@ -191,7 +191,7 @@ static __inline BOOL __apxJvmDetach(LPAPXJAVAVM lpJava)
         return TRUE;
 }
 
-static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath)
+static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJavaHome)
 {
     UINT errMode;
     WCHAR  jreAltPath[SIZ_PATHLEN];
@@ -215,13 +215,13 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath)
         }
     }
     else {
+    	// No explicit JVM path. Use the standard registry locations.
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
-        if (!dllJvmPath)
-            return FALSE;
     }
+
     if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
         /* DAEMON-184: RuntimeLib registry key is invalid.
-         * Check from Jre JavaHome directly
+         * Check from Jre JavaHome registry key directly
          */
         LPWSTR szJreHome = apxGetJavaSoftHome(NULL, TRUE);
         apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S'", dllJvmPath);
@@ -232,6 +232,19 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath)
             dllJvmPath = jreAltPath;
         }
     }
+
+    if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
+        /* DAEMON-247: JavaSoft registry keys are invalid
+         * Check from Procrun's JavaHome registry key
+         */
+        if (szJavaHome) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Using JavaHome '%S'", szJavaHome);
+            lstrlcpyW(jreAltPath, SIZ_PATHLEN, szJavaHome);
+            lstrlcatW(jreAltPath, SIZ_PATHLEN, L"\\bin\\server\\jvm.dll");
+            dllJvmPath = jreAltPath;
+        }
+    }
+
     /* Suppress the not found system popup message */
     errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
@@ -351,7 +364,7 @@ static BOOL __apxJavaJniCallback(APXHANDLE hObject, UINT uMsg,
 }
 
 APXHANDLE
-apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
+apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJavaHome)
 {
 
     APXHANDLE    hJava;
@@ -360,7 +373,7 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath)
     JavaVM       *lpJvm = NULL;
     struct       APX_JDK1_1InitArgs jArgs1_1;
 
-    if (!__apxLoadJvmDll(hPool, szJvmDllPath))
+    if (!__apxLoadJvmDll(hPool, szJvmDllPath, szJavaHome))
         return NULL;
 
 

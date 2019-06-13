@@ -1013,7 +1013,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
              */
             SetCurrentDirectoryW(SO_STOPPATH);
         }
-        hWorker = apxCreateJava(gPool, _jni_jvmpath);
+        hWorker = apxCreateJava(gPool, _jni_jvmpath, SO_JAVAHOME);
         if (IS_INVALID_HANDLE(hWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java %S", _jni_jvmpath);
             return 1;
@@ -1224,7 +1224,7 @@ static DWORD serviceStart()
            apxAddToPathW(gPool, SO_LIBPATH);
         }
         /* Create the JVM global worker */
-        gWorker = apxCreateJava(gPool, _jni_jvmpath);
+        gWorker = apxCreateJava(gPool, _jni_jvmpath, SO_JAVAHOME);
         if (IS_INVALID_HANDLE(gWorker)) {
             apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java %S", _jni_jvmpath);
             return 1;
