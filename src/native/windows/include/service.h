@@ -23,7 +23,6 @@ typedef struct APXSERVENTRY {
     WCHAR   szServiceName[SIZ_RESLEN];
     WCHAR   szObjectName[SIZ_RESLEN];
     WCHAR   szServiceDescription[SIZ_DESLEN];
-    DWORD   dwStart;
     LPQUERY_SERVICE_CONFIGW lpConfig;
     SERVICE_STATUS          stServiceStatus;
     SERVICE_STATUS_PROCESS  stStatusProcess;

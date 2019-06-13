@@ -589,7 +589,6 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
     else {
         lstrlcpyW(lpService->stServiceEntry.szServiceName,
                   SIZ_RESLEN, szServiceName);
-        lpService->stServiceEntry.dwStart = dwStartType;
         return TRUE;
     }
 }
