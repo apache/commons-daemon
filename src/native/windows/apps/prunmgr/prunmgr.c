@@ -1276,15 +1276,17 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                                                    _s_start, L"Mode")) != NULL) {
                     if (!lstrcmpiW(lpBuf, L"jvm")) {
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPRMODE), 1);
-
                     }
                     else if (!lstrcmpiW(lpBuf, _s_java)) {
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPRMODE), 2);
+                        EnableWindow(GetDlgItem(hDlg, IDC_PPRMETHOD), FALSE);
                     }
                     else {
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPRMODE), 0);
+                        EnableWindow(GetDlgItem(hDlg, IDC_PPRCLASS), FALSE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), TRUE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), TRUE);
+                        EnableWindow(GetDlgItem(hDlg, IDC_PPRMETHOD), FALSE);
                     }
                     apxFree(lpBuf);
                 }
@@ -1325,15 +1327,26 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
                 break;
                 case IDC_PPRMODE:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
+                    	int i;
                         PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 5);
-                        if (ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPRMODE))) {
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), FALSE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), FALSE);
-                        }
-                        else {
+                        i = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPRMODE));
+                        if (i == 0) {
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRCLASS), FALSE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), TRUE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), TRUE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRMETHOD), FALSE);
+                        }
+                        else if (i == 1) {
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRCLASS), TRUE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRMETHOD), TRUE);
+                        } else {
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRCLASS), TRUE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRBIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPRMETHOD), FALSE);
                         }
                     }
                 break;
@@ -1426,11 +1439,14 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                     }
                     else if (!lstrcmpiW(lpBuf, _s_java)) {
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSMODE), 2);
+                        EnableWindow(GetDlgItem(hDlg, IDC_PPSMETHOD), FALSE);
                     }
                     else {
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPSMODE), 0);
+                        EnableWindow(GetDlgItem(hDlg, IDC_PPSCLASS), FALSE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), TRUE);
                         EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), TRUE);
+                        EnableWindow(GetDlgItem(hDlg, IDC_PPSMETHOD), FALSE);
                     }
                     apxFree(lpBuf);
                 }
@@ -1472,16 +1488,28 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
                 break;
                 case IDC_PPSMODE:
                     if (HIWORD(wParam) == CBN_SELCHANGE) {
-                        PropSheet_Changed(GetParent(hDlg), hDlg);
+                    	int i;
+                    	PropSheet_Changed(GetParent(hDlg), hDlg);
                         SET_BIT_FLAG(_propertyChanged, 6);
-                        if (ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPSMODE))) {
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), FALSE);
-                            EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), FALSE);
-                        }
-                        else {
+                        i = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_PPSMODE));
+                        if (i == 0) {
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSCLASS), FALSE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), TRUE);
                             EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), TRUE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSMETHOD), FALSE);
                         }
+                        else if (i == 1) {
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSCLASS), TRUE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSMETHOD), TRUE);
+                        } else {
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSCLASS), TRUE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSBIMAGE), FALSE);
+                            EnableWindow(GetDlgItem(hDlg, IDC_PPSMETHOD), FALSE);
+                        }
+
                     }
                 break;
 
