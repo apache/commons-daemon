@@ -42,13 +42,11 @@ The Windows archive (e.g. commons-daemon-1.1.2-bin-windows.zip) contains 2 diffe
 <li>prunmgr.exe - the GUI manager application used to monitor and configure installed services.</li>
 </ul>
 There is only one <code>prunmgr.exe</code> application for all architectures.
-The <code>prunsrv.exe</code> executable is available in 3 different versions for different architectures.
+The <code>prunsrv.exe</code> executable is available in 2 different versions for different architectures.
 The version in the top-level directory is for 32-bit (x86) architectures.
-The lower level directories are for 64-bit systems:
-<ul>
-<li>amd64 - AMD/EMT 64-bit</li>
-<li>ia64 - Intel Itanium 64-bit</li>
-</ul>
+The lower level directories are for AMD/EMT 64-bit systems. Itanium is no longer supported.
+</p>
+<p>
 The Windows application <code>prunsrv.exe</code> is used to install an application as a service.
 Once installed, <code>prunmgr.exe</code> can be used to monitor and reconfigure the service.
 (see <a href="procrun.html">procrun</a> for more information).
