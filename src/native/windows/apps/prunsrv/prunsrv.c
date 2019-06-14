@@ -485,7 +485,7 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
 
     if (!lpCmdline->szApplication) {
         /* Handle empty service names */
-        apxLogWrite(APXLOG_MARK_WARN "No service name provided");
+        apxLogWrite(APXLOG_MARK_WARN "No service name provided.");
         return FALSE;
     }
     SetLastError(ERROR_SUCCESS);
@@ -495,7 +495,7 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
                                    APXREG_SOFTWARE | APXREG_SERVICE);
     if (IS_INVALID_HANDLE(hRegistry)) {
         if (GetLastError() == ERROR_FILE_NOT_FOUND)
-            apxLogWrite(APXLOG_MARK_WARN "The system cannot find the Registry key for service '%S'",
+            apxLogWrite(APXLOG_MARK_WARN "The system cannot find the Registry key for service '%S'.",
                         lpCmdline->szApplication);
         else
             apxLogWrite(APXLOG_MARK_SYSERR);
@@ -615,7 +615,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_DEBUG "Installing service...");
     hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
+        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager.");
         return FALSE;
     }
     /* Check the startup mode */
@@ -651,7 +651,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     /* Display configured options */
     dumpCmdline();
 #endif
-    apxLogWrite(APXLOG_MARK_INFO "Service %S name %S", lpCmdline->szApplication,
+    apxLogWrite(APXLOG_MARK_INFO "Installing service '%S' name '%S'.", lpCmdline->szApplication,
                 SO_DISPLAYNAME);
     rv = apxServiceInstall(hService,
                           lpCmdline->szApplication,
@@ -667,17 +667,17 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         LPCWSTR sp = NULL;
         if (ST_DESCRIPTION & APXCMDOPT_FOUND) {
             sd = SO_DESCRIPTION;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service description '%S'",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service description '%S'.",
                         SO_DESCRIPTION);
         }
         if (ST_SUSER & APXCMDOPT_FOUND) {
             su = SO_SUSER;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user '%S'",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user '%S'.",
                         SO_SUSER);
         }
         if (ST_SPASSWORD & APXCMDOPT_FOUND) {
             sp = SO_SPASSWORD;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password '%S'",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password '%S'.",
                         SO_SPASSWORD);
         }
         apxServiceSetNames(hService, NULL, NULL, sd, su, sp);
@@ -685,11 +685,11 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     apxCloseHandle(hService);
     if (rv) {
         saveConfiguration(lpCmdline);
-        apxLogWrite(APXLOG_MARK_INFO "Service '%S' installed",
+        apxLogWrite(APXLOG_MARK_INFO "Service '%S' installed.",
                     lpCmdline->szApplication);
     }
     else
-        apxLogWrite(APXLOG_MARK_ERROR "Failed installing service '%S'",
+        apxLogWrite(APXLOG_MARK_ERROR "Failed installing service '%S'.",
                     lpCmdline->szApplication);
 
     return rv;
@@ -703,7 +703,7 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_INFO "Deleting service...");
     hService = apxCreateService(gPool, SC_MANAGER_CONNECT, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
+        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager.");
         return FALSE;
     }
     /* Delete service will stop the service if running */
@@ -721,11 +721,11 @@ static BOOL docmdDeleteService(LPAPXCMDLINE lpCmdline)
     if (rv) {
         /* Delete all service registry settings */
         apxDeleteRegistryW(PRG_REGROOT, lpCmdline->szApplication, KREG_WOW6432, TRUE);
-        apxLogWrite(APXLOG_MARK_DEBUG "Service '%S' deleted",
+        apxLogWrite(APXLOG_MARK_DEBUG "Service '%S' deleted.",
                     lpCmdline->szApplication);
     }
     else {
-        apxDisplayError(FALSE, NULL, 0, "Unable to delete service '%S'",
+        apxDisplayError(FALSE, NULL, 0, "Unable to delete service '%S'.",
                         lpCmdline->szApplication);
     }
     apxCloseHandle(hService);
@@ -742,7 +742,7 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
                 lpCmdline->szApplication);
     hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
+        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager.");
         return FALSE;
     }
 
@@ -756,15 +756,15 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
                                NULL,
                                NULL);
         if (rv)
-            apxLogWrite(APXLOG_MARK_INFO "Service '%S' stopped",
+            apxLogWrite(APXLOG_MARK_INFO "Service '%S' stopped.",
                         lpCmdline->szApplication);
         else
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to stop service '%S'",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to stop service '%S'.",
                         lpCmdline->szApplication);
 
     }
     else
-        apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'",
+        apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'.",
                         lpCmdline->szApplication);
     apxCloseHandle(hService);
     apxLogWrite(APXLOG_MARK_INFO "Stop service finished.");
@@ -780,7 +780,7 @@ static BOOL docmdStartService(LPAPXCMDLINE lpCmdline)
                 lpCmdline->szApplication);
     hService = apxCreateService(gPool, GENERIC_ALL, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
+        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager.");
         return FALSE;
     }
 
@@ -794,18 +794,18 @@ static BOOL docmdStartService(LPAPXCMDLINE lpCmdline)
                                NULL,
                                NULL);
         if (rv)
-            apxLogWrite(APXLOG_MARK_INFO "Started service '%S'",
+            apxLogWrite(APXLOG_MARK_INFO "Started service '%S'.",
                         lpCmdline->szApplication);
         else
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to start service '%S'",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to start service '%S'.",
                         lpCmdline->szApplication);
 
     }
     else
-        apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'",
+        apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'.",
                         lpCmdline->szApplication);
     apxCloseHandle(hService);
-    apxLogWrite(APXLOG_MARK_INFO "Finished starting service '%S', returning %d", lpCmdline->szApplication, rv);
+    apxLogWrite(APXLOG_MARK_INFO "Finished starting service '%S', returning %d.", lpCmdline->szApplication, rv);
     return rv;
 }
 
@@ -818,7 +818,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 
     hService = apxCreateService(gPool, SC_MANAGER_CREATE_SERVICE, FALSE);
     if (IS_INVALID_HANDLE(hService)) {
-        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager");
+        apxLogWrite(APXLOG_MARK_ERROR "Unable to open the Service Manager.");
         return FALSE;
     }
     SetLastError(0);
@@ -841,12 +841,12 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
         LPCWSTR sp = NULL;
         if (ST_SUSER & APXCMDOPT_FOUND) {
             su = SO_SUSER;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user '%S'",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service user '%S'.",
                         SO_SUSER);
         }
         if (ST_SPASSWORD & APXCMDOPT_FOUND) {
             sp = SO_SPASSWORD;
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password '%S'",
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting service password '%S'.",
                         SO_SPASSWORD);
         }
         rv = (rv && apxServiceSetNames(hService,
@@ -876,7 +876,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 										 bDelayedStart,
                                          SERVICE_NO_CHANGE));
 
-        apxLogWrite(APXLOG_MARK_INFO "Updated service '%S'",
+        apxLogWrite(APXLOG_MARK_INFO "Updated service '%S'.",
                     lpCmdline->szApplication);
 
         rv = (rv && saveConfiguration(lpCmdline));
@@ -901,7 +901,7 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d, dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d, dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d.",
                dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
@@ -923,7 +923,7 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
        fResult = SetServiceStatus(_service_status_handle, &_service_status);
        if (!fResult) {
            /* TODO: Deal with error */
-           apxLogWrite(APXLOG_MARK_ERROR "Failed to set service status");
+           apxLogWrite(APXLOG_MARK_ERROR "Failed to set service status.");
        }
    }
    return fResult;
@@ -967,7 +967,7 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
 static int onExitStop(void)
 {
     if (_service_mode) {
-        apxLogWrite(APXLOG_MARK_DEBUG "Stop exit hook called ...");
+        apxLogWrite(APXLOG_MARK_DEBUG "Stop exit hook called...");
         reportServiceStatusStopped(0);
     }
     return 0;
@@ -976,8 +976,8 @@ static int onExitStop(void)
 static int onExitStart(void)
 {
     if (_service_mode) {
-        apxLogWrite(APXLOG_MARK_DEBUG "Start exit hook called ...");
-        apxLogWrite(APXLOG_MARK_DEBUG "VM exit code: %d", apxGetVmExitCode());
+        apxLogWrite(APXLOG_MARK_DEBUG "Start exit hook called...");
+        apxLogWrite(APXLOG_MARK_DEBUG "JVM exit code: %d.", apxGetVmExitCode());
         /* Reporting the service as stopped even with a non-zero exit code
          * will not cause recovery actions to be initiated, so don't report at all.
          * "A service is considered failed when it terminates without reporting a
@@ -1003,7 +1003,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
     apxLogWrite(APXLOG_MARK_INFO "Stopping service...");
 
     if (IS_INVALID_HANDLE(gWorker)) {
-        apxLogWrite(APXLOG_MARK_INFO "Worker is not defined");
+        apxLogWrite(APXLOG_MARK_INFO "Worker is not defined.");
         return TRUE;    /* Nothing to do */
     }
     if (_jni_shutdown) {
@@ -1015,7 +1015,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         hWorker = apxCreateJava(gPool, _jni_jvmpath, SO_JAVAHOME);
         if (IS_INVALID_HANDLE(hWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java %S", _jni_jvmpath);
+            apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java '%S'.", _jni_jvmpath);
             return 1;
         }
         gSargs.hJava            = hWorker;
@@ -1038,7 +1038,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         /* Create shutdown event */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxJavaStart(&gSargs)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed starting Java");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed starting Java.");
             rv = 3;
         }
         else {
@@ -1060,9 +1060,9 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         LPWSTR *pArgs;
 
         if (!IS_VALID_STRING(SO_STOPIMAGE)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
+            apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile.");
             if (!_service_mode)
-                apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
+                apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile.",
                                 _service_name ? _service_name : L"unknown");
             return 1;
         }
@@ -1074,7 +1074,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
                                     SO_PASSWORD,
                                     FALSE);
         if (IS_INVALID_HANDLE(hWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed creating process");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed creating process.");
             return 1;
         }
         /* If the service process completes before the stop process does the
@@ -1084,7 +1084,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
          */
         gShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!apxProcessSetExecutableW(hWorker, SO_STOPIMAGE)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable '%S'.",
                         SO_STOPIMAGE);
             rv = 2;
             goto cleanup;
@@ -1103,14 +1103,14 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         if (!apxProcessSetCommandArgsW(hWorker, SO_STOPIMAGE,
                                        nArgs, pArgs)) {
             rv = 3;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d)",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d).",
                         nArgs);
             goto cleanup;
         }
         /* Set the working path */
         if (!apxProcessSetWorkingPathW(hWorker, SO_STOPPATH)) {
             rv = 4;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to '%S'.",
                         SO_STOPPATH);
             goto cleanup;
         }
@@ -1118,7 +1118,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
          */
         if (!apxProcessExecute(hWorker)) {
             rv = 5;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed executing process");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed executing process.");
             goto cleanup;
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting for stop worker to finish...");
@@ -1168,13 +1168,13 @@ cleanup:
         nms = (DWORD)((e.QuadPart - s.QuadPart) / 10000);
         if (rv == WAIT_OBJECT_0) {
             rv = 0;
-            apxLogWrite(APXLOG_MARK_DEBUG "Worker finished gracefully in %d ms.", nms);
+            apxLogWrite(APXLOG_MARK_DEBUG "Worker finished gracefully in %d milliseconds.", nms);
         }
         else
-            apxLogWrite(APXLOG_MARK_DEBUG "Worker was killed in %d ms.", nms);
+            apxLogWrite(APXLOG_MARK_DEBUG "Worker was killed in %d milliseconds.", nms);
     }
     else {
-        apxLogWrite(APXLOG_MARK_DEBUG "Sending WM_CLOSE to worker");
+        apxLogWrite(APXLOG_MARK_DEBUG "Sending WM_CLOSE to worker.");
         apxHandleSendMessage(gWorker, WM_CLOSE, 0, 0);
     }
 
@@ -1196,7 +1196,7 @@ static DWORD serviceStart()
     apxLogWrite(APXLOG_MARK_INFO "Starting service...");
 
     if (!IS_INVALID_HANDLE(gWorker)) {
-        apxLogWrite(APXLOG_MARK_INFO "Worker is not defined");
+        apxLogWrite(APXLOG_MARK_INFO "Worker is not defined.");
         return TRUE;    /* Nothing to do */
     }
     if (IS_VALID_STRING(SO_PIDFILE)) {
@@ -1205,7 +1205,7 @@ static DWORD serviceStart()
             /* Pid file exists */
             if (!DeleteFileW(gPidfileName)) {
                 /* Delete failed. Either no access or opened */
-                apxLogWrite(APXLOG_MARK_ERROR "Pid file '%S' exists",
+                apxLogWrite(APXLOG_MARK_ERROR "Pid file '%S' exists.",
                             gPidfileName);
                 return 1;
             }
@@ -1226,7 +1226,7 @@ static DWORD serviceStart()
         /* Create the JVM global worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath, SO_JAVAHOME);
         if (IS_INVALID_HANDLE(gWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java %S", _jni_jvmpath);
+            apxLogWrite(APXLOG_MARK_ERROR "Failed creating Java '%S'.", _jni_jvmpath);
             return 1;
         }
         gRargs.hJava            = gWorker;
@@ -1251,13 +1251,13 @@ static DWORD serviceStart()
             apxLogWrite(APXLOG_MARK_ERROR "Failed to start Java");
             goto cleanup;
         }
-        apxLogWrite(APXLOG_MARK_DEBUG "Java started %s", _jni_rclass);
+        apxLogWrite(APXLOG_MARK_DEBUG "Java started '%s'.", _jni_rclass);
     }
     else {
         if (!IS_VALID_STRING(SO_STARTIMAGE)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile");
+            apxLogWrite(APXLOG_MARK_ERROR "Missing service ImageFile.");
             if (!_service_mode)
-                apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile",
+                apxDisplayError(FALSE, NULL, 0, "Service '%S' is missing the ImageFile.",
                                 _service_name ? _service_name : L"unknown");
             return 1;
         }
@@ -1276,11 +1276,11 @@ static DWORD serviceStart()
                                     SO_PASSWORD,
                                     FALSE);
         if (IS_INVALID_HANDLE(gWorker)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to create process");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to create process.");
             return 1;
         }
         if (!apxProcessSetExecutableW(gWorker, SO_STARTIMAGE)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process executable '%S'.",
                         SO_STARTIMAGE);
             rv = 2;
             goto cleanup;
@@ -1299,14 +1299,14 @@ static DWORD serviceStart()
         if (!apxProcessSetCommandArgsW(gWorker, SO_STARTIMAGE,
                                        nArgs, pArgs)) {
             rv = 3;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d)",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process arguments (argc=%d).",
                         nArgs);
             goto cleanup;
         }
         /* Set the working path */
         if (!apxProcessSetWorkingPathW(gWorker, SO_STARTPATH)) {
             rv = 4;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed setting process working path to '%S'.",
                         SO_STARTPATH);
             goto cleanup;
         }
@@ -1314,7 +1314,7 @@ static DWORD serviceStart()
          */
         if (!apxProcessExecute(gWorker)) {
             rv = 5;
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to execute process");
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to execute process.");
             goto cleanup;
         }
     }
@@ -1349,7 +1349,7 @@ static DWORD serviceStart()
         e.LowPart  = fte.dwLowDateTime;
         e.HighPart = fte.dwHighDateTime;
         nms = (DWORD)((e.QuadPart - s.QuadPart) / 10000);
-        apxLogWrite(APXLOG_MARK_INFO "Service started in %d ms.", nms);
+        apxLogWrite(APXLOG_MARK_INFO "Service started in %d milliseconds.", nms);
     }
     return rv;
 cleanup:
@@ -1368,7 +1368,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
 
     switch (dwCtrlCode) {
         case SERVICE_CONTROL_SHUTDOWN:
-            apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signalled");
+            apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signalled.");
         case SERVICE_CONTROL_STOP:
             if (SO_STOPTIMEOUT > 0) {
                 reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 1000);
@@ -1400,22 +1400,22 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
 {
     switch (dwCtrlType) {
         case CTRL_BREAK_EVENT:
-            apxLogWrite(APXLOG_MARK_INFO "Console CTRL+BREAK event signaled");
+            apxLogWrite(APXLOG_MARK_INFO "Console CTRL+BREAK event signaled.");
             return FALSE;
         case CTRL_C_EVENT:
-            apxLogWrite(APXLOG_MARK_INFO "Console CTRL+C event signaled");
+            apxLogWrite(APXLOG_MARK_INFO "Console CTRL+C event signaled.");
             serviceStop((LPVOID)SERVICE_CONTROL_STOP);
             return TRUE;
         case CTRL_CLOSE_EVENT:
-            apxLogWrite(APXLOG_MARK_INFO "Console CTRL+CLOSE event signaled");
+            apxLogWrite(APXLOG_MARK_INFO "Console CTRL+CLOSE event signaled.");
             serviceStop((LPVOID)SERVICE_CONTROL_STOP);
             return TRUE;
         case CTRL_SHUTDOWN_EVENT:
-            apxLogWrite(APXLOG_MARK_INFO "Console SHUTDOWN event signaled");
+            apxLogWrite(APXLOG_MARK_INFO "Console SHUTDOWN event signaled.");
             serviceStop((LPVOID)SERVICE_CONTROL_SHUTDOWN);
             return TRUE;
         case CTRL_LOGOFF_EVENT:
-            apxLogWrite(APXLOG_MARK_INFO "Console LOGOFF event signaled");
+            apxLogWrite(APXLOG_MARK_INFO "Console LOGOFF event signaled.");
             if (!_service_mode) {
                 serviceStop((LPVOID)SERVICE_CONTROL_STOP);
             }
@@ -1576,7 +1576,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         _service_status_handle = RegisterServiceCtrlHandlerW(_service_name,
                                                               service_ctrl_handler);
         if (IS_INVALID_HANDLE(_service_status_handle)) {
-            apxLogWrite(APXLOG_MARK_ERROR "Failed to register Service Control for %S",
+            apxLogWrite(APXLOG_MARK_ERROR "Failed to register Service Control for '%S'.",
                         _service_name);
             goto cleanup;
         }
@@ -1601,22 +1601,22 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
     }
     else {
-        apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d", rc);
+        apxLogWrite(APXLOG_MARK_ERROR "ServiceStart returned %d.", rc);
         goto cleanup;
     }
     if (gShutdownEvent) {
 
         /* Ensure that shutdown thread exits before us */
-        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent");
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent.");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         WaitForSingleObject(gShutdownEvent, ONE_MINUTE);
-        apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled");
+        apxLogWrite(APXLOG_MARK_DEBUG "ShutdownEvent signaled.");
         CloseHandle(gShutdownEvent);
         gShutdownEvent = NULL;
 
         /* This will cause to wait for all threads to exit
          */
-        apxLogWrite(APXLOG_MARK_DEBUG "Waiting 1 minute for all threads to exit");
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting 1 minute for all threads to exit.");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         apxDestroyJvm(ONE_MINUTE);
     }
@@ -1625,7 +1625,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
          * Probably because main() returned without ensuring all threads
          * have finished
          */
-        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for all threads to exit");
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting for all threads to exit.");
         apxDestroyJvm(INFINITE);
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
     }
@@ -1648,7 +1648,7 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     _service_name = lpCmdline->szApplication;
     apxLogWrite(APXLOG_MARK_INFO "Debugging '%S' service...", _service_name);
     serviceMain(0, NULL);
-    apxLogWrite(APXLOG_MARK_INFO "Debug service finished with exit code %d", gExitval);
+    apxLogWrite(APXLOG_MARK_INFO "Debug service finished with exit code %d.", gExitval);
     SAFE_CLOSE_HANDLE(gPidfileHandle);
     if (gPidfileName) {
    	    DeleteFileW(gPidfileName);
@@ -1671,7 +1671,7 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
         rv = TRUE;
     }
     else {
-        apxLogWrite(APXLOG_MARK_ERROR "StartServiceCtrlDispatcher for '%S' failed",
+        apxLogWrite(APXLOG_MARK_ERROR "StartServiceCtrlDispatcher for '%S' failed.",
                     lpCmdline->szApplication);
         rv = FALSE;
     }
@@ -1735,7 +1735,7 @@ void __cdecl main(int argc, char **argv)
 
     /* Parse the command line */
     if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands, _altcmds)) == NULL) {
-        apxLogWrite(APXLOG_MARK_ERROR "Invalid command line arguments");
+        apxLogWrite(APXLOG_MARK_ERROR "Invalid command line arguments.");
         rv = 1;
         goto cleanup;
     }
@@ -1743,7 +1743,7 @@ void __cdecl main(int argc, char **argv)
     if (lpCmdline->dwCmdIndex < 6) {
         if (!loadConfiguration(lpCmdline) &&
             lpCmdline->dwCmdIndex < 5) {
-            apxLogWrite(APXLOG_MARK_ERROR "Load configuration failed");
+            apxLogWrite(APXLOG_MARK_ERROR "Load configuration failed.");
             rv = 2;
             goto cleanup;
         }
@@ -1751,11 +1751,11 @@ void __cdecl main(int argc, char **argv)
 
     apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
-    apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun log initialized");
+    apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun log initialized.");
     if (SO_LOGROTATE)
         apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
 
-    apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun (%s %d-bit) started",
+    apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun (%s %d-bit) started.",
                 PRG_VERSION, PRG_BITS);
 
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
@@ -1771,11 +1771,11 @@ void __cdecl main(int argc, char **argv)
         SYSTEMTIME t;
         GetLocalTime(&t);
         fprintf(stdout, "\n%d-%02d-%02d %02d:%02d:%02d "
-                        "Apache Commons Daemon procrun stdout initialized\n",
+                        "Apache Commons Daemon procrun stdout initialized.\n",
                         t.wYear, t.wMonth, t.wDay,
                         t.wHour, t.wMinute, t.wSecond);
         fprintf(stderr, "\n%d-%02d-%02d %02d:%02d:%02d "
-                        "Apache Commons Daemon procrun stderr initialized\n",
+                        "Apache Commons Daemon procrun stderr initialized.\n",
                         t.wYear, t.wMonth, t.wDay,
                         t.wHour, t.wMinute, t.wSecond);
     }
@@ -1816,7 +1816,7 @@ void __cdecl main(int argc, char **argv)
         break;
         default:
             /* Unknown command option */
-            apxLogWrite(APXLOG_MARK_ERROR "Unknown command line option");
+            apxLogWrite(APXLOG_MARK_ERROR "Unknown command line option.");
             printUsage(lpCmdline, FALSE);
             rv = 99;
         break;
@@ -1828,15 +1828,15 @@ cleanup:
         if (rv > 0 && rv < 10)
             ix = rv;
         apxLogWrite(APXLOG_MARK_ERROR "Apache Commons Daemon procrun failed "
-                                      "with exit value: %d (Failed to %s)",
+                                      "with exit value: %d (failed to %s).",
                                       rv, gSzProc[ix]);
         if (ix > 2 && !_service_mode) {
             /* Print something to the user console */
-            apxDisplayError(FALSE, NULL, 0, "Failed to %s", gSzProc[ix]);
+            apxDisplayError(FALSE, NULL, 0, "Failed to %s.", gSzProc[ix]);
         }
     }
     else
-        apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun finished");
+        apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun finished.");
     if (lpCmdline)
         apxCmdlineFree(lpCmdline);
     _service_status_handle = NULL;
