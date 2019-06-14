@@ -121,7 +121,7 @@ void help(home_data *data)
     printf("    --illegal-access=<value>\n");
     printf("        Java 9 --illegal-access option. Passed as it is to JVM. Refer java help for possible values.\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
-    printf("Copyright (c) 1999-2017 Apache Software Foundation.\n");
+    printf("Copyright (c) 1999-2019 Apache Software Foundation.\n");
 
     printf("\n");
 }
