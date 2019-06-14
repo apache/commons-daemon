@@ -491,7 +491,8 @@ arg_data *arguments(int argc, char *argv[])
     }
 
     if (log_debug_flag == true) {
-        log_debug("+-- DUMPING PARSED COMMAND LINE ARGUMENTS --------------");
+        log_debug("+-- DUMPING PARSED COMMAND AND ARGUMENTS ---------------");
+        log_debug("| Executable:      %s", PRINT_NULL(argv[0]));
         log_debug("| Detach:          %s", IsTrueFalse(args->dtch));
         log_debug("| Show Version:    %s", IsYesNo(args->vers));
         log_debug("| Show Help:       %s", IsYesNo(args->help));
