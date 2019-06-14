@@ -19,6 +19,9 @@
 How to do a Apache Commons Daemon release
 =========================================
 
+Review open issues in Jira.
+Review open PRs on GitHub.
+
 Use Java 7.
 
 Check out a clean copy of commons daemon from subversion to
