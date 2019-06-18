@@ -23,8 +23,10 @@ jdk:
   - openjdk9
   - openjdk10
   - openjdk11
-  - openjdk12
-  - openjdk-ea
+# Commons Daemon has a minimum Java version of Java 6
+# Java 12 onwards doesn't support building for Java 6
+#  - openjdk12
+#  - openjdk-ea
   
 
 after_success:
