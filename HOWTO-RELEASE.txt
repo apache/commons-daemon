@@ -44,12 +44,12 @@ and replace it with the new version.
 These include:
 Before tagging:
  - /RELEASE-NOTES.txt                           (Should be unchanged for point releases)
+ - /pom.xml                                     (version)
  - /src/changes/changes.xml             		(Set date)
  - /src/native/unix/man/jsvc1.xml       		(Set date & version)
+ - /src/native/unix/native/version.h            (version)
  - /src/native/windows/apps/prunmgr/prunmgr.h	(version)
  - /src/native/windows/apps/prunmgr/prunmgr.rc	(version x3)
- - /pom.xml			                            (version)
- - /src/native/unix/native/version.h    		(version)
  - /src/native/windows/apps/prunsrv/prunsrv.h	(version)
  - /src/native/windows/apps/prunsrv/prunsrv.rc	(version x2)
  - /src/samples/SimpleApplication.sh            (version)

@@ -28,10 +28,10 @@
  * Minor API changes that do not cause binary compatibility problems.
  * Should be reset to 0 when upgrading JSVC_MAJOR_VERSION
  */
-#define JSVC_MINOR_VERSION      1
+#define JSVC_MINOR_VERSION      2
 
 /** patch level */
-#define JSVC_PATCH_VERSION      2
+#define JSVC_PATCH_VERSION      0
 
 /**
  *  This symbol is defined for internal, "development" copies of JSVC.
