@@ -141,6 +141,9 @@
       <action type="fix" dev="markt" due-to="ggregory">
         Procun. Improve log messages for interactions with the Windows service.
       </action>
+      <action type="fix" dev="markt" due-to="YunQiang Su">
+        jsvc. Improve mips detection.
+      </action>
     </release>
     <release version="1.1.0" date="2017-11-15" description="Feature and bug fix release">
       <action issue="DAEMON-368" type="add" dev="ggregory">
