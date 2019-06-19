@@ -21,6 +21,7 @@ How to do a Apache Commons Daemon release
 
 Review open issues in Jira.
 Review open PRs on GitHub.
+Update to latest commons-parent and fix any issues.
 
 Use Java 7.
 
