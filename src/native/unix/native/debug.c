@@ -44,7 +44,7 @@ void log_debug(const char *fmt, ...)
     if (fmt == NULL)
         return;
 
-    now   = time(NULL);
+    now = time(NULL);
     nowtm = localtime(&now);
     strftime(buff, sizeof(buff), "%Y-%m-%d %T", nowtm);
     va_start(ap, fmt);
@@ -73,7 +73,7 @@ void log_error(const char *fmt, ...)
 
     va_start(ap, fmt);
     if (log_stderr_syslog_flag) {
-        now   = time(NULL);
+        now = time(NULL);
         nowtm = localtime(&now);
         strftime(buff, sizeof(buff), "%Y-%m-%d %T", nowtm);
         fprintf(stderr, "%s %d %s error: ", buff, getpid(), log_prog);
@@ -83,4 +83,3 @@ void log_error(const char *fmt, ...)
     fflush(stderr);
     va_end(ap);
 }
-

@@ -41,8 +41,8 @@
 
 #ifdef OS_CYGWIN
 #include <sys/fcntl.h>
-#define F_ULOCK 0               /* Unlock a previously locked region */
-#define F_LOCK  1               /* Lock a region for exclusive use */
+#define F_ULOCK 0                      /* Unlock a previously locked region */
+#define F_LOCK  1                      /* Lock a region for exclusive use */
 #endif
 extern char **environ;
 
@@ -56,10 +56,8 @@ static volatile bool doreload = false;
 static bool doreopen = false;
 static bool dosignal = false;
 
-static int run_controller(arg_data *args, home_data *data, uid_t uid,
-                          gid_t gid);
-static void set_output(char *outfile, char *errfile, bool redirectstdin,
-                       char *procname);
+static int run_controller(arg_data *args, home_data *data, uid_t uid, gid_t gid);
+static void set_output(char *outfile, char *errfile, bool redirectstdin, char *procname);
 
 #ifdef OS_CYGWIN
 /*
@@ -70,14 +68,14 @@ static int lockf(int fildes, int function, off_t size)
     struct flock buf;
 
     switch (function) {
-    case F_LOCK:
-        buf.l_type = F_WRLCK;
-        break;
-    case F_ULOCK:
-        buf.l_type = F_UNLCK;
-        break;
-    default:
-        return -1;
+        case F_LOCK:
+            buf.l_type = F_WRLCK;
+            break;
+        case F_ULOCK:
+            buf.l_type = F_UNLCK;
+            break;
+        default:
+            return -1;
     }
     buf.l_whence = 0;
     buf.l_start = 0;
@@ -99,9 +97,9 @@ static void handler(int sig)
             else {
                 stopping = true;
                 /* Ensure the controller knows a shutdown was requested. */
-                kill(controller_pid,sig);
+                kill(controller_pid, sig);
             }
-        break;
+            break;
         case SIGINT:
             log_debug("Caught SIGINT: Scheduling a shutdown");
             if (stopping == true) {
@@ -110,9 +108,9 @@ static void handler(int sig)
             else {
                 stopping = true;
                 /* Ensure the controller knows a shutdown was requested. */
-                kill(controller_pid,sig);
+                kill(controller_pid, sig);
             }
-        break;
+            break;
         case SIGHUP:
             log_debug("Caught SIGHUP: Scheduling a reload");
             if (stopping == true) {
@@ -122,18 +120,18 @@ static void handler(int sig)
                 stopping = true;
                 doreload = true;
             }
-        break;
+            break;
         case SIGUSR1:
-             log_debug("Caught SIGUSR1: Reopening logs");
-             doreopen = true;
-        break;
+            log_debug("Caught SIGUSR1: Reopening logs");
+            doreopen = true;
+            break;
         case SIGUSR2:
-             log_debug("Caught SIGUSR2: Scheduling a custom signal");
-             dosignal = true;
-        break;
+            log_debug("Caught SIGUSR2: Scheduling a custom signal");
+            dosignal = true;
+            break;
         default:
             log_debug("Caught unknown signal %d", sig);
-        break;
+            break;
     }
 }
 
@@ -147,13 +145,11 @@ static int set_user_group(const char *user, int uid, int gid)
         }
         if (initgroups(user, gid) != 0) {
             if (getuid() != uid) {
-                log_error("Cannot set supplement group list for user '%s'",
-                          user);
+                log_error("Cannot set supplement group list for user '%s'", user);
                 return -1;
             }
             else
-                log_debug("Cannot set supplement group list for user '%s'",
-                          user);
+                log_debug("Cannot set supplement group list for user '%s'", user);
         }
         if (getuid() == uid) {
             log_debug("No need to change user to '%s'!", user);
@@ -195,7 +191,7 @@ static int set_user_group(const char *user, int uid, int gid)
 static int set_legacy_caps(int caps)
 {
     struct __user_cap_header_struct caphead;
-    struct __user_cap_data_struct   cap;
+    struct __user_cap_data_struct cap;
 
     memset(&caphead, 0, sizeof caphead);
     caphead.version = LEGACY_CAP_VERSION;
@@ -229,16 +225,16 @@ static cap_value_t caps_min[] = {
 #define CAPSMIN  2
 
 
-typedef int     (*fd_cap_free)(void *);
-typedef cap_t   (*fd_cap_init)(void);
-typedef int     (*fd_cap_clear)(cap_t);
-typedef int     (*fd_cap_get_flag)(cap_t, cap_value_t, cap_flag_t, cap_flag_value_t *);
-typedef int     (*fd_cap_set_flag)(cap_t, cap_flag_t, int, const cap_value_t *, cap_flag_value_t);
-typedef int     (*fd_cap_set_proc)(cap_t);
+typedef int (*fd_cap_free) (void *);
+typedef cap_t (*fd_cap_init) (void);
+typedef int (*fd_cap_clear) (cap_t);
+typedef int (*fd_cap_get_flag) (cap_t, cap_value_t, cap_flag_t, cap_flag_value_t *);
+typedef int (*fd_cap_set_flag) (cap_t, cap_flag_t, int, const cap_value_t *, cap_flag_value_t);
+typedef int (*fd_cap_set_proc) (cap_t);
 
 static dso_handle hlibcap = NULL;
-static fd_cap_free  fp_cap_free;
-static fd_cap_init  fp_cap_init;
+static fd_cap_free fp_cap_free;
+static fd_cap_init fp_cap_init;
 static fd_cap_clear fp_cap_clear;
 static fd_cap_get_flag fp_cap_get_flag;
 static fd_cap_set_flag fp_cap_set_flag;
@@ -305,37 +301,37 @@ static int set_caps(int cap_type)
     int ncap;
     int flag = CAP_SET;
     cap_value_t *caps;
-    const char  *type;
+    const char *type;
 
     if (ld_libcap()) {
         return set_legacy_caps(cap_type);
     }
     if (cap_type == CAPS) {
-        ncap = sizeof(caps_std)/sizeof(cap_value_t);
+        ncap = sizeof(caps_std) / sizeof(cap_value_t);
         caps = caps_std;
         type = "default";
     }
     else if (cap_type == CAPSMIN) {
-        ncap = sizeof(caps_min)/sizeof(cap_value_t);
+        ncap = sizeof(caps_min) / sizeof(cap_value_t);
         caps = caps_min;
         type = "min";
     }
     else {
-        ncap = sizeof(caps_min)/sizeof(cap_value_t);
+        ncap = sizeof(caps_min) / sizeof(cap_value_t);
         caps = caps_min;
         type = "null";
         flag = CAP_CLEAR;
     }
-    c = (*fp_cap_init)();
-    (*fp_cap_clear)(c);
-    (*fp_cap_set_flag)(c, CAP_EFFECTIVE,   ncap, caps, flag);
-    (*fp_cap_set_flag)(c, CAP_INHERITABLE, ncap, caps, flag);
-    (*fp_cap_set_flag)(c, CAP_PERMITTED,   ncap, caps, flag);
-    if ((*fp_cap_set_proc)(c) != 0) {
+    c = (*fp_cap_init) ();
+    (*fp_cap_clear) (c);
+    (*fp_cap_set_flag) (c, CAP_EFFECTIVE, ncap, caps, flag);
+    (*fp_cap_set_flag) (c, CAP_INHERITABLE, ncap, caps, flag);
+    (*fp_cap_set_flag) (c, CAP_PERMITTED, ncap, caps, flag);
+    if ((*fp_cap_set_proc) (c) != 0) {
         log_error("failed setting %s capabilities.", type);
         return -1;
     }
-    (*fp_cap_free)(c);
+    (*fp_cap_free) (c);
     if (cap_type == CAPS)
         log_debug("increased capability set.");
     else if (cap_type == CAPSMIN)
@@ -406,7 +402,7 @@ static bool checkuser(char *user, uid_t * uid, gid_t * gid)
 {
     struct passwd *pwds = NULL;
     int status = 0;
-    pid_t pid  = 0;
+    pid_t pid = 0;
 
     /* Do we actually _have_ to switch user? */
     if (user == NULL)
@@ -461,7 +457,7 @@ static void cygwincontroller(void)
     raise(SIGTERM);
 }
 #endif
-static void controller(int sig, siginfo_t *sip, void *ucp)
+static void controller(int sig, siginfo_t * sip, void *ucp)
 {
     switch (sig) {
         case SIGTERM:
@@ -477,10 +473,8 @@ static void controller(int sig, siginfo_t *sip, void *ucp)
                  * child.
                  */
                 stopping = true;
-                if (sip == NULL
-                    || !(sip->si_code <= 0 && sip->si_pid == controlled)) {
-                    log_debug("Forwarding signal %d to process %d", sig,
-                               controlled);
+                if (sip == NULL || !(sip->si_code <= 0 && sip->si_pid == controlled)) {
+                    log_debug("Forwarding signal %d to process %d", sig, controlled);
                     kill(controlled, sig);
                 }
             }
@@ -512,7 +506,7 @@ static int mkdir1(char *name, int perms)
     rc = mkdir0(name, perms);
     if (rc == EEXIST)
         return 0;
-    if (rc == ENOENT) {  /* Missing an intermediate dir */
+    if (rc == ENOENT) {                /* Missing an intermediate dir */
         char *pos;
         if ((pos = strrchr(name, '/'))) {
             *pos = '\0';
@@ -583,8 +577,7 @@ retry:
             buff[i] = '\0';
             pid = atoi(buff);
             if (kill(pid, 0) == 0) {
-                log_error("Still running according to PID file %s, PID is %d",
-                          args->pidf, pid);
+                log_error("Still running according to PID file %s, PID is %d", args->pidf, pid);
                 lockf(fd, F_ULOCK, 0);
                 close(fd);
                 return 122;
@@ -619,15 +612,18 @@ static void remove_pid_file(arg_data *args, int pidn)
     if (i > 0) {
         buff[i] = '\0';
         pid = atoi(buff);
-    } else {
+    }
+    else {
         pid = -1;
     }
     if (pid == pidn) {
         /* delete the file while it's still locked */
         unlink(args->pidf);
-    } else {
-        log_debug("remove_pid_file: pid changed (%d->%d), not removing pid file %s",
-                  pidn, pid, args->pidf);
+    }
+    else {
+        log_debug
+            ("remove_pid_file: pid changed (%d->%d), not removing pid file %s",
+             pidn, pid, args->pidf);
     }
     lockf(fd, F_ULOCK, 0);
     close(fd);
@@ -763,7 +759,7 @@ static int wait_child(arg_data *args, int pid)
                         else
                             return 1;
                     }
-                    return 0; /* ready JVM started */
+                    return 0;          /* ready JVM started */
                 }
             }
         }
@@ -907,11 +903,11 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
         /* pause() is not threadsafe */
         sleep(60);
 #endif
-        if(doreopen) {
+        if (doreopen) {
             doreopen = false;
             set_output(args->outfile, args->errfile, args->redirectstdin, args->procname);
         }
-        if(dosignal) {
+        if (dosignal) {
             dosignal = false;
             java_signal();
         }
@@ -988,7 +984,7 @@ static int logger_child(int out_fd, int err_fd, char *procname)
         if (err_fd != -1) {
             FD_SET(err_fd, &rfds);
         }
-        tv.tv_sec  = 60;
+        tv.tv_sec = 60;
         tv.tv_usec = 0;
         retval = select(nfd, &rfds, NULL, NULL, &tv);
         if (retval == -1) {
@@ -1000,7 +996,7 @@ static int logger_child(int out_fd, int err_fd, char *procname)
         else if (retval) {
             if (out_fd != -1 && FD_ISSET(out_fd, &rfds)) {
                 do {
-                    n = read(out_fd, buf, LOGBUF_SIZE-1);
+                    n = read(out_fd, buf, LOGBUF_SIZE - 1);
                 } while (n == -1 && errno == EINTR);
                 if (n == -1) {
                     syslog(LOG_ERR, "read: %s", strerror(errno));
@@ -1017,7 +1013,7 @@ static int logger_child(int out_fd, int err_fd, char *procname)
             }
             if (err_fd != -1 && FD_ISSET(err_fd, &rfds)) {
                 do {
-                    n = read(err_fd, buf, LOGBUF_SIZE-1);
+                    n = read(err_fd, buf, LOGBUF_SIZE - 1);
                 } while (n == -1 && errno == EINTR);
                 if (n == -1) {
                     syslog(LOG_ERR, "read: %s", strerror(errno));
@@ -1042,8 +1038,8 @@ static int logger_child(int out_fd, int err_fd, char *procname)
  */
 static void set_output(char *outfile, char *errfile, bool redirectstdin, char *procname)
 {
-    int out_pipe[2] = {-1, -1};
-    int err_pipe[2] = {-1, -1};
+    int out_pipe[2] = { -1, -1 };
+    int err_pipe[2] = { -1, -1 };
     int fork_needed = 0;
 
     if (redirectstdin == true) {
@@ -1061,8 +1057,7 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
         freopen("/dev/null", "a", stdout);
         /* Send stdout to syslog through a logger process */
         if (pipe(out_pipe) == -1) {
-            log_error("cannot create stdout pipe: %s",
-                      strerror(errno));
+            log_error("cannot create stdout pipe: %s", strerror(errno));
         }
         else {
             fork_needed = 1;
@@ -1080,8 +1075,7 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
         freopen("/dev/null", "a", stderr);
         /* Send stderr to syslog through a logger process */
         if (pipe(err_pipe) == -1) {
-            log_error("cannot create stderr pipe: %s",
-                      strerror(errno));
+            log_error("cannot create stderr pipe: %s", strerror(errno));
         }
         else {
             fork_needed = 1;
@@ -1125,15 +1119,13 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
                 if (out_pipe[0] != -1) {
                     close(out_pipe[0]);
                     if (dup2(out_pipe[1], 1) == -1) {
-                        log_error("cannot redirect stdout to pipe for syslog: %s",
-                                  strerror(errno));
+                        log_error("cannot redirect stdout to pipe for syslog: %s", strerror(errno));
                     }
                 }
                 if (err_pipe[0] != -1) {
                     close(err_pipe[0]);
                     if (dup2(err_pipe[1], 2) == -1) {
-                        log_error("cannot redirect stderr to pipe for syslog: %s",
-                                  strerror(errno));
+                        log_error("cannot redirect stderr to pipe for syslog: %s", strerror(errno));
                     }
                 }
             }
@@ -1146,11 +1138,11 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
 
 int main(int argc, char *argv[])
 {
-    arg_data *args  = NULL;
+    arg_data *args = NULL;
     home_data *data = NULL;
-    pid_t pid  = 0;
-    uid_t uid  = 0;
-    gid_t gid  = 0;
+    pid_t pid = 0;
+    uid_t uid = 0;
+    gid_t gid = 0;
     int res;
 
     /* Parse command line arguments */
@@ -1183,13 +1175,13 @@ int main(int argc, char *argv[])
        loading of VMs (notably this is for Linux). Set, replace, and go. */
     if (strcmp(argv[0], args->procname) != 0) {
         char *oldpath = getenv("LD_LIBRARY_PATH");
-        char *libf    = java_library(args, data);
+        char *libf = java_library(args, data);
         char *filename;
-        char  buf[2048];
-        int   ret;
+        char buf[2048];
+        int ret;
         char *tmp = NULL;
-        char *p1  = NULL;
-        char *p2  = NULL;
+        char *p1 = NULL;
+        char *p2 = NULL;
 
         /* We don't want to use a form of exec() that searches the
          * PATH, so require that argv[0] be either an absolute or
@@ -1207,12 +1199,12 @@ int main(int argc, char *argv[])
          * (additionaly a strdup(NULL) cores dump on my machine).
          */
         if (libf != NULL) {
-            p1  = strdup(libf);
+            p1 = strdup(libf);
             tmp = strrchr(p1, '/');
             if (tmp != NULL)
                 tmp[0] = '\0';
 
-            p2  = strdup(p1);
+            p2 = strdup(p1);
             tmp = strrchr(p2, '/');
             if (tmp != NULL)
                 tmp[0] = '\0';
@@ -1225,8 +1217,7 @@ int main(int argc, char *argv[])
             tmp = strdup(buf);
             setenv("LD_LIBRARY_PATH", tmp, 1);
 
-            log_debug("Invoking w/ LD_LIBRARY_PATH=%s",
-                      getenv("LD_LIBRARY_PATH"));
+            log_debug("Invoking w/ LD_LIBRARY_PATH=%s", getenv("LD_LIBRARY_PATH"));
         }
 
         /* execve needs a full path */
@@ -1266,8 +1257,7 @@ int main(int argc, char *argv[])
     }
 
     if (chdir(args->cwd)) {
-        log_error("ERROR: jsvc was unable to "
-                  "change directory to: %s", args->cwd);
+        log_error("ERROR: jsvc was unable to " "change directory to: %s", args->cwd);
     }
     /*
      * umask() uses inverse logic; bits are CLEAR for allowed access.
@@ -1287,8 +1277,7 @@ int main(int argc, char *argv[])
     return res;
 }
 
-static int run_controller(arg_data *args, home_data *data, uid_t uid,
-                          gid_t gid)
+static int run_controller(arg_data *args, home_data *data, uid_t uid, gid_t gid)
 {
     pid_t pid = 0;
     int restarts = 0;

@@ -70,15 +70,15 @@ char *location_home[] = {
  * somewhere around JAVA_HOME. (Only two, I'm happy)
  */
 char *location_jvm_cfg[] = {
-    "$JAVA_HOME/jre/lib/jvm.cfg",           /* JDK */
-    "$JAVA_HOME/lib/jvm.cfg",               /* JRE */
-    "$JAVA_HOME/jre/lib/" CPU "/jvm.cfg",   /* JDK */
-    "$JAVA_HOME/lib/" CPU "/jvm.cfg",       /* JRE */
+    "$JAVA_HOME/jre/lib/jvm.cfg",          /* JDK */
+    "$JAVA_HOME/lib/jvm.cfg",              /* JRE */
+    "$JAVA_HOME/jre/lib/" CPU "/jvm.cfg",  /* JDK */
+    "$JAVA_HOME/lib/" CPU "/jvm.cfg",      /* JRE */
 #if defined(OS_AIX)
-    "$JAVA_HOME/jre/lib/ppc/jvm.cfg",       /* JDK */
-    "$JAVA_HOME/lib/ppc/jvm.cfg",           /* JRE */
+    "$JAVA_HOME/jre/lib/ppc/jvm.cfg",      /* JDK */
+    "$JAVA_HOME/lib/ppc/jvm.cfg",          /* JRE */
 #endif
-	NULL,
+    NULL,
 };
 
 /* This is the list of "defaults" VM (searched when jvm.cfg is not found, as
@@ -90,21 +90,21 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/lib/server/libjvm.dylib",
     "$JAVA_HOME/jre/lib/client/libjvm.dylib",
 #elif defined(OS_CYGWIN)
-    "$JAVA_HOME/jre/bin/classic/jvm.dll",               /* Sun JDK 1.3 */
-    "$JAVA_HOME/jre/bin/client/jvm.dll",                /* Sun JDK 1.4 */
+    "$JAVA_HOME/jre/bin/classic/jvm.dll",           /* Sun JDK 1.3 */
+    "$JAVA_HOME/jre/bin/client/jvm.dll",            /* Sun JDK 1.4 */
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_SYSV) || defined(OS_FREEBSD) || defined(OS_TRU64) || defined(OS_AIX)
-    "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so",     /* Sun JDK 1.2 */
-    "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.so",      /* Sun JDK 1.4 */
-    "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",      /* Sun JDK 1.3 */
-    "$JAVA_HOME/jre/lib/" CPU "/libjvm.so",             /* Sun JDK */
-    "$JAVA_HOME/lib/" CPU "/classic/libjvm.so",         /* Sun JRE 1.2 */
-    "$JAVA_HOME/lib/" CPU "/server/libjvm.so",          /* Sun JRE 1.4 */
-    "$JAVA_HOME/lib/" CPU "/client/libjvm.so",          /* Sun JRE 1.3 */
-    "$JAVA_HOME/lib/" CPU "/libjvm.so",                 /* Sun JRE */
-    "$JAVA_HOME/jre/bin/" CPU "/classic/libjvm.so",     /* IBM JDK 1.3 */
-    "$JAVA_HOME/jre/bin/" CPU "/libjvm.so",             /* IBM JDK */
-    "$JAVA_HOME/bin/" CPU "/classic/libjvm.so",         /* IBM JRE 1.3 */
-    "$JAVA_HOME/bin/" CPU "/libjvm.so",                 /* IBM JRE */
+    "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm.so", /* Sun JDK 1.2 */
+    "$JAVA_HOME/jre/lib/" CPU "/server/libjvm.so",  /* Sun JDK 1.4 */
+    "$JAVA_HOME/jre/lib/" CPU "/client/libjvm.so",  /* Sun JDK 1.3 */
+    "$JAVA_HOME/jre/lib/" CPU "/libjvm.so",         /* Sun JDK */
+    "$JAVA_HOME/lib/" CPU "/classic/libjvm.so",     /* Sun JRE 1.2 */
+    "$JAVA_HOME/lib/" CPU "/server/libjvm.so",      /* Sun JRE 1.4 */
+    "$JAVA_HOME/lib/" CPU "/client/libjvm.so",      /* Sun JRE 1.3 */
+    "$JAVA_HOME/lib/" CPU "/libjvm.so",             /* Sun JRE */
+    "$JAVA_HOME/jre/bin/" CPU "/classic/libjvm.so", /* IBM JDK 1.3 */
+    "$JAVA_HOME/jre/bin/" CPU "/libjvm.so",         /* IBM JDK */
+    "$JAVA_HOME/bin/" CPU "/classic/libjvm.so",     /* IBM JRE 1.3 */
+    "$JAVA_HOME/bin/" CPU "/libjvm.so",             /* IBM JRE */
     /* Those are "weirdos: if we got here, we're probably in troubles and
      *  we're not going to find anything, but hope never dies...
      */
@@ -135,7 +135,7 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/lib/" CPU "/hotspot/libjvm." SO_EXT,
     "$JAVA_HOME/jre/lib/" CPU "/classic/libjvm." SO_EXT,
 #endif
-    "/usr/lib/libgcj.so.7",     /* gcc java libraries */
+    "/usr/lib/libgcj.so.7",            /* gcc java libraries */
     "/usr/lib/libgcj.so.6",
     NULL,
 };
@@ -153,7 +153,7 @@ char *location_jvm_configured[] = {
     "$JAVA_HOME/jre/bin/$VM_NAME/jvm.dll",              /* Sun JDK 1.3 */
 #elif defined(OS_LINUX) || defined(OS_SOLARIS) || defined(OS_BSD) || defined(OS_FREEBSD) || defined(OS_TRU64) || defined(OS_AIX)
     "$JAVA_HOME/lib/$VM_NAME/libjvm.so",                /* Java 9 */
-	"$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JDK 1.3 */
+    "$JAVA_HOME/jre/lib/" CPU "/$VM_NAME/libjvm.so",    /* Sun JDK 1.3 */
     "$JAVA_HOME/lib/" CPU "/$VM_NAME/libjvm.so",        /* Sun JRE 1.3 */
 #if defined(OS_AIX)
     "$JAVA_HOME/jre/lib/ppc/$VM_NAME/libjvm.so",        /* Sun JDK 1.3 */
@@ -170,4 +170,3 @@ char *location_jvm_configured[] = {
 #endif
     NULL,
 };
-

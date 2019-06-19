@@ -41,19 +41,16 @@ static NSModule multiple(NSSymbol s, NSModule om, NSModule nm)
     NSModule ret = nm;
 
     log_debug("Symbol \"%s\" found in modules \"%s\" and \"%s\" (using %s)",
-              NSNameOfSymbol(s), NSNameOfModule(om), NSNameOfModule(nm),
-              NSNameOfModule(ret));
+              NSNameOfSymbol(s), NSNameOfModule(om), NSNameOfModule(nm), NSNameOfModule(ret));
 
     return (ret);
 }
 
 /* We got an error while linking a module, and if it's not a warning we have
    to abort the whole program */
-static void linkedit(NSLinkEditErrors category, int number, const char *file,
-                     const char *message)
+static void linkedit(NSLinkEditErrors category, int number, const char *file, const char *message)
 {
-    log_error("Errors during link edit of file \"%s\" (error=%d): %s", file,
-              number, message);
+    log_error("Errors during link edit of file \"%s\" (error=%d): %s", file, number, message);
     /* Check if this error was only a warning */
     if (category != NSLinkEditWarningError) {
         log_error("Cannot continue");

@@ -36,7 +36,7 @@ void v_difthf(LPVOID par)
     for (;;) {
         if (WaitForSingleObject(hevint, INFINITE) == WAIT_FAILED) {
             /* something have gone wrong. */
-            return;             /* may be something more is needed. */
+            return;                    /* may be something more is needed. */
         }
 
         /* call the interrupt handler. */
@@ -83,21 +83,20 @@ int SetTerm(void (*func) (void))
     HandleTerm = func;
 
     if (hevint == NULL)
-        return -1;            /* failed */
+        return -1;                     /* failed */
 
     /* create the thread to wait for event */
     hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) v_difthf,
                            (LPVOID) hevint, 0, &ThreadId);
     if (hthread == NULL) {
         /* failed remove the event */
-        CloseHandle(hevint);    /* windows will remove it. */
+        CloseHandle(hevint);           /* windows will remove it. */
         return -1;
     }
 
-    CloseHandle(hthread);       /* not needed */
+    CloseHandle(hthread);              /* not needed */
     return 0;
 }
 #else
 const char __unused_signals_c[] = __FILE__;
 #endif
-

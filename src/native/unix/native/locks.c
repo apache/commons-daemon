@@ -31,12 +31,12 @@ int lockf(int fildes, int function, off_t size)
     switch (function) {
         case F_LOCK:
             buf.l_type = F_WRLCK;
-        break;
+            break;
         case F_ULOCK:
             buf.l_type = F_UNLCK;
-        break;
+            break;
         default:
-        return -1;
+            return -1;
     }
     buf.l_whence = 0;
     buf.l_start = 0;
@@ -47,4 +47,3 @@ int lockf(int fildes, int function, off_t size)
 #else
 const char __unused_locks_c[] = __FILE__;
 #endif
-

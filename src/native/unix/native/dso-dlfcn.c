@@ -58,4 +58,3 @@ char *dso_error(void)
 }
 
 #endif /* ifdef DSO_DLFCN */
-

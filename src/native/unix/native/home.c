@@ -149,9 +149,7 @@ static home_data *build(char *path)
     }
 
     while (location_jvm_cfg[x] != NULL) {
-        if ((k =
-             replace(buf, 1024, location_jvm_cfg[x], "$JAVA_HOME",
-                     path)) != 0) {
+        if ((k = replace(buf, 1024, location_jvm_cfg[x], "$JAVA_HOME", path)) != 0) {
             log_error("Error replacing values for jvm.cfg (%d)", k);
             return (NULL);
         }

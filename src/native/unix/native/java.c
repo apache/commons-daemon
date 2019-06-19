@@ -29,18 +29,18 @@ typedef long long __int64;
 #define jsvc_xlate_from_ascii(b) _a2e(b)
 #endif
 #else
-#define jsvc_xlate_to_ascii(b)  /* NOOP */
-#define jsvc_xlate_from_ascii(b)        /* NOOP */
+#define jsvc_xlate_to_ascii(b)         /* NOOP */
+#define jsvc_xlate_from_ascii(b)       /* NOOP */
 #endif
 
 static JavaVM *jvm = NULL;
 static JNIEnv *env = NULL;
-static jclass cls  = NULL;
+static jclass cls = NULL;
 
 #define FALSE 0
 #define TRUE !FALSE
 
-static void shutdown(JNIEnv *env, jobject source, jboolean reload)
+static void shutdown(JNIEnv * env, jobject source, jboolean reload)
 {
     log_debug("Shutdown requested (reload is %d)", reload);
     if (reload == TRUE)
@@ -49,7 +49,7 @@ static void shutdown(JNIEnv *env, jobject source, jboolean reload)
         main_shutdown();
 }
 
-static void failed(JNIEnv *env, jobject source, jstring message)
+static void failed(JNIEnv * env, jobject source, jstring message)
 {
     if (message) {
         const char *msg = (*env)->GetStringUTFChars(env, message, NULL);
@@ -102,7 +102,7 @@ char *java_library(arg_data *args, home_data *data)
     return libf;
 }
 
-typedef jint (*jvm_create_t)(JavaVM **, JNIEnv **, JavaVMInitArgs *);
+typedef jint(*jvm_create_t) (JavaVM **, JNIEnv **, JavaVMInitArgs *);
 
 bool java_signal(void)
 {
@@ -140,16 +140,16 @@ bool java_init(arg_data *args, home_data *data)
     jvm_create_t symb = NULL;
     JNINativeMethod nativemethods[2];
     JavaVMOption *opt = NULL;
-    dso_handle libh   = NULL;
+    dso_handle libh = NULL;
     JavaVMInitArgs arg;
     char *libf = NULL;
     jint ret;
     int x;
-    char loaderclass[]    = LOADER;
+    char loaderclass[] = LOADER;
     char shutdownmethod[] = "shutdown";
     char shutdownparams[] = "(Z)V";
-    char failedmethod[]   = "failed";
-    char failedparams[]   = "(Ljava/lang/String;)V";
+    char failedmethod[] = "failed";
+    char failedparams[] = "(Ljava/lang/String;)V";
     char daemonprocid[64];
     /* Decide WHAT virtual machine we need to use */
     libf = java_library(args, data);
@@ -182,22 +182,20 @@ bool java_init(arg_data *args, home_data *data)
        - JVM 1.6, the library name is libverify.dylib
        - JVM 1.7 onwards, the library name is libjli.dylib
      */
-	if (replace(appf, 1024, "$JAVA_HOME/../Libraries/libverify.dylib",
-				"$JAVA_HOME", data->path) != 0) {
-		log_error("Cannot replace values in loader library");
-		return false;
-	}
+    if (replace(appf, 1024, "$JAVA_HOME/../Libraries/libverify.dylib",
+                "$JAVA_HOME", data->path) != 0) {
+        log_error("Cannot replace values in loader library");
+        return false;
+    }
     if (stat(appf, &sb)) {
-        if (replace(appf, 1024, "$JAVA_HOME/../MacOS/libjli.dylib",
-                    "$JAVA_HOME", data->path) != 0) {
+        if (replace(appf, 1024, "$JAVA_HOME/../MacOS/libjli.dylib", "$JAVA_HOME", data->path) != 0) {
             log_error("Cannot replace values in loader library");
             return false;
         }
     }
     // DAEMON-331 Alternative path for custom OpenJDK builds
     if (stat(appf, &sb)) {
-        if (replace(appf, 1024, "$JAVA_HOME/lib/jli/libjli.dylib",
-                    "$JAVA_HOME", data->path) != 0) {
+        if (replace(appf, 1024, "$JAVA_HOME/lib/jli/libjli.dylib", "$JAVA_HOME", data->path) != 0) {
             log_error("Cannot replace values in loader library");
             return false;
         }
@@ -212,10 +210,10 @@ bool java_init(arg_data *args, home_data *data)
 #if defined(OSD_POSIX)
     /* BS2000 does not allow to call JNI_CreateJavaVM indirectly */
 #else
-    symb = (jvm_create_t)dso_symbol(libh, "JNI_CreateJavaVM");
+    symb = (jvm_create_t) dso_symbol(libh, "JNI_CreateJavaVM");
     if (symb == NULL) {
 #ifdef OS_DARWIN
-        symb = (jvm_create_t)dso_symbol(apph, "JNI_CreateJavaVM");
+        symb = (jvm_create_t) dso_symbol(apph, "JNI_CreateJavaVM");
         if (symb == NULL) {
 #endif /* ifdef OS_DARWIN */
             log_error("Cannot find JVM library entry point");
@@ -239,7 +237,7 @@ bool java_init(arg_data *args, home_data *data)
     }
 #endif
     arg.ignoreUnrecognized = FALSE;
-    arg.nOptions = args->onum + 5; /* pid, ppid, version, class and abort */
+    arg.nOptions = args->onum + 5;     /* pid, ppid, version, class and abort */
     opt = (JavaVMOption *) malloc(arg.nOptions * sizeof(JavaVMOption));
     for (x = 0; x < args->onum; x++) {
         opt[x].optionString = strdup(args->opts[x]);
@@ -247,30 +245,28 @@ bool java_init(arg_data *args, home_data *data)
         opt[x].extraInfo = NULL;
     }
     /* Add our daemon process id */
-    snprintf(daemonprocid, sizeof(daemonprocid),
-             "-Dcommons.daemon.process.id=%d", (int)getpid());
+    snprintf(daemonprocid, sizeof(daemonprocid), "-Dcommons.daemon.process.id=%d", (int)getpid());
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
-    opt[x++].extraInfo  = NULL;
+    opt[x++].extraInfo = NULL;
 
     snprintf(daemonprocid, sizeof(daemonprocid),
              "-Dcommons.daemon.process.parent=%d", (int)getppid());
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
-    opt[x++].extraInfo  = NULL;
+    opt[x++].extraInfo = NULL;
 
     snprintf(daemonprocid, sizeof(daemonprocid),
              "-Dcommons.daemon.version=%s", JSVC_VERSION_STRING);
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
-    opt[x++].extraInfo  = NULL;
+    opt[x++].extraInfo = NULL;
 
     /* DBCP-388. For the benefit of jconsole. */
-    snprintf(daemonprocid, sizeof(daemonprocid),
-             "-Dsun.java.command=%s", args->clas);
+    snprintf(daemonprocid, sizeof(daemonprocid), "-Dsun.java.command=%s", args->clas);
     opt[x].optionString = strdup(daemonprocid);
     jsvc_xlate_to_ascii(opt[x].optionString);
-    opt[x++].extraInfo  = NULL;
+    opt[x++].extraInfo = NULL;
 
     opt[x].optionString = strdup("abort");
     jsvc_xlate_to_ascii(opt[x].optionString);
@@ -288,8 +284,7 @@ bool java_init(arg_data *args, home_data *data)
 
         for (x = 0; x < args->onum; x++) {
             jsvc_xlate_from_ascii(opt[x].optionString);
-            log_debug("|   \"%s\" (0x%08x)", opt[x].optionString,
-                      opt[x].extraInfo);
+            log_debug("|   \"%s\" (0x%08x)", opt[x].optionString, opt[x].extraInfo);
             jsvc_xlate_to_ascii(opt[x].optionString);
         }
         log_debug("+-------------------------------------------------------");
@@ -297,8 +292,7 @@ bool java_init(arg_data *args, home_data *data)
 
         for (; x < arg.nOptions; x++) {
             jsvc_xlate_from_ascii(opt[x].optionString);
-            log_debug("|   \"%s\" (0x%08x)", opt[x].optionString,
-                      opt[x].extraInfo);
+            log_debug("|   \"%s\" (0x%08x)", opt[x].optionString, opt[x].extraInfo);
             jsvc_xlate_to_ascii(opt[x].optionString);
         }
         log_debug("+-------------------------------------------------------");
@@ -384,12 +378,12 @@ bool JVM_destroy(int exit)
 /* Call the load method in our DaemonLoader class */
 bool java_load(arg_data *args)
 {
-    jclass stringClass       = NULL;
-    jstring className        = NULL;
-    jstring currentArgument  = NULL;
+    jclass stringClass = NULL;
+    jstring className = NULL;
+    jstring currentArgument = NULL;
     jobjectArray stringArray = NULL;
-    jmethodID method         = NULL;
-    jboolean ret             = FALSE;
+    jmethodID method = NULL;
+    jboolean ret = FALSE;
     int x;
     char lang[] = "java/lang/String";
     char load[] = "load";
@@ -436,8 +430,7 @@ bool java_load(arg_data *args)
     }
 
     log_debug("Daemon loading...");
-    ret = (*env)->CallStaticBooleanMethod(env, cls, method, className,
-                                          stringArray);
+    ret = (*env)->CallStaticBooleanMethod(env, cls, method, className, stringArray);
     if (ret == FALSE) {
         log_error("Cannot load daemon");
         return false;
@@ -609,4 +602,3 @@ bool java_destroy(void)
     log_debug("Daemon destroyed successfully");
     return true;
 }
-

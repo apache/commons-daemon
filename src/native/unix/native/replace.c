@@ -77,7 +77,7 @@ int replace(char *new, int len, char *old, char *mch, char *rpl)
      * and of how many bytes we need to shift the data
      */
     shift = rlen - mlen;
-    nlen  = olen + (shift * count);
+    nlen = olen + (shift * count);
     /* printf("Count=%d Shift= %d OLen=%d NLen=%d\n",count,shift,olen,nlen); */
 
     /* Check if we have enough size in the buffer */
@@ -117,4 +117,3 @@ int replace(char *new, int len, char *old, char *mch, char *rpl)
     }
     return 0;
 }
-

@@ -119,10 +119,10 @@ void help(home_data *data)
     printf("    --patch-module=<module name>\n");
     printf("        Java 9 --patch-module option. Passed as it is to JVM\n");
     printf("    --illegal-access=<value>\n");
-    printf("        Java 9 --illegal-access option. Passed as it is to JVM. Refer java help for possible values.\n");
+    printf("        Java 9 --illegal-access option. Passed as it is to JVM.\n");
+    printf("        Refer java help for possible values.\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
     printf("Copyright (c) 1999-2019 Apache Software Foundation.\n");
 
     printf("\n");
 }
-
