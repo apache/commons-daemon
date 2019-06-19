@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
--i4 -npsl -di0 -br -nce -d0 -cli0 -npcs -nfc1 -nut -ncs
+-i4 -npsl -di0 -br -nce -d0 -cli4 -npcs -nfc1 -nut -ncs -nbbo -l100 -c40
 -Tbool
 -Targ_data
 -Thome_data
 -Thome_jvm
 -Tdso_handle
-
+-Tcap_t
