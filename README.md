@@ -46,7 +46,7 @@ Apache Commons Daemon
 [![Build Status](https://travis-ci.org/apache/commons-daemon.svg)](https://travis-ci.org/apache/commons-daemon)
 [![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg)](https://coveralls.io/r/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
-[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.1.1.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.1.1)
+[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.1.0.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.1.0)
 
 Apache Commons Daemon software provides an alternative invocation mechanism for unix-daemon-like Java code.
 
