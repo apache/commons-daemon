@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
--i4 -npsl -di0 -br -nce -d0 -cli4 -npcs -nfc1 -nut -ncs -nbbo -l100 -c40
+-i4 -npsl -di0 -br -nce -d0 -cli4 -npcs -nfc1 -nut -ncs -nbbo -l100 -c40 -il0
 -Tbool
 -Targ_data
 -Thome_data
