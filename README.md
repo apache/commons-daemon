@@ -25,7 +25,7 @@
  | commons-build-plugin/trunk/src/main/resources/commons-xdoc-templates |
  +======================================================================+
  |                                                                      |
- | 1) Re-generate using: mvn commons:readme-md                          |
+ | 1) Re-generate using: mvn commons-build:readme-md                    |
  |                                                                      |
  | 2) Set the following properties in the component's pom:              |
  |    - commons.componentid (required, alphabetic, lower case)          |
@@ -43,10 +43,10 @@
 Apache Commons Daemon
 ===================
 
-[![Build Status](https://travis-ci.org/apache/commons-daemon.svg?branch=master)](https://travis-ci.org/apache/commons-daemon)
-[![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg?branch=master)](https://coveralls.io/r/apache/commons-daemon)
+[![Build Status](https://travis-ci.org/apache/commons-daemon.svg)](https://travis-ci.org/apache/commons-daemon)
+[![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg)](https://coveralls.io/r/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.1.1.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.1.1)
 
 Apache Commons Daemon software provides an alternative invocation mechanism for unix-daemon-like Java code.
 
@@ -54,7 +54,7 @@ Documentation
 -------------
 
 More information can be found on the [Apache Commons Daemon homepage](https://commons.apache.org/proper/commons-daemon).
-The [JavaDoc](https://commons.apache.org/proper/commons-daemon/javadocs/api-release) can be browsed.
+The [Javadoc](https://commons.apache.org/proper/commons-daemon/apidocs) can be browsed.
 Questions related to the usage of Apache Commons Daemon should be posted to the [user mailing list][ml].
 
 Where can I get the latest release?
