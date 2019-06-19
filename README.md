@@ -43,8 +43,10 @@
 Apache Commons Daemon
 ===================
 
-[![Build Status](https://travis-ci.org/apache/commons-daemon.svg?branch=trunk)](https://travis-ci.org/apache/commons-daemon)
+[![Build Status](https://travis-ci.org/apache/commons-daemon.svg?branch=master)](https://travis-ci.org/apache/commons-daemon)
+[![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg?branch=master)](https://coveralls.io/r/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 Apache Commons Daemon software provides an alternative invocation mechanism for unix-daemon-like Java code.
 
@@ -52,7 +54,7 @@ Documentation
 -------------
 
 More information can be found on the [Apache Commons Daemon homepage](https://commons.apache.org/proper/commons-daemon).
-The [Javadoc](https://commons.apache.org/proper/commons-daemon/javadocs/api-release) can be browsed.
+The [JavaDoc](https://commons.apache.org/proper/commons-daemon/javadocs/api-release) can be browsed.
 Questions related to the usage of Apache Commons Daemon should be posted to the [user mailing list][ml].
 
 Where can I get the latest release?
