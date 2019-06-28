@@ -48,7 +48,10 @@ Apache Commons Daemon
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
 [![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.2.0.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.2.0)
 
-Apache Commons Daemon software provides an alternative invocation mechanism for unix-daemon-like Java code.
+Apache Commons Daemon software is a set of utilities and Java support
+    classes for running Java applications as server processes. These are
+    commonly known as 'daemon' processes in Unix terminology (hence the
+    name). On Windows they are called 'services'.
 
 Documentation
 -------------
