@@ -35,7 +35,7 @@ import java.util.StringTokenizer;
  * special &quot;*&quot; value implies all permissions for the given
  * name:
  * </p>
- * <table width="100%" border="1">
+ * <table border="1">
  *  <caption>Supported Actions</caption>
  *  <tr>
  *   <th>Target&quot;Name</th>
