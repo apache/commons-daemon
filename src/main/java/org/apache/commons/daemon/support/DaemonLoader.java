@@ -83,7 +83,7 @@ public final class DaemonLoader
             }
 
             /* Create a new instance of the daemon */
-            c.newInstance();
+            c.getConstructor().newInstance();
 
         } catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
@@ -185,7 +185,7 @@ public final class DaemonLoader
             }
 
             /* Create a new instance of the daemon */
-            daemon = c.newInstance();
+            daemon = c.getConstructor().newInstance();
 
             if (isdaemon) {
                 /* Create a new controller instance */
