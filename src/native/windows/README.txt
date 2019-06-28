@@ -9,49 +9,42 @@ options, but a trivial build is simply;
   nmake CPU=X86 PREFIX=c:\desired\path\of\daemon install
 
 
-Needed Tools
-============
+Release Builds
+==============
 
-Commons Daemon needs the Microsoft Visual C 6/SP5 to
-build the x86 binaries. This is because this compiler
-doesn't create MSVCRTnn.DLL dependencies which will
-be loaded inside running JVM if used.
-For building AMD64/EMT64 binaries use the Platform SDK
-for Windows Server 2003R2.
+We jump through some additional hoops for release builds to avoid additional
+dependencies over and above those DLLs that are known to be present on every
+Windows install. If you build the binaries with a recent version of Visual
+Studio then it is likely the resulting binaries will have additional
+dependencies. You can check this with the Depends.exe tool provided with Visual
+Studio.
+
+Release builds are build with Mladen Turk's (mturk) Custom Microsoft Compiler
+Toolkit Compilation. This can be obtained from:
+https://github.com/mturk/cmsc
+Hash: cb6be932c8c95a46262a64a89e68aae620dfdcee
+Compile as per <cmsc-root>/tools/README.txt
+
+A detailed description of the full environment used for recent release builds is
+provided at:
+https://cwiki.apache.org/confluence/display/TOMCAT/Common+Native+Build+Environment
+
+The steps to produce the Windows binaries is then:
+
+1. cd $GIT_CLONE_DIR\src\native\windows\apps\prunmgr
+
+2. $CMCS_ROOT\setenv.bat /x86
+
+3. nmake -f Makefile
+
+4. cd ..\prunsrv
+
+5. nmake -f Makefile
+
+6. $CMCS_ROOT\setenv.bat /x64
+
+7. nmake -f Makefile
 
 
-Step by Step
-============
-
-0. These were written for 64-bit XP. YMMV.
-
-1. Install the pre-requisites:
-   - Microsoft Visual C 6
-   - Microsoft Visual C 6 Service Pack 5
-   - Platform SDK for Windows Server 2003 R2
-
-2. Open a new command prompt (to ensure the environment is clean)
-   You'll need to do this for each different platform you want to build
-
-3. Configure the Visual C environment variables
-   Not necessary if the option to add them to the user's environment was
-   selected on install
-   %VC6_DIR%\Bin\VCVARS32.BAT
-   (e.g. "c:\Program Files (x86)\Microsoft Visual Studio\VC98\Bin\VCVARS32.BAT")
-
-4. Configure the Platform SDK environment (optional for X86?)
-   - win32
-     <PlatformSdkDir>\SetEnv /SRV32 /RETAIL 
-   - x64
-     <PlatformSdkDir>\SetEnv /X64 /RETAIL 
-   - i64
-     <PlatformSdkDir>\SetEnv /SRV64 /RETAIL 
-
-5. On 64-bit platforms set the following environment variable
-   set EXTRA_CFLAGS=/GS-
-
-6. Build the binary
-   - win32
-     nmake CPU=X86
-   - x64
-     nmake CPU=X64
+It is not necessary to build a 64-bit version of prunmgr since the 32-bit
+version works with both 32-bit and 64-bit services.
