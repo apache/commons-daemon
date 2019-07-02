@@ -35,7 +35,7 @@ and replace it with the new version.
 
 These include:
 Before tagging:
- - /RELEASE-NOTES.txt                           (Should be unchanged for point releases)
+ - /RELEASE-NOTES.txt                           (version)
  - /pom.xml                                     (version & commons.release.version)
  - /src/changes/changes.xml                     (Set date)
  - /src/native/unix/man/jsvc1.xml               (Set date & version)

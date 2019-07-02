@@ -38,6 +38,8 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
+    <release version="1.2.1" date="TBD" description="Bug fix release">
+    </release>
     <release version="1.2.0" date="2019-06-28" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >
         Procrun. Add to OPT_LFLAGS rather than overwrite OPT_LFLAGS when setting
