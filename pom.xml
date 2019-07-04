@@ -38,7 +38,7 @@
     commonly known as 'daemon' processes in Unix terminology (hence the
     name). On Windows they are called 'services'.
   </description>
-  <url>http://commons.apache.org/proper/commons-daemon/</url>
+  <url>https://commons.apache.org/proper/commons-daemon/</url>
 
   <issueManagement>
     <system>jira</system>

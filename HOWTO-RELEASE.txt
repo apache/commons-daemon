@@ -107,4 +107,4 @@ to obtain these.
 Updating the site
 -----------------
 
-See http://commons.apache.org/site-publish.html
+See https://commons.apache.org/site-publish.html
