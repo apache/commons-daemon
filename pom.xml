@@ -42,7 +42,7 @@
 
   <issueManagement>
     <system>jira</system>
-    <url>http://issues.apache.org/jira/browse/DAEMON</url>
+    <url>https://issues.apache.org/jira/browse/DAEMON</url>
   </issueManagement>
 
   <scm>
