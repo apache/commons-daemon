@@ -1268,7 +1268,7 @@ int main(int argc, char *argv[])
     }
     envmask = umask(args->umask);
     set_output(args->outfile, args->errfile, args->redirectstdin, args->procname);
-    log_debug("Switching umask back to %03o from %03o", envmask, args->umask);
+    log_debug("Switching umask from %03o to %03o", envmask, args->umask);
     res = run_controller(args, data, uid, gid);
     if (logger_pid != 0) {
         kill(logger_pid, SIGTERM);

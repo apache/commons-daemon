@@ -39,6 +39,9 @@
   </properties>
   <body>
     <release version="1.2.1" date="TBD" description="Bug fix release">
+      <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
+        jsvc. Correct debug log message that reports change in umask.
+      </action>
     </release>
     <release version="1.2.0" date="2019-06-28" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >
@@ -49,7 +52,7 @@
         Procrun. Only set the global shutdown event if the event is created.
       </action>
       <action issue="DAEMON-379" type="fix" dev="sebb">
-        Unable to build with Java 9 using ant; dropped Ant build files
+        Unable to build with Java 9 using ant; dropped Ant build files.
       </action>
       <action issue="DAEMON-384" type="fix" dev="ggregory" due-to="blassmegod">
         Procrun. prunsrv stopping with error due to hard-coded timeout.
