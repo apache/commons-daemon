@@ -25,16 +25,17 @@ static LPCWSTR REGPARAMS        = L"Parameters";
 static LPCWSTR REGDESCRIPTION   = L"Description";
 static LPCWSTR REGSEPARATOR     = L"\\";
 static LPCWSTR REGAPACHE_ROOT   = L"Apache Software Foundation";
+
+static DWORD JRE = 0; /* start of JRE in JRE_REGKEYS */
+static DWORD JDK = 3; /* start of JDK in JRE_REGKEYS */
 /* Predefined Java keys
- * The code below assumes the JRE and JDK arrays are the same length
+ * They are searched in the sequence defined here. First hit wins.
  */
 static LPCWSTR JRE_REGKEYS[] = {
     L"SOFTWARE\\JavaSoft\\JRE\\",                       /* Oracle Java 9 (and hopefully later) */
     L"SOFTWARE\\JavaSoft\\Java Runtime Environment\\",  /* Oracle Java 8 (and older) */
     L"SOFTWARE\\IBM\\Java2 Runtime Environment\\",      /* IBM */
-    NULL
-};
-static LPCWSTR JDK_REGKEYS[] = {
+
     L"SOFTWARE\\JavaSoft\\JDK\\",                       /* Oracle Java 9 and (and hopefully later) */
     L"SOFTWARE\\JavaSoft\\Java Development Kit\\",      /* Oracle Java 8 (and older) */
     L"SOFTWARE\\IBM\\Java2 Development Kit\\",          /* IBM */
@@ -773,12 +774,12 @@ LPWSTR apxGetJavaSoftHome(APXHANDLE hPool, BOOL bPreferJre)
         return wsJhome;
 #endif
 
+    dwRegKey = bPreferJre ? JRE : JDK;
+
     while (JRE_REGKEYS[dwRegKey]) {
         lstrcpyW(wsKey, JAVA_CURRENT);
-        if (bPreferJre)
-            lstrcpyW(wsBuf, JRE_REGKEYS[dwRegKey]);
-        else
-            lstrcpyW(wsBuf, JDK_REGKEYS[dwRegKey]);
+        lstrcpyW(wsBuf, JRE_REGKEYS[dwRegKey]);
+
         dwRegKey++;
         dwLen = lstrlenW(wsBuf);
         off = &wsBuf[dwLen];
