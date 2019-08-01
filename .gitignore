@@ -2,7 +2,7 @@
 /.settings/
 /.classpath
 /.project
-/src/native/unix/autom4te.cache
+/src/native/unix/autom4te.cache/
 /src/native/unix/config.log
 /src/native/unix/config.nice
 /src/native/unix/configure
