@@ -70,7 +70,7 @@
         from ERROR to DEBUG. 
       </action>
       <action issue="DAEMON-393" type="fix" dev="ggregory" due-to="Daniel Hofmann">
-        Procrun. Revered code comments for JRE and JDK locations in the
+        Procrun. Correct reversed code comments for JRE and JDK locations in the
         registry.
       </action>
       <action issue="DAEMON-392" type="fix" dev="ggregory" due-to="Daniel Hofmann">
