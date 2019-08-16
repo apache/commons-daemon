@@ -46,9 +46,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/commons-daemon.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/commons-daemon.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf?p=commons-daemon.git</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/commons-daemon.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-daemon.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=commons-daemon.git</url>
   </scm>
 
   <developers>
