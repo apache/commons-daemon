@@ -118,7 +118,7 @@ LPSTR       MzWideToAscii(LPCWSTR ws, LPSTR s);
 LPSTR       WideToANSI(LPCWSTR ws);
 LPSTR       MzWideToANSI(LPCWSTR ws);
 
-typedef int (__stdcall *WPUTENV) (const wchar_t *env);
+typedef int (*WPUTENV) (const wchar_t *env);
 
 typedef struct APXMULTISZ APXMULTISZ;
 typedef APXMULTISZ*       LPAPXMULTISZ;

@@ -42,6 +42,10 @@
       <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
         jsvc. Correct debug log message that reports change in umask.
       </action>
+      <action issue="DAEMON-401" type="fix" dev="markt" due-to="Norimasa Yamamoto">
+        Procrun. Correct a regression in the previous fix for this issue that
+        caused 32-bit services to crash on start-up.
+      </action> 
     </release>
     <release version="1.2.0" date="2019-06-28" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >
