@@ -50,6 +50,11 @@
         Procrun. Correct a regression in the fix for DAEMON-391 that caused the
         GUI to mix-up the WARN and INFO logging levels. 
       </action>
+      <action issue="DAEMON-404" type="fix" dev="markt">
+        Procrun. Expand the search for a valid Java runtime library to include
+        the current JDK home defined in the Windows registry. Fully document the
+        search algorithm used to find the Java runtime library.
+      </action>
     </release>
     <release version="1.2.0" date="2019-06-28" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >

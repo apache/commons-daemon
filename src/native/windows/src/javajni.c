@@ -213,10 +213,12 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
             apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib specified '%S'", dllJvmPath);
             return FALSE;
         }
+        apxLogWrite(APXLOG_MARK_DEBUG "Explicit RuntimeLib specified '%S'", dllJvmPath);
     }
     else {
     	// No explicit JVM path. Use the standard registry locations.
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
+        apxLogWrite(APXLOG_MARK_DEBUG "No explicit RuntimeLib specified. Checking registry. Found '%S'", dllJvmPath);
     }
 
     if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
@@ -224,24 +226,41 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
          * Check from Jre JavaHome registry key directly
          */
         LPWSTR szJreHome = apxGetJavaSoftHome(NULL, TRUE);
-        apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S'", dllJvmPath);
         if (szJreHome) {
-            apxLogWrite(APXLOG_MARK_DEBUG "Using Jre JavaHome '%S'", szJreHome);
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S', Checking registry for JRE home. Found '%S'", dllJvmPath, szJreHome);
             lstrlcpyW(jreAltPath, SIZ_PATHLEN, szJreHome);
+            lstrlcatW(jreAltPath, SIZ_PATHLEN, L"\\bin\\server\\jvm.dll");
+            dllJvmPath = jreAltPath;
+        } else {
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S', Checking registry for JRE home. None found.", dllJvmPath);
+        }
+    }
+
+    if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
+        /* DAEMON-247: JavaSoft JRE registry keys are invalid / not present
+         * Check from Procrun's JavaHome registry key
+         */
+        if (szJavaHome) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Using explicitly configured JavaHome '%S'", szJavaHome);
+            lstrlcpyW(jreAltPath, SIZ_PATHLEN, szJavaHome);
             lstrlcatW(jreAltPath, SIZ_PATHLEN, L"\\bin\\server\\jvm.dll");
             dllJvmPath = jreAltPath;
         }
     }
 
     if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
-        /* DAEMON-247: JavaSoft registry keys are invalid
-         * Check from Procrun's JavaHome registry key
+        /* DAEMON-404: JRE home in registry invalid / not present.
+         * Explicit JavaHome invalid / not present
+         * Check from JDK JavaHome registry key directly
          */
-        if (szJavaHome) {
-            apxLogWrite(APXLOG_MARK_DEBUG "Using JavaHome '%S'", szJavaHome);
-            lstrlcpyW(jreAltPath, SIZ_PATHLEN, szJavaHome);
+        LPWSTR szJdkHome = apxGetJavaSoftHome(NULL, FALSE);
+        if (szJdkHome) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S', Checking registry for JDK home. Found '%S'", dllJvmPath, szJdkHome);
+            lstrlcpyW(jreAltPath, SIZ_PATHLEN, szJdkHome);
             lstrlcatW(jreAltPath, SIZ_PATHLEN, L"\\bin\\server\\jvm.dll");
             dllJvmPath = jreAltPath;
+        } else {
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib '%S', Checking registry for JDK home. None found.", dllJvmPath);
         }
     }
 

@@ -383,7 +383,13 @@ will add the new value(s) to any existing value(s).
     <td>--Jvm</td>
     <td>auto</td>
     <td>Use either <b>auto</b> (i.e. find the JVM from the Windows registry) or specify the full path to the <b>jvm.dll</b>.
-        You can use environment variable expansion here.</td>
+        You can use environment variable expansion here. When auto is specified the following search order is used:
+        <ol>
+        <li>The current Java runtime library as defined in the registry</li>
+        <li>The current JRE as defined in the registry</li>
+        <li>The explicitly configured JavaHome for the service</li>
+        <li>The current JDK as defined in the registry</li>
+        </ol></td>
     </tr>
     <tr>
     <td>++JvmOptions</td>
