@@ -46,7 +46,7 @@ Apache Commons Daemon
 [![Build Status](https://travis-ci.org/apache/commons-daemon.svg)](https://travis-ci.org/apache/commons-daemon)
 [![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg)](https://coveralls.io/r/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
-[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.2.0.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.2.0)
+[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.2.1.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.2.1)
 
 Apache Commons Daemon software is a set of utilities and Java support
     classes for running Java applications as server processes. These are
@@ -70,7 +70,7 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
   <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 </dependency>
 ```
 
