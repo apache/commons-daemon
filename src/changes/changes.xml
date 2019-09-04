@@ -56,7 +56,7 @@
         search algorithm used to find the Java runtime library.
       </action>
     </release>
-    <release version="1.2.0" date="2019-06-28" description="Feature and bug fix release">
+    <release version="1.2.0" date="2019-07-02" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >
         Procrun. Add to OPT_LFLAGS rather than overwrite OPT_LFLAGS when setting
         /OPT:REF in the make file for Windows.
