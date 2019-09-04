@@ -46,6 +46,10 @@
         Procrun. Correct a regression in the previous fix for this issue that
         caused 32-bit services to crash on start-up.
       </action> 
+      <action issue="DAEMON-407" type="fix" dev="markt">
+        Procrun. Correct a regression in the fix for DAEMON-391 that caused the
+        GUI to mix-up the WARN and INFO logging levels. 
+      </action>
     </release>
     <release version="1.2.0" date="2019-06-28" description="Feature and bug fix release">
       <action type="fix" dev="markt" due-to="mturk" >

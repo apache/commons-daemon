@@ -950,16 +950,16 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                                                _s_log, L"Level")) != NULL) {
                     if (!lstrcmpiW(b, LOGL_ERROR))
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 0);
-                    else if (!lstrcmpiW(b, LOGL_INFO))
-                        ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 1);
                     else if (!lstrcmpiW(b, LOGL_WARN))
+                        ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 1);
+                    else if (!lstrcmpiW(b, LOGL_INFO))
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 2);
                     else
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 3);
                     apxFree(b);
                 }
                 else
-                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 1);
+                    ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 2);
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"Path")) != NULL) {
                     SetDlgItemTextW(hDlg, IDC_PPLGPATH, b);
