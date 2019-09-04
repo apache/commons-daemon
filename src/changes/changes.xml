@@ -38,7 +38,7 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.2.1" date="TBD" description="Bug fix release">
+    <release version="1.2.1" date="2019-09-09" description="Bug fix release">
       <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
         jsvc. Correct debug log message that reports change in umask.
       </action>
