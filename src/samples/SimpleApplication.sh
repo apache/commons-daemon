@@ -20,7 +20,7 @@
 # Adapt the following lines to your configuration
 JAVA_HOME=/opt/java6
 PROGRAM=SimpleApplication
-CLASSPATH=`pwd`/$PROGRAM.jar:`pwd`/commons-daemon-1.2.1.jar
+CLASSPATH=`pwd`/$PROGRAM.jar:`pwd`/commons-daemon-1.2.2.jar
 
 case "$1" in
   start )

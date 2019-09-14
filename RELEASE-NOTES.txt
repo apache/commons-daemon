@@ -15,7 +15,7 @@
   limitations under the License.
 ================================================================================
 
-                   Apache Commons Daemon 1.2.1
+                   Apache Commons Daemon 1.2.2
                          Release Notes
 
 This document contains the release notes for this version of the

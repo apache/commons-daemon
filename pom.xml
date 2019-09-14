@@ -27,7 +27,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
-  <version>1.2.1-SNAPSHOT</version>
+  <version>1.2.2-SNAPSHOT</version>
   <name>Apache Commons Daemon</name>
   <!-- Daemon started in Commons in 2002 with an import of code from Tomcat,
        which is why the NOTICE file has an earlier date than the inceptionYear -->
@@ -113,7 +113,7 @@
     <maven.compiler.target>1.6</maven.compiler.target>
     <commons.componentid>daemon</commons.componentid>
     <commons.module.name>org.apache.commons.daemon</commons.module.name>
-    <commons.release.version>1.2.1</commons.release.version>
+    <commons.release.version>1.2.2</commons.release.version>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
   </properties>
