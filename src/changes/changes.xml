@@ -44,6 +44,9 @@
         the service from starting unless support for the universal C runtime had
         been installed.
       </action>
+      <action type="update" dev="markt">
+        Update Commons-Parent to version 49.
+      </action>
     </release>
     <release version="1.2.1" date="2019-09-09" description="Bug fix release">
       <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
