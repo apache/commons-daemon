@@ -417,7 +417,7 @@ void apxSetInprocEnvironment()
 {
     LPWSTR p, e;
     HMODULE hmodUcrt;
-    WPUTENV wputenv_ucrt;
+    WPUTENV wputenv_ucrt = NULL;
 
     if (!SO_ENVIRONMENT)
         return;    /* Nothing to do */

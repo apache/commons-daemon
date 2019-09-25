@@ -61,7 +61,7 @@ BOOL apxAddToPathW(APXHANDLE hPool, LPCWSTR szAdd)
     DWORD  rc;
     DWORD  al;
     HMODULE hmodUcrt;
-    WPUTENV wputenv_ucrt;
+    WPUTENV wputenv_ucrt = NULL;
 
     rc = GetEnvironmentVariableW(L"PATH", NULL, 0);
     if (rc == 0 && GetLastError() == ERROR_ENVVAR_NOT_FOUND)
