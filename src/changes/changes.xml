@@ -48,7 +48,11 @@
         Update Commons-Parent to version 49.
       </action>
       <action type="fix" dev="markt">
-        Fix compiler warnings for unreferenced formal parameters.
+        Procrun. Fix compiler warnings for unreferenced formal parameters.
+      </action>
+      <action type="fix" dev="markt">
+        Procrun. Switch code to use more secure versions of Windows API calls to
+        resolve warnings reported by newer versions of Visual Studio.
       </action>
       <action type="fix" dev="markt">
         Correct the source assembly definitions to add README.md,
