@@ -108,7 +108,7 @@ BUILD_CPU=$(PROCESSOR_ARCHITECTURE)
 !IF "$(BUILD_CPU)" == "i386" || "$(BUILD_CPU)" == "x86" || "$(BUILD_CPU)" == "i686"
 CPU=X86
 !ENDIF
-!IF "$(BUILD_CPU)" == "amd64" || "$(BUILD_CPU)" == "x86_64" || "$(BUILD_CPU)" == "x64"
+!IF "$(BUILD_CPU)" == "AMD64" || "$(BUILD_CPU)" == "amd64" || "$(BUILD_CPU)" == "x86_64" || "$(BUILD_CPU)" == "x64"
 CPU=X64
 !ENDIF
 # did we manage to set CPU?
