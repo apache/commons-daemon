@@ -24,13 +24,13 @@
     <fileSets>
         <fileSet>
             <includes>
-                <include>build.properties.sample</include>
-                <include>build.xml</include>
+                <include>CONTRIBUTING.md</include>
+                <include>HOWTO-RELEASE.txt</include>
                 <include>LICENSE.txt</include>
                 <include>NOTICE.txt</include>
                 <include>pom.xml</include>
                 <include>PROPOSAL.html</include>
-                <include>README</include>
+                <include>README.md</include>
                 <include>RELEASE-NOTES.txt</include>
             </includes>
         </fileSet>
@@ -52,6 +52,9 @@
             <includes>
                 <include>native/windows/**</include>
             </includes>
+            <excludes>
+                <exclude>apps/*/*_RELEASE/**</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src</directory>

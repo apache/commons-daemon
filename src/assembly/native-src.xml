@@ -61,6 +61,7 @@
                 <exclude>**/*.ico</exclude>
                 <exclude>**/*.bmp</exclude>
                 <exclude>**/*.rc</exclude>
+                <exclude>apps/*/*_RELEASE/**</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
