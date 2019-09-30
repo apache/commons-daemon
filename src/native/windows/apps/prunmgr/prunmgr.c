@@ -132,12 +132,12 @@ static void createRbuttonTryMenu(HWND hWnd)
                 canStart = TRUE;
         }
     }
-    apxAppendMenuItem(hMnu, IDM_TM_CONFIG, TMNU_CONF,  TRUE, TRUE);
+    apxAppendMenuItem(hMnu, IDM_TM_CONFIG, TMNU_CONF,  TRUE,  TRUE);
     apxAppendMenuItem(hMnu, IDM_TM_START,  TMNU_START, FALSE, canStart);
     apxAppendMenuItem(hMnu, IDM_TM_STOP,   TMNU_STOP,  FALSE, canStop);
     apxAppendMenuItem(hMnu, IDM_TM_DUMP,   TMNU_DUMP,  FALSE, canStop);
     apxAppendMenuItem(hMnu, IDM_TM_EXIT,   TMNU_EXIT,  FALSE, TRUE);
-    apxAppendMenuItem(hMnu,    -1, NULL,   FALSE, FALSE);
+    apxAppendMenuItem(hMnu, 0,             NULL,       FALSE, FALSE);
     apxAppendMenuItem(hMnu, IDM_TM_ABOUT,  TMNU_ABOUT, FALSE, TRUE);
 
     /* Ensure we have a focus */
@@ -337,7 +337,6 @@ BOOL __generalLogonSave(HWND hDlg)
     WCHAR szU[SIZ_RESLEN];
     WCHAR szP[SIZ_RESLEN];
     WCHAR szC[SIZ_RESLEN];
-    DWORD dwStartType = SERVICE_NO_CHANGE;
 
     if (!(TST_BIT_FLAG(_propertyChanged, 2)))
         return TRUE;
@@ -592,7 +591,7 @@ void __generalPropertyRefresh(HWND hDlg)
 static BOOL bpropCentered = FALSE;
 static HWND _generalPropertyHwnd = NULL;
 
-LRESULT CALLBACK __generalProperty(HWND hDlg,
+INT_PTR CALLBACK __generalProperty(HWND hDlg,
                                    UINT uMessage,
                                    WPARAM wParam,
                                    LPARAM lParam)
@@ -725,7 +724,7 @@ LRESULT CALLBACK __generalProperty(HWND hDlg,
     return FALSE;
 }
 
-LRESULT CALLBACK __logonProperty(HWND hDlg,
+INT_PTR CALLBACK __logonProperty(HWND hDlg,
                                  UINT uMessage,
                                  WPARAM wParam,
                                  LPARAM lParam)
@@ -927,7 +926,7 @@ LRESULT CALLBACK __logonProperty(HWND hDlg,
     return FALSE;
 }
 
-LRESULT CALLBACK __loggingProperty(HWND hDlg,
+INT_PTR CALLBACK __loggingProperty(HWND hDlg,
                                    UINT uMessage,
                                    WPARAM wParam,
                                    LPARAM lParam)
@@ -1084,7 +1083,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
     return FALSE;
 }
 
-LRESULT CALLBACK __jvmProperty(HWND hDlg,
+INT_PTR CALLBACK __jvmProperty(HWND hDlg,
                                UINT uMessage,
                                WPARAM wParam,
                                LPARAM lParam)
@@ -1225,7 +1224,7 @@ LRESULT CALLBACK __jvmProperty(HWND hDlg,
     return FALSE;
 }
 
-LRESULT CALLBACK __startProperty(HWND hDlg,
+INT_PTR CALLBACK __startProperty(HWND hDlg,
                                  UINT uMessage,
                                  WPARAM wParam,
                                  LPARAM lParam)
@@ -1375,7 +1374,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
     return FALSE;
 }
 
-LRESULT CALLBACK __stopProperty(HWND hDlg,
+INT_PTR CALLBACK __stopProperty(HWND hDlg,
                                 UINT uMessage,
                                 WPARAM wParam,
                                 LPARAM lParam)
