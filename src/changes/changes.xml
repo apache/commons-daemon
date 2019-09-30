@@ -47,6 +47,9 @@
       <action type="update" dev="markt">
         Update Commons-Parent to version 49.
       </action>
+      <action type="fix" dev="markt">
+        Fix compiler warnings for unreferenced formal parameters.
+      </action>
     </release>
     <release version="1.2.1" date="2019-09-09" description="Bug fix release">
       <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
