@@ -321,14 +321,16 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
          */
         if (!aOut)
             DeleteFileW(lpWrapper->szStdOutFilename);
-        if ((lpWrapper->fpStdOutFile = _wfopen(lpWrapper->szStdOutFilename,
-                                               L"a"))) {
+        if ((_wfopen_s(&lpWrapper->fpStdOutFile,
+        		       lpWrapper->szStdOutFilename,
+                       L"a"))) {
+            lpWrapper->szStdOutFilename = NULL;
+        }
+        else {
             _dup2(_fileno(lpWrapper->fpStdOutFile), 1);
             *stdout = *lpWrapper->fpStdOutFile;
             setvbuf(stdout, NULL, _IONBF, 0);
         }
-        else
-            lpWrapper->szStdOutFilename = NULL;
     }
     if (lpWrapper->szStdErrFilename) {
         if (lstrcmpiW(lpWrapper->szStdErrFilename, PRSRV_AUTO) == 0) {
@@ -345,14 +347,16 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
         }
         if (!aErr)
             DeleteFileW(lpWrapper->szStdErrFilename);
-        if ((lpWrapper->fpStdErrFile = _wfopen(lpWrapper->szStdErrFilename,
-                                              L"a"))) {
+        if ((_wfopen_s(&lpWrapper->fpStdErrFile,
+        		       lpWrapper->szStdErrFilename,
+                       L"a"))) {
+            lpWrapper->szStdOutFilename = NULL;
+        }
+        else {
             _dup2(_fileno(lpWrapper->fpStdErrFile), 2);
             *stderr = *lpWrapper->fpStdErrFile;
             setvbuf(stderr, NULL, _IONBF, 0);
         }
-        else
-            lpWrapper->szStdOutFilename = NULL;
     }
     else if (lpWrapper->fpStdOutFile) {
         _dup2(_fileno(lpWrapper->fpStdOutFile), 2);
@@ -1338,9 +1342,9 @@ static DWORD serviceStart()
             if (gPidfileHandle != INVALID_HANDLE_VALUE) {
                 DWORD wr = 0;
                 if (_jni_startup)
-                    _snprintf(pids, 32, "%d\r\n", GetCurrentProcessId());
+                    _snprintf_s(pids, _countof(pids), 32, "%d\r\n", GetCurrentProcessId());
                 else
-                    _snprintf(pids, 32, "%d\r\n", apxProcessGetPid(gWorker));
+                    _snprintf_s(pids, _countof(pids), 32, "%d\r\n", apxProcessGetPid(gWorker));
                 WriteFile(gPidfileHandle, pids, (DWORD)strlen(pids), &wr, NULL);
                 FlushFileBuffers(gPidfileName);
             }
