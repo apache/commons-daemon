@@ -182,6 +182,7 @@ static BOOL __startServiceCallback(APXHANDLE hObject, UINT uMsg,
             break;
     }
     return TRUE;
+	UNREFERENCED_PARAMETER(wParam);
 }
 
 static BOOL __stopServiceCallback(APXHANDLE hObject, UINT uMsg,
@@ -1756,6 +1757,7 @@ static DWORD WINAPI refreshThread(LPVOID lpParam)
         Sleep(1000);
     }
     return 0;
+	UNREFERENCED_PARAMETER(lpParam);
 }
 
 /* Main program entry
@@ -1917,6 +1919,9 @@ cleanup:
     apxHandleManagerDestroy();
     ExitProcess(0);
     return 0;
+	UNREFERENCED_PARAMETER(hInstance);
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(nCmdShow);
 }
 
 // TODO: Figure out a way to move apxSetInprocEnvironment from here and
