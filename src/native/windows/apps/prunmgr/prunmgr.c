@@ -1028,8 +1028,7 @@ LRESULT CALLBACK __loggingProperty(HWND hDlg,
                     }
                 break;
                 case IDC_PPLGBPATH:
-                    lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_LGPATHTITLE, 0),
-                                                NULL);
+                    lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_LGPATHTITLE, 0));
                     if (lpBuf) {
                         SetDlgItemTextW(hDlg, IDC_PPLGPATH, lpBuf);
                         apxFree(lpBuf);
@@ -1295,8 +1294,7 @@ LRESULT CALLBACK __startProperty(HWND hDlg,
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
                 case IDC_PPRBWPATH:
-                    lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_PPWPATH, 0),
-                                                NULL);
+                    lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_PPWPATH, 0));
                     if (lpBuf) {
                         SetDlgItemTextW(hDlg, IDC_PPRWPATH, lpBuf);
                         apxFree(lpBuf);
@@ -1455,8 +1453,7 @@ LRESULT CALLBACK __stopProperty(HWND hDlg,
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
                 case IDC_PPSBWPATH:
-                    lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_PPWPATH, 0),
-                                                NULL);
+                    lpBuf = apxBrowseForFolderW(hDlg, apxLoadResourceW(IDS_PPWPATH, 0));
                     if (lpBuf) {
                         SetDlgItemTextW(hDlg, IDC_PPSWPATH, lpBuf);
                         apxFree(lpBuf);

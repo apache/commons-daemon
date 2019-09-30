@@ -484,7 +484,7 @@ BOOL apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop)
 
 /* Browse for folder dialog.
  */
-LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName)
+LPWSTR apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle)
 {
     BROWSEINFOW  bi;
     LPITEMIDLIST il, ir;

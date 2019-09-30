@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _GUI_H_INCLUDED_
 #define _GUI_H_INCLUDED_
 
@@ -50,7 +50,7 @@ __APXBEGIN_DECLS
 #define IDSU_COMBO              274
 
 
-#define WM_TRAYMESSAGE          (WM_APP+1) 
+#define WM_TRAYMESSAGE          (WM_APP+1)
 
 #define SNDMSGW SendMessageW
 #define SNDMSGA SendMessageA
@@ -89,7 +89,7 @@ typedef struct APXLVITEM {
     INT         iDefault;
     INT         iFmt;
     LPTSTR      szLabel;
-} APXLVITEM, *LPAPXLVITEM; 
+} APXLVITEM, *LPAPXLVITEM;
 
 typedef struct APXGUISTATE {
     DWORD       dwShow;
@@ -140,10 +140,10 @@ int         apxProgressBox(HWND hWnd, LPCTSTR szHeader,
                            LPVOID cbData);
 BOOL        apxYesNoMessage(LPCTSTR szTitle, LPCTSTR szMessage, BOOL bStop);
 
-BOOL        apxCalcStringEllipsis(HDC hDC, LPTSTR  szString, 
+BOOL        apxCalcStringEllipsis(HDC hDC, LPTSTR  szString,
                                   int cchMax, UINT uColWidth);
 
-LPWSTR      apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szName);
+LPWSTR      apxBrowseForFolderW(HWND hWnd, LPCWSTR szTitle);
 
 LPWSTR      apxGetFileNameW(HWND hWnd, LPCWSTR szTitle, LPCWSTR szFilter,
                             LPCWSTR szDefExt, LPCWSTR szDefPath, BOOL bOpenOrSave,
