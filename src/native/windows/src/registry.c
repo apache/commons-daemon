@@ -650,7 +650,6 @@ apxRegistryDeleteW(APXHANDLE hRegistry, DWORD dwFrom,
 {
     LPAPXREGISTRY lpReg;
     HKEY          hKey, hSub = NULL;
-    DWORD         dwType = REG_SZ;
     if (IS_INVALID_HANDLE(hRegistry) ||
         hRegistry->dwType != APXHANDLE_TYPE_REGISTRY)
         return FALSE;
