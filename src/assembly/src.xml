@@ -37,23 +37,22 @@
         <fileSet>
             <directory>src</directory>
             <excludes>
-                <exclude>**/*.sh</exclude>
-                <exclude>native/unix/configure</exclude>
+                <!-- Aligned with .gitignore file -->
+                <exclude>native/unix/Makedefs</exclude>
+                <exclude>native/unix/Makefile</exclude>
                 <exclude>native/unix/autom4te.cache/**</exclude>
-                <exclude>native/windows/**</exclude>
-                <!--
-                <exclude>media/**</exclude>
-                <exclude>site/**</exclude>
-                -->
-            </excludes>
-        </fileSet>
-        <fileSet>
-            <directory>src</directory>
-            <includes>
-                <include>native/windows/**</include>
-            </includes>
-            <excludes>
-                <exclude>apps/*/*_RELEASE/**</exclude>
+                <exclude>native/unix/config.log</exclude>
+                <exclude>native/unix/config.nice</exclude>
+                <exclude>native/unix/config.status</exclude>
+                <exclude>native/unix/configure</exclude>
+                <exclude>native/unix/jsvc</exclude>
+                <exclude>native/unix/native/*.o</exclude>
+                <exclude>native/unix/native/Makefile</exclude>
+                <exclude>native/unix/native/libservice.a</exclude>
+                <exclude>native/windows/apps/prunmgr/*_GUI_RELEASE/**</exclude>
+                <exclude>native/windows/apps/prunsrv/*_RELEASE/**</exclude>
+                <!-- Excluded here, because processed below -->
+                <exclude>**/*.sh</exclude> 
             </excludes>
         </fileSet>
         <fileSet>

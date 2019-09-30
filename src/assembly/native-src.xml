@@ -36,9 +36,20 @@
             <outputDirectory>unix</outputDirectory>
             <lineEnding>lf</lineEnding>
             <excludes>
-                <exclude>**/*.sh</exclude> <!-- Excluded here, because processed below -->
-                <exclude>configure</exclude>
+                <!-- Aligned with .gitignore file -->
+                <exclude>Makedefs</exclude>
+                <exclude>Makefile</exclude>
                 <exclude>autom4te.cache/**</exclude>
+                <exclude>config.log</exclude>
+                <exclude>config.nice</exclude>
+                <exclude>config.status</exclude>
+                <exclude>configure</exclude>
+                <exclude>jsvc</exclude>
+                <exclude>native/*.o</exclude>
+                <exclude>native/Makefile</exclude>
+                <exclude>native/libservice.a</exclude>
+                <!-- Excluded here, because processed below -->
+                <exclude>**/*.sh</exclude> 
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
@@ -58,10 +69,13 @@
             <outputDirectory>windows</outputDirectory>
             <lineEnding>crlf</lineEnding>
             <excludes>
+                <!-- Aligned with .gitignore file -->
+                <exclude>apps/prunmgr/*_GUI_RELEASE/**</exclude>
+                <exclude>apps/prunsrv/*_RELEASE/**</exclude>
+                <!-- Included below without line ending changes -->
                 <exclude>**/*.ico</exclude>
                 <exclude>**/*.bmp</exclude>
                 <exclude>**/*.rc</exclude>
-                <exclude>apps/*/*_RELEASE/**</exclude>
                 <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
