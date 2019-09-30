@@ -32,6 +32,7 @@
 #include <stddef.h>
 #include <fcntl.h>
 #include <io.h>         /* _open_osfhandle */
+#include <share.h>
 
 #ifndef  MIN
 #define  MIN(a,b)    (((a)<(b)) ? (a) : (b))
@@ -321,15 +322,15 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
          */
         if (!aOut)
             DeleteFileW(lpWrapper->szStdOutFilename);
-        if ((_wfopen_s(&lpWrapper->fpStdOutFile,
-        		       lpWrapper->szStdOutFilename,
-                       L"a"))) {
-            lpWrapper->szStdOutFilename = NULL;
-        }
-        else {
+        if ((lpWrapper->fpStdOutFile = _wfsopen(lpWrapper->szStdOutFilename,
+                                               L"a",
+											   _SH_DENYNO))) {
             _dup2(_fileno(lpWrapper->fpStdOutFile), 1);
             *stdout = *lpWrapper->fpStdOutFile;
             setvbuf(stdout, NULL, _IONBF, 0);
+        }
+        else {
+        	lpWrapper->szStdOutFilename = NULL;
         }
     }
     if (lpWrapper->szStdErrFilename) {
@@ -347,15 +348,15 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
         }
         if (!aErr)
             DeleteFileW(lpWrapper->szStdErrFilename);
-        if ((_wfopen_s(&lpWrapper->fpStdErrFile,
-        		       lpWrapper->szStdErrFilename,
-                       L"a"))) {
-            lpWrapper->szStdOutFilename = NULL;
-        }
-        else {
+        if ((lpWrapper->fpStdErrFile = _wfsopen(lpWrapper->szStdErrFilename,
+                                               L"a",
+											   _SH_DENYNO))) {
             _dup2(_fileno(lpWrapper->fpStdErrFile), 2);
             *stderr = *lpWrapper->fpStdErrFile;
             setvbuf(stderr, NULL, _IONBF, 0);
+        }
+        else {
+            lpWrapper->szStdOutFilename = NULL;
         }
     }
     else if (lpWrapper->fpStdOutFile) {
