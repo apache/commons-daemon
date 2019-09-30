@@ -159,7 +159,7 @@ LPWSTR __apxGetRegistrySzW(APXHANDLE hPool, HKEY hKey, LPCWSTR wsValueName)
     return wsRet;
 }
 
-BOOL __apxGetRegistryStrW(APXHANDLE hPool, HKEY hKey, LPCWSTR wsValueName,
+BOOL __apxGetRegistryStrW(HKEY hKey, LPCWSTR wsValueName,
                           LPWSTR lpRetval, DWORD dwMaxLen)
 {
     DWORD  rc;
@@ -216,7 +216,7 @@ LPBYTE __apxGetRegistryBinaryW(APXHANDLE hPool, HKEY hKey, LPCWSTR wsValueName,
     return lpRet;
 }
 
-DWORD __apxGetRegistryDwordW(APXHANDLE hPool, HKEY hKey, LPCWSTR wsValueName)
+DWORD __apxGetRegistryDwordW(HKEY hKey, LPCWSTR wsValueName)
 {
     DWORD  dwRet;
     DWORD  rc;
