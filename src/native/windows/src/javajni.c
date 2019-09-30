@@ -852,10 +852,11 @@ apxJavaCmdInitialize(APXHANDLE hPool, LPCWSTR szClassPath, LPCWSTR szClass,
     *lppArray = (LPWSTR *)apxPoolAlloc(hPool, (nTotal + 2) * sizeof(LPWSTR));
 
     /* Process JVM options */
+    i = 0;
     if (nJVM && lJVM) {
         p = (LPWSTR)apxPoolAlloc(hPool, (lJVM + 1) * sizeof(WCHAR));
         AplCopyMemory(p, szOptions, (lJVM + 1) * sizeof(WCHAR) + sizeof(WCHAR));
-        for (i = 0; i < nJVM; i++) {
+        for (; i < nJVM; i++) {
             (*lppArray)[i] = p;
             while (*p)
                 p++;
