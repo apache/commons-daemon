@@ -50,6 +50,12 @@
       <action type="fix" dev="markt">
         Fix compiler warnings for unreferenced formal parameters.
       </action>
+      <action type="fix" dev="markt">
+        Correct the source assembly definitions to add README.md,
+        CONTRIBUTING.md and HOWTO-RELEASE.txt, remove references to the deleted
+        Ant build files and exclude the working directories of Windows binary
+        builds.
+      </action>
     </release>
     <release version="1.2.1" date="2019-09-09" description="Bug fix release">
       <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
