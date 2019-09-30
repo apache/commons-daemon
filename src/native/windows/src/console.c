@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "apxwin.h"
 #include "private.h"
 
@@ -44,7 +44,7 @@ typedef struct stAPXCONSOLE_LAYOUT {
     /** Character size */
     POINT    ptCharSize;
     /** Current Screen size */
-    POINT    ptScreenSize;    
+    POINT    ptScreenSize;
     /** Font size */
     INT      nFontSize;
     /** Caret size */
@@ -53,14 +53,14 @@ typedef struct stAPXCONSOLE_LAYOUT {
     UINT     nCaretBlinkTime;
     /** Typeface name of the font (32 char max including the null terminator) */
     TCHAR   szFontName[32];
-    
+
 } stAPXCONSOLE_LAYOUT, *APXCONSOLE_LAYOUT;
 
 typedef struct stAPXCONSOLE {
     /** Application instance handle */
     HINSTANCE   hInstance;
     /** Console Screen Buffer */
-    TCHAR       lpScreenBuffer;   
+    TCHAR       lpScreenBuffer;
     /** The size of the Console Screen Buffer */
     DWORD       dwScreenBufferSize;
     /** Main window Handle */
@@ -90,12 +90,14 @@ static BOOL __apxConsoleCallback(APXHANDLE hObject, UINT uMsg,
         return FALSE;
     switch (uMsg) {
         case WM_CLOSE:
-            
+
         break;
         default:
         break;
     }
     return TRUE;
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 APXHANDLE
@@ -117,7 +119,7 @@ apxFreeConsoleHandle(APXHANDLE hConsole)
     APXCONSOLE lpConsole = APXHANDLE_DATA(hConsole);
     if (hConsole->dwType != APXHANDLE_TYPE_CONSOLE)
         return FALSE;
-        
+
     return apxCloseHandle(hConsole);
 }
 

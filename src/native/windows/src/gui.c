@@ -394,6 +394,7 @@ static LRESULT CALLBACK __apxAboutDlgProc(HWND hDlg, UINT uMsg,
 
     }
     return FALSE;
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 void apxAboutBox(HWND hWnd)
