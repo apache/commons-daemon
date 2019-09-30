@@ -360,7 +360,7 @@ apxLogWrite(
         if (!IS_INVALID_HANDLE(lf->hFile)) {
             SYSTEMTIME t;
             /* Append operation */
-            SetFilePointer(lf->hFile, 0, &wr, FILE_END);
+            SetFilePointer(lf->hFile, 0, NULL, FILE_END);
             GetLocalTime(&t);
             if (dolock) {
                 APX_LOGLOCK(lf->hFile);
