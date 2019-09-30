@@ -380,6 +380,8 @@ static BOOL __apxJavaJniCallback(APXHANDLE hObject, UINT uMsg,
         break;
     }
     return TRUE;
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 APXHANDLE
@@ -534,6 +536,7 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
     if (apxLogWrite(APXLOG_MARK_INFO "%s", sBuf) == 0)
         fputs(sBuf, stdout);
     return rv;
+	UNREFERENCED_PARAMETER(fp);
 }
 
 static void JNICALL __apxJniExit(jint exitCode)

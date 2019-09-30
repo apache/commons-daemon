@@ -281,6 +281,7 @@ DWORD WINAPI eventThread(LPVOID lpParam)
     }
     ExitThread(0);
     return 0;
+	UNREFERENCED_PARAMETER(lpParam);
 }
 
 /* redirect console stdout/stderr to files
@@ -962,6 +963,7 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
             fputc(ch, stdout);
     }
     return TRUE;
+	UNREFERENCED_PARAMETER(hObject);
 }
 
 static int onExitStop(void)
@@ -1638,6 +1640,8 @@ cleanup:
     reportServiceStatusStopped(rc);
     gExitval = rc;
     return;
+	UNREFERENCED_PARAMETER(argc);
+	UNREFERENCED_PARAMETER(argv);
 }
 
 

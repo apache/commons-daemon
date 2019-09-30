@@ -73,6 +73,8 @@ static BOOL __apxServiceCallback(APXHANDLE hObject, UINT uMsg,
         break;
     }
     return TRUE;
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 APXHANDLE

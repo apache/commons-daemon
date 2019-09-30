@@ -119,6 +119,8 @@ static BOOL __apxRegistryCallback(APXHANDLE hObject, UINT uMsg,
         break;
     }
     return TRUE;
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 LPSTR __apxGetRegistrySzA(APXHANDLE hPool, HKEY hKey, LPCSTR szValueName)

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "apxwin.h"
 #include "private.h"
 
@@ -78,12 +78,12 @@ LPVOID HeapREALLOC(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem, SIZE_T dwBytes)
 }
 #endif
 
-static LPVOID __apxPoolAllocCore(APXHANDLE hPool, 
+static LPVOID __apxPoolAllocCore(APXHANDLE hPool,
                                  DWORD dwSize, DWORD dwOptions)
 {
     DWORD dwPhysicalSize;
     LPALLOCBLOCK lpBlock;
-    
+
     if (!hPool)
         hPool = _st_sys_pool;
     dwPhysicalSize = APX_ALIGN_DEFAULT(dwSize + sizeof(ALLOCBLOCK));
@@ -100,7 +100,7 @@ static LPVOID __apxPoolReallocCore(APXHANDLE hPool, LPVOID lpMem,
     DWORD dwPhysicalSize;
     LPALLOCBLOCK lpBlock;
     LPALLOCBLOCK lpOrg;
-    
+
     if (!lpMem)
         return __apxPoolAllocCore(hPool, dwSize, dwOptions);
     lpOrg = (LPALLOCBLOCK)((char *)lpMem - sizeof(ALLOCBLOCK));
@@ -122,7 +122,7 @@ static void __apxPoolFreeCore(LPVOID lpMem)
 {
     APXHANDLE hPool;
     LPALLOCBLOCK lpBlock = (LPALLOCBLOCK)((char *)lpMem - sizeof(ALLOCBLOCK));
-    
+
     if (lpBlock->lpPool != APXHANDLE_INVALID) {
         hPool = lpBlock->lpPool;
         lpBlock->lpPool = APXHANDLE_INVALID;
@@ -182,7 +182,7 @@ static BOOL __apxPoolCallback(APXHANDLE hObject, UINT uMsg,
     TAILQ_FOREACH(hCur, &lpPool->lPools, queue) {
         __apxPoolCallback(hCur, uMsg, 0, 0);
     }
-    /* call the handles callback */        
+    /* call the handles callback */
     for(hCur = TAILQ_FIRST(&lpPool->lHandles) ;
         hCur != NULL ;
         hCur = TAILQ_FIRST(&lpPool->lHandles)) {
@@ -198,6 +198,8 @@ static BOOL __apxPoolCallback(APXHANDLE hObject, UINT uMsg,
         hObject->dwSize = 0;
 
     return TRUE;
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 static BOOL __apxHandleCallback(APXHANDLE hObject, UINT uMsg,
@@ -209,7 +211,7 @@ static BOOL __apxHandleCallback(APXHANDLE hObject, UINT uMsg,
     /* Default handler handles only close event */
     if (uMsg != WM_CLOSE)
         return FALSE;
-    if (hObject->dwType == APXHANDLE_TYPE_WINHANDLE && 
+    if (hObject->dwType == APXHANDLE_TYPE_WINHANDLE &&
         !(IS_INVALID_HANDLE(hObject->uData.hWinHandle))) {
         rv = CloseHandle(hObject->uData.hWinHandle);
         hObject->uData.hWinHandle = NULL;
@@ -231,6 +233,8 @@ static BOOL __apxHandleCallback(APXHANDLE hObject, UINT uMsg,
         hObject->dwFlags &= ~APXHANDLE_HAS_EVENT;
     }
     return rv;
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
 }
 
 static BOOL __apxCreateSystemPool()
@@ -245,11 +249,11 @@ static BOOL __apxCreateSystemPool()
     if (!_st_sys_page)
         return FALSE;
     _st_sys_page = VirtualAlloc(_st_sys_page, _st_sys_info.dwAllocationGranularity,
-                                MEM_COMMIT, PAGE_READWRITE);     
+                                MEM_COMMIT, PAGE_READWRITE);
 
     /* Create the main Heap */
     hHeap = HeapCREATE(0, _st_sys_info.dwAllocationGranularity, 0);
-    _st_sys_pool = HeapALLOC(hHeap, HEAP_ZERO_MEMORY, 
+    _st_sys_pool = HeapALLOC(hHeap, HEAP_ZERO_MEMORY,
                              APX_ALIGN_DEFAULT(APXHANDLE_SZ + sizeof(APXPOOL)));
     _st_sys_pool->hHeap = hHeap;
     _st_sys_pool->dwType = APXHANDLE_TYPE_INVALID;
@@ -261,7 +265,7 @@ static BOOL __apxCreateSystemPool()
     TAILQ_INIT(&lpPool->lHandles);
     TAILQ_INIT(&lpPool->lPools);
     _st_sys_pool->dwType  = APXHANDLE_TYPE_POOL;
-    
+
     /** TODO: For each unsupported function make a surrogate */
     _st_sys_argvw = CommandLineToArgvW(GetCommandLineW(), &_st_sys_argc);
 
@@ -301,14 +305,14 @@ apxHandleManagerDestroy()
 #endif
         return TRUE;
     }
-    
+
     return FALSE;
 }
 
 APXHANDLE
 apxPoolCreate(APXHANDLE hParent, DWORD dwOptions)
 {
-    APXHANDLE   hHandle; 
+    APXHANDLE   hHandle;
     LPAPXPOOL   lpPool;
     HANDLE      hHeap;
 
@@ -422,13 +426,13 @@ apxStrdupW(LPCWSTR szSource)
 }
 
 APXHANDLE
-apxHandleCreate(APXHANDLE hPool, DWORD dwFlags, 
+apxHandleCreate(APXHANDLE hPool, DWORD dwFlags,
                 LPVOID lpData, DWORD  dwDataSize,
                 LPAPXFNCALLBACK fnCallback)
 {
-    APXHANDLE   hHandle; 
+    APXHANDLE   hHandle;
     LPAPXPOOL   lpPool;
-    
+
     if (IS_INVALID_HANDLE(hPool))
         hPool = _st_sys_pool;
     if (hPool->dwType != APXHANDLE_TYPE_POOL) {
@@ -438,7 +442,7 @@ apxHandleCreate(APXHANDLE hPool, DWORD dwFlags,
     }
     hHandle = __apxPoolAllocCore(hPool, APXHANDLE_SZ + dwDataSize,
                                  HEAP_ZERO_MEMORY);
-    
+
     hHandle->hPool             = hPool;
     if (fnCallback)
         hHandle->fnCallback = fnCallback;
@@ -489,7 +493,7 @@ apxCloseHandle(APXHANDLE hObject)
 {
     LPAPXPOOL   lpPool;
     APXCALLHOOK *lpCall;
-    
+
     if (IS_INVALID_HANDLE(hObject) || hObject->dwType == APXHANDLE_TYPE_INVALID)
         return FALSE;
     /* Call the user callback first */
@@ -538,7 +542,7 @@ apxHandleGetUserData(APXHANDLE hObject)
         return hObject->uData.lpPtr;
 }
 
-LPVOID      
+LPVOID
 apxHandleSetUserData(APXHANDLE hObject, LPVOID lpData, DWORD dwDataSize)
 {
     if (hObject->dwType == APXHANDLE_TYPE_INVALID)
@@ -548,7 +552,7 @@ apxHandleSetUserData(APXHANDLE hObject, LPVOID lpData, DWORD dwDataSize)
                       MIN(hObject->dwSize, dwDataSize));
         return APXHANDLE_DATA(hObject);
     }
-    else { 
+    else {
         LPVOID lpOrg = hObject->uData.lpPtr;
         hObject->uData.lpPtr = lpData;
         return lpOrg;
@@ -578,7 +582,7 @@ BOOL apxHandlePostMessage(APXHANDLE hObject, UINT uMsg, WPARAM wParam, LPARAM lP
     if (hObject->dwType == APXHANDLE_TYPE_INVALID)
         return FALSE;
     if (hObject->dwFlags & APXHANDLE_HAS_EVENT) {
-        /* TODO: Create a thread message queue 
+        /* TODO: Create a thread message queue
          * Right now wait while the event gets nonsignaled
          */
         while (WaitForSingleObject(hObject->hEventHandle, 0) == WAIT_OBJECT_0)
@@ -615,7 +619,7 @@ BOOL apxHandleAddHook(APXHANDLE hObject, DWORD dwWhere,
 
     if (hObject->dwType == APXHANDLE_TYPE_INVALID || !fnCallback)
         return FALSE;
-    lpCall = (APXCALLHOOK *)__apxPoolAllocCore(hObject->hPool, 
+    lpCall = (APXCALLHOOK *)__apxPoolAllocCore(hObject->hPool,
                                                sizeof(APXCALLHOOK), 0);
     if (!lpCall)
         return FALSE;
@@ -628,7 +632,7 @@ BOOL apxHandleAddHook(APXHANDLE hObject, DWORD dwWhere,
         TAILQ_INSERT_TAIL(&hObject->lCallbacks, lpCall, queue);
     }
     APXHANDLE_SPINUNLOCK(hObject);
-    
+
     return TRUE;
 }
 
