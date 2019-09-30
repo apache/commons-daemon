@@ -84,8 +84,6 @@ APXHANDLE  __st_sys_console = NULL;
 static BOOL __apxConsoleCallback(APXHANDLE hObject, UINT uMsg,
                                  WPARAM wParam, LPARAM lParam)
 {
-    APXCONSOLE lpConsole = APXHANDLE_DATA(hObject);
-
     if (hObject->dwType != APXHANDLE_TYPE_CONSOLE)
         return FALSE;
     switch (uMsg) {
@@ -116,7 +114,6 @@ apxAllocConsoleHandle(APXHANDLE hPool)
 BOOL
 apxFreeConsoleHandle(APXHANDLE hConsole)
 {
-    APXCONSOLE lpConsole = APXHANDLE_DATA(hConsole);
     if (hConsole->dwType != APXHANDLE_TYPE_CONSOLE)
         return FALSE;
 
