@@ -1386,7 +1386,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
             /* Stop the service asynchronously */
             stopThread = CreateThread(NULL, 0,
                                       serviceStop,
-                                      (LPVOID)dwCtrlCode,
+                                      (LPVOID)SERVICE_CONTROL_STOP,
                                       0, &threadId);
             CloseHandle(stopThread);
             return;
