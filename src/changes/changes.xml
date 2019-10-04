@@ -38,6 +38,8 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
+    <release version="1.2.3" date="TBD" description="Bug fix release">
+    </release<
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
       <action issue="DAEMON-408" type="fix" dev="markt">
         Procrun. Correct a regression in the fix for DAEMON-401 that prevented
