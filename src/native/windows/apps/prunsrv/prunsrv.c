@@ -1749,7 +1749,7 @@ void __cdecl main(int argc, char **argv)
     if (SO_LOGROTATE)
         apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
 
-	/* Parse the command line */
+    /* Parse the command line */
     if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands, _altcmds)) == NULL) {
         apxLogWrite(APXLOG_MARK_ERROR "Invalid command line arguments.");
         rv = 1;
