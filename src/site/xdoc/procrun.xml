@@ -318,7 +318,7 @@ will add the new value(s) to any existing value(s).
     <td>--Type</td>
     <td></td>
     <td>Service type can be <b>interactive</b> to allow the service to interact with the desktop.
-    Use this option only with Local system accounts.</td>
+    This option can only be used with the <i>LocalSystem</i> account.</td>
     </tr>
     <tr>
     <td>++DependsOn</td>

@@ -238,10 +238,8 @@ apxServiceSetNames(APXHANDLE hService,
     /* Check if the ServiceOpen has been called */
     if (IS_INVALID_HANDLE(lpService->hService))
         return FALSE;
-    if (szUsername || szPassword)
-        dwServiceType = SERVICE_WIN32_OWN_PROCESS;
     if (!ChangeServiceConfigW(lpService->hService,
-                              dwServiceType,
+                              SERVICE_NO_CHANGE,
                               SERVICE_NO_CHANGE,
                               SERVICE_NO_CHANGE,
                               szImagePath,
@@ -584,6 +582,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                   DWORD dwStartType)
 {
     LPAPXSERVICE   lpService;
+    LPCWSTR szServiceUser = L"NT Authority\\LocalService";
 
     if (hService->dwType != APXHANDLE_TYPE_SERVICE)
         return FALSE;
@@ -610,6 +609,13 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                                            L"Tcpip\0Afd\0", NULL);
     else
         lpDependencies = L"Tcpip\0Afd\0";
+
+    if ((dwServiceType & SERVICE_INTERACTIVE_PROCESS) == SERVICE_INTERACTIVE_PROCESS) {
+        // Caller is responsible for checking the user is set appropriately
+        // for an interactive service (will use LocalSystem)
+        szServiceUser = NULL;
+    }
+
     lpService->hService = CreateServiceW(lpService->hManager,
                                          szServiceName,
                                          szDisplayName,
@@ -621,7 +627,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                                          NULL,
                                          NULL,
                                          lpDependencies,
-                                         L"NT Authority\\LocalService",
+                                         szServiceUser,
                                          NULL);
 
     if (IS_INVALID_HANDLE(lpService->hService)) {

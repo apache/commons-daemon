@@ -42,6 +42,13 @@
       <action issue="DAEMON-414" type="fix" dev="ggregory" due-to="Gary Gregory">
         prunsrv uses its log is before it is initialized.
       </action>
+      <action issue="DAEMON-411" type="fix" dev="markt">
+        Procrun. Correct multiple issues related to enabling a service to
+        interact with the desktop. Provide a better error message if this option
+        is used with an invalid user, install the service with the option
+        enabled if requested and correctly save the setting if it is enabled in
+        the GUI. 
+      </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
       <action issue="DAEMON-408" type="fix" dev="markt">

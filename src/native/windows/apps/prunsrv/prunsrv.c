@@ -630,8 +630,21 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         dwStart = SERVICE_AUTO_START;
     /* Check the service type */
     if ((ST_TYPE & APXCMDOPT_FOUND) &&
-        lstrcmpiW(SO_TYPE, STYPE_INTERACTIVE) == 0)
-        dwType |= SERVICE_INTERACTIVE_PROCESS;
+        lstrcmpiW(SO_TYPE, STYPE_INTERACTIVE) == 0) {
+
+        // Need to run as LocalSystem to set the interactive flag
+        LPCWSTR su = NULL;
+        if (ST_SUSER & APXCMDOPT_FOUND) {
+            su = SO_SUSER;
+        }
+        if (su && lstrcmpiW(su, L"LocalSystem") == 0) {
+            dwType |= SERVICE_INTERACTIVE_PROCESS;
+        } else {
+            apxLogWrite(APXLOG_MARK_ERROR
+                    "The parameter '--Type interactive' is only valid with '--ServiceUser LocalSystem'");
+            return FALSE;
+        }
+    }
 
     /* Check if --Install is provided */
     if (!IS_VALID_STRING(SO_INSTALL)) {
