@@ -1742,10 +1742,10 @@ void __cdecl main(int argc, char **argv)
     /* Create the main Pool */
     gPool = apxPoolCreate(NULL, 0);
 
-	apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
-	apxLogLevelSetW(NULL, SO_LOGLEVEL);
-	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun (%s %d-bit) logging initialized.",
-		        PRG_VERSION, PRG_BITS);
+    apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
+    apxLogLevelSetW(NULL, SO_LOGLEVEL);
+    apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun (%s %d-bit) logging initialized.",
+                PRG_VERSION, PRG_BITS);
 
 	/* Parse the command line */
     if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands, _altcmds)) == NULL) {
