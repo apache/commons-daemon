@@ -1746,6 +1746,8 @@ void __cdecl main(int argc, char **argv)
     apxLogLevelSetW(NULL, SO_LOGLEVEL);
     apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun (%s %d-bit) logging initialized.",
                 PRG_VERSION, PRG_BITS);
+    if (SO_LOGROTATE)
+        apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
 
 	/* Parse the command line */
     if ((lpCmdline = apxCmdlineParse(gPool, _options, _commands, _altcmds)) == NULL) {
@@ -1762,9 +1764,6 @@ void __cdecl main(int argc, char **argv)
             goto cleanup;
         }
     }
-
-    if (SO_LOGROTATE)
-        apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
 
     apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun (%s %d-bit) started.",
                 PRG_VERSION, PRG_BITS);
