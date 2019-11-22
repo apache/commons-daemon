@@ -39,9 +39,6 @@
   </properties>
   <body>
     <release version="1.2.3" date="TBD" description="Bug fix release">
-      <action issue="DAEMON-414" type="fix" dev="ggregory" due-to="Gary Gregory">
-        prunsrv uses its log is before it is initialized.
-      </action>
       <action issue="DAEMON-411" type="fix" dev="markt">
         Procrun. Correct multiple issues related to enabling a service to
         interact with the desktop. Provide a better error message if this option
