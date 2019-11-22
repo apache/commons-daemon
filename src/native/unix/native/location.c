@@ -117,6 +117,7 @@ char *location_jvm_default[] = {
     "$JAVA_HOME/jre/lib/client/libjvm.so",
     "$JAVA_HOME/jre/lib/libjvm.so",
     "$JAVA_HOME/lib/classic/libjvm.so",
+    "$JAVA_HOME/lib/server/libjvm.so",
     "$JAVA_HOME/lib/client/libjvm.so",
     "$JAVA_HOME/lib/libjvm.so",
     "$JAVA_HOME/jre/bin/classic/libjvm.so",

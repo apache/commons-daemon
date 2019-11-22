@@ -49,6 +49,10 @@
         enabled if requested and correctly save the setting if it is enabled in
         the GUI. 
       </action>
+      <action issue="DAEMON-410" type="fix" dev="markt" due-to="Richard Morrell">
+        jsvc. Update the list of paths searched for libjvm.so to include the
+        path used by OpenJDK 11.
+      </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
       <action issue="DAEMON-408" type="fix" dev="markt">
