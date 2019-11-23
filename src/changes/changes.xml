@@ -50,6 +50,9 @@
         jsvc. Update the list of paths searched for libjvm.so to include the
         path used by OpenJDK 11.
       </action>
+      <action type="add", dev="markt">
+        procrun. Add additional debug logging for Java start mode.
+      </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
       <action issue="DAEMON-408" type="fix" dev="markt">

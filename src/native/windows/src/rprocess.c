@@ -119,7 +119,7 @@ static DWORD WINAPI __apxProcWorkerThread(LPVOID lpParameter)
 
         /* store worker's exit code as VM exit code for later use */
         GetExitCodeProcess(lpProc->stProcInfo.hProcess, &dwExitCode);
-        apxLogWrite(APXLOG_MARK_DEBUG "Child process exit code %d", dwExitCode);
+        apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon Child process exit code %d", dwExitCode);
         apxSetVmExitCode(dwExitCode);
     }
     ExitThread(0);
@@ -550,6 +550,10 @@ apxProcessExecute(APXHANDLE hProcess)
 	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon GetEnvironmentStringsW()");
 	lpProc->lpEnvironment = GetEnvironmentStringsW();
 
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon Application name: %S", lpProc->szApplicationExec);
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon Command line: %S", lpProc->szCommandLine);
+	apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon Working path: %S", lpProc->szWorkingPath);
+
     if (!IS_INVALID_HANDLE(lpProc->hUserToken)) {
         si.lpDesktop = _desktop_name;
 		apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateProcessAsUserW()");
@@ -566,9 +570,6 @@ apxProcessExecute(APXHANDLE hProcess)
                                   &(lpProc->stProcInfo));
     }
     else {
-        OutputDebugStringW(lpProc->szApplicationExec);
-        OutputDebugStringW(lpProc->szCommandLine);
-
 		apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon CreateProcessW()");
 		bS = CreateProcessW(lpProc->szApplicationExec,
                             lpProc->szCommandLine,
