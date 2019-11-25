@@ -210,7 +210,7 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         if (GetFileAttributesW(dllJvmPath) == INVALID_FILE_ATTRIBUTES) {
             /* DAEMON-247: Invalid RuntimeLib explicitly specified is error.
              */
-            apxLogWrite(APXLOG_MARK_DEBUG "Invalid RuntimeLib specified '%S'", dllJvmPath);
+            apxLogWrite(APXLOG_MARK_ERROR "Invalid RuntimeLib specified '%S'", dllJvmPath);
             return FALSE;
         }
         apxLogWrite(APXLOG_MARK_DEBUG "Explicit RuntimeLib specified '%S'", dllJvmPath);
@@ -276,19 +276,22 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         }
     }
 
-    /* Add java bin path to the PATH to fix loading of awt.dll */
+    /* Add Java bin path to the PATH to fix loading of awt.dll */
+    apxLogWrite(APXLOG_MARK_DEBUG "Adding Java bin path to the PATH to fix loading of awt.dll: '%S'", jreBinPath);
     apxAddToPathW(hPool, jreBinPath);
 
     /* Set the environment using putenv, so JVM can use it */
     apxSetInprocEnvironment();
 
-    apxLogWrite(APXLOG_MARK_DEBUG "loading jvm '%S'", dllJvmPath);
+    apxLogWrite(APXLOG_MARK_DEBUG "Loading JVM DLL '%S'", dllJvmPath);
     _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle) &&
         GetFileAttributesW(dllJvmPath) != INVALID_FILE_ATTRIBUTES) {
         /* There is a file but cannot be loaded.
          * Try to load the MSVCRTxx.dll before JVM.dll
          */
+        apxLogWrite(APXLOG_MARK_ERROR "Found '%S' but couldn't load it.", dllJvmPath);
+
         WCHAR  crtBinPath[SIZ_PATHLEN];
 
         lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
@@ -296,37 +299,45 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
             lstrlcpyW(crtBinPath, SIZ_PATHLEN, jreBinPath);
             lstrlcatW(crtBinPath, SIZ_PATHLEN, MSVCRT71_DLLNAME);
             if (GetFileAttributesW(crtBinPath) != INVALID_FILE_ATTRIBUTES) {
+                apxLogWrite(APXLOG_MARK_DEBUG "Loading '%S'.", crtBinPath);
                 if (LoadLibraryW(crtBinPath)) {
                     /* Found MSVCRTxx.dll
                      */
-                    apxLogWrite(APXLOG_MARK_DEBUG "preloaded '%S'",
-                                crtBinPath);
-                }
+                    apxLogWrite(APXLOG_MARK_DEBUG "Preloaded '%S'", crtBinPath);
+				}
+				else {
+					apxLogWrite(APXLOG_MARK_DEBUG "Failed preloading '%S'.", crtBinPath);
+				}
             }
         }
     }
-    /* This shuldn't happen, but try to search in %PATH% */
-    if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
-        _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL,
-                                              LOAD_WITH_ALTERED_SEARCH_PATH);
-
+    /* This shouldn't happen, but try to search in %PATH% */
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Invalid JVM DLL handle.");
+        apxLogWrite(APXLOG_MARK_DEBUG "Loading JVM DLL '%S' using LOAD_WITH_ALTERED_SEARCH_PATH.", dllJvmPath);
+        _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+    }
+    if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Invalid JVM DLL handle.");
         DYNLOAD_FPTR_ADDRESS(SetDllDirectoryW, KERNEL32);
-        if(l == 2) {
+        if (l == 2) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting DLL search path to '%S'", jreBinPath);
             DYNLOAD_CALL(SetDllDirectoryW)(jreBinPath);
-            apxLogWrite(APXLOG_MARK_DEBUG "Setting DLL search path to '%S'",
-                            jreBinPath);
         }
+        apxLogWrite(APXLOG_MARK_DEBUG "Loading JVM DLL '%S'.", dllJvmPath);
         _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
-        if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle))
-            _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL,
-                                                  LOAD_WITH_ALTERED_SEARCH_PATH);
+        if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Invalid JVM DLL handle.");
+            apxLogWrite(APXLOG_MARK_DEBUG "Loading JVM DLL '%S' using LOAD_WITH_ALTERED_SEARCH_PATH.", dllJvmPath);
+            _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+        }
     }
     /* Restore the error mode signalization */
     SetErrorMode(errMode);
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
+        apxLogWrite(APXLOG_MARK_ERROR "Invalid JVM DLL handle.");
         apxLogWrite(APXLOG_MARK_SYSERR);
-        return FALSE;
+		return FALSE;
     }
     DYNLOAD_FPTR_LOAD(JNI_GetDefaultJavaVMInitArgs, _st_sys_jvmDllHandle);
     DYNLOAD_FPTR_LOAD(JNI_CreateJavaVM,             _st_sys_jvmDllHandle);
@@ -337,9 +348,11 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         !DYNLOAD_FPTR(JNI_CreateJavaVM) ||
         !DYNLOAD_FPTR(JNI_GetCreatedJavaVMs)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
+        apxLogWrite(APXLOG_MARK_DEBUG "Freeing JVM DLL.");
         FreeLibrary(_st_sys_jvmDllHandle);
         _st_sys_jvmDllHandle = NULL;
-        return FALSE;
+		apxLogWrite(APXLOG_MARK_ERROR "Failed loading JNI function pointers.");
+		return FALSE;
     }
 
     /* Real voodo ... */
@@ -394,23 +407,32 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJavaHome)
     JavaVM       *lpJvm = NULL;
     struct       APX_JDK1_1InitArgs jArgs1_1;
 
-    if (!__apxLoadJvmDll(hPool, szJvmDllPath, szJavaHome))
-        return NULL;
-
+	if (!__apxLoadJvmDll(hPool, szJvmDllPath, szJavaHome)) {
+		apxLogWrite(APXLOG_MARK_ERROR "Failed to load JVM DLL '%S', home '%S'.", szJvmDllPath, szJavaHome);
+		return NULL;
+	}
+	apxLogWrite(APXLOG_MARK_DEBUG "Loaded JVM DLL '%S', home '%S'.", szJvmDllPath, szJavaHome);
 
     /*
+	 * JNI_GetCreatedJavaVMs
      */
-    if (DYNLOAD_FPTR(JNI_GetCreatedJavaVMs)(&lpJvm, 1, &iVmCount) != JNI_OK) {
+	apxLogWrite(APXLOG_MARK_DEBUG "JNI_GetCreatedJavaVMs...");
+	if (DYNLOAD_FPTR(JNI_GetCreatedJavaVMs)(&lpJvm, 1, &iVmCount) != JNI_OK) {
+		apxLogWrite(APXLOG_MARK_ERROR "JNI_GetCreatedJavaVMs failed.");
         return NULL;
     }
-    if (iVmCount && !lpJvm)
+	if (iVmCount && !lpJvm) {
+        apxLogWrite(APXLOG_MARK_ERROR "JNI_GetCreatedJavaVMs OK but JavaVM pointer is NULL.");
         return NULL;
+    }
 
     hJava = apxHandleCreate(hPool, 0,
                             NULL, sizeof(APXJAVAVM),
                             __apxJavaJniCallback);
-    if (IS_INVALID_HANDLE(hJava))
+    if (IS_INVALID_HANDLE(hJava)) {
+        apxLogWrite(APXLOG_MARK_ERROR "Failed to create handle.");
         return NULL;
+    }
     hJava->dwType = APXHANDLE_TYPE_JVM;
     lpJava = APXHANDLE_DATA(hJava);
     lpJava->lpJvm = lpJvm;
@@ -1027,10 +1049,12 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     apxJavaSetOut(pArgs->hJava, FALSE, pArgs->szStdOutFilename);
 
     /* Check if we have a class and a method */
-    if (!lpJava->clWorker.jClazz || !lpJava->clWorker.jMethod)
+    if (!lpJava->clWorker.jClazz || !lpJava->clWorker.jMethod) {
         WORKER_EXIT(4);
-    if (!__apxJvmAttach(lpJava))
+    }
+    if (!__apxJvmAttach(lpJava)) {
         WORKER_EXIT(5);
+    }
     apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
