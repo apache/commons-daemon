@@ -216,7 +216,7 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         apxLogWrite(APXLOG_MARK_DEBUG "Explicit RuntimeLib specified '%S'", dllJvmPath);
     }
     else {
-    	// No explicit JVM path. Use the standard registry locations.
+        // No explicit JVM path. Use the standard registry locations.
         dllJvmPath = apxGetJavaSoftRuntimeLib(NULL);
         apxLogWrite(APXLOG_MARK_DEBUG "No explicit RuntimeLib specified. Checking registry. Found '%S'", dllJvmPath);
     }
@@ -304,10 +304,10 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
                     /* Found MSVCRTxx.dll
                      */
                     apxLogWrite(APXLOG_MARK_DEBUG "Preloaded '%S'", crtBinPath);
-				}
-				else {
-					apxLogWrite(APXLOG_MARK_DEBUG "Failed preloading '%S'.", crtBinPath);
-				}
+                }
+                else {
+                    apxLogWrite(APXLOG_MARK_DEBUG "Failed preloading '%S'.", crtBinPath);
+                }
             }
         }
     }
@@ -337,7 +337,7 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle)) {
         apxLogWrite(APXLOG_MARK_ERROR "Invalid JVM DLL handle.");
         apxLogWrite(APXLOG_MARK_SYSERR);
-		return FALSE;
+        return FALSE;
     }
     DYNLOAD_FPTR_LOAD(JNI_GetDefaultJavaVMInitArgs, _st_sys_jvmDllHandle);
     DYNLOAD_FPTR_LOAD(JNI_CreateJavaVM,             _st_sys_jvmDllHandle);
@@ -351,8 +351,8 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         apxLogWrite(APXLOG_MARK_DEBUG "Freeing JVM DLL.");
         FreeLibrary(_st_sys_jvmDllHandle);
         _st_sys_jvmDllHandle = NULL;
-		apxLogWrite(APXLOG_MARK_ERROR "Failed loading JNI function pointers.");
-		return FALSE;
+        apxLogWrite(APXLOG_MARK_ERROR "Failed loading JNI function pointers.");
+        return FALSE;
     }
 
     /* Real voodo ... */
@@ -393,8 +393,8 @@ static BOOL __apxJavaJniCallback(APXHANDLE hObject, UINT uMsg,
         break;
     }
     return TRUE;
-	UNREFERENCED_PARAMETER(wParam);
-	UNREFERENCED_PARAMETER(lParam);
+    UNREFERENCED_PARAMETER(wParam);
+    UNREFERENCED_PARAMETER(lParam);
 }
 
 APXHANDLE
@@ -407,21 +407,21 @@ apxCreateJava(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJavaHome)
     JavaVM       *lpJvm = NULL;
     struct       APX_JDK1_1InitArgs jArgs1_1;
 
-	if (!__apxLoadJvmDll(hPool, szJvmDllPath, szJavaHome)) {
-		apxLogWrite(APXLOG_MARK_ERROR "Failed to load JVM DLL '%S', home '%S'.", szJvmDllPath, szJavaHome);
-		return NULL;
-	}
-	apxLogWrite(APXLOG_MARK_DEBUG "Loaded JVM DLL '%S', home '%S'.", szJvmDllPath, szJavaHome);
-
-    /*
-	 * JNI_GetCreatedJavaVMs
-     */
-	apxLogWrite(APXLOG_MARK_DEBUG "JNI_GetCreatedJavaVMs...");
-	if (DYNLOAD_FPTR(JNI_GetCreatedJavaVMs)(&lpJvm, 1, &iVmCount) != JNI_OK) {
-		apxLogWrite(APXLOG_MARK_ERROR "JNI_GetCreatedJavaVMs failed.");
+    if (!__apxLoadJvmDll(hPool, szJvmDllPath, szJavaHome)) {
+        apxLogWrite(APXLOG_MARK_ERROR "Failed to load JVM DLL '%S', home '%S'.", szJvmDllPath, szJavaHome);
         return NULL;
     }
-	if (iVmCount && !lpJvm) {
+    apxLogWrite(APXLOG_MARK_DEBUG "Loaded JVM DLL '%S', home '%S'.", szJvmDllPath, szJavaHome);
+
+    /*
+     * JNI_GetCreatedJavaVMs
+     */
+    apxLogWrite(APXLOG_MARK_DEBUG "JNI_GetCreatedJavaVMs...");
+    if (DYNLOAD_FPTR(JNI_GetCreatedJavaVMs)(&lpJvm, 1, &iVmCount) != JNI_OK) {
+        apxLogWrite(APXLOG_MARK_ERROR "JNI_GetCreatedJavaVMs failed.");
+        return NULL;
+    }
+    if (iVmCount && !lpJvm) {
         apxLogWrite(APXLOG_MARK_ERROR "JNI_GetCreatedJavaVMs OK but JavaVM pointer is NULL.");
         return NULL;
     }
@@ -503,7 +503,7 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
                                       LPCSTR lpString9,
                                       JavaVMOption **lppArray,
                                       DWORD  nExtra,
-									  DWORD bJniVfprintf)
+                                      DWORD bJniVfprintf)
 {
     DWORD i = 0, n = 0, n9 = 0, nTotal, l = 0, l9 = 0, lTotal;
     char *buff;
@@ -526,10 +526,10 @@ static DWORD __apxMultiSzToJvmOptions(APXHANDLE hPool,
     if (lpString)
         AplCopyMemory(p, lpString, l + 1);
     if (bJniVfprintf) {
-    	// If present, vfprintf is set first so it can be used to report errors
-    	// in later options. Increment indexes to account for this.
-    	i++;
-    	n++;
+        // If present, vfprintf is set first so it can be used to report errors
+        // in later options. Increment indexes to account for this.
+        i++;
+        n++;
     }
     for (; i < n; i++) {
         (*lppArray)[i].optionString = p;
@@ -558,7 +558,7 @@ static jint JNICALL __apxJniVfprintf(FILE *fp, const char *format, va_list args)
     if (apxLogWrite(APXLOG_MARK_INFO "%s", sBuf) == 0)
         fputs(sBuf, stdout);
     return rv;
-	UNREFERENCED_PARAMETER(fp);
+    UNREFERENCED_PARAMETER(fp);
 }
 
 static void JNICALL __apxJniExit(jint exitCode)

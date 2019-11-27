@@ -16,3 +16,4 @@
 /src/native/windows/apps/prunmgr/*_GUI_RELEASE
 /src/native/windows/apps/prunsrv/*_RELEASE
 /target/
+**/.vs/
