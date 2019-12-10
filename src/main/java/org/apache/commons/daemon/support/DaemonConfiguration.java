@@ -28,21 +28,21 @@ import java.text.ParseException;
  * Used by jsvc for Daemon configuration.
  * <p>
  * Configuration is read from properties file.
- * If no properties file is given the <code>daemon.properties</code>
+ * If no properties file is given the {@code daemon.properties}
  * is used from the current directory.
  * </p>
  * <p>
  * The properties file can have property values expanded at runtime
  * by using System properties or execution environment. The part
- * of the property value between <code>${</code> and <code>}</code>
+ * of the property value between {@code ${} and {@code }}
  * will be used as System property or environment key. If found then
- * the entire <code>${foo}</code> will be replaced by the value of
- * either system property or environment variable named <code>foo</code>.
+ * the entire {@code ${foo}} will be replaced by the value of
+ * either system property or environment variable named {@code foo}.
  * </p>
  * <p>
- * If no variable is found the <code>${foo}</code>  will be passed as is.
- * In case of <code>$${foo}</code> this will be unescaped and resulting
- * value will be <code>${foo}</code>.
+ * If no variable is found the {@code ${foo}}  will be passed as is.
+ * In case of {@code $${foo}} this will be unescaped and resulting
+ * value will be {@code ${foo}}.
  * </p>
  *
  */
@@ -76,7 +76,7 @@ public final class DaemonConfiguration
      * Loads the configuration properties file.
      *
      * @param fileName The properties file to load.
-     * @return <code>true</code> if the file was loaded.
+     * @return {@code true} if the file was loaded.
      */
     public boolean load(String fileName)
     {
@@ -177,7 +177,7 @@ public final class DaemonConfiguration
      * Gets the configuration property array.
      * <p>
      * Property array is constructed form the list of properties
-     * which end with <code>[index]</code>
+     * which end with {@code [index]}
      * </p>
      * <pre>
      * daemon.arg[0] = argument 1

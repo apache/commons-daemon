@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
 
 /**
  * Represents the permissions to control and query the status of
- * a <code>Daemon</code>. A <code>DaemonPermission</code> consists of a
+ * a {@code Daemon}. A {@code DaemonPermission} consists of a
  * target name and a list of actions associated with it.
  * <p>
  * In this specification version the only available target name for this
@@ -46,29 +46,29 @@ import java.util.StringTokenizer;
  *   <td rowspan="5">&quot;control&quot;</td>
  *   <td>&quot;start&quot;</td>
  *   <td>
- *    The permission to call the <code>start()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
+ *    The permission to call the {@code start()} method in an instance
+ *    of a {@code DaemonController} interface.
  *   </td>
  *  </tr>
  *  <tr>
  *   <td>&quot;stop&quot;</td>
  *   <td>
- *    The permission to call the <code>stop()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
+ *    The permission to call the {@code stop()} method in an instance
+ *    of a {@code DaemonController} interface.
  *   </td>
  *  </tr>
  *  <tr>
  *   <td>&quot;shutdown&quot;</td>
  *   <td>
- *    The permission to call the <code>shutdown()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
+ *    The permission to call the {@code shutdown()} method in an instance
+ *    of a {@code DaemonController} interface.
  *   </td>
  *  </tr>
  *  <tr>
  *   <td>&quot;reload&quot;</td>
  *   <td>
- *    The permission to call the <code>reload()</code> method in an instance
- *    of a <code>DaemonController</code> interface.
+ *    The permission to call the {@code reload()} method in an instance
+ *    of a {@code DaemonController} interface.
  *   </td>
  *  </tr>
  *  <tr>
@@ -103,49 +103,49 @@ public final class DaemonPermission extends Permission
 
     /**
      * The action name associated with the permission to call the
-     * <code>DaemonController.start()</code> method.
+     * {@code DaemonController.start()} method.
      */
     protected static final String CONTROL_START = "start";
 
     /**
      * The action name associated with the permission to call the
-     * <code>DaemonController.stop()</code> method.
+     * {@code DaemonController.stop()} method.
      */
     protected static final String CONTROL_STOP = "stop";
 
     /**
      * The action name associated with the permission to call the
-     * <code>DaemonController.shutdown()</code> method.
+     * {@code DaemonController.shutdown()} method.
      */
     protected static final String CONTROL_SHUTDOWN = "shutdown";
 
     /**
      * The action name associated with the permission to call the
-     * <code>DaemonController.reload()</code> method.
+     * {@code DaemonController.reload()} method.
      */
     protected static final String CONTROL_RELOAD = "reload";
 
     /**
      * The action mask associated with the permission to call the
-     * <code>DaemonController.start()</code> method.
+     * {@code DaemonController.start()} method.
      */
     protected static final int MASK_CONTROL_START = 0x01;
 
     /**
      * The action mask associated with the permission to call the
-     * <code>DaemonController.stop()</code> method.
+     * {@code DaemonController.stop()} method.
      */
     protected static final int MASK_CONTROL_STOP = 0x02;
 
     /**
      * The action mask associated with the permission to call the
-     * <code>DaemonController.shutdown()</code> method.
+     * {@code DaemonController.shutdown()} method.
      */
     protected static final int MASK_CONTROL_SHUTDOWN = 0x04;
 
     /**
      * The action mask associated with the permission to call the
-     * <code>DaemonController.reload()</code> method.
+     * {@code DaemonController.reload()} method.
      */
     protected static final int MASK_CONTROL_RELOAD = 0x08;
 
@@ -171,10 +171,10 @@ public final class DaemonPermission extends Permission
      */
 
     /**
-     * Creates a new <code>DaemonPermission</code> instance with a specified
+     * Creates a new {@code DaemonPermission} instance with a specified
      * permission name.
      * <p>
-     * This constructor will create a new <code>DaemonPermission</code>
+     * This constructor will create a new {@code DaemonPermission}
      * instance that <b>will not</b> grant any permission to the caller.
      *
      * @param target The target name of this permission.
@@ -204,7 +204,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Creates a new <code>DaemonPermission</code> instance with a specified
+     * Creates a new {@code DaemonPermission} instance with a specified
      * permission name and a specified list of actions.
      *
      * @param target The target name of this permission.
@@ -232,7 +232,7 @@ public final class DaemonPermission extends Permission
 
     /**
      * Returns the list of actions permitted by this instance of
-     * <code>DaemonPermission</code> in its canonical form.
+     * {@code DaemonPermission} in its canonical form.
      *
      * @return The canonicalized list of actions.
      */
@@ -246,7 +246,7 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Returns the hash code for this <code>DaemonPermission</code> instance.
+     * Returns the hash code for this {@code DaemonPermission} instance.
      *
      * @return An hash code value.
      */
@@ -258,10 +258,10 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Checks if a specified object equals <code>DaemonPermission</code>.
+     * Checks if a specified object equals {@code DaemonPermission}.
      *
      * @return <b>true</b> or <b>false</b> wether the specified object equals
-     *         this <code>DaemonPermission</code> instance or not.
+     *         this {@code DaemonPermission} instance or not.
      */
     @Override
     public boolean equals(final Object object)
@@ -283,11 +283,11 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Checks if this <code>DaemonPermission</code> implies another
-     * <code>Permission</code>.
+     * Checks if this {@code DaemonPermission} implies another
+     * {@code Permission}.
      *
      * @return <b>true</b> or <b>false</b> wether the specified permission
-     *         is implied by this <code>DaemonPermission</code> instance or
+     *         is implied by this {@code DaemonPermission} instance or
      *         not.
      */
     @Override
@@ -310,10 +310,10 @@ public final class DaemonPermission extends Permission
     }
 
     /**
-     * Returns a <code>String</code> representation of this instance.
+     * Returns a {@code String} representation of this instance.
      *
-     * @return A <code>String</code> representing this
-     *         <code>DaemonPermission</code> instance.
+     * @return A {@code String} representing this
+     *         {@code DaemonPermission} instance.
      */
     @Override
     public String toString()

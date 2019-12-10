@@ -20,7 +20,7 @@ package org.apache.commons.daemon;
 /**
  * Provides support for native daemon invocation. Using
  * a platform dependant helper program, classes that implement the
- * <code>Daemon</code> interface can be initialized, started and
+ * {@code Daemon} interface can be initialized, started and
  * stopped according to the conventions of the underlying operating
  * system.
  * <p>
@@ -33,10 +33,10 @@ public interface Daemon
 {
 
     /**
-     * Initializes this <code>Daemon</code> instance.
+     * Initializes this {@code Daemon} instance.
      * <p>
      *   This method gets called once the JVM process is created and the
-     *   <code>Daemon</code> instance is created thru its empty public
+     *   {@code Daemon} instance is created thru its empty public
      *   constructor.
      * </p>
      * <p>
@@ -45,21 +45,21 @@ public interface Daemon
      *   so, this method might be called with <i>super-user</i> privileges.
      * </p>
      * <p>
-     *   For example, it might be wise to create <code>ServerSocket</code>
+     *   For example, it might be wise to create {@code ServerSocket}
      *   instances within the scope of this method, and perform all operations
      *   requiring <i>super-user</i> privileges in the underlying operating
      *   system.
      * </p>
      * <p>
      *   Apart from set up and allocation of native resources, this method
-     *   must not start the actual operation of the <code>Daemon</code> (such
-     *   as starting threads calling the <code>ServerSocket.accept()</code>
+     *   must not start the actual operation of the {@code Daemon} (such
+     *   as starting threads calling the {@code ServerSocket.accept()}
      *   method) as this would impose some serious security hazards. The
-     *   start of operation must be performed in the <code>start()</code>
+     *   start of operation must be performed in the {@code start()}
      *   method.
      * </p>
      *
-     * @param context A <code>DaemonContext</code> object used to
+     * @param context A {@code DaemonContext} object used to
      * communicate with the container.
      * @throws DaemonInitException An exception that prevented
      * initialization where you want to display a nice message to the user,
@@ -71,7 +71,7 @@ public interface Daemon
         throws DaemonInitException, Exception;
 
     /**
-     * Starts the operation of this <code>Daemon</code> instance. This
+     * Starts the operation of this {@code Daemon} instance. This
      * method is to be invoked by the environment after the init()
      * method has been successfully invoked and possibly the security
      * level of the JVM has been dropped. Implementors of this
@@ -85,7 +85,7 @@ public interface Daemon
         throws Exception;
 
     /**
-     * Stops the operation of this <code>Daemon</code> instance. Note
+     * Stops the operation of this {@code Daemon} instance. Note
      * that the proper place to free any allocated resources such as
      * sockets or file descriptors is in the destroy method, as the
      * container may restart the Daemon by calling start() after
