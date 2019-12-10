@@ -50,7 +50,7 @@
         jsvc. Update the list of paths searched for libjvm.so to include the
         path used by OpenJDK 11.
       </action>
-      <action type="add", dev="markt">
+      <action type="add" dev="markt">
         procrun. Add additional debug logging for Java start mode.
       </action>
     </release>
