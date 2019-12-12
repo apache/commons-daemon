@@ -76,6 +76,9 @@
         Ant build files and exclude the working directories of Windows binary
         builds.
       </action>
+      <action type="add" dev="ggregory">
+         More startup on Windows logging in javajni.c. #14. 
+      </action>
     </release>
     <release version="1.2.1" date="2019-09-09" description="Bug fix release">
       <action issue="DAEMON-403" type="fix" dev="markt" due-to="Charles">
