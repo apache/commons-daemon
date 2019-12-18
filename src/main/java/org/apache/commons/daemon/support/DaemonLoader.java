@@ -101,7 +101,7 @@ public final class DaemonLoader
     {
         try {
             if (signal != null) {
-                signal.invoke(daemon, new Object[0]);
+                signal.invoke(daemon);
                 return true;
             }
             System.out.println("Daemon doesn't support signaling");
