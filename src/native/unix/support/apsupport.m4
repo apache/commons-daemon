@@ -118,17 +118,14 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     ;;
   mips*el)
     CFLAGS="$CFLAGS -DCPU=\\\"mipsel\\\""
-    supported_os="mipsel"
     HOST_CPU=mipsel
     ;;
   mips*)
     CFLAGS="$CFLAGS -DCPU=\\\"mips\\\""
-    supported_os="mips"
     HOST_CPU=mips
     ;;
   alpha*)
     CFLAGS="$CFLAGS -DCPU=\\\"alpha\\\""
-    supported_os="alpha"
     HOST_CPU=alpha
     ;;
   hppa2.0w|hppa64)
@@ -174,17 +171,14 @@ AC_DEFUN(AP_SUPPORTED_HOST,[
     HOST_CPU=$host_cpu;;
   s390 | s390x)
     CFLAGS="$CFLAGS -DCPU=\\\"s390\\\""
-    supported_os="s390"
     HOST_CPU=s390
     ;;
   arm*)
     CFLAGS="$CFLAGS -DCPU=\\\"arm\\\""
-    supported_os="arm"
     HOST_CPU=arm
     ;;
   aarch64)
     CFLAGS="$CFLAGS -DCPU=\\\"aarch64\\\""
-    supported_os="aarch64"
     HOST_CPU=aarch64
     ;;
   *)
