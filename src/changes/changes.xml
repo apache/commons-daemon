@@ -134,7 +134,7 @@
         registry.
       </action>
       <action issue="DAEMON-392" type="fix" dev="ggregory" due-to="Daniel Hofmann">
-        Procrun. Undefined behaviour in registry.c dwRegKey = dwRegKey++
+        Procrun. Undefined behavior in registry.c dwRegKey = dwRegKey++
       </action>
       <action issue="DAEMON-396" type="fix" dev="markt" due-to="Gerwin">
         Procrun. Fix a bug that meant a value provided for LibraryPath replaced
@@ -268,7 +268,7 @@
         Ensure that the child process is started with the correct umask. 
       </action>
       <action issue="DAEMON-309" type="fix" dev="markt">
-        Correct conflicting information for the behaviour of Procrun when using
+        Correct conflicting information for the behavior of Procrun when using
         jvm mode.
       </action>
       <action issue="DAEMON-372" type="fix" dev="markt" due-to="Sérgio Ozaki">
