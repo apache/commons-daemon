@@ -5,6 +5,13 @@ Using Visual Studio, you can build Apache Commons Daemon.
 The Makefile make file has a bunch of documentation about its
 options, but a trivial build is simply;
 
+Windows X64 Build
+
+  "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  nmake CPU=X64
+
+Windows X86 Build
+
   nmake CPU=X86
   nmake CPU=X86 PREFIX=c:\desired\path\of\daemon install
 
