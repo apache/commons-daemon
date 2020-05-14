@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 import org.apache.commons.daemon.Daemon;
-import org.apache.commons.daemon.DaemonController;
-import org.apache.commons.daemon.DaemonContext;
 
 /**
  */
