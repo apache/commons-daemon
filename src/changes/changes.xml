@@ -54,9 +54,12 @@
         procrun. Add additional debug logging for Java start mode.
       </action>
       <action type="fix" dev="markt" due-to="Ray Wang">
-        jsvc. Remove incorrent definition 'supported_os' which defined in 
+        jsvc. Remove incorrect definition 'supported_os' which defined in 
         psupport.m4 file to fix jsvc build error on s390, arm, aarch64, 
         mipsel and mips. 
+      </action>
+      <action type="add" dev="ggregory">
+        More debug logging in prunsrv.c and javajni.c.
       </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
