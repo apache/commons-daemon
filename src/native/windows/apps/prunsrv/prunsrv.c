@@ -598,10 +598,10 @@ static BOOL saveConfiguration(LPAPXCMDLINE lpCmdline)
                                _options[i].dwValue);
         else if (_options[i].dwType & APXCMDOPT_MSZ)
             apxRegistrySetMzStrW(hRegistry, APXREG_PARAMSOFTWARE,
-                                 _options[i].szSubkey,
-                                 _options[i].szRegistry,
-                                 _options[i].szValue,
-                                 _options[i].dwValue);
+                               _options[i].szSubkey,
+                               _options[i].szRegistry,
+                               _options[i].szValue,
+                               _options[i].dwValue);
         ++i;
     }
     apxCloseHandle(hRegistry);
