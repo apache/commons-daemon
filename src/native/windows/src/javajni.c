@@ -1055,12 +1055,14 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
     if (!__apxJvmAttach(lpJava)) {
         WORKER_EXIT(5);
     }
-    apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread started %s:%s",
+    apxLogWrite(APXLOG_MARK_DEBUG "Java worker thread started for %s:%s",
                 lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     lpJava->dwWorkerStatus = 1;
     SetEvent(lpJava->hWorkerInit);
     /* Ensure apxJavaStart worker has read our status */
     WaitForSingleObject(lpJava->hWorkerSync, INFINITE);
+    apxLogWrite(APXLOG_MARK_DEBUG "JNI calling static void method %s:%s",
+                lpJava->clWorker.sClazz, lpJava->clWorker.sMethod);
     JNICALL_3(CallStaticVoidMethod,
               lpJava->clWorker.jClazz,
               lpJava->clWorker.jMethod,
@@ -1078,12 +1080,12 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
 finished:
     if (lpJava) {
         lpJava->dwWorkerStatus = 0;
-        apxLogWrite(APXLOG_MARK_DEBUG "Java Worker thread finished %s:%s with status = %d",
+        apxLogWrite(APXLOG_MARK_DEBUG "Java worker thread finished %s:%s with status = %d",
                     lpJava->clWorker.sClazz, lpJava->clWorker.sMethod, rv);
         SetEvent(lpJava->hWorkerInit);
     }
     ExitThread(rv);
-    /* never gets here but keep the compiler happy */
+    /* Never gets here but keep the compiler happy */
     return rv;
 }
 
@@ -1148,7 +1150,11 @@ apxJavaWait(APXHANDLE hJava, DWORD dwMilliseconds, BOOL bKill)
 
     if (!lpJava->dwWorkerStatus && lpJava->hWorkerThread)
         return WAIT_OBJECT_0;
+    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p %d milliseconds (INFINITE=%d)...", 
+        lpJava->hWorkerThread, dwMilliseconds, INFINITE);
     rv = WaitForSingleObject(lpJava->hWorkerThread, dwMilliseconds);
+    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p = %d (WAIT_TIMEOUT=%d)", 
+        lpJava->hWorkerThread, rv, WAIT_TIMEOUT);
     if (rv == WAIT_TIMEOUT && bKill) {
         __apxJavaJniCallback(hJava, WM_CLOSE, 0, 0);
     }

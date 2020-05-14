@@ -1064,11 +1064,11 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         else {
             if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
                 reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, 20 * 1000);
-                apxLogWrite(APXLOG_MARK_DEBUG "Forcing Java JNI System.exit worker to finish...");
+                apxLogWrite(APXLOG_MARK_DEBUG "Forcing Java JNI System.exit() worker to finish...");
                 return 0;
             }
             else {
-                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for Java JNI stop worker to finish...");
+                apxLogWrite(APXLOG_MARK_DEBUG "Waiting for Java JNI stop worker to finish for %s:%s...", _jni_sclass, _jni_smethod);
                 apxJavaWait(hWorker, INFINITE, FALSE);
                 apxLogWrite(APXLOG_MARK_DEBUG "Java JNI stop worker finished.");
             }
