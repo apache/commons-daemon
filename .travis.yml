@@ -24,7 +24,7 @@ jdk:
 # Commons Daemon has a minimum Java version of Java 6
 # Travis does not appear to support Java 6
 #  - openjdk6
-  - openjdk7
+#   - openjdk7
   - openjdk8
   - openjdk9
   - openjdk10
