@@ -122,7 +122,7 @@ void help(home_data *data)
     printf("        Java 9 --illegal-access option. Passed as it is to JVM.\n");
     printf("        Refer java help for possible values.\n");
     printf("    --enable-preview\n");
-    printf("        Java 12 --enable-preview option. Passed as it is to JVM\n");
+    printf("        Java 11 --enable-preview option. Passed as it is to JVM\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
     printf("Copyright (c) 1999-2019 Apache Software Foundation.\n");
 
