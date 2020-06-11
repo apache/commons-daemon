@@ -422,6 +422,10 @@ static arg_data *parse(int argc, char *argv[])
         else if (!strncmp(argv[x], "--illegal-access=", 17)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
+        /* Java 12 specific options */
+        else if (!strncmp(argv[x], "--enable-preview", 16)) {
+            args->opts[args->onum++] = strdup(argv[x]);
+        }
         else if (*argv[x] == '-') {
             log_error("Invalid option %s", argv[x]);
             return NULL;
