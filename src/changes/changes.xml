@@ -61,7 +61,7 @@
       <action type="add" dev="ggregory">
         More debug logging in prunsrv.c and javajni.c.
       </action>
-      <action type="add" dev="ggregory" due-to="mads1980">
+      <action issue="DAEMON-419" type="add" dev="ggregory" due-to="mads1980">
         Update arguments.c to support Java 11 --enable-preview #18.
       </action>
     </release>
