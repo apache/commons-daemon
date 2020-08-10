@@ -50,7 +50,7 @@
                 <exclude>native/libservice.a</exclude>
                 <!-- Excluded here, because processed below -->
                 <exclude>**/*.sh</exclude> 
-                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <!-- Bug https://issues.apache.org/jira/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
         </fileSet>
@@ -76,7 +76,7 @@
                 <exclude>**/*.ico</exclude>
                 <exclude>**/*.bmp</exclude>
                 <exclude>**/*.rc</exclude>
-                <!-- Bug http://jira.codehaus.org/browse/MASSEMBLY-462 -->
+                <!-- Bug https://issues.apache.org/jira/browse/MASSEMBLY-462 -->
                 <exclude>**/*.formatted</exclude>
             </excludes>
             <fileMode>664</fileMode>
