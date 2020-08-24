@@ -481,6 +481,64 @@ static void setInprocEnvironment9(LPCWSTR szOptions9)
     apxFree(e);
 }
 
+/* Sets environment variables required by some Java options
+ * Currently only Native Memory Tracking
+ */
+static void setInprocEnvironmentOptions(LPCWSTR szOptions)
+{
+    LPCWSTR p;
+    DWORD len;
+    LPWSTR e;
+
+	apxLogWrite(APXLOG_MARK_DEBUG "Checking Java options for environment variable requirements");
+
+    p = szOptions;
+    while (*p) {
+    	apxLogWrite(APXLOG_MARK_DEBUG "Checking '%S' for environment variable requirements", p);
+        if (wcsncmp(p, L"-XX:NativeMemoryTracking=", 25) == 0) {
+        	apxLogWrite(APXLOG_MARK_DEBUG "Match found '%S'", p);
+            /* Advance 25 characters to the start of the value */
+            p += 25;
+        	apxLogWrite(APXLOG_MARK_DEBUG "Setting is '%S'", p);
+            /* Ignore setting if it is off */
+            if (wcsncmp(p, L"off", 3)) {
+            	apxLogWrite(APXLOG_MARK_DEBUG "Creating environment entry");
+                /* Allocated space for the setting value */
+                len = lstrlen(p);
+                /* Expand space to include env var name less pid and '=' */
+                len += 11;
+                /* Expand spave to include pid (4 bytes, signed - up to 10 characters */
+                len += 10;
+                /* Expand space to include the null terminator */
+                len++;
+
+                /* Allocate the space */
+                e = apxPoolCalloc(gPool, len * sizeof(WCHAR));
+
+                /* Create the environment variable needed by NMT */
+                swprintf_s(e, len, L"NMT_LEVEL_%d=%s", GetCurrentProcessId(), p);
+
+            	apxLogWrite(APXLOG_MARK_DEBUG "Created environment entry '%S'", e);
+                /* Set the environment variable */
+               _wputenv(e);
+
+               apxFree(e);
+            }
+            return;
+        }
+
+        /* advance to the terminating null */
+        while(*p) {
+          p++;
+        }
+
+        /* advance to the start of the next entry
+         * will be null if there are no more entries
+         */
+        p++;
+    }
+}
+
 /* Load the configuration from Registry
  * loads only nonspecified items
  */
@@ -1243,6 +1301,10 @@ static DWORD serviceStart()
             /* Add LibraryPath to the PATH */
            apxAddToPathW(gPool, SO_LIBPATH);
         }
+        /* Some options require additional environment settings to be in place
+         * before Java is started
+         */
+        setInprocEnvironmentOptions(SO_JVMOPTIONS);
         /* Create the JVM global worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath, SO_JAVAHOME);
         if (IS_INVALID_HANDLE(gWorker)) {
@@ -1287,6 +1349,7 @@ static DWORD serviceStart()
         }
         /* Set the environment using putenv, so JVM can use it */
         apxSetInprocEnvironment();
+        /* Java 9 specific options need to be set via an environment variable */
         setInprocEnvironment9(SO_JVMOPTIONS9);
         /* Redirect process */
         gWorker = apxCreateProcessW(gPool,
