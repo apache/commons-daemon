@@ -1196,7 +1196,7 @@ int main(int argc, char *argv[])
         /*
          * There is no need to change LD_LIBRARY_PATH
          * if we were not able to find a path to libjvm.so
-         * (additionaly a strdup(NULL) cores dump on my machine).
+         * (additionally a strdup(NULL) cores dump on my machine).
          */
         if (libf != NULL) {
             p1 = strdup(libf);
