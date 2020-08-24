@@ -282,7 +282,7 @@ DWORD WINAPI eventThread(LPVOID lpParam)
     }
     ExitThread(0);
     return 0;
-	UNREFERENCED_PARAMETER(lpParam);
+    UNREFERENCED_PARAMETER(lpParam);
 }
 
 /* redirect console stdout/stderr to files
@@ -324,13 +324,13 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
             DeleteFileW(lpWrapper->szStdOutFilename);
         if ((lpWrapper->fpStdOutFile = _wfsopen(lpWrapper->szStdOutFilename,
                                                L"a",
-											   _SH_DENYNO))) {
+                                               _SH_DENYNO))) {
             _dup2(_fileno(lpWrapper->fpStdOutFile), 1);
             *stdout = *lpWrapper->fpStdOutFile;
             setvbuf(stdout, NULL, _IONBF, 0);
         }
         else {
-        	lpWrapper->szStdOutFilename = NULL;
+            lpWrapper->szStdOutFilename = NULL;
         }
     }
     if (lpWrapper->szStdErrFilename) {
@@ -350,7 +350,7 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
             DeleteFileW(lpWrapper->szStdErrFilename);
         if ((lpWrapper->fpStdErrFile = _wfsopen(lpWrapper->szStdErrFilename,
                                                L"a",
-											   _SH_DENYNO))) {
+                                               _SH_DENYNO))) {
             _dup2(_fileno(lpWrapper->fpStdErrFile), 2);
             *stderr = *lpWrapper->fpStdErrFile;
             setvbuf(stderr, NULL, _IONBF, 0);
@@ -430,14 +430,14 @@ void apxSetInprocEnvironment()
 
     hmodUcrt = LoadLibraryExA("ucrtbase.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (hmodUcrt != NULL) {
-    	wputenv_ucrt =  (WPUTENV) GetProcAddress(hmodUcrt, "_wputenv");
+        wputenv_ucrt =  (WPUTENV) GetProcAddress(hmodUcrt, "_wputenv");
     }
 
     for (p = SO_ENVIRONMENT; *p; p++) {
         e = apxExpandStrW(gPool, p);
         _wputenv(e);
         if (wputenv_ucrt != NULL) {
-        	wputenv_ucrt(e);
+            wputenv_ucrt(e);
         }
         apxFree(e);
         while (*p)
@@ -490,19 +490,19 @@ static void setInprocEnvironmentOptions(LPCWSTR szOptions)
     DWORD len;
     LPWSTR e;
 
-	apxLogWrite(APXLOG_MARK_DEBUG "Checking Java options for environment variable requirements");
+    apxLogWrite(APXLOG_MARK_DEBUG "Checking Java options for environment variable requirements");
 
     p = szOptions;
     while (*p) {
-    	apxLogWrite(APXLOG_MARK_DEBUG "Checking '%S' for environment variable requirements", p);
+        apxLogWrite(APXLOG_MARK_DEBUG "Checking '%S' for environment variable requirements", p);
         if (wcsncmp(p, L"-XX:NativeMemoryTracking=", 25) == 0) {
-        	apxLogWrite(APXLOG_MARK_DEBUG "Match found '%S'", p);
+            apxLogWrite(APXLOG_MARK_DEBUG "Match found '%S'", p);
             /* Advance 25 characters to the start of the value */
             p += 25;
-        	apxLogWrite(APXLOG_MARK_DEBUG "Setting is '%S'", p);
+            apxLogWrite(APXLOG_MARK_DEBUG "Setting is '%S'", p);
             /* Ignore setting if it is off */
             if (wcsncmp(p, L"off", 3)) {
-            	apxLogWrite(APXLOG_MARK_DEBUG "Creating environment entry");
+                apxLogWrite(APXLOG_MARK_DEBUG "Creating environment entry");
                 /* Allocated space for the setting value */
                 len = lstrlen(p);
                 /* Expand space to include env var name less pid and '=' */
@@ -518,7 +518,7 @@ static void setInprocEnvironmentOptions(LPCWSTR szOptions)
                 /* Create the environment variable needed by NMT */
                 swprintf_s(e, len, L"NMT_LEVEL_%d=%s", GetCurrentProcessId(), p);
 
-            	apxLogWrite(APXLOG_MARK_DEBUG "Created environment entry '%S'", e);
+                apxLogWrite(APXLOG_MARK_DEBUG "Created environment entry '%S'", e);
                 /* Set the environment variable */
                _wputenv(e);
 
@@ -950,7 +950,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
         rv = (rv && apxServiceSetOptions(hService,
                                          dwType,
                                          dwStart,
-										 bDelayedStart,
+                                         bDelayedStart,
                                          SERVICE_NO_CHANGE));
 
         apxLogWrite(APXLOG_MARK_INFO "Updated service '%S'.",
@@ -1039,7 +1039,7 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
             fputc(ch, stdout);
     }
     return TRUE;
-	UNREFERENCED_PARAMETER(hObject);
+    UNREFERENCED_PARAMETER(hObject);
 }
 
 static int onExitStop(void)
@@ -1721,7 +1721,7 @@ cleanup:
     reportServiceStatusStopped(rc);
     gExitval = rc;
     return;
-	UNREFERENCED_PARAMETER(argc);
+    UNREFERENCED_PARAMETER(argc);
 	UNREFERENCED_PARAMETER(argv);
 }
 
@@ -1736,7 +1736,7 @@ BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
     apxLogWrite(APXLOG_MARK_INFO "Debug service finished with exit code %d.", gExitval);
     SAFE_CLOSE_HANDLE(gPidfileHandle);
     if (gPidfileName) {
-   	    DeleteFileW(gPidfileName);
+        DeleteFileW(gPidfileName);
     }
     return gExitval == 0 ? TRUE : FALSE;
 }
@@ -1762,7 +1762,7 @@ BOOL docmdRunService(LPAPXCMDLINE lpCmdline)
     }
     SAFE_CLOSE_HANDLE(gPidfileHandle);
     if (gPidfileName) {
-   	    DeleteFileW(gPidfileName);
+        DeleteFileW(gPidfileName);
     }
     return rv;
 }
