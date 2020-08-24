@@ -158,6 +158,22 @@ bool java_init(arg_data *args, home_data *data)
         return false;
     }
 
+    /* Some Java options require environment variables to be set before loading
+     * Java when using JNI
+     */
+    for (x = 0; x < args->onum; x++) {
+        if (!strncmp(args->opts[x], "-XX:NativeMemoryTracking=", 25)) {
+            fprintf(stdout, "Found [%s]\n", args->opts[x]);
+            char *value = args->opts[x] + 25;
+            fprintf(stdout, "Found value [%s]\n", value);
+            if (strcmp(value, "off")) {
+                snprintf(daemonprocid, sizeof(daemonprocid), "NMT_LEVEL_%d=%s", (int)getpid(), value);
+                fprintf(stdout, "Setting environment entry [%s]\n", daemonprocid);
+                putenv(daemonprocid);
+            }
+        }
+    }
+
     /* Initialize the DSO library */
     if (dso_init() != true) {
         log_error("Cannot initialize the dynamic library loader");

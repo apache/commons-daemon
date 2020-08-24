@@ -51,7 +51,7 @@
         path used by OpenJDK 11.
       </action>
       <action type="add" dev="markt">
-        procrun. Add additional debug logging for Java start mode.
+        Procrun. Add additional debug logging for Java start mode.
       </action>
       <action type="fix" dev="markt" due-to="Ray Wang">
         jsvc. Remove incorrect definition 'supported_os' which defined in 
@@ -63,6 +63,9 @@
       </action>
       <action issue="DAEMON-419" type="add" dev="ggregory" due-to="mads1980">
         Update arguments.c to support Java 11 --enable-preview #18.
+      </action>
+      <action issue="DAEMON-412" type="add" dev="markt">
+        jsvc and Procrun. Add support for Java native memory tracking.
       </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
