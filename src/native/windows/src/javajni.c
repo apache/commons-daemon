@@ -287,12 +287,12 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
     _st_sys_jvmDllHandle = LoadLibraryExW(dllJvmPath, NULL, 0);
     if (IS_INVALID_HANDLE(_st_sys_jvmDllHandle) &&
         GetFileAttributesW(dllJvmPath) != INVALID_FILE_ATTRIBUTES) {
+        WCHAR  crtBinPath[SIZ_PATHLEN];
+
         /* There is a file but cannot be loaded.
          * Try to load the MSVCRTxx.dll before JVM.dll
          */
         apxLogWrite(APXLOG_MARK_ERROR "Found '%S' but couldn't load it.", dllJvmPath);
-
-        WCHAR  crtBinPath[SIZ_PATHLEN];
 
         lstrlcpyW(jreBinPath, SIZ_PATHLEN, dllJvmPath);
         if(l == 2) {
@@ -1150,10 +1150,10 @@ apxJavaWait(APXHANDLE hJava, DWORD dwMilliseconds, BOOL bKill)
 
     if (!lpJava->dwWorkerStatus && lpJava->hWorkerThread)
         return WAIT_OBJECT_0;
-    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p %d milliseconds (INFINITE=%d)...", 
+    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p %d milliseconds (INFINITE=%d)...",
         lpJava->hWorkerThread, dwMilliseconds, INFINITE);
     rv = WaitForSingleObject(lpJava->hWorkerThread, dwMilliseconds);
-    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p = %d (WAIT_TIMEOUT=%d)", 
+    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p = %d (WAIT_TIMEOUT=%d)",
         lpJava->hWorkerThread, rv, WAIT_TIMEOUT);
     if (rv == WAIT_TIMEOUT && bKill) {
         __apxJavaJniCallback(hJava, WM_CLOSE, 0, 0);
