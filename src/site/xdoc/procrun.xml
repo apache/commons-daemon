@@ -133,6 +133,10 @@
         <td>Delete service</td>
         <td>Stops the service first if it is currently running</td>
     </tr>
+    <tr><th>//PS</th>
+        <td>Print service</td>
+        <td>Prints the command to (re-)create the current configuration</td>
+    </tr>
     <tr><th>//PP[//seconds]</th>
         <td>Pause</td>
         <td>Default is 60 seconds</td>
@@ -181,6 +185,10 @@
     <tr><th>delete</th>
         <td>Delete service</td>
         <td>Stops the service first if it is currently running</td>
+    </tr>
+    <tr><th>print</th>
+        <td>Print service</td>
+        <td>Prints the command to (re-)create the current configuration</td>
     </tr>
     <tr><th>pause [seconds]</th>
         <td>Pause</td>

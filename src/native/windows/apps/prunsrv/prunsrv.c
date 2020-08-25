@@ -76,28 +76,30 @@ static LPCWSTR  STYPE_INTERACTIVE = L"interactive";
 static LPWSTR       _service_name = NULL;
 /* Allowed procrun commands */
 static LPCWSTR _commands[] = {
-    L"TS",      /* 1 Run Service as console application (default)*/
-    L"RS",      /* 2 Run Service */
-    L"ES",      /* 3 Execute start */
-    L"SS",      /* 4 Stop Service */
-    L"US",      /* 5 Update Service parameters */
-    L"IS",      /* 6 Install Service */
-    L"DS",      /* 7 Delete Service */
-    L"?",       /* 8 Help */
-    L"VS",      /* 9 Version */
+    L"TS",      /*  1 Run Service as console application (default)*/
+    L"RS",      /*  2 Run Service */
+    L"ES",      /*  3 Execute start */
+    L"SS",      /*  4 Stop Service */
+    L"US",      /*  5 Update Service parameters */
+    L"IS",      /*  6 Install Service */
+    L"DS",      /*  7 Delete Service */
+    L"PS",      /*  8 Print Service Configuration */
+    L"?",       /*  9 Help */
+    L"VS",      /* 10 Version */
     NULL
 };
 
 static LPCWSTR _altcmds[] = {
-    L"run",         /* 1 Run Service as console application (default)*/
-    L"service",     /* 2 Run Service */
-    L"start",       /* 3 Start Service */
-    L"stop",        /* 4 Stop Service */
-    L"update",      /* 5 Update Service parameters */
-    L"install",     /* 6 Install Service */
-    L"delete",      /* 7 Delete Service */
-    L"help",        /* 8 Help */
-    L"version",     /* 9 Version */
+    L"run",         /*  1 Run Service as console application (default)*/
+    L"service",     /*  2 Run Service */
+    L"start",       /*  3 Start Service */
+    L"stop",        /*  4 Stop Service */
+    L"update",      /*  5 Update Service parameters */
+    L"install",     /*  6 Install Service */
+    L"delete",      /*  7 Delete Service */
+	L"print",       /*  8 Print Service Configuration */
+    L"help",        /*  9 Help */
+    L"version",     /* 10 Version */
     NULL
 };
 
@@ -382,6 +384,7 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
     fwprintf(stderr, L"  start   [ServiceName]  Start Service\n");
     fwprintf(stderr, L"  stop    [ServiceName]  Stop Service\n");
     fwprintf(stderr, L"  run     [ServiceName]  Run Service as console application\n");
+    fwprintf(stderr, L"  print   [ServiceName]  Display the command to (re-)create the current configuration\n");
     fwprintf(stderr, L"  pause   [Num Seconds]  Sleep for n Seconds (defaults to 60)\n");
     fwprintf(stderr, L"  version                Display version\n");
     fwprintf(stderr, L"  Options:\n");
@@ -400,7 +403,7 @@ static void printVersion(void)
                      L"<URL:https://issues.apache.org/jira/browse/DAEMON>.");
 }
 
-/* Display configuration parameters */
+/* Display comamnd line parameters */
 static void dumpCmdline()
 {
     int i = 0;
@@ -663,6 +666,54 @@ static BOOL saveConfiguration(LPAPXCMDLINE lpCmdline)
         ++i;
     }
     apxCloseHandle(hRegistry);
+    return TRUE;
+}
+
+/* Display current configuration */
+static BOOL printConfig(LPAPXCMDLINE lpCmdline)
+{
+    int i = 0;
+
+    if (!loadConfiguration(lpCmdline)) {
+		return FALSE;
+	}
+
+    fwprintf(stderr, L"%s.exe update ",lpCmdline->szExecutable);
+    while (_options[i].szName) {
+		if (_options[i].dwType & APXCMDOPT_INT) {
+			fwprintf(stderr, L"--%s %d ", _options[i].szName, _options[i].dwValue);
+		} else if (_options[i].dwType & APXCMDOPT_MSZ) {
+			if (_options[i].szValue) {
+				BOOL first = TRUE;
+				LPCWSTR p = _options[i].szValue;
+    	        fwprintf(stderr, L"--%s \"", _options[i].szName);
+
+    	        while (*p) {
+    	        	if (first) {
+    	        		first = FALSE;
+    	        	} else {
+    	        		fwprintf(stderr, L"#");
+    	        	}
+    	        	// Skip to terminating NULL for this value
+    	        	while (p[0]) {
+    	        		if (p[0] == L'#') {
+    	        			fwprintf(stderr, L"'%c'", p[0]);
+    	        		} else {
+    	        			fwprintf(stderr, L"%c", p[0]);
+    	        		}
+    	        		++p;
+    	        	}
+    	        	// Move to start of next value
+    	        	++p;
+    	        }
+    	        fwprintf(stderr, L"\" ");
+			}
+        } else if (_options[i].szValue) {
+            fwprintf(stderr, L"--%s \"%s\" ", _options[i].szName, _options[i].szValue);
+        }
+        // NULL options are ignored
+        ++i;
+    }
     return TRUE;
 }
 
@@ -1722,7 +1773,7 @@ cleanup:
     gExitval = rc;
     return;
     UNREFERENCED_PARAMETER(argc);
-	UNREFERENCED_PARAMETER(argv);
+    UNREFERENCED_PARAMETER(argv);
 }
 
 
@@ -1893,10 +1944,13 @@ void __cdecl main(int argc, char **argv)
             if (!docmdDeleteService(lpCmdline))
                 rv = 9;
         break;
-        case 8: /* Print Usage and exit */
+        case 8: /* Print Configuration and exit */
+            printConfig(lpCmdline);
+        break;
+        case 9: /* Print Usage and exit */
             printUsage(lpCmdline, TRUE);
         break;
-        case 9: /* Print version and exit */
+        case 10: /* Print version and exit */
             printVersion();
         break;
         default:

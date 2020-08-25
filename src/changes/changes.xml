@@ -67,6 +67,11 @@
       <action issue="DAEMON-412" type="add" dev="markt">
         jsvc and Procrun. Add support for Java native memory tracking.
       </action>
+      <action issue="DAEMON-422" type="add" dev="markt">
+        Procrun. Add a new command, print, that outputs the command to
+        (re-)configure the service with the current settings. This is intended
+        to be used to save settings such as before an upgrade. 
+      </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
       <action issue="DAEMON-408" type="fix" dev="markt">
