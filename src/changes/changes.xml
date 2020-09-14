@@ -59,10 +59,10 @@
         mipsel and mips. 
       </action>
       <action type="add" dev="ggregory">
-        More debug logging in prunsrv.c and javajni.c.
+        Procrun. More debug logging in prunsrv.c and javajni.c.
       </action>
       <action issue="DAEMON-419" type="add" dev="ggregory" due-to="mads1980">
-        Update arguments.c to support Java 11 --enable-preview #18.
+        jsvc. Update arguments.c to support Java 11 --enable-preview #18.
       </action>
       <action issue="DAEMON-412" type="add" dev="markt">
         jsvc and Procrun. Add support for Java native memory tracking.
