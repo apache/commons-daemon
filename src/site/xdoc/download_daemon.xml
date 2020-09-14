@@ -113,32 +113,32 @@ limitations under the License.
       </p>
     </subsection>
     </section>
-    <section name="Apache Commons Daemon 1.2.3 ">
+    <section name="Apache Commons Daemon 1.2.4 ">
       <subsection name="Binaries">
         <table>
           <tr>
-              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.2.3-bin.tar.gz">commons-daemon-1.2.3-bin.tar.gz</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.3-bin.tar.gz.sha512">sha512</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.3-bin.tar.gz.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.2.4-bin.tar.gz">commons-daemon-1.2.4-bin.tar.gz</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.4-bin.tar.gz.sha512">sha512</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.4-bin.tar.gz.asc">pgp</a></td>
           </tr>
           <tr>
-              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.2.3-bin.zip">commons-daemon-1.2.3-bin.zip</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.3-bin.zip.sha512">sha512</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.3-bin.zip.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/binaries/commons-daemon-1.2.4-bin.zip">commons-daemon-1.2.4-bin.zip</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.4-bin.zip.sha512">sha512</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/binaries/commons-daemon-1.2.4-bin.zip.asc">pgp</a></td>
           </tr>
         </table>
       </subsection>
       <subsection name="Source">
         <table>
           <tr>
-              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.2.3-src.tar.gz">commons-daemon-1.2.3-src.tar.gz</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.3-src.tar.gz.sha512">sha512</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.3-src.tar.gz.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.2.4-src.tar.gz">commons-daemon-1.2.4-src.tar.gz</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.4-src.tar.gz.sha512">sha512</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.4-src.tar.gz.asc">pgp</a></td>
           </tr>
           <tr>
-              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.2.3-src.zip">commons-daemon-1.2.3-src.zip</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.3-src.zip.sha512">sha512</a></td>
-              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.3-src.zip.asc">pgp</a></td>
+              <td><a href="[preferred]/commons/daemon/source/commons-daemon-1.2.4-src.zip">commons-daemon-1.2.4-src.zip</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.4-src.zip.sha512">sha512</a></td>
+              <td><a href="https://www.apache.org/dist/commons/daemon/source/commons-daemon-1.2.4-src.zip.asc">pgp</a></td>
           </tr>
         </table>
       </subsection>
