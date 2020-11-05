@@ -1039,14 +1039,16 @@ static DWORD WINAPI __apxJavaWorkerThread(LPVOID lpParameter)
         apxLogWrite(APXLOG_MARK_DEBUG "DLL search path set to '%S'",
                     pArgs->szLibraryPath);
     }
+    /* System.out/System.err streams must be replaced before loading the main class. */
+    /* Otherwise both old and new streams may be used by the Java application, corrupting the log file. */
+    apxJavaSetOut(pArgs->hJava, TRUE,  pArgs->szStdErrFilename);
+    apxJavaSetOut(pArgs->hJava, FALSE, pArgs->szStdOutFilename);
     if (!apxJavaLoadMainClass(pArgs->hJava,
                               pArgs->szClassName,
                               pArgs->szMethodName,
                               pArgs->lpArguments)) {
         WORKER_EXIT(3);
     }
-    apxJavaSetOut(pArgs->hJava, TRUE,  pArgs->szStdErrFilename);
-    apxJavaSetOut(pArgs->hJava, FALSE, pArgs->szStdOutFilename);
 
     /* Check if we have a class and a method */
     if (!lpJava->clWorker.jClazz || !lpJava->clWorker.jMethod) {
