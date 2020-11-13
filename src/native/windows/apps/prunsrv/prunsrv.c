@@ -1355,7 +1355,9 @@ static DWORD serviceStart()
         /* Some options require additional environment settings to be in place
          * before Java is started
          */
-        setInprocEnvironmentOptions(SO_JVMOPTIONS);
+        if (IS_VALID_STRING(SO_JVMOPTIONS)) {
+        	setInprocEnvironmentOptions(SO_JVMOPTIONS);
+        }
         /* Create the JVM global worker */
         gWorker = apxCreateJava(gPool, _jni_jvmpath, SO_JAVAHOME);
         if (IS_INVALID_HANDLE(gWorker)) {
