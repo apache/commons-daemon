@@ -39,6 +39,10 @@
   </properties>
   <body>
     <release version="1.2.4" date="TBD" description="Bug fix release">
+      <action issue="DAEMON-424" type="fix" dev="markt" due-to="Bernhard Scholz">
+        Procrun. Ensure that log messages written to stdout and stderr are not
+        lost during start-up.
+      </action>
       <action issue="DAEMON-425" type="fix" dev="markt">
         Procrun. Correct a regression introduced in 1.2.3. Enable the service to
         start if the Options value is not present in the registry.
