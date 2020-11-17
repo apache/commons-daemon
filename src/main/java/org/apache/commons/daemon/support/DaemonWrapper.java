@@ -217,7 +217,7 @@ public class DaemonWrapper implements Daemon
         protected void addArguments(final String[] args)
         {
             if (args != null) {
-                final ArrayList<String> aa = new ArrayList<>();
+                final ArrayList<String> aa = new ArrayList<String>();
                 if (this.args != null) {
                     aa.addAll(Arrays.asList(this.args));
                 }
