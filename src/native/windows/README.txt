@@ -40,7 +40,7 @@ The steps to produce the Windows binaries is then:
 
 1. cd $GIT_CLONE_DIR\src\native\windows\apps\prunmgr
 
-2. $CMCS_ROOT\setenv.bat /x86
+2. $CMSC_ROOT\setenv.bat /x86
 
 3. nmake -f Makefile
 
