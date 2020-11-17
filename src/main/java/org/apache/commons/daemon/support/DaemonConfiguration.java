@@ -193,7 +193,7 @@ public final class DaemonConfiguration
     public String[] getPropertyArray(final String name)
         throws ParseException
     {
-        final ArrayList<String> list = new ArrayList<String>();
+        final ArrayList<String> list = new ArrayList<>();
         String    args;
 
         // Load daemon.arg[0] ... daemon.arg[n] into the String array.
