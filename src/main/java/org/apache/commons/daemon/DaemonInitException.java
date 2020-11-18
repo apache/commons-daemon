@@ -25,7 +25,7 @@ public class DaemonInitException extends Exception {
     private static final long serialVersionUID = 5665891535067213551L;
 
     /**
-     * Constructs a new exception with the specified message.
+     * Constructs a new exception with the given message.
      *
      * @param message the detail message accessible with {@link #getMessage()} .
      */
@@ -33,13 +33,24 @@ public class DaemonInitException extends Exception {
         super(message);
     }
 
+    /**
+     * Constructs a new exception with the given detail and cause.
+     * 
+     * @param message the detail message accessible with {@link #getMessage()} .
+     * @param cause the cause accessible with {@link #getCause()}.
+     */
     public DaemonInitException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Gets the message with the cause as a postfix.
+     * 
+     * @return the message with the cause as a postfix.
+     */
     public String getMessageWithCause() {
-        final String extra = getCause() == null ? "" : ": " + getCause().getMessage();
-        return getMessage() + extra;
+        final Throwable cause = getCause();
+        return getMessage() + (cause == null ? "" : ": " + cause.getMessage());
     }
 
 }
