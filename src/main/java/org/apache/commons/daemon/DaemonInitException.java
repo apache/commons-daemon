@@ -24,9 +24,6 @@ public class DaemonInitException extends Exception {
 
     private static final long serialVersionUID = 5665891535067213551L;
 
-    // don't rely on Throwable#getCause (jdk1.4)
-    private final Throwable cause;
-
     /**
      * Constructs a new exception with the specified message.
      *
@@ -34,16 +31,14 @@ public class DaemonInitException extends Exception {
      */
     public DaemonInitException(final String message) {
         super(message);
-        this.cause = null;
     }
 
     public DaemonInitException(final String message, final Throwable cause) {
-        super(message);
-        this.cause = cause;
+        super(message, cause);
     }
 
     public String getMessageWithCause() {
-        final String extra = this.cause == null ? "" : ": " + this.cause.getMessage();
+        final String extra = getCause() == null ? "" : ": " + getCause().getMessage();
         return getMessage() + extra;
     }
 
