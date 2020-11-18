@@ -17,8 +17,8 @@
 package org.apache.commons.daemon;
 
 /**
- * Throw this during init if you can't initialise yourself for some expected reason. Using this exception will cause the
- * exception's message to come out on stdout, rather than a dirty great stacktrace.
+ * Throw this during init if you can't initialize yourself for some expected reason. Using this exception will cause the
+ * exception's message to come out on stdout, rather than a dirty great stack trace.
  */
 public class DaemonInitException extends Exception {
 
