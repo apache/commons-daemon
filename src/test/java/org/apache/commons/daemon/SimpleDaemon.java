@@ -37,7 +37,6 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     private boolean softReloadSignalled;
 
     public SimpleDaemon() {
-        super();
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
         this.handlers=new Vector<Handler>();
@@ -184,7 +183,6 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         private int number=0;
 
         public Handler(final Socket s, final SimpleDaemon p, final DaemonController c) {
-            super();
             this.socket=s;
             this.parent=p;
             this.controller=c;

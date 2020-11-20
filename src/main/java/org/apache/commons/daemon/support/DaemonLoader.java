@@ -307,7 +307,6 @@ public final class DaemonLoader
 
         private Controller()
         {
-            super();
             this.setAvailable(false);
         }
 
