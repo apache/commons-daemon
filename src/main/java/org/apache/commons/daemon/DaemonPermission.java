@@ -222,7 +222,6 @@ public final class DaemonPermission extends Permission
         // Create the appropriate mask if this is a control permission.
         if (this.type == TYPE_CONTROL) {
             this.mask = this.createControlMask(actions);
-            return;
         }
     }
 
