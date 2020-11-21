@@ -30,7 +30,7 @@ public interface DaemonContext
      *          the {@link Daemon} instance that this {@code DaemonContext}
      *          is passed to.
      */
-    public DaemonController getController();
+    DaemonController getController();
 
     /**
      * @return An array of {@link String} arguments supplied by the environment
@@ -38,7 +38,7 @@ public interface DaemonContext
      *         {@code public static void main()} method used as an entry
      *         point to most other java programs.
      */
-    public String[] getArguments();
+    String[] getArguments();
 
 }
 

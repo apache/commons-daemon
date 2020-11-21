@@ -30,7 +30,7 @@ public interface DaemonController
      * @throws IllegalStateException If the daemon is not in a valid state to be
      *                               shutdown
      */
-    public void shutdown()
+    void shutdown()
         throws IllegalStateException;
 
     /**
@@ -39,7 +39,7 @@ public interface DaemonController
      * @throws IllegalStateException If the daemon is not in a valid state to be
      *                               reloaded
      */
-    public void reload()
+    void reload()
         throws IllegalStateException;
 
     /**
@@ -48,7 +48,7 @@ public interface DaemonController
      * @throws IllegalStateException If the daemon is not in a valid state to be
      *                               shutdown
      */
-    public void fail()
+    void fail()
         throws IllegalStateException;
 
     /**
@@ -59,7 +59,7 @@ public interface DaemonController
      * @throws IllegalStateException If the daemon is not in a valid state to be
      *                               shutdown
      */
-    public void fail(String message)
+    void fail(String message)
         throws IllegalStateException;
 
     /**
@@ -70,7 +70,7 @@ public interface DaemonController
      * @throws IllegalStateException If the daemon is not in a valid state to be
      *                               shutdown
      */
-    public void fail(Exception exception)
+    void fail(Exception exception)
         throws IllegalStateException;
 
     /**
@@ -82,7 +82,7 @@ public interface DaemonController
      * @throws IllegalStateException If the daemon is not in a valid state to be
      *                               shutdown
      */
-    public void fail(String message, Exception exception)
+    void fail(String message, Exception exception)
         throws IllegalStateException;
 
 }

@@ -67,7 +67,7 @@ public interface Daemon
      * @throws Exception Any exception preventing a successful
      *                      initialization.
      */
-    public void init(DaemonContext context)
+    void init(DaemonContext context)
         throws DaemonInitException, Exception;
 
     /**
@@ -81,7 +81,7 @@ public interface Daemon
      *
      * @throws Exception If the start was not successful
      */
-    public void start()
+    void start()
         throws Exception;
 
     /**
@@ -93,7 +93,7 @@ public interface Daemon
      *
      * @throws Exception If the stop was not successful
      */
-    public void stop()
+    void stop()
         throws Exception;
 
     /**
@@ -103,6 +103,6 @@ public interface Daemon
      * can not be restarted after this method has been called without a
      * new call to the init() method.
      */
-    public void destroy();
+    void destroy();
 }
 
