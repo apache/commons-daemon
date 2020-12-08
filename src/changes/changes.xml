@@ -47,6 +47,11 @@
         Procrun. Correct a regression introduced in 1.2.3. Enable the service to
         start if the Options value is not present in the registry.
       </action>
+      <action issue="DAEMON-426" type="fix" dev="markt">
+        jsvc. Don't fail if the CAP_DAC_READ_SEARCH capability is not available.
+        Fall back to using argv[0] rather than /proc/self/exe to determine the
+        path for the current binary.
+      </action>
     </release>
     <release version="1.2.3" date="2020-09-01" description="Bug fix release">
       <action issue="DAEMON-411" type="fix" dev="markt">

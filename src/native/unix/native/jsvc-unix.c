@@ -167,15 +167,23 @@ static int set_user_group(const char *user, int uid, int gid)
 /* Set linux capability, user and group */
 #ifdef OS_LINUX
 
-/* That a more reasonable configuration */
-#define LEGACY_CAPS     (1 << CAP_NET_BIND_SERVICE) +   \
-                        (1 << CAP_DAC_READ_SEARCH) +    \
-                        (1 << CAP_SETUID) +             \
-                        (1 << CAP_SETGID)
+/* Preferred capabilities for getuid/setuid */
+#define LEGACY_CAPS_UID         (1 << CAP_NET_BIND_SERVICE) +   \
+                                (1 << CAP_DAC_READ_SEARCH) +    \
+                                (1 << CAP_SETUID) +             \
+                                (1 << CAP_SETGID)
 
-/* probably the only one Java could use */
-#define LEGACY_CAPSMIN  (1 << CAP_NET_BIND_SERVICE) +   \
-                        (1 << CAP_DAC_READ_SEARCH)
+/* Minimum required capabilities for getuid/setuid */
+#define LEGACY_CAPS_UID_MIN     (1 << CAP_NET_BIND_SERVICE) +   \
+                                (1 << CAP_SETUID) +             \
+                                (1 << CAP_SETGID)
+
+/* Preferred capabilities without getuid/setuid */
+#define LEGACY_CAPS_NO_UID      (1 << CAP_NET_BIND_SERVICE) +   \
+                                (1 << CAP_DAC_READ_SEARCH)
+
+/* Minimum required capabilities without getuid/setuid */
+#define LEGACY_CAPS_NO_UID_MIN  (1 << CAP_NET_BIND_SERVICE)
 
 #define LEGACY_CAP_VERSION  0x19980330
 static int set_legacy_caps(int caps)
@@ -199,20 +207,32 @@ static int set_legacy_caps(int caps)
 }
 
 #ifdef HAVE_LIBCAP
-static cap_value_t caps_std[] = {
+static cap_value_t caps_uid[] = {
     CAP_NET_BIND_SERVICE,
     CAP_SETUID,
     CAP_SETGID,
     CAP_DAC_READ_SEARCH
 };
 
-static cap_value_t caps_min[] = {
+static cap_value_t caps_uid_min[] = {
+    CAP_NET_BIND_SERVICE,
+    CAP_SETUID,
+    CAP_SETGID
+};
+
+static cap_value_t caps_no_uid[] = {
     CAP_NET_BIND_SERVICE,
     CAP_DAC_READ_SEARCH
 };
 
-#define CAPS     1
-#define CAPSMIN  2
+static cap_value_t caps_no_uid_min[] = {
+    CAP_NET_BIND_SERVICE
+};
+
+#define CAPS_UID        1
+#define CAPS_UID_MIN    2
+#define CAPS_NO_UID     3
+#define CAPS_NO_UID_MIN 4
 
 
 typedef int (*fd_cap_free) (void *);
@@ -291,25 +311,29 @@ static int set_caps(int cap_type)
     int ncap;
     int flag = CAP_SET;
     cap_value_t *caps;
-    const char *type;
 
     if (ld_libcap()) {
         return set_legacy_caps(cap_type);
     }
-    if (cap_type == CAPS) {
-        ncap = sizeof(caps_std) / sizeof(cap_value_t);
-        caps = caps_std;
-        type = "default";
+    if (cap_type == CAPS_UID) {
+        ncap = sizeof(caps_uid) / sizeof(cap_value_t);
+        caps = caps_uid;
     }
-    else if (cap_type == CAPSMIN) {
-        ncap = sizeof(caps_min) / sizeof(cap_value_t);
-        caps = caps_min;
-        type = "min";
+    else if (cap_type == CAPS_UID_MIN) {
+        ncap = sizeof(caps_uid_min) / sizeof(cap_value_t);
+        caps = caps_uid_min;
+    }
+    else if (cap_type == CAPS_NO_UID) {
+        ncap = sizeof(caps_no_uid) / sizeof(cap_value_t);
+        caps = caps_no_uid;
+    }
+    else if (cap_type == CAPS_NO_UID_MIN) {
+        ncap = sizeof(caps_no_uid_min) / sizeof(cap_value_t);
+        caps = caps_no_uid_min;
     }
     else {
-        ncap = sizeof(caps_min) / sizeof(cap_value_t);
-        caps = caps_min;
-        type = "null";
+        ncap = sizeof(caps_no_uid_min) / sizeof(cap_value_t);
+        caps = caps_no_uid_min;
         flag = CAP_CLEAR;
     }
     c = (*fp_cap_init) ();
@@ -318,22 +342,23 @@ static int set_caps(int cap_type)
     (*fp_cap_set_flag) (c, CAP_INHERITABLE, ncap, caps, flag);
     (*fp_cap_set_flag) (c, CAP_PERMITTED, ncap, caps, flag);
     if ((*fp_cap_set_proc) (c) != 0) {
-        log_error("failed setting %s capabilities.", type);
         return -1;
     }
     (*fp_cap_free) (c);
-    if (cap_type == CAPS)
+    if (cap_type == CAPS_UID || cap_type == CAPS_UID_MIN)
         log_debug("increased capability set.");
-    else if (cap_type == CAPSMIN)
-        log_debug("decreased capability set to min required.");
+    else if (cap_type == CAPS_NO_UID || cap_type == CAPS_NO_UID_MIN)
+        log_debug("decreased capability set.");
     else
         log_debug("dropped capabilities.");
     return 0;
 }
 
 #else /* !HAVE_LIBCAP */
-#define CAPS    LEGACY_CAPS
-#define CAPSMIN LEGACY_CAPSMIN
+#define CAPS_UID        LEGACY_CAPS_UID
+#define CAPS_UID_MIN    LEGACY_CAPS_UID_MIN
+#define CAPS_NO_UID     LEGACY_CAPS_NO_UID
+#define CAPS_NO_UID_MIN LEGACY_CAPS_NO_UID
 static int set_caps(int caps)
 {
     return set_legacy_caps(caps);
@@ -348,12 +373,15 @@ static int linuxset_user_group(const char *user, int uid, int gid)
         return 0;
     /* set capabilities enough for binding port 80 setuid/getuid */
     if (getuid() == 0) {
-        if (set_caps(CAPS) != 0) {
-            if (getuid() != uid) {
-                log_error("set_caps(CAPS) failed for user '%s'", user);
-                return -1;
+        if (set_caps(CAPS_UID) != 0) {
+            log_debug("set_caps(CAPS_UID) failed for user '%s'", user);
+            if (set_caps(CAPS_UID_MIN) != 0) {
+                if (getuid() != uid) {
+                    log_error("set_caps(CAPS_UID_MIN) failed for user '%s'", user);
+                    return -1;
+                }
+                log_debug("set_caps(CAPS_UID_MIN) failed for user '%s'", user);
             }
-            log_debug("set_caps(CAPS) failed for user '%s'", user);
         }
         /* make sure they are kept after setuid */
         if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) < 0) {
@@ -371,12 +399,15 @@ static int linuxset_user_group(const char *user, int uid, int gid)
 
     if (caps_set) {
         /* set capability to binding port 80 read conf */
-        if (set_caps(CAPSMIN) != 0) {
-            if (getuid() != uid) {
-                log_error("set_caps(CAPSMIN) failed for user '%s'", user);
-                return -1;
+        if (set_caps(CAPS_NO_UID) != 0) {
+            log_debug("set_caps(CAPS_NO_UID) failed for user '%s'", user);
+            if (set_caps(CAPS_NO_UID_MIN) != 0) {
+                if (getuid() != uid) {
+                    log_error("set_caps(CAPS_NO_UID_MIN) failed for user '%s'", user);
+                    return -1;
+                }
+                log_debug("set_caps(CAPS_NO_UID_MIN) failed for user '%s'", user);
             }
-            log_debug("set_caps(CAPSMIN) failed for user '%s'", user);
         }
     }
 
