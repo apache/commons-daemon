@@ -166,16 +166,6 @@ static int set_user_group(const char *user, int uid, int gid)
 
 /* Set linux capability, user and group */
 #ifdef OS_LINUX
-/* CAPSALL is to allow to read/write at any location */
-#define LEGACY_CAPSALL  (1 << CAP_NET_BIND_SERVICE) +   \
-                        (1 << CAP_SETUID) +             \
-                        (1 << CAP_SETGID) +             \
-                        (1 << CAP_DAC_READ_SEARCH) +    \
-                        (1 << CAP_DAC_OVERRIDE)
-
-#define LEGACY_CAPSMAX  (1 << CAP_NET_BIND_SERVICE) +   \
-                        (1 << CAP_DAC_READ_SEARCH) +    \
-                        (1 << CAP_DAC_OVERRIDE)
 
 /* That a more reasonable configuration */
 #define LEGACY_CAPS     (1 << CAP_NET_BIND_SERVICE) +   \
@@ -342,9 +332,6 @@ static int set_caps(int cap_type)
 }
 
 #else /* !HAVE_LIBCAP */
-/* CAPSALL is to allow to read/write at any location */
-#define CAPSALL LEGACY_CAPSALL
-#define CAPSMAX LEGACY_CAPSMAX
 #define CAPS    LEGACY_CAPS
 #define CAPSMIN LEGACY_CAPSMIN
 static int set_caps(int caps)
