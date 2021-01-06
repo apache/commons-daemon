@@ -242,10 +242,7 @@ apxSetEnvironmentVariable(APXHANDLE hPool, LPCTSTR szName, LPCTSTR szValue,
         DWORD l = GetEnvironmentVariable(szName, NULL, 0);
         if (l > 0) {
             BOOL rv;
-            if (IS_INVALID_HANDLE(hPool))
-                szNew = apxAlloc(l + lstrlen(szValue) + 3);
-            else
-                szNew = apxPoolAlloc(hPool, l + lstrlen(szValue) + 3);
+            szNew = apxPoolAlloc(hPool, l + lstrlen(szValue) + 3);
             GetEnvironmentVariable(szName, szNew, l + 1);
             lstrcat(szNew, TEXT(";"));
             lstrcat(szNew, szValue);
@@ -271,10 +268,7 @@ apxMultiSzToArrayW(APXHANDLE hPool, LPCWSTR lpString, LPWSTR **lppArray)
     l = __apxGetMultiSzLengthW(lpString, &n);
     if (!n || !l)
         return 0;
-    if (IS_INVALID_HANDLE(hPool))
-        buff = apxPoolAlloc(hPool, (n + 2) * sizeof(LPWSTR) + (l + 1) * sizeof(WCHAR));
-    else
-        buff = apxAlloc((n + 2) * sizeof(LPWSTR) + (l + 1) * sizeof(WCHAR));
+    buff = apxPoolAlloc(hPool, (n + 2) * sizeof(LPWSTR) + (l + 1) * sizeof(WCHAR));
 
     *lppArray = (LPWSTR *)buff;
     p = (LPWSTR)(buff + (n + 2) * sizeof(LPWSTR));

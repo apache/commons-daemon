@@ -52,6 +52,9 @@
         Fall back to using argv[0] rather than /proc/self/exe to determine the
         path for the current binary.
       </action>
+      <action issue="DAEMON-428" type="fix" dev="markt">
+        Procrun. Remove some unnecessary code.
+      </action>
     </release>
     <release version="1.2.3" date="2020-09-01" description="Bug fix release">
       <action issue="DAEMON-411" type="fix" dev="markt">
