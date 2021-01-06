@@ -74,7 +74,7 @@ mvn clean
 Create native build scripts
 ---------------------------
 
-cd /src/native/unix
+cd src/native/unix
 sh support/buildconf.sh
 
 
