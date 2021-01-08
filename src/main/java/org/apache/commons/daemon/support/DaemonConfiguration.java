@@ -91,9 +91,6 @@ public final class DaemonConfiguration
             configurationProperties.load(file);
             ok = true;
         }
-        catch (final FileNotFoundException ex) {
-            // fileName does not exist
-        }
         catch (final IOException ex) {
             // Error reading properties file
         } finally {
