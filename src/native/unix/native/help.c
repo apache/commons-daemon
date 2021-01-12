@@ -124,7 +124,7 @@ void help(home_data *data)
     printf("    --enable-preview\n");
     printf("        Java 11 --enable-preview option. Passed as it is to JVM\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
-    printf("Copyright (c) 1999-2020 Apache Software Foundation.\n");
+    printf("Copyright (c) 1999-2021 Apache Software Foundation.\n");
 
     printf("\n");
 }
