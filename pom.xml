@@ -157,6 +157,24 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
+      <!-- Force detach-distributions to execute *after* Nexus deploy -->
+      <!-- we want these distributions deployed to both Nexus and dist.a.o -->
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-release-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>detatch-distributions</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>detach-distributions</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <profiles>

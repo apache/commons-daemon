@@ -99,17 +99,23 @@ Maven tasks
 
 To deploy the Java jars to the Nexus staging repo:
 
-mvn deploy -Prelease [-Ptest-deploy]
+mvn deploy -Dcommons.release.isDistModule=true -Prelease [-Ptest-deploy]
 
 The test-deploy profile will deploy to target/deploy; omit for the live deploy
 
 Note: do not use clean in the same invocation.
-Remove the following artifacts and associated hashes/sigs before closing the
-repo:
+Remove the following artifacts and associated hashes/sigs from the Nexus staging
+repository before closing the repository:
 - tests.jar         (there are no tests, just a simple sample)
 - test-sources.jar  (there are no tests, just a simple sample)
 Do not remove the binary distributions since some users depend on Maven Central
 to obtain these.
+
+Note the Nexus repository ID (the number at the end of the repository name).
+
+Generate the release vote text with:
+
+mvn commons-release:vote-txt -Dcommons.nexus.repo.id=<repository-id>
 
 
 Updating the site
