@@ -116,9 +116,10 @@
     <commons.componentid>daemon</commons.componentid>
     <commons.module.name>org.apache.commons.daemon</commons.module.name>
     <commons.release.version>1.2.4</commons.release.version>
+    <commons.rc.version>RC2</commons.rc.version>
+    <commons.bc.version>1.2.3</commons.bc.version>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
-    <commons.bc.version>1.2.3</commons.bc.version>
   </properties>
 
   <build>
