@@ -71,7 +71,7 @@ public class SimpleApplication implements Runnable {
 
 
         }
-        if (args.length > 0 && args[0].length() > 0)
+        if (args.length > 0 && !args[0].isEmpty())
             port=Integer.parseInt(args[0]);
         if (args.length > 1)
             app.directory = args[1];
