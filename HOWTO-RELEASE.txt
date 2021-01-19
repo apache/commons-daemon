@@ -120,6 +120,19 @@ Generate the release vote text with:
 
 mvn commons-release:vote-txt -Dcommons.nexus.repo.id=<repository-id>
 
+The following manual changes will be required to the generated VOTE.txt:
+- remove ALv2 header
+- transfer email headers to "To" and "Subject"
+- edit the first line to reflect what has actually changed
+- Correct the link to the Maven artifacts ".../org/apache/commons/..." ->
+  ".../commons-daemon/..."
+  https://repository.apache.org/content/repositories/orgapachecommons-1538/org/apache/commons/commons-daemon/1.2.4
+- remove comments above the hashes, hashes for .asc files, hashes for the
+  tests.jar and test-sources.jar and the comment that .asc hashes aren't
+  required
+- if the site hasn't been added to dist, remove the sections on changes, site,
+  CLIRR, JApiCmp and RAT
+
 
 Updating the site
 -----------------
