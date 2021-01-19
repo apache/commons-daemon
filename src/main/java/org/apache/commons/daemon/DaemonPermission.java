@@ -160,11 +160,11 @@ public final class DaemonPermission extends Permission
      */
 
     /** The type of this permission object. */
-    private transient int type = 0;
+    private transient int type;
     /** The permission mask associated with this permission object. */
-    private transient int mask = 0;
+    private transient int mask;
     /** The String representation of this permission object. */
-    private transient String desc = null;
+    private transient String desc;
 
     /* ====================================================================
      * Constructors
@@ -334,7 +334,7 @@ public final class DaemonPermission extends Permission
             return;
         }
 
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append(this.getClass().getName());
         buf.append('[');
         switch (this.type) {
@@ -395,7 +395,7 @@ public final class DaemonPermission extends Permission
     /** Creates a actions list for a given control permission mask. */
     private String createControlActions(final int mask)
     {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         boolean sep = false;
 
         if ((mask & MASK_CONTROL_START) == MASK_CONTROL_START) {

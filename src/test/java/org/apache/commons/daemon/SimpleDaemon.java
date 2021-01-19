@@ -28,18 +28,18 @@ import java.util.Vector;
  */
 public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
-    private ServerSocket server=null;
-    private Thread thread=null;
-    private DaemonController controller=null;
-    private volatile boolean stopping=false;
-    private String directory=null;
-    private Vector<Handler> handlers=null;
+    private ServerSocket server;
+    private Thread thread;
+    private DaemonController controller;
+    private volatile boolean stopping;
+    private String directory;
+    private final Vector<Handler> HANDLERS;
     private boolean softReloadSignalled;
 
     public SimpleDaemon() {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.handlers=new Vector<Handler>();
+        this.HANDLERS =new Vector<Handler>();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         }
 
         /* Terminate all handlers that at this point are still open */
-        final Enumeration<Handler> openhandlers=this.handlers.elements();
+        final Enumeration<Handler> openhandlers=this.HANDLERS.elements();
         while (openhandlers.hasMoreElements()) {
             final Handler handler=openhandlers.nextElement();
             System.err.println("SimpleDaemon: dropping connection "+
@@ -156,7 +156,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     private void checkForReload() {
       if (this.softReloadSignalled) {
         System.err.println("SimpleDaemon: picked up reload, waiting for connections to finish...");
-        while (! this.handlers.isEmpty()) {}
+        while (! this.HANDLERS.isEmpty()) {}
         System.err.println("SimpleDaemon: all connections have finished, pretending to reload");
         this.softReloadSignalled = false;
       }
@@ -164,23 +164,23 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     protected void addHandler(final Handler handler) {
         synchronized (handler) {
-            this.handlers.add(handler);
+            this.HANDLERS.add(handler);
         }
     }
 
     protected void removeHandler(final Handler handler) {
         synchronized (handler) {
-            this.handlers.remove(handler);
+            this.HANDLERS.remove(handler);
         }
     }
 
     public static class Handler implements Runnable {
 
-        private DaemonController controller=null;
-        private SimpleDaemon parent=null;
-        private String directory=null;
-        private Socket socket=null;
-        private int number=0;
+        private final DaemonController controller;
+        private final SimpleDaemon parent;
+        private String directory;
+        private final Socket socket;
+        private int number;
 
         public Handler(final Socket s, final SimpleDaemon p, final DaemonController c) {
             this.socket=s;
