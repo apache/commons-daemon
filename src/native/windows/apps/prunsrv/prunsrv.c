@@ -1135,6 +1135,8 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         apxLogWrite(APXLOG_MARK_INFO "Worker is not defined.");
         return TRUE;    /* Nothing to do */
     }
+    if (timeout > 0x7FFFFFFF)
+        timeout = INFINITE;     /* If the timeout was '-1' wait forewer */
     if (_jni_shutdown) {
         if (!IS_VALID_STRING(SO_STARTPATH) && IS_VALID_STRING(SO_STOPPATH)) {
             /* If the Working path is specified change the current directory
@@ -1178,7 +1180,10 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             }
             else {
                 apxLogWrite(APXLOG_MARK_DEBUG "Waiting for Java JNI stop worker to finish for %s:%s...", _jni_sclass, _jni_smethod);
-                apxJavaWait(hWorker, INFINITE, FALSE);
+                if (!timeout)
+                    apxJavaWait(hWorker, INFINITE, FALSE);
+                else
+                    apxJavaWait(hWorker, timeout, FALSE);
                 apxLogWrite(APXLOG_MARK_DEBUG "Java JNI stop worker finished.");
             }
         }
@@ -1251,7 +1256,10 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             goto cleanup;
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting for stop worker to finish...");
-            apxHandleWait(hWorker, INFINITE, FALSE);
+            if (!timeout)
+                apxHandleWait(hWorker, INFINITE, FALSE);
+            else
+                apxHandleWait(hWorker, timeout, FALSE);
             apxLogWrite(APXLOG_MARK_DEBUG "Stop worker finished.");
         }
         wait_to_die = TRUE;
@@ -1272,8 +1280,6 @@ cleanup:
         CloseHandle(gSignalThread);
         gSignalEvent = NULL;
     }
-    if (timeout > 0x7FFFFFFF)
-        timeout = INFINITE;     /* If the timeout was '-1' wait forewer */
     if (wait_to_die && !timeout)
         timeout = 300 * 1000;   /* Use the 5 minute default shutdown */
 
