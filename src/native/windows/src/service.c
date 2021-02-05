@@ -576,6 +576,57 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
 }
 
 BOOL
+apxServiceCheckStop(APXHANDLE hService)
+{
+    LPAPXSERVICE   lpService;
+    SERVICE_STATUS stStatus;
+    DWORD          dwState = SERVICE_STOPPED;
+    DWORD          sleepMillis;
+
+    if (hService->dwType != APXHANDLE_TYPE_SERVICE)
+        return FALSE;
+
+    lpService = APXHANDLE_DATA(hService);
+    /* Manager mode cannot handle services */
+    if (lpService->bManagerMode) {
+        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheck(): Manager mode cannot handle services, returning FALSE");
+        return FALSE;
+    }
+    /* Check if the ServiceOpen has been called */
+    if (IS_INVALID_HANDLE(lpService->hService)) {
+        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheck(): Service is not open, returning FALSE");
+        return FALSE;
+    }
+
+    /* Check if we are in the stopped state */
+    sleepMillis = 1000;
+    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck(): Sleeping %d milliseconds", sleepMillis);
+    Sleep(sleepMillis);
+
+    if (QueryServiceStatus(lpService->hService, &stStatus)) {
+        apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck(): QueryServiceStatus OK");
+        if (stStatus.dwCurrentState == dwState) {
+            return TRUE;
+        } else {
+            apxLogWrite(APXLOG_MARK_DEBUG
+                "apxServiceCheck(): dwState(%d) != dwCurrentState(%d); "
+                "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
+                dwState,
+                stStatus.dwCurrentState,
+                stStatus.dwWin32ExitCode,
+                stStatus.dwWaitHint,
+                stStatus.dwServiceSpecificExitCode);
+        }
+
+    } else {
+        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheck(): QueryServiceStatus failure");
+    }
+
+    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck(): returning FALSE");
+    return FALSE;
+}
+
+BOOL
 apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                   LPCWSTR szDisplayName, LPCWSTR szImagePath,
                   LPCWSTR lpDependencies, DWORD dwServiceType,

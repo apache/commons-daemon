@@ -884,13 +884,24 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
                                0,
                                NULL,
                                NULL);
+        if (!rv) {
+            /* Wait for the timeout if any */
+            int  timeout     = SO_STOPTIMEOUT;
+            if (timeout) {
+                for (int i=0; i<timeout; i++) {
+                    rv = apxServiceCheckStop(hService);
+                    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck returns %d.", rv);
+                    if (rv)
+                        break;
+                }
+            }
+        }
         if (rv)
             apxLogWrite(APXLOG_MARK_INFO "Service '%S' stopped.",
                         lpCmdline->szApplication);
         else
             apxLogWrite(APXLOG_MARK_ERROR "Failed to stop service '%S'.",
                         lpCmdline->szApplication);
-
     }
     else
         apxDisplayError(FALSE, NULL, 0, "Unable to open service '%S'.",
