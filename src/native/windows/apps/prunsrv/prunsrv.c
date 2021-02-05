@@ -369,7 +369,7 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
     return TRUE;
 }
 
-/* Debugging functions */
+/* Prints usage. */
 static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
 {
     int i = 0;
@@ -394,6 +394,7 @@ static void printUsage(LPAPXCMDLINE lpCmdline, BOOL isHelp)
     }
 }
 
+/* Prints version. */
 static void printVersion(void)
 {
     fwprintf(stderr, L"Apache Commons Daemon Service Runner version %S/Win%d (%S)\n",
@@ -403,7 +404,7 @@ static void printVersion(void)
                      L"<URL:https://issues.apache.org/jira/browse/DAEMON>.");
 }
 
-/* Display comamnd line parameters */
+/* Displays comamnd line parameters. */
 static void dumpCmdline()
 {
     int i = 0;
@@ -485,7 +486,7 @@ static void setInprocEnvironment9(LPCWSTR szOptions9)
 }
 
 /* Sets environment variables required by some Java options
- * Currently only Native Memory Tracking
+ * Currently only Native Memory Tracking.
  */
 static void setInprocEnvironmentOptions(LPCWSTR szOptions)
 {
@@ -543,7 +544,7 @@ static void setInprocEnvironmentOptions(LPCWSTR szOptions)
 }
 
 /* Load the configuration from Registry
- * loads only nonspecified items
+ * loads only nonspecified items.
  */
 static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
 {
@@ -627,7 +628,7 @@ static BOOL loadConfiguration(LPAPXCMDLINE lpCmdline)
     return TRUE;
 }
 
-/* Save changed configuration to registry
+/* Saves changed configuration to registry.
  */
 static BOOL saveConfiguration(LPAPXCMDLINE lpCmdline)
 {
@@ -669,7 +670,7 @@ static BOOL saveConfiguration(LPAPXCMDLINE lpCmdline)
     return TRUE;
 }
 
-/* Display current configuration */
+/* Display current configuration. */
 static BOOL printConfig(LPAPXCMDLINE lpCmdline)
 {
     int i = 0;
@@ -1019,7 +1020,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 }
 
 
-/* Report the service status to the SCM, including service specific exit code
+/* Report the service status to the SCM, including service specific exit code.
  */
 static BOOL reportServiceStatusE(DWORD dwCurrentState,
                                  DWORD dwWin32ExitCode,
@@ -1057,12 +1058,13 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
    return fResult;
 }
 
-/* Report the service status to the SCM
+/* Report the service status to the SCM.
  */
 static BOOL reportServiceStatus(DWORD dwCurrentState,
                                 DWORD dwWin32ExitCode,
                                 DWORD dwWaitHint)
 {
+    // exit code 0
     return reportServiceStatusE(dwCurrentState, dwWin32ExitCode, dwWaitHint, 0);
 }
 
@@ -1080,7 +1082,7 @@ BOOL child_callback(APXHANDLE hObject, UINT uMsg,
 {
     /* TODO: Make stdout and stderr buffers
      * to prevent streams intermixing when there
-     * is no separate file for each stream
+     * is no separate file for each stream.
      */
     if (uMsg == WM_CHAR) {
         int ch = LOWORD(wParam);
@@ -1120,7 +1122,7 @@ static int onExitStart(void)
     return 0;
 }
 
-/* Executed when the service receives stop event */
+/* Executed when the service receives stop event. */
 static DWORD WINAPI serviceStop(LPVOID lpParameter)
 {
     APXHANDLE hWorker = NULL;
@@ -1320,7 +1322,7 @@ cleanup:
     return rv;
 }
 
-/* Executed when the service receives start event */
+/* Executed when the service receives start event. */
 static DWORD serviceStart()
 {
     DWORD  rv = 0;
@@ -1501,7 +1503,7 @@ cleanup:
     return rv;
 }
 
-/* Service control handler
+/* Service control handler.
  */
 void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
 {
@@ -1535,8 +1537,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
    }
 }
 
-/* Console control handler
- *
+/* Console control handler.
  */
 BOOL WINAPI console_handler(DWORD dwCtrlType)
 {
@@ -1568,7 +1569,7 @@ BOOL WINAPI console_handler(DWORD dwCtrlType)
    return FALSE;
 }
 
-/* Main service execution loop */
+/* Main service execution loop. */
 void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 {
     DWORD rc = 0;
@@ -1785,7 +1786,7 @@ cleanup:
 }
 
 
-/* Run the service in the debug mode */
+/* Run the service in the debug mode. */
 BOOL docmdDebugService(LPAPXCMDLINE lpCmdline)
 {
     _service_mode = FALSE;
