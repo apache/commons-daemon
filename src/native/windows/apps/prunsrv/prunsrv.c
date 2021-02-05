@@ -1021,6 +1021,17 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
 
 
 /* Report the service status to the SCM, including service specific exit code.
+ *
+ * dwCurrentState
+ * https://docs.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_status
+ *
+ * SERVICE_CONTINUE_PENDING  0x00000005 The service continue is pending.
+ * SERVICE_PAUSE_PENDING     0x00000006 The service pause is pending.
+ * SERVICE_PAUSED            0x00000007 The service is paused.
+ * SERVICE_RUNNING           0x00000004 The service is running.
+ * SERVICE_START_PENDING     0x00000002 The service is starting.
+ * SERVICE_STOP_PENDING      0x00000003 The service is stopping.
+ * SERVICE_STOPPED           0x00000001 The service is not running.
  */
 static BOOL reportServiceStatusE(DWORD dwCurrentState,
                                  DWORD dwWin32ExitCode,
