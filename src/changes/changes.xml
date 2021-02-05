@@ -39,6 +39,9 @@
   </properties>
   <body>
     <release version="1.2.5" date="2021-MM-DD" description="Bug fix release">
+      <action type="add" dev="ggregory" due-to="John Patrick">
+        Enable Dependabot #20.
+      </action>    
     </release>
     <release version="1.2.4" date="2021-01-21" description="Bug fix release">
       <action issue="DAEMON-424" type="fix" dev="markt" due-to="Bernhard Scholz">
