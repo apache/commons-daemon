@@ -33,13 +33,13 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     private DaemonController controller;
     private volatile boolean stopping;
     private String directory;
-    private final Vector<Handler> HANDLERS;
+    private final Vector<Handler> handlers;
     private boolean softReloadSignalled;
 
     public SimpleDaemon() {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.HANDLERS =new Vector<Handler>();
+        this.handlers =new Vector<Handler>();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         }
 
         /* Terminate all handlers that at this point are still open */
-        final Enumeration<Handler> openhandlers=this.HANDLERS.elements();
+        final Enumeration<Handler> openhandlers=this.handlers.elements();
         while (openhandlers.hasMoreElements()) {
             final Handler handler=openhandlers.nextElement();
             System.err.println("SimpleDaemon: dropping connection "+
@@ -156,7 +156,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     private void checkForReload() {
       if (this.softReloadSignalled) {
         System.err.println("SimpleDaemon: picked up reload, waiting for connections to finish...");
-        while (! this.HANDLERS.isEmpty()) {}
+        while (! this.handlers.isEmpty()) {}
         System.err.println("SimpleDaemon: all connections have finished, pretending to reload");
         this.softReloadSignalled = false;
       }
@@ -164,13 +164,13 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     protected void addHandler(final Handler handler) {
         synchronized (handler) {
-            this.HANDLERS.add(handler);
+            this.handlers.add(handler);
         }
     }
 
     protected void removeHandler(final Handler handler) {
         synchronized (handler) {
-            this.HANDLERS.remove(handler);
+            this.handlers.remove(handler);
         }
     }
 
