@@ -65,7 +65,7 @@ public final class DaemonConfiguration
     /**
      * An empty immutable {@code String} array.
      */
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     /**
      * Default constructor

@@ -46,11 +46,6 @@ public class DaemonWrapper implements Daemon
     private final Invoker             startup;
     private final Invoker             shutdown;
 
-    /**
-     * An empty immutable {@code String} array.
-     */
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
-
     public DaemonWrapper()
     {
         config   = new DaemonConfiguration();
@@ -226,7 +221,7 @@ public class DaemonWrapper implements Daemon
                     aa.addAll(Arrays.asList(this.args));
                 }
                 aa.addAll(Arrays.asList(args));
-                this.args = aa.toArray(EMPTY_STRING_ARRAY);
+                this.args = aa.toArray(DaemonConfiguration.EMPTY_STRING_ARRAY);
             }
         }
 
