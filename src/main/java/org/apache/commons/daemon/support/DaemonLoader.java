@@ -31,14 +31,14 @@ public final class DaemonLoader
 {
 
     // N.B. These static mutable variables need to be accessed using synch.
-    private static Controller controller = null; //@GuardedBy("this")
-    private static Object daemon    = null; //@GuardedBy("this")
+    private static Controller controller; //@GuardedBy("this")
+    private static Object daemon; //@GuardedBy("this")
     /* Methods to call */
-    private static Method init      = null; //@GuardedBy("this")
-    private static Method start     = null; //@GuardedBy("this")
-    private static Method stop      = null; //@GuardedBy("this")
-    private static Method destroy   = null; //@GuardedBy("this")
-    private static Method signal    = null; //@GuardedBy("this")
+    private static Method init; //@GuardedBy("this")
+    private static Method start; //@GuardedBy("this")
+    private static Method stop; //@GuardedBy("this")
+    private static Method destroy; //@GuardedBy("this")
+    private static Method signal; //@GuardedBy("this")
 
     public static void version()
     {
@@ -132,7 +132,7 @@ public final class DaemonLoader
                 System.err.println("Cannot retrieve ClassLoader instance");
                 return false;
             }
-            Class<?> c;
+            final Class<?> c;
             if (className.charAt(0) == '@') {
                 /* Wrap the class with DaemonWrapper
                  * and modify arguments to include the real class name.
@@ -303,7 +303,7 @@ public final class DaemonLoader
         implements DaemonController
     {
 
-        private boolean available = false;
+        private boolean available;
 
         private Controller()
         {
@@ -392,9 +392,9 @@ public final class DaemonLoader
         implements DaemonContext
     {
 
-        private DaemonController daemonController = null;
+        private DaemonController daemonController;
 
-        private String[] args = null;
+        private String[] args;
 
         @Override
         public DaemonController getController()

@@ -63,6 +63,11 @@ public final class DaemonConfiguration
     private final Properties systemProperties;
 
     /**
+     * An empty immutable {@code String} array.
+     */
+    static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    /**
      * Default constructor
      */
     public DaemonConfiguration()
@@ -106,7 +111,7 @@ public final class DaemonConfiguration
     private String expandProperty(final String propValue)
         throws ParseException
     {
-        StringBuffer expanded;
+        final StringBuffer expanded;
         int btoken;
         int ctoken = 0;
 
@@ -197,7 +202,7 @@ public final class DaemonConfiguration
         while ((args = getProperty(name + "[" + list.size() + "]")) != null) {
             list.add(args);
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(EMPTY_STRING_ARRAY);
     }
 }
 

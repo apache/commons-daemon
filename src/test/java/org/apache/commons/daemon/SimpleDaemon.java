@@ -28,18 +28,18 @@ import java.util.Vector;
  */
 public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
-    private ServerSocket server=null;
-    private Thread thread=null;
-    private DaemonController controller=null;
-    private volatile boolean stopping=false;
-    private String directory=null;
-    private Vector<Handler> handlers=null;
+    private ServerSocket server;
+    private Thread thread;
+    private DaemonController controller;
+    private volatile boolean stopping;
+    private String directory;
+    private final Vector<Handler> handlers;
     private boolean softReloadSignalled;
 
     public SimpleDaemon() {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.handlers=new Vector<Handler>();
+        this.handlers =new Vector<Handler>();
     }
 
     @Override
@@ -176,11 +176,11 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     public static class Handler implements Runnable {
 
-        private DaemonController controller=null;
-        private SimpleDaemon parent=null;
-        private String directory=null;
-        private Socket socket=null;
-        private int number=0;
+        private final DaemonController controller;
+        private final SimpleDaemon parent;
+        private String directory;
+        private final Socket socket;
+        private int number;
 
         public Handler(final Socket s, final SimpleDaemon p, final DaemonController c) {
             this.socket=s;

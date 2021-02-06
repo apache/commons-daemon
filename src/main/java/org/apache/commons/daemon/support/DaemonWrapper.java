@@ -40,7 +40,7 @@ public class DaemonWrapper implements Daemon
     private final static String STOP_CLASS      = "stop";
     private final static String STOP_METHOD     = "stop.method";
     private final static String STOP_ARGS       = "stop.args";
-    private String              configFileName  = null;
+    private String              configFileName;
     private final DaemonConfiguration config;
 
     private final Invoker             startup;
@@ -191,11 +191,11 @@ public class DaemonWrapper implements Daemon
     // Internal class for wrapping the start/stop methods
     class Invoker
     {
-        private String      name = null;
-        private String      call = null;
-        private String[]    args = null;
-        private Method      inst = null;
-        private Class<?>    main = null;
+        private String      name;
+        private String      call;
+        private String[]    args;
+        private Method      inst;
+        private Class<?>    main;
 
         protected Invoker()
         {
@@ -221,7 +221,7 @@ public class DaemonWrapper implements Daemon
                     aa.addAll(Arrays.asList(this.args));
                 }
                 aa.addAll(Arrays.asList(args));
-                this.args = aa.toArray(new String[aa.size()]);
+                this.args = aa.toArray(DaemonConfiguration.EMPTY_STRING_ARRAY);
             }
         }
 
