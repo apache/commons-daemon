@@ -43,7 +43,7 @@ public class AloneService {
      *
      * @param arguments Unused
      *
-     * @throws Exception If the daemon cannot be initialised
+     * @throws Exception If the daemon cannot be initialized
      */
     public void init(String[] arguments) throws Exception {
         /* Set the err */
