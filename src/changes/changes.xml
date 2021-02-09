@@ -39,11 +39,17 @@
   </properties>
   <body>
     <release version="1.2.5" date="2021-MM-DD" description="Bug fix release">
+      <!-- FIX -->
+      <action type="add" dev="ggregory" due-to="Arturo Bernal">
+        Minor Improvements #22.
+      </action>
+      <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
       </action>
-      <action type="add" dev="ggregory" due-to="Arturo Bernal">
-        Minor Improvements #22.
+      <!-- -UPDATE -->
+      <action type="update" dev="ggregory" due-to="Dependabot">
+        Bump actions/cache from v2 to v2.1.4 #24.
       </action>
     </release>
     <release version="1.2.4" date="2021-01-21" description="Bug fix release">
