@@ -575,6 +575,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     return FALSE;
 }
 
+/* Wait one second and check that the service has stopped, returns TRUE if stopped FASE otherwise */
 BOOL
 apxServiceCheckStop(APXHANDLE hService)
 {
