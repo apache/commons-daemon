@@ -35,7 +35,7 @@ public class DaemonInitException extends Exception {
 
     /**
      * Constructs a new exception with the given detail and cause.
-     * 
+     *
      * @param message the detail message accessible with {@link #getMessage()} .
      * @param cause the cause accessible with {@link #getCause()}.
      */
@@ -45,7 +45,7 @@ public class DaemonInitException extends Exception {
 
     /**
      * Gets the message with the cause as a postfix.
-     * 
+     *
      * @return the message with the cause as a postfix.
      */
     public String getMessageWithCause() {
