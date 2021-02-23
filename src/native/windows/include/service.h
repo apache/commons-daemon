@@ -48,6 +48,7 @@ BOOL        apxServiceSetOptions(APXHANDLE hService, DWORD dwServiceType,
 BOOL        apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
                               LPAPXFNCALLBACK fnControlCallback,
                               LPVOID lpCbData);
+BOOL        apxServiceCheckStop(APXHANDLE hService);
 BOOL        apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
                               LPCWSTR szDisplayName, LPCWSTR szImagePath,
                               LPCWSTR lpDependencies, DWORD dwServiceType,

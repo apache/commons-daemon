@@ -40,6 +40,11 @@
   <body>
     <release version="1.2.5" date="2021-MM-DD" description="Bug fix release">
       <!-- FIX -->
+      <action issue="DAEMON-430" type="fix" dev="jfclere">
+        Procrun --StopTimeout can be used to define the time that procrun waits for service to exit,
+        but INFINITE timeout was using instead.
+      </action>
+      <!-- FIX -->
       <action type="add" dev="ggregory" due-to="Arturo Bernal">
         Minor Improvements #22.
       </action>
