@@ -152,7 +152,7 @@ public final class DaemonConfiguration
             btoken = propValue.indexOf(BTOKEN, etoken + ETOKEN.length());
         }
         // Add what's left.
-        expanded.append(propValue.substring(ctoken, propValue.length()));
+        expanded.append(propValue.substring(ctoken));
         return expanded.toString();
     }
 
