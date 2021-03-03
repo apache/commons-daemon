@@ -888,8 +888,8 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
             /* Wait for the timeout if any */
             int  timeout     = SO_STOPTIMEOUT;
             if (timeout) {
-		int i;
-                for (i=0; i<timeout; i++) {
+                int i;
+                for (i = 0; i < timeout; i++) {
                     rv = apxServiceCheckStop(hService);
                     apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck returns %d.", rv);
                     if (rv)
