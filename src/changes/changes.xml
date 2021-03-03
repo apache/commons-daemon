@@ -56,6 +56,10 @@
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump actions/cache from v2 to v2.1.4 #24.
       </action>
+      <action type="update" dev="mturk">
+        Procrun. Minor improvement that allows to have WINVER nmake variable
+        directly defined at compile time as ABI version in hexadecimal format.
+      </action>
     </release>
     <release version="1.2.4" date="2021-01-21" description="Bug fix release">
       <action issue="DAEMON-424" type="fix" dev="markt" due-to="Bernhard Scholz">
