@@ -372,7 +372,7 @@ public final class DaemonPermission extends Permission
                 return MASK_CONTROL_START | MASK_CONTROL_STOP |
                        MASK_CONTROL_SHUTDOWN | MASK_CONTROL_RELOAD;
             }
-            else if (CONTROL_START.equalsIgnoreCase(val)) {
+            if (CONTROL_START.equalsIgnoreCase(val)) {
                 mask = mask | MASK_CONTROL_START;
             }
             else if (CONTROL_STOP.equalsIgnoreCase(val)) {

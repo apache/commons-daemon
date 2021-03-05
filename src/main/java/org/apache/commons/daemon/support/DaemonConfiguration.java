@@ -129,25 +129,23 @@ public final class DaemonConfiguration
                 continue;
             }
             final int etoken = propValue.indexOf(ETOKEN, btoken);
-            if (etoken != -1) {
-                final String variable = propValue.substring(btoken + BTOKEN.length(), etoken);
-                String sysvalue = systemProperties.getProperty(variable);
-                if (sysvalue == null) {
-                    // Try with the environment if there was no
-                    // property by that name.
-                    sysvalue = System.getenv(variable); // N.B. Deprecated in Java 1.3/1.4, but re-instated in Java 1.5+
-                }
-                if (sysvalue != null) {
-                    final String strtoken = propValue.substring(ctoken, btoken);
-                    expanded.append(strtoken);
-                    expanded.append(sysvalue);
-                    ctoken = etoken + ETOKEN.length();
-                }
-            }
-            else {
+            if (etoken == -1) {
                 // We have "${" without "}"
                 throw new ParseException("Error while looking for teminating '" +
                                          ETOKEN + "'", btoken);
+            }
+            final String variable = propValue.substring(btoken + BTOKEN.length(), etoken);
+            String sysvalue = systemProperties.getProperty(variable);
+            if (sysvalue == null) {
+                // Try with the environment if there was no
+                // property by that name.
+                sysvalue = System.getenv(variable); // N.B. Deprecated in Java 1.3/1.4, but re-instated in Java 1.5+
+            }
+            if (sysvalue != null) {
+                final String strtoken = propValue.substring(ctoken, btoken);
+                expanded.append(strtoken);
+                expanded.append(sysvalue);
+                ctoken = etoken + ETOKEN.length();
             }
             btoken = propValue.indexOf(BTOKEN, etoken + ETOKEN.length());
         }

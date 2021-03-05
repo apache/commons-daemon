@@ -96,7 +96,7 @@ public class DaemonWrapper implements Daemon
                     // Done with argument processing
                     break;
                 }
-                else if (args[i].equals("-daemon-properties")) {
+                if (args[i].equals("-daemon-properties")) {
                     if (++i == args.length) {
                         throw new IllegalArgumentException(args[i - 1]);
                     }
