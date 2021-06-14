@@ -240,7 +240,7 @@ public class DaemonWrapper implements Daemon
                     // We only need object instance for non-static methods.
                     obj = main.getConstructor().newInstance();
                 }
-                final Object arg[] = new Object[1];
+                final Object[] arg = new Object[1];
 
                 arg[0] = args;
                 inst.invoke(obj, arg);
