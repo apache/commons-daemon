@@ -44,7 +44,6 @@
         Procrun --StopTimeout can be used to define the time that procrun waits for service to exit,
         but INFINITE timeout was using instead.
       </action>
-      <!-- FIX -->
       <action type="add" dev="ggregory" due-to="Arturo Bernal">
         Minor Improvements #22.
       </action>
