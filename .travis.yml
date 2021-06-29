@@ -15,11 +15,13 @@
 
 language: java
 sudo: false
-
+dist: trusty
+cache:
+  directories:
+    - $HOME/.m2
 jdk:
   - oraclejdk11
 # Commons Daemon has a minimum Java version of Java 6
-# Travis does not appear to support Java 6 or Java 7
 #  - openjdk6
 #  - openjdk7
   - openjdk8
