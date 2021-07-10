@@ -111,14 +111,14 @@ public final class DaemonConfiguration
     private String expandProperty(final String propValue)
         throws ParseException
     {
-        final StringBuffer expanded;
+        final StringBuilder expanded;
         int btoken;
         int ctoken = 0;
 
         if (propValue == null) {
             return null;
         }
-        expanded = new StringBuffer();
+        expanded = new StringBuilder();
         btoken   = propValue.indexOf(BTOKEN);
         while (btoken != -1) {
             if (btoken > 0 && propValue.charAt(btoken - 1) == BTOKEN.charAt(0)) {
