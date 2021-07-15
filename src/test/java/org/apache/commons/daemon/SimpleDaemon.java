@@ -39,7 +39,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     public SimpleDaemon() {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.handlers =new Vector<Handler>();
+        this.handlers = new Vector<>();
     }
 
     @Override

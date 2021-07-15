@@ -216,7 +216,7 @@ public class DaemonWrapper implements Daemon
         protected void addArguments(final String[] args)
         {
             if (args != null) {
-                final ArrayList<String> aa = new ArrayList<String>();
+                final ArrayList<String> aa = new ArrayList<>();
                 if (this.args != null) {
                     aa.addAll(Arrays.asList(this.args));
                 }
@@ -240,7 +240,7 @@ public class DaemonWrapper implements Daemon
                     // We only need object instance for non-static methods.
                     obj = main.getConstructor().newInstance();
                 }
-                final Object arg[] = new Object[1];
+                final Object[] arg = new Object[1];
 
                 arg[0] = args;
                 inst.invoke(obj, arg);
