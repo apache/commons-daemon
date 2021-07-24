@@ -44,8 +44,12 @@
         Procrun --StopTimeout can be used to define the time that procrun waits for service to exit,
         but INFINITE timeout was using instead.
       </action>
-      <action type="add" dev="ggregory" due-to="Arturo Bernal">
+      <action type="fix" dev="ggregory" due-to="Arturo Bernal">
         Minor Improvements #22.
+      </action>
+      <action type="fix" dev="mturk">
+        Procrun. Minor improvement that allows to have WINVER nmake variable
+        directly defined at compile time as ABI version in hexadecimal format.
       </action>
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
@@ -54,10 +58,6 @@
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump actions/cache from v2 to v2.1.6 #24, #30.
-      </action>
-      <action type="update" dev="mturk">
-        Procrun. Minor improvement that allows to have WINVER nmake variable
-        directly defined at compile time as ABI version in hexadecimal format.
       </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump build actions/setup-java from v1.4.3 to v2.
