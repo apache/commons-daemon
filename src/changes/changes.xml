@@ -53,7 +53,7 @@
       </action>
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
-        Bump actions/cache from v2 to v2.1.4 #24.
+        Bump actions/cache from v2 to v2.1.6 #24, #30.
       </action>
       <action type="update" dev="mturk">
         Procrun. Minor improvement that allows to have WINVER nmake variable
