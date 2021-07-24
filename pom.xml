@@ -120,6 +120,8 @@
     <commons.bc.version>1.2.4</commons.bc.version>
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
+    <commons.jacoco.version>0.8.7</commons.jacoco.version>
+    <commons.japicmp.version>0.15.3</commons.japicmp.version>
   </properties>
 
   <build>

@@ -62,6 +62,12 @@
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump build actions/setup-java from v1.4.3 to v2.
       </action>
+      <action type="update" dev="ggregory" due-to="Gary Gregory">
+        Bump commons.jacoco.version from 0.8.5 to 0.8.7.
+      </action>
+      <action type="update" dev="ggregory" due-to="Gary Gregory">
+        Bump commons.japicmp.version from 0.14.3 to 0.15.3.
+      </action>
     </release>
     <release version="1.2.4" date="2021-01-21" description="Bug fix release">
       <action issue="DAEMON-424" type="fix" dev="markt" due-to="Bernhard Scholz">
