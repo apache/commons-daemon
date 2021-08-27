@@ -496,13 +496,15 @@ apxCloseHandle(APXHANDLE hObject)
 
     if (IS_INVALID_HANDLE(hObject) || hObject->dwType == APXHANDLE_TYPE_INVALID)
         return FALSE;
-    /* Call the user callback first */
-    (*hObject->fnCallback)(hObject, WM_CLOSE, 0, 0);
-    /* Now go through the callback chain */
-    TAILQ_FOREACH(lpCall, &hObject->lCallbacks, queue) {
+    if (!TAILQ_EMPTY(&hObject->lCallbacks)) {
+        /* Call the user callback first */
+        (*hObject->fnCallback)(hObject, WM_CLOSE, 0, 0);
+        /* Now go through the callback chain */
+        TAILQ_FOREACH(lpCall, &hObject->lCallbacks, queue) {
         (*lpCall->fnCallback)(hObject, WM_CLOSE, 0, 0);
-        TAILQ_REMOVE(&hObject->lCallbacks, lpCall, queue);
-        __apxPoolFreeCore(lpCall);
+            TAILQ_REMOVE(&hObject->lCallbacks, lpCall, queue);
+            __apxPoolFreeCore(lpCall);
+        }
     }
 
     hObject->dwType = APXHANDLE_TYPE_INVALID;
