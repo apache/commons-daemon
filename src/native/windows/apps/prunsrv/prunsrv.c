@@ -1053,7 +1053,7 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d, dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d.",
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d, dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
                dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
