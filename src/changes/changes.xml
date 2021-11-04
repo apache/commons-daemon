@@ -59,7 +59,7 @@
         reportServiceStatusE() shows scale of dwWaitHint as millisecond in logging.
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        reportServiceStatusE() shows a short description for dwCurrentState.
+        reportServiceStatusE() shows a short description for dwCurrentState in logging.
       </action>
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
