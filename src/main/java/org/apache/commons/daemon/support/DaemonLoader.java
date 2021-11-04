@@ -112,7 +112,7 @@ public final class DaemonLoader
         return false;
     }
 
-    public static boolean load(final String className, String args[])
+    public static boolean load(final String className, String[] args)
     {
         try {
             /* Check if the underlying library supplied a valid list of
@@ -173,13 +173,12 @@ public final class DaemonLoader
 
             init    = c.getMethod("init", myclass);
 
-            myclass = null;
-            start   = c.getMethod("start", myclass);
-            stop    = c.getMethod("stop", myclass);
-            destroy = c.getMethod("destroy", myclass);
+            start   = c.getMethod("start", null);
+            stop    = c.getMethod("stop", null);
+            destroy = c.getMethod("destroy", null);
 
             try {
-                signal = c.getMethod("signal", myclass);
+                signal = c.getMethod("signal", null);
             } catch (final NoSuchMethodException e) {
                 // Signalling will be disabled.
             }
@@ -200,12 +199,12 @@ public final class DaemonLoader
                 context.setController(controller);
 
                 /* Now we want to call the init method in the class */
-                final Object arg[] = new Object[1];
+                final Object[] arg = new Object[1];
                 arg[0] = context;
                 init.invoke(daemon, arg);
             }
             else {
-                final Object arg[] = new Object[1];
+                final Object[] arg = new Object[1];
                 arg[0] = args;
                 init.invoke(daemon, arg);
             }
@@ -237,8 +236,7 @@ public final class DaemonLoader
     {
         try {
             /* Attempt to start the daemon */
-            final Object arg[] = null;
-            start.invoke(daemon, arg);
+            start.invoke(daemon, null);
 
             /* Set the availability flag in the controller */
             if (controller != null) {
@@ -264,8 +262,7 @@ public final class DaemonLoader
             }
 
             /* Attempt to stop the daemon */
-            final Object arg[] = null;
-            stop.invoke(daemon, arg);
+            stop.invoke(daemon, null);
         }
         catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
@@ -281,8 +278,7 @@ public final class DaemonLoader
     {
         try {
             /* Attempt to stop the daemon */
-            final Object arg[] = null;
-            destroy.invoke(daemon, arg);
+            destroy.invoke(daemon, null);
 
             daemon = null;
             controller = null;
