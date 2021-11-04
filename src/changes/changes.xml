@@ -66,7 +66,7 @@
         Bump commons.jacoco.version from 0.8.5 to 0.8.7.
       </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
-        Bump commons.japicmp.version from 0.14.3 to 0.15.3.
+        Bump commons.japicmp.version from 0.14.3 to 0.15.4.
       </action>
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump junit from 4.13.1 to 4.13.2 #25.
