@@ -55,6 +55,12 @@
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
       </action>
+      <action type="add" dev="ggregory" due-to="Gary Gregory">
+        reportServiceStatusE() shows scale of dwWaitHint as millisecond in logging.
+      </action>
+      <action type="add" dev="ggregory" due-to="Gary Gregory">
+        reportServiceStatusE() shows a short description for dwCurrentState.
+      </action>
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump actions/cache from v2 to v2.1.6 #24, #30.

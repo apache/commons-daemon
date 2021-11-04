@@ -1031,6 +1031,17 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
     return rv;
 }
 
+/** Maps dwCurrentState to the constant name described on https://docs.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_status */
+static const char* gSzCurrentState[] = {
+    "",
+    "SERVICE_STOPPED",
+    "SERVICE_START_PENDING",
+    "SERVICE_STOP_PENDING",
+    "SERVICE_RUNNING",
+    "SERVICE_CONTINUE_PENDING",
+    "SERVICE_PAUSE_PENDING",
+    "SERVICE_PAUSED"
+};
 
 /* Report the service status to the SCM, including service specific exit code.
  *
@@ -1053,8 +1064,9 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d, dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
-               dwCurrentState, dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
+   int gSzCurrentStateIdx = dwCurrentState < 0 ? 0 : dwCurrentState > _countof(gSzCurrentState) ? 0 : dwCurrentState;
+   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d (%s), dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
+               dwCurrentState, gSzCurrentState[gSzCurrentStateIdx], dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
        if (dwCurrentState == SERVICE_RUNNING)
