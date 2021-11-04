@@ -71,6 +71,9 @@
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump junit from 4.13.1 to 4.13.2 #25.
       </action>
+      <action type="update" dev="ggregory" due-to="Gary Gregory">
+        Bump commons.daemon.javaversion 1.6 -> 1.7.
+      </action>
     </release>
     <release version="1.2.4" date="2021-01-21" description="Bug fix release">
       <action issue="DAEMON-424" type="fix" dev="markt" due-to="Bernhard Scholz">
