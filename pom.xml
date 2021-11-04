@@ -106,8 +106,8 @@
 
   <properties>
     <!-- Apache Commons Daemon is used by Apache Tomcat. The oldest currently
-         supported Tomcat version is Tomcat 7 which has a minimum Java version
-         of Java 6. It is therefore advisable to check with the Apache Tomcat
+         supported Tomcat version is Tomcat 8 which has a minimum Java version
+         of Java 7. It is therefore advisable to check with the Apache Tomcat
          community before increasing these values. -->
     <animal-sniffer.signature>java16</animal-sniffer.signature>
     <commons.daemon.javaversion>1.7</commons.daemon.javaversion>
