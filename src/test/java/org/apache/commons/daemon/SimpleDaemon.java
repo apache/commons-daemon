@@ -39,7 +39,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     public SimpleDaemon() {
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.handlers =new Vector<Handler>();
+        this.handlers =new Vector<>();
     }
 
     @Override
@@ -219,7 +219,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         }
 
         public int getConnectionNumber() {
-            return(this.number);
+            return this.number;
         }
 
         public void setDirectoryName(final String directory) {
@@ -227,7 +227,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
         }
 
         public String getDirectoryName() {
-            return(this.directory);
+            return this.directory;
         }
 
         public void log(final String name)
