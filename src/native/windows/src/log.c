@@ -23,6 +23,7 @@
 #define LOGF_EXR    L".%04d-%02d-%02d.%02d%02d%02d.log"
 
 static LPCSTR _log_level[] = {
+    "[trace] ",
     "[debug] ",
     "[info]  ",
     "[warn]  ",
@@ -279,6 +280,8 @@ void apxLogLevelSetW(HANDLE  hFile,
             lf->dwLogLevel = APXLOG_LEVEL_INFO;
         else if (!lstrcmpiW(szLevel, L"debug"))
             lf->dwLogLevel = APXLOG_LEVEL_DEBUG;
+        else if (!lstrcmpiW(szLevel, L"trace"))
+            lf->dwLogLevel = APXLOG_LEVEL_TRACE;
     }
 }
 
