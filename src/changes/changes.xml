@@ -45,7 +45,7 @@
         but INFINITE timeout was using instead.
       </action>
       <action type="fix" dev="ggregory" due-to="Arturo Bernal">
-        Minor Improvements #22.
+        Minor improvements #22, #31.
       </action>
       <action type="fix" dev="mturk">
         Procrun. Minor improvement that allows to have WINVER nmake variable
