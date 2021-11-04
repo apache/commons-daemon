@@ -189,7 +189,7 @@ public class DaemonWrapper implements Daemon
     }
 
     // Internal class for wrapping the start/stop methods
-    class Invoker
+    static class Invoker
     {
         private String      name;
         private String      call;
@@ -216,7 +216,7 @@ public class DaemonWrapper implements Daemon
         protected void addArguments(final String[] args)
         {
             if (args != null) {
-                final ArrayList<String> aa = new ArrayList<String>();
+                final ArrayList<String> aa = new ArrayList<>();
                 if (this.args != null) {
                     aa.addAll(Arrays.asList(this.args));
                 }
