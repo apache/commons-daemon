@@ -110,7 +110,7 @@
          of Java 6. It is therefore advisable to check with the Apache Tomcat
          community before increasing these values. -->
     <animal-sniffer.signature>java16</animal-sniffer.signature>
-    <commons.daemon.javaversion>1.6</commons.daemon.javaversion>
+    <commons.daemon.javaversion>1.7</commons.daemon.javaversion>
     <maven.compiler.source>${commons.daemon.javaversion}</maven.compiler.source>
     <maven.compiler.target>${commons.daemon.javaversion}</maven.compiler.target>
     <commons.componentid>daemon</commons.componentid>
