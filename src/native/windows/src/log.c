@@ -320,7 +320,7 @@ apxLogWrite(
     if (dwLevel < lf->dwLogLevel)
         return 0;
     APX_LOGENTER();
-    if (f && (lf->dwLogLevel == APXLOG_LEVEL_DEBUG || dwLevel == APXLOG_LEVEL_ERROR)) {
+    if (f && (lf->dwLogLevel <= APXLOG_LEVEL_DEBUG || dwLevel == APXLOG_LEVEL_ERROR)) {
         f = (szFile + lstrlenA(szFile) - 1);
         while(f != szFile && '\\' != *f && '/' != *f)
             f--;
@@ -377,7 +377,7 @@ apxLogWrite(
             }
             WriteFile(lf->hFile, _log_level[dwLevel],
                       lstrlenA(_log_level[dwLevel]), &wr, NULL);
-            if (f && lf->dwLogLevel == APXLOG_LEVEL_DEBUG) {
+            if (f && lf->dwLogLevel <= APXLOG_LEVEL_DEBUG) {
                 wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
