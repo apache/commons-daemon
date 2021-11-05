@@ -446,7 +446,7 @@ apxDisplayError(
     CHAR    sysbuf[SIZ_HUGLEN];
     int     len = 0, nRet;
     LPCSTR  f = szFile;
-    DWORD   err = GetLastError(); /* save the last Error code */
+    DWORD   dwMessageId = GetLastError(); /* save the last Error code */
     if (f) {
         f = (szFile + lstrlenA(szFile) - 1);
         while(f != szFile && '\\' != *f && '/' != *f)
@@ -457,11 +457,11 @@ apxDisplayError(
     else
         f = "";
     sysbuf[0] = '\0';
-    if (err != ERROR_SUCCESS) {
+    if (dwMessageId != ERROR_SUCCESS) {
         len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
                              FORMAT_MESSAGE_IGNORE_INSERTS,
                              NULL,
-                             err,
+                             dwMessageId,
                              MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                              sysbuf,
                              SIZ_DESLEN,
@@ -504,6 +504,6 @@ apxDisplayError(
         }
     }
     /* Restore the last Error code */
-    SetLastError(err);
+    SetLastError(dwMessageId);
     return len;
 }
