@@ -1056,7 +1056,8 @@ static const char* gSzCurrentState[] = {
  * SERVICE_STOP_PENDING      0x00000003 The service is stopping.
  * SERVICE_STOPPED           0x00000001 The service is not running.
  */
-static BOOL reportServiceStatusE(DWORD dwCurrentState,
+static BOOL reportServiceStatusE(DWORD dwLevel,
+                                 DWORD dwCurrentState,
                                  DWORD dwWin32ExitCode,
                                  DWORD dwWaitHint,
                                  DWORD dwServiceSpecificExitCode)
@@ -1065,8 +1066,9 @@ static BOOL reportServiceStatusE(DWORD dwCurrentState,
    BOOL fResult = TRUE;
 
    int gSzCurrentStateIdx = dwCurrentState < 0 ? 0 : dwCurrentState > _countof(gSzCurrentState) ? 0 : dwCurrentState;
-   apxLogWrite(APXLOG_MARK_DEBUG "reportServiceStatusE: dwCurrentState = %d (%s), dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
-               dwCurrentState, gSzCurrentState[gSzCurrentStateIdx], dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
+   apxLogWrite(NULL, dwLevel, TRUE, __FILE__, __LINE__,
+       "reportServiceStatusE: dwCurrentState = %d (%s), dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
+       dwCurrentState, gSzCurrentState[gSzCurrentStateIdx], dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
        if (dwCurrentState == SERVICE_RUNNING)
@@ -1100,14 +1102,14 @@ static BOOL reportServiceStatus(DWORD dwCurrentState,
                                 DWORD dwWaitHint)
 {
     // exit code 0
-    return reportServiceStatusE(dwCurrentState, dwWin32ExitCode, dwWaitHint, 0);
+    return reportServiceStatusE(APXLOG_LEVEL_DEBUG, dwCurrentState, dwWin32ExitCode, dwWaitHint, 0);
 }
 
 /* Report SERVICE_STOPPED to the SCM.
  */
 static BOOL reportServiceStatusStopped(DWORD exitCode)
 {
-    return reportServiceStatusE(SERVICE_STOPPED, exitCode ? ERROR_SERVICE_SPECIFIC_ERROR : NO_ERROR, 0, exitCode);
+    return reportServiceStatusE(APXLOG_LEVEL_DEBUG, SERVICE_STOPPED, exitCode ? ERROR_SERVICE_SPECIFIC_ERROR : NO_ERROR, 0, exitCode);
 }
 
 BOOL child_callback(APXHANDLE hObject, UINT uMsg,
@@ -1561,9 +1563,11 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
             CloseHandle(stopThread);
             return;
         case SERVICE_CONTROL_INTERROGATE:
-            reportServiceStatus(_service_status.dwCurrentState,
+            reportServiceStatusE(APXLOG_LEVEL_TRACE,
+                                _service_status.dwCurrentState,
                                 _service_status.dwWin32ExitCode,
-                                _service_status.dwWaitHint);
+                                _service_status.dwWaitHint,
+                                0);
             return;
         default:
             break;
