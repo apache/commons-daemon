@@ -112,6 +112,12 @@ apxDisplayError(
     ...
 );
 
+DWORD
+apxGetMessage(
+    DWORD dwMessageId,
+    LPSTR lpBuffer,
+    DWORD nSize);
+
 __APXEND_DECLS
 
 #endif /* _LOG_H_INCLUDED_ */

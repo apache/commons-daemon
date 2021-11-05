@@ -285,6 +285,25 @@ void apxLogLevelSetW(HANDLE  hFile,
     }
 }
 
+DWORD
+apxGetMessage(
+    DWORD dwMessageId,
+    LPSTR lpBuffer,
+    DWORD nSize)
+{
+    if (nSize == 0 || lpBuffer == 0) {
+        return 0;
+    }
+    return FormatMessageA(
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dwMessageId,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        lpBuffer,
+        nSize,
+        NULL);
+}
+
 int
 apxLogWrite(
     HANDLE  hFile,
@@ -339,14 +358,7 @@ apxLogWrite(
             }
         }
         else
-            FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
-                           FORMAT_MESSAGE_IGNORE_INSERTS,
-                           NULL,
-                           dwMessageId,
-                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                           szBp,
-                           1000,
-                           NULL);
+            apxGetMessage(dwMessageId, szBp, 1000);
     }
     else {
         va_start(args, szFormat);
@@ -458,14 +470,7 @@ apxDisplayError(
         f = "";
     sysbuf[0] = '\0';
     if (dwMessageId != ERROR_SUCCESS) {
-        len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
-                             FORMAT_MESSAGE_IGNORE_INSERTS,
-                             NULL,
-                             dwMessageId,
-                             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                             sysbuf,
-                             SIZ_DESLEN,
-                             NULL);
+        len = apxGetMessage(dwMessageId, sysbuf, SIZ_DESLEN);
         sysbuf[len] = '\0';
         if (len > 0) {
             if (sysbuf[len - 1] == '\n')
