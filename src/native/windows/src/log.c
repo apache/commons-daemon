@@ -302,11 +302,11 @@ apxLogWrite(
     LPCSTR  f = szFile;
     CHAR    sb[SIZ_PATHLEN];
     DWORD   wr;
-    DWORD   err;
+    DWORD   dwMessageId;
     BOOL    dolock = TRUE;
     apx_logfile_st *lf = (apx_logfile_st *)hFile;
 
-    err = GetLastError(); /* save the last Error code */
+    dwMessageId = GetLastError(); /* save the last Error code */
     if (IS_INVALID_HANDLE(lf))
         lf = _st_sys_loghandle;
     if (IS_INVALID_HANDLE(lf)) {
@@ -331,7 +331,7 @@ apxLogWrite(
         f = NULL;
     szBp = buffer;
     if (!szFormat) {
-        if (err == 0) {
+        if (dwMessageId == 0) {
             lstrcpyA(szBp, "Unknown error code");
             if (dwLevel == APXLOG_LEVEL_ERROR) {
                 szBp += 18;
@@ -342,7 +342,7 @@ apxLogWrite(
             FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
                            FORMAT_MESSAGE_IGNORE_INSERTS,
                            NULL,
-                           err,
+                           dwMessageId,
                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                            szBp,
                            1000,
@@ -407,8 +407,8 @@ apxLogWrite(
     }
     APX_LOGLEAVE();
     /* Restore the last Error code */
-    SetLastError(err);
-    if (szFormat && err != 0 && dwLevel == APXLOG_LEVEL_ERROR) {
+    SetLastError(dwMessageId);
+    if (szFormat && dwMessageId != 0 && dwLevel == APXLOG_LEVEL_ERROR) {
         /* Print the System error description
          */
         apxLogWrite(hFile, dwLevel, bTimeStamp, szFile, dwLine, NULL);
