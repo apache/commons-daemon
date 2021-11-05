@@ -1103,13 +1103,11 @@ static BOOL reportServiceStatus(DWORD dwCurrentState,
     return reportServiceStatusE(dwCurrentState, dwWin32ExitCode, dwWaitHint, 0);
 }
 
+/* Report SERVICE_STOPPED to the SCM.
+ */
 static BOOL reportServiceStatusStopped(DWORD exitCode)
 {
-    if (exitCode) {
-        return reportServiceStatusE(SERVICE_STOPPED, ERROR_SERVICE_SPECIFIC_ERROR, 0, exitCode);
-    } else {
-        return reportServiceStatus(SERVICE_STOPPED, NO_ERROR, 0);
-    }
+    return reportServiceStatusE(SERVICE_STOPPED, exitCode ? ERROR_SERVICE_SPECIFIC_ERROR : NO_ERROR, 0, exitCode);
 }
 
 BOOL child_callback(APXHANDLE hObject, UINT uMsg,
