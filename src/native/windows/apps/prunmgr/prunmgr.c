@@ -47,9 +47,10 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define STAT_SYSTEM         L"LocalSystem"
 
 #define LOGL_ERROR          L"Error"
-#define LOGL_DEBUG          L"Debug"
 #define LOGL_INFO           L"Info"
 #define LOGL_WARN           L"Warn"
+#define LOGL_DEBUG          L"Debug"
+#define LOGL_TRACE          L"Trace"
 
 #define START_DELAYED        L"Automatic (Delayed Start)"
 #define START_AUTO           L"Automatic"
