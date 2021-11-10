@@ -610,27 +610,27 @@ apxServiceCheckStop(APXHANDLE hService)
     lpService = APXHANDLE_DATA(hService);
     /* Manager mode cannot handle services */
     if (lpService->bManagerMode) {
-        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheck(): Manager mode cannot handle services, returning FALSE");
+        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheckStop(): Manager mode cannot handle services, returning FALSE");
         return FALSE;
     }
     /* Check if the ServiceOpen has been called */
     if (IS_INVALID_HANDLE(lpService->hService)) {
-        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheck(): Service is not open, returning FALSE");
+        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheckStop(): Service is not open, returning FALSE");
         return FALSE;
     }
 
     /* Check if we are in the stopped state */
     sleepMillis = 1000;
-    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck(): Sleeping %d milliseconds", sleepMillis);
+    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheckStop(): Sleeping %d milliseconds", sleepMillis);
     Sleep(sleepMillis);
 
     if (QueryServiceStatus(lpService->hService, &stStatus)) {
-        apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck(): QueryServiceStatus OK");
+        apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheckStop(): QueryServiceStatus OK");
         if (stStatus.dwCurrentState == dwState) {
             return TRUE;
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG
-                "apxServiceCheck(): dwState(%d) != dwCurrentState(%d); "
+                "apxServiceCheckStop(): dwState(%d) != dwCurrentState(%d); "
                 "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
                 dwState,
                 stStatus.dwCurrentState,
@@ -640,10 +640,10 @@ apxServiceCheckStop(APXHANDLE hService)
         }
 
     } else {
-        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheck(): QueryServiceStatus failure");
+        apxLogWrite(APXLOG_MARK_ERROR "apxServiceCheckStop(): QueryServiceStatus failure");
     }
 
-    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck(): returning FALSE");
+    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheckStop(): returning FALSE");
     return FALSE;
 }
 
