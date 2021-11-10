@@ -34,6 +34,22 @@ typedef struct APXSERVICE {
 
 } APXSERVICE, *LPAPXSERVICE;
 
+/** Maps dwCurrentState to the constant name described on https://docs.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_status */
+static const char* gSzCurrentState[] = {
+    "",
+    "SERVICE_STOPPED",
+    "SERVICE_START_PENDING",
+    "SERVICE_STOP_PENDING",
+    "SERVICE_RUNNING",
+    "SERVICE_CONTINUE_PENDING",
+    "SERVICE_PAUSE_PENDING",
+    "SERVICE_PAUSED"
+};
+
+const char* apxServiceGetCurrentStateName(DWORD dwCurrentState) {
+    return gSzCurrentState[dwCurrentState < 0 ? 0 : dwCurrentState > _countof(gSzCurrentState) ? 0 : dwCurrentState];
+}
+
 static WCHAR __invalidPathChars[] = L"<>:\"/\\:|?*";
 static BOOL __apxIsValidServiceName(LPCWSTR szServiceName)
 {

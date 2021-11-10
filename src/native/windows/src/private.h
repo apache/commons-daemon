@@ -240,6 +240,7 @@ BOOL    apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,
                                   DWORD dwDescriptionLength);
 BOOL    apxGetServiceUserW(LPCWSTR szServiceName, LPWSTR szUser,
                            DWORD dwUserLength);
+const char* apxServiceGetCurrentStateName(DWORD dwCurrentState);
 
 DWORD   __apxGetMultiSzLengthA(LPCSTR lpStr, LPDWORD lpdwCount);
 DWORD   __apxGetMultiSzLengthW(LPCWSTR lpStr, LPDWORD lpdwCount);
