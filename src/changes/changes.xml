@@ -55,6 +55,9 @@
         Log at Trace instead of Debug when a service reports its state from the prunsrv app.
         This avoids the Debug log filling up as it adds two events per minute. 
         You can then stay in Debug logging to capture register, start, stop, and unregister Debug events.
+      </action>
+      <action type="fix" dev="ggregory" due-to="Gary Gregory">
+        Miscellaneous logging improvements.
       </action>      
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
