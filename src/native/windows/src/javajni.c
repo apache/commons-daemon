@@ -1154,11 +1154,11 @@ apxJavaWait(APXHANDLE hJava, DWORD dwMilliseconds, BOOL bKill)
 
     if (!lpJava->dwWorkerStatus && lpJava->hWorkerThread)
         return WAIT_OBJECT_0;
-    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p %d milliseconds (INFINITE=%d)...",
+    apxLogWrite(APXLOG_MARK_DEBUG "apxJavaWait -> WaitForSingleObject (0x%p, %d milliseconds) (%d=INFINITE)...",
         lpJava->hWorkerThread, dwMilliseconds, INFINITE);
     rv = WaitForSingleObject(lpJava->hWorkerThread, dwMilliseconds);
-    apxLogWrite(APXLOG_MARK_DEBUG "WaitForSingleObject 0x%p = %d (WAIT_TIMEOUT=%d)",
-        lpJava->hWorkerThread, rv, WAIT_TIMEOUT);
+    apxLogWrite(APXLOG_MARK_DEBUG "apxJavaWait <- WaitForSingleObject (0x%p, %d milliseconds) = %d",
+        lpJava->hWorkerThread, dwMilliseconds, rv);
     if (rv == WAIT_TIMEOUT && bKill) {
         __apxJavaJniCallback(hJava, WM_CLOSE, 0, 0);
     }
