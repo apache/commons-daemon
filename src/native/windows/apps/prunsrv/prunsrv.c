@@ -1055,7 +1055,7 @@ static BOOL reportServiceStatusE(DWORD dwLevel,
 
    apxLogWrite(NULL, dwLevel, TRUE, __FILE__, __LINE__,
        "reportServiceStatusE: dwCurrentState = %d (%s), dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
-       dwCurrentState, apxServiceGetCurrentStateName(dwCurrentState), dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
+       dwCurrentState, apxServiceGetStateName(dwCurrentState), dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
    if (_service_mode && _service_status_handle) {
        if (dwCurrentState == SERVICE_RUNNING)

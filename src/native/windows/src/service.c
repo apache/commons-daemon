@@ -46,7 +46,7 @@ static const char* gSzCurrentState[] = {
     "SERVICE_PAUSED"
 };
 
-const char* apxServiceGetCurrentStateName(DWORD dwCurrentState) {
+const char* apxServiceGetStateName(DWORD dwCurrentState) {
     return gSzCurrentState[dwCurrentState < 0 ? 0 : dwCurrentState > _countof(gSzCurrentState) ? 0 : dwCurrentState];
 }
 
@@ -423,7 +423,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
 {
     LPAPXSERVICE   lpService;
     SERVICE_STATUS stStatus;
-    DWORD          dwPending = 0;
+    DWORD          dwPendingState = 0;
     DWORD          dwState = 0;
     DWORD          dwTick  = 0;
     DWORD          dwWait, dwCheck, dwStart, sleepMillis;
@@ -445,16 +445,16 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     }
     switch (dwControl) {
         case SERVICE_CONTROL_CONTINUE:
-            dwPending = SERVICE_START_PENDING;
-            dwState   = SERVICE_RUNNING;
+            dwPendingState = SERVICE_START_PENDING;
+            dwState        = SERVICE_RUNNING;
             break;
         case SERVICE_CONTROL_STOP:
-            dwPending = SERVICE_STOP_PENDING;
-            dwState   = SERVICE_STOPPED;
+            dwPendingState = SERVICE_STOP_PENDING;
+            dwState        = SERVICE_STOPPED;
             break;
         case SERVICE_CONTROL_PAUSE:
-            dwPending = SERVICE_PAUSE_PENDING;
-            dwState   = SERVICE_PAUSED;
+            dwPendingState = SERVICE_PAUSE_PENDING;
+            dwState        = SERVICE_PAUSED;
             break;
         default:
             break;
@@ -468,27 +468,27 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
         switch (dwControl & 0xE0) {
             case 0x80:
             case 0x90:
-                dwPending = SERVICE_START_PENDING;
-                dwState   = SERVICE_RUNNING;
+                dwPendingState = SERVICE_START_PENDING;
+                dwState        = SERVICE_RUNNING;
                 break;
             case 0xA0:
             case 0xB0:
-                dwPending = SERVICE_STOP_PENDING;
-                dwState   = SERVICE_STOPPED;
+                dwPendingState = SERVICE_STOP_PENDING;
+                dwState        = SERVICE_STOPPED;
                 break;
             case 0xC0:
             case 0xD0:
-                dwPending = SERVICE_PAUSE_PENDING;
-                dwState   = SERVICE_PAUSED;
+                dwPendingState = SERVICE_PAUSE_PENDING;
+                dwState        = SERVICE_PAUSED;
                 break;
             default:
                 break;
         }
     }
-    if (!dwPending && !dwState) {
+    if (!dwPendingState && !dwState) {
         apxLogWrite(APXLOG_MARK_ERROR
-            "apxServiceControl():  !dwPending(%d) && !dwState(%d); returning FALSE",
-            dwPending,
+            "apxServiceControl():  !dwPendingState(%d) && !dwState(%d); returning FALSE",
+            dwPendingState,
             dwState);
         return FALSE;
     }
@@ -519,7 +519,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     if (bStatus) {
         Sleep(100); /* Initial Sleep period */
         while (QueryServiceStatus(lpService->hService, &stStatus)) {
-            if (stStatus.dwCurrentState == dwPending) {
+            if (stStatus.dwCurrentState == dwPendingState) {
                 /* Do not wait longer than the wait hint. A good interval is
                  * one tenth the wait hint, but no less than 1 second and no
                  * more than 10 seconds.
