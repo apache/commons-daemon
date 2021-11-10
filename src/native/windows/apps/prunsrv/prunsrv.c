@@ -1605,7 +1605,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
     _service_status.dwWaitHint         = 0;
     _service_status.dwServiceSpecificExitCode = 0;
 
-    apxLogWrite(APXLOG_MARK_DEBUG "Inside ServiceMain...");
+    apxLogWrite(APXLOG_MARK_DEBUG "Inside serviceMain()...");
 
     if (IS_VALID_STRING(_service_name)) {
         WCHAR en[SIZ_HUGLEN];
