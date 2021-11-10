@@ -577,7 +577,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
         } else {
             apxLogWrite(APXLOG_MARK_ERROR
                 "apxServiceControl(): dwState(%d = %s) != dwCurrentState(%d = %s); "
-                "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
+                "dwWin32ExitCode = %d, dwWaitHint = %d millseconds, dwServiceSpecificExitCode = %d",
                 dwState,
                 apxServiceGetStateName(dwState),
                 stStatus.dwCurrentState,
@@ -631,7 +631,7 @@ apxServiceCheckStop(APXHANDLE hService)
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG
                 "apxServiceCheckStop(): dwState(%d) != dwCurrentState(%d); "
-                "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
+                "dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d",
                 dwState,
                 stStatus.dwCurrentState,
                 stStatus.dwWin32ExitCode,
