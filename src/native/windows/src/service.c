@@ -487,9 +487,11 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     }
     if (!dwPendingState && !dwState) {
         apxLogWrite(APXLOG_MARK_ERROR
-            "apxServiceControl():  !dwPendingState(%d) && !dwState(%d); returning FALSE",
+            "apxServiceControl():  !dwPendingState(%d = %s) && !dwState(%d = %s); returning FALSE",
             dwPendingState,
-            dwState);
+            apxServiceGetStateName(dwPendingState),
+            dwState,
+            apxServiceGetStateName(dwState));
         return FALSE;
     }
     /* Now lets control */
@@ -574,10 +576,12 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
             return TRUE;
         } else {
             apxLogWrite(APXLOG_MARK_ERROR
-                "apxServiceControl(): dwState(%d) != dwCurrentState(%d); "
+                "apxServiceControl(): dwState(%d = %s) != dwCurrentState(%d = %s); "
                 "dwWin32ExitCode = %d, dwWaitHint = %d, dwServiceSpecificExitCode = %d",
                 dwState,
+                apxServiceGetStateName(dwState),
                 stStatus.dwCurrentState,
+                apxServiceGetStateName(stStatus.dwCurrentState),
                 stStatus.dwWin32ExitCode,
                 stStatus.dwWaitHint,
                 stStatus.dwServiceSpecificExitCode);
