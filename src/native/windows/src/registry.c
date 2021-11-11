@@ -856,13 +856,17 @@ BOOL apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,
     WCHAR wcName[SIZ_RESLEN];
     DWORD rc, l = dwDescriptionLength * sizeof(WCHAR);
     DWORD t = REG_SZ;
-    if (lstrlenW(szServiceName) > SIZ_RESMAX)
+    int iServiceNameLen = lstrlenW(szServiceName);
+    if (iServiceNameLen > SIZ_RESMAX) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't read service description because registry key '%s' length %d > %d", szServiceName, iServiceNameLen, SIZ_RESMAX);
         return FALSE;
+    }
     lstrcpyW(wcName, REGSERVICE_ROOT);
     lstrcatW(wcName, szServiceName);
 
     rc = RegOpenKeyExW(HKEY_LOCAL_MACHINE, wcName, 0, KEY_READ, &hKey);
     if (rc != ERROR_SUCCESS) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't read service description because registry key '%s' cannot be opened (rc = %d)", wcName, rc);
         return FALSE;
     }
     rc = RegQueryValueExW(hKey, REGDESCRIPTION, NULL, &t, (BYTE *)szDescription,
@@ -870,8 +874,10 @@ BOOL apxGetServiceDescriptionW(LPCWSTR szServiceName, LPWSTR szDescription,
     SAFE_CLOSE_KEY(hKey);
     if (rc == ERROR_SUCCESS && t == REG_SZ)
         return TRUE;
-    else
+    else {
+        apxLogWrite(APXLOG_MARK_WARN "Can't read service description because registry key '%s' cannot query value at '%s' (rc = %d)", wcName, REGDESCRIPTION, rc);
         return FALSE;
+    }
 }
 
 BOOL apxGetServiceUserW(LPCWSTR szServiceName, LPWSTR szUser,
