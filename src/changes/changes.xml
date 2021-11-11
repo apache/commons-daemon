@@ -78,6 +78,9 @@
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Add logging when failing to obtain a service's description from the registry.
       </action>      
+      <action type="add" dev="ggregory" due-to="Gary Gregory">
+        Add logging when failing to set the options of a service.
+      </action>      
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump actions/cache from v2 to v2.1.6 #24, #30.

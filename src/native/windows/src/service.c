@@ -280,37 +280,45 @@ apxServiceSetNames(APXHANDLE hService,
 
 BOOL
 apxServiceSetOptions(APXHANDLE hService,
-                     DWORD dwServiceType,
-                     DWORD dwStartType,
-					 BOOL bDelayedStart,
-                     DWORD dwErrorControl)
+    DWORD dwServiceType,
+    DWORD dwStartType,
+    BOOL bDelayedStart,
+    DWORD dwErrorControl)
 {
     LPAPXSERVICE lpService;
     SERVICE_DELAYED_AUTO_START_INFO sDelayedInfo;
 
-    if (hService->dwType != APXHANDLE_TYPE_SERVICE)
+    if (hService->dwType != APXHANDLE_TYPE_SERVICE) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't set options for service.");
         return FALSE;
+    }
 
     lpService = APXHANDLE_DATA(hService);
     /* Manager mode cannot handle services */
-    if (lpService->bManagerMode)
+    if (lpService->bManagerMode) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Manager mode cannot handle services");
         return FALSE;
-    /* Check if the ServixeOpen has been called */
-    if (IS_INVALID_HANDLE(lpService->hService))
+    }
+    /* Check if the ServiceOpen has been called */
+    if (IS_INVALID_HANDLE(lpService->hService)) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Service is not open.");
         return FALSE;
+    }
 
     if (!ChangeServiceConfig(lpService->hService, dwServiceType,
                                    dwStartType, dwErrorControl,
                                    NULL, NULL, NULL, NULL, NULL,
                                    NULL, NULL)) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to changes the configuration parameters.");
     	return FALSE;
     }
 
     if (dwStartType == SERVICE_AUTO_START) {
     	sDelayedInfo.fDelayedAutostart = bDelayedStart;
-    	return ChangeServiceConfig2A(lpService->hService,
-                                     SERVICE_CONFIG_DELAYED_AUTO_START_INFO,
-                                     &sDelayedInfo);
+        if (!ChangeServiceConfig2A(lpService->hService, SERVICE_CONFIG_DELAYED_AUTO_START_INFO, &sDelayedInfo)) {
+            apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to changes the optional configuration parameters.");
+            return FALSE;
+        }
     }
 
     return TRUE;
