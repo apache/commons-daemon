@@ -54,13 +54,13 @@ __APXBEGIN_DECLS
 #define APXLOG_LEVEL_WARN   3
 #define APXLOG_LEVEL_ERROR  4
 
-#define APXLOG_MARK_INFO    NULL, APXLOG_LEVEL_INFO,  TRUE,  __FILE__, __LINE__, ""
-#define APXLOG_MARK_WARN    NULL, APXLOG_LEVEL_WARN,  TRUE,  __FILE__, __LINE__, ""
-#define APXLOG_MARK_ERROR   NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, ""
-#define APXLOG_MARK_DEBUG   NULL, APXLOG_LEVEL_DEBUG, TRUE,  __FILE__, __LINE__, ""
-#define APXLOG_MARK_TRACE   NULL, APXLOG_LEVEL_TRACE, TRUE,  __FILE__, __LINE__, ""
-#define APXLOG_MARK_RAW     NULL, APXLOG_LEVEL_INFO,  FALSE, NULL, 0,
-#define APXLOG_MARK_SYSERR  NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, NULL
+#define APXLOG_MARK_INFO    NULL, APXLOG_LEVEL_INFO,  TRUE,  __FILE__, __LINE__, __func__, ""
+#define APXLOG_MARK_WARN    NULL, APXLOG_LEVEL_WARN,  TRUE,  __FILE__, __LINE__, __func__, ""
+#define APXLOG_MARK_ERROR   NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, __func__, ""
+#define APXLOG_MARK_DEBUG   NULL, APXLOG_LEVEL_DEBUG, TRUE,  __FILE__, __LINE__, __func__, ""
+#define APXLOG_MARK_TRACE   NULL, APXLOG_LEVEL_TRACE, TRUE,  __FILE__, __LINE__, __func__, ""
+#define APXLOG_MARK_RAW     NULL, APXLOG_LEVEL_INFO,  FALSE, NULL, NULL, 0,
+#define APXLOG_MARK_SYSERR  NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, __func__, NULL
 
 LPWSTR apxLogFile(
     APXHANDLE hPool,
@@ -99,6 +99,7 @@ apxLogWrite(
     BOOL    bTimeStamp,
     LPCSTR  szFile,
     DWORD   dwLine,
+    LPCSTR  szFunction,
     LPCSTR  szFormat,
     ...
 );

@@ -59,6 +59,9 @@
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
         Miscellaneous logging improvements.
       </action>      
+      <action type="fix" dev="ggregory" due-to="Gary Gregory">
+        Log the prunsrv function names at the Trace level.
+      </action>      
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.

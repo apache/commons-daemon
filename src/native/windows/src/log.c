@@ -311,6 +311,7 @@ apxLogWrite(
     BOOL    bTimeStamp,
     LPCSTR  szFile,
     DWORD   dwLine,
+    LPCSTR  szFunction,
     LPCSTR  szFormat,
     ...)
 {
@@ -318,7 +319,7 @@ apxLogWrite(
     CHAR    buffer[1024+32] = "";
     LPSTR   szBp;
     int     len = 0;
-    LPCSTR  f = szFile;
+    LPCSTR  file = szFile;
     CHAR    sb[SIZ_PATHLEN];
     DWORD   wr;
     DWORD   dwMessageId;
@@ -339,22 +340,22 @@ apxLogWrite(
     if (dwLevel < lf->dwLogLevel)
         return 0;
     APX_LOGENTER();
-    if (f && (lf->dwLogLevel <= APXLOG_LEVEL_DEBUG || dwLevel == APXLOG_LEVEL_ERROR)) {
-        f = (szFile + lstrlenA(szFile) - 1);
-        while(f != szFile && '\\' != *f && '/' != *f)
-            f--;
-        if(f != szFile)
-            f++;
+    if (file && (lf->dwLogLevel <= APXLOG_LEVEL_DEBUG || dwLevel == APXLOG_LEVEL_ERROR)) {
+        file = (szFile + lstrlenA(szFile) - 1);
+        while(file != szFile && '\\' != *file && '/' != *file)
+            file--;
+        if(file != szFile)
+            file++;
     }
     else
-        f = NULL;
+        file = NULL;
     szBp = buffer;
     if (!szFormat) {
         if (dwMessageId == 0) {
             lstrcpyA(szBp, "Unknown error code");
             if (dwLevel == APXLOG_LEVEL_ERROR) {
                 szBp += 18;
-                wsprintfA(szBp, " occured in (%s:%d) ", f, dwLine);
+                wsprintfA(szBp, " occured in (%s:%d) ", file, dwLine);
             }
         }
         else
@@ -389,10 +390,17 @@ apxLogWrite(
             }
             WriteFile(lf->hFile, _log_level[dwLevel],
                       lstrlenA(_log_level[dwLevel]), &wr, NULL);
-            if (f && lf->dwLogLevel <= APXLOG_LEVEL_DEBUG) {
-                wsprintfA(sb, "(%10s:%-4d) ", f, dwLine);
+
+            if (szFunction && lf->dwLogLevel <= APXLOG_LEVEL_TRACE) {
+                /* add function name in TRACE mode. */
+                wsprintfA(sb, "(%10s:%-4d:%-27s) ", file, dwLine, szFunction);
+                WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
+            } else if (file && lf->dwLogLevel <= APXLOG_LEVEL_DEBUG) {
+                /* add file and line in DEBUG mode. */
+                wsprintfA(sb, "(%10s:%-4d) ", file, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
+
 
             /* add thread ID to log output */
             wsprintfA(sb, "[%5d] ", GetCurrentThreadId());
@@ -423,7 +431,7 @@ apxLogWrite(
     if (szFormat && dwMessageId != 0 && dwLevel == APXLOG_LEVEL_ERROR) {
         /* Print the System error description
          */
-        apxLogWrite(hFile, dwLevel, bTimeStamp, szFile, dwLine, NULL);
+        apxLogWrite(hFile, dwLevel, bTimeStamp, szFile, dwLine, szFunction, NULL);
     }
     return len;
 }

@@ -1053,7 +1053,7 @@ static BOOL reportServiceStatusE(DWORD dwLevel,
    static DWORD dwCheckPoint = 1;
    BOOL fResult = TRUE;
 
-   apxLogWrite(NULL, dwLevel, TRUE, __FILE__, __LINE__,
+   apxLogWrite(NULL, dwLevel, TRUE, __FILE__, __LINE__, __func__,
        "reportServiceStatusE: dwCurrentState = %d (%s), dwWin32ExitCode = %d, dwWaitHint = %d milliseconds, dwServiceSpecificExitCode = %d.",
        dwCurrentState, apxServiceGetStateName(dwCurrentState), dwWin32ExitCode, dwWaitHint, dwServiceSpecificExitCode);
 
