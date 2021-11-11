@@ -498,7 +498,7 @@ static void setInprocEnvironmentOptions(LPCWSTR szOptions)
 
     p = szOptions;
     while (*p) {
-        apxLogWrite(APXLOG_MARK_DEBUG "Checking '%S' for environment variable requirements", p);
+        apxLogWrite(APXLOG_MARK_DEBUG "Checking environment variable requirements for '%S'", p);
         if (wcsncmp(p, L"-XX:NativeMemoryTracking=", 25) == 0) {
             apxLogWrite(APXLOG_MARK_DEBUG "Match found '%S'", p);
             /* Advance 25 characters to the start of the value */
