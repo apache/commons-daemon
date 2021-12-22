@@ -83,7 +83,7 @@
       </action>      
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
-        Bump actions/cache from v2 to v2.1.6 #24, #30.
+        Bump actions/cache from v2 to v2.1.7 #24, #30, #36.
       </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump build actions/setup-java from v1.4.3 to v2.
