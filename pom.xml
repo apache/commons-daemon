@@ -122,7 +122,7 @@
     <commons.jira.pid>12310468</commons.jira.pid>
     <commons.jacoco.version>0.8.7</commons.jacoco.version>
     <commons.japicmp.version>0.15.4</commons.japicmp.version>
-    <commons.spotbugs.version>4.4.2.2</commons.spotbugs.version>
+    <commons.spotbugs.version>4.5.2.0</commons.spotbugs.version>
   </properties>
 
   <build>
