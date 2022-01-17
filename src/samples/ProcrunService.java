@@ -3,15 +3,15 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-//import java.util.Enumeration;
+import java.util.Enumeration;
 import java.util.Iterator;
-//import java.util.List;
-//import java.util.Map;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
-//import java.net.InterfaceAddress;
-//import java.net.NetworkInterface;
-//import java.net.SocketException;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 
 
 /*
@@ -92,13 +92,12 @@ public class ProcrunService implements Runnable {
             log("Using context ClassLoader : " + cl.toString());
         log("Program environment: ");
 
-// Java 1.5+ code
-//        Map        em = System.getenv();
-//        TreeSet    es = new TreeSet(em.keySet());
-//        for (Iterator i = es.iterator(); i.hasNext();) {
-//            String n = (String)i.next();
-//            log(n + " ->  " + em.get(n));
-//        }
+        Map<String,String> em = System.getenv();
+        TreeSet<String> es = new TreeSet<>(em.keySet());
+        for (Iterator<String> i = es.iterator(); i.hasNext();) {
+            String n = i.next();
+            log(n + " ->  " + em.get(n));
+        }
 
         log("System properties: ");
         Properties ps = System.getProperties();
@@ -108,40 +107,39 @@ public class ProcrunService implements Runnable {
             log(n + " ->  " + ps.get(n));
         }
 
-// Java 1.6+ code
-//        log("Network interfaces: ");
-//        log("LVPMU (L)oopback (V)irtual (P)ointToPoint (M)multicastSupport (U)p");
-//        try {
-//            for (Enumeration e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
-//                NetworkInterface n = (NetworkInterface)e.nextElement();
-//                char [] flags = { '-', '-', '-', '-', '-'};
-//                if (n.isLoopback())
-//                    flags[0] = 'x';
-//                if (n.isVirtual())
-//                    flags[1] = 'x';
-//                if (n.isPointToPoint())
-//                    flags[2] = 'x';
-//                if (n.supportsMulticast())
-//                    flags[3] = 'x';
-//                if (n.isUp())
-//                    flags[4] = 'x';
-//                String neti = new String(flags) + "   " + n.getName() + "\t";
-//                for (Enumeration i = n.getSubInterfaces(); i.hasMoreElements();) {
-//                    NetworkInterface s = (NetworkInterface)i.nextElement();
-//                    neti += " [" + s.getName() + "]";
-//                }
-//                log(neti + " -> " + n.getDisplayName());
-//                List i = n.getInterfaceAddresses();
-//                if (!i.isEmpty()) {
-//                    for (int x = 0; x < i.size(); x++) {
-//                        InterfaceAddress a = (InterfaceAddress)i.get(x);
-//                        log("        " + a.toString());
-//                    }
-//                }
-//            }
-//        } catch (SocketException e) {
-//            // Ignore
-//        }
+        log("Network interfaces: ");
+        log("LVPMU (L)oopback (V)irtual (P)ointToPoint (M)multicastSupport (U)p");
+        try {
+            for (Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
+                NetworkInterface n = e.nextElement();
+                char [] flags = { '-', '-', '-', '-', '-'};
+                if (n.isLoopback())
+                    flags[0] = 'x';
+                if (n.isVirtual())
+                    flags[1] = 'x';
+                if (n.isPointToPoint())
+                    flags[2] = 'x';
+                if (n.supportsMulticast())
+                    flags[3] = 'x';
+                if (n.isUp())
+                    flags[4] = 'x';
+                String neti = new String(flags) + "   " + n.getName() + "\t";
+                for (Enumeration<NetworkInterface> i = n.getSubInterfaces(); i.hasMoreElements();) {
+                    NetworkInterface s = i.nextElement();
+                    neti += " [" + s.getName() + "]";
+                }
+                log(neti + " -> " + n.getDisplayName());
+                List<InterfaceAddress> i = n.getInterfaceAddresses();
+                if (!i.isEmpty()) {
+                    for (int x = 0; x < i.size(); x++) {
+                        InterfaceAddress a = i.get(x);
+                        log("        " + a.toString());
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            // Ignore
+        }
     }
 
     /**

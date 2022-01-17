@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-//import java.io.UnsupportedEncodingException;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -259,11 +259,11 @@ public class SimpleApplication implements Runnable {
 
         public void handle(InputStream in, OutputStream os) {
             PrintStream out=null;
-//            try {
-//                out=new PrintStream(os, true, "US-ASCII"); // Java 1.4+
-//            } catch (UnsupportedEncodingException ex) {
-                out=new PrintStream(os, true);
-//            }
+            try {
+                out=new PrintStream(os, true, "US-ASCII");
+            } catch (UnsupportedEncodingException ex) {
+              out=new PrintStream(os, true);
+            }
 
             while(true) {
                 try {
