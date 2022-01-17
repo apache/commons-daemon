@@ -77,7 +77,7 @@ public final class DaemonLoader
             /* Find the required class */
             final Class<?> c = cl.loadClass(cn);
 
-            /* This should _never_ happen, but doublechecking doesn't harm */
+            /* This should _never_ happen, but double-checking doesn't harm */
             if (c == null) {
                 throw new ClassNotFoundException(cn);
             }
