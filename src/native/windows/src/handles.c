@@ -466,7 +466,7 @@ apxHandleCreate(APXHANDLE hPool, DWORD dwFlags,
     }
 
     if (dwFlags & APXHANDLE_HAS_EVENT) {
-        /* Create the message event and message wathcing thread */
+        /* Create the message event and message watching thread */
         hHandle->hEventHandle = CreateEvent(NULL, TRUE, FALSE, NULL);
         hHandle->hEventThread = CreateThread(NULL, 0, __apxHandleEventThread,
                                             hHandle, 0,
