@@ -49,7 +49,7 @@ public class SimpleDaemon implements Daemon, Runnable {
         super();
         System.err.println("SimpleDaemon: instance "+this.hashCode()+
                            " created");
-        this.handlers = new Vector<Handler>();
+        this.handlers = new Vector<>();
     }
 
     @Override

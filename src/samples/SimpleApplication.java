@@ -44,7 +44,7 @@ public class SimpleApplication implements Runnable {
         super();
         System.err.println("SimpleApplication: instance "+this.hashCode()+
                            " created");
-        this.handlers = new Vector<Handler>();
+        this.handlers = new Vector<>();
     }
 
     @Override

@@ -173,12 +173,12 @@ public final class DaemonLoader
 
             init    = c.getMethod("init", myclass);
 
-            start   = c.getMethod("start", null);
-            stop    = c.getMethod("stop", null);
-            destroy = c.getMethod("destroy", null);
+            start   = c.getMethod("start");
+            stop    = c.getMethod("stop");
+            destroy = c.getMethod("destroy");
 
             try {
-                signal = c.getMethod("signal", null);
+                signal = c.getMethod("signal");
             } catch (final NoSuchMethodException e) {
                 // Signalling will be disabled.
             }
@@ -236,7 +236,7 @@ public final class DaemonLoader
     {
         try {
             /* Attempt to start the daemon */
-            start.invoke(daemon, null);
+            start.invoke(daemon);
 
             /* Set the availability flag in the controller */
             if (controller != null) {
@@ -262,7 +262,7 @@ public final class DaemonLoader
             }
 
             /* Attempt to stop the daemon */
-            stop.invoke(daemon, null);
+            stop.invoke(daemon);
         }
         catch (final Throwable t) {
             /* In case we encounter ANY error, we dump the stack trace and
@@ -278,7 +278,7 @@ public final class DaemonLoader
     {
         try {
             /* Attempt to stop the daemon */
-            destroy.invoke(daemon, null);
+            destroy.invoke(daemon);
 
             daemon = null;
             controller = null;

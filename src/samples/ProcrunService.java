@@ -102,7 +102,7 @@ public class ProcrunService implements Runnable {
 
         log("System properties: ");
         Properties ps = System.getProperties();
-        TreeSet<Object> ts = new TreeSet<Object>(ps.keySet());
+        TreeSet<Object> ts = new TreeSet<>(ps.keySet());
         for (Iterator<Object> i = ts.iterator(); i.hasNext();) {
             String n = (String)i.next();
             log(n + " ->  " + ps.get(n));
