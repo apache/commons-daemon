@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
-/**
- */
 public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     private ServerSocket server;
