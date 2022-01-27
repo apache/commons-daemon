@@ -41,45 +41,45 @@
     <release version="1.2.5" date="2022-MM-DD" description="Bug fix release">
       <!-- FIX -->
       <action issue="DAEMON-430" type="fix" dev="jfclere">
-        Procrun --StopTimeout can be used to define the time that procrun waits for service to exit,
+        Procrun. --StopTimeout can be used to define the time that procrun waits for service to exit,
         but INFINITE timeout was using instead.
       </action>
       <action type="fix" dev="ggregory" due-to="Arturo Bernal">
-        Minor improvements #22, #31.
+        Minor improvements to Java code #22, #31.
       </action>
       <action type="fix" dev="mturk">
         Procrun. Minor improvement that allows to have WINVER nmake variable
         directly defined at compile time as ABI version in hexadecimal format.
       </action>
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
-        Log at Trace instead of Debug when a service reports its state from the prunsrv app.
+        Procrun. Log at Trace instead of Debug when a service reports its state from the prunsrv app.
         This avoids the Debug log filling up as it adds two events per minute. 
         You can then stay in Debug logging to capture register, start, stop, and unregister Debug events.
       </action>
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
-        Miscellaneous logging improvements.
+        Procrun. Miscellaneous logging improvements.
       </action>      
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
-        Log the prunsrv function names at the Trace level.
-      </action>      
+        Procrun. Log the prunsrv function names at the Trace level.
+      </action>
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        reportServiceStatusE() shows scale of dwWaitHint as millisecond in logging.
+        Procrun. reportServiceStatusE() shows scale of dwWaitHint as millisecond in logging.
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        reportServiceStatusE() shows a short description for dwCurrentState in logging.
+        Procrun. reportServiceStatusE() shows a short description for dwCurrentState in logging.
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        Add support for a new log level called Trace, lower-level than Debug.
+        Procrun. Add support for a new log level called Trace, lower-level than Debug.
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        Add logging when failing to obtain a service's description from the registry.
+        Procrun. Add logging when failing to obtain a service's description from the registry.
       </action>      
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        Add logging when failing to set the options of a service.
+        Procrun. Add logging when failing to set the options of a service.
       </action>      
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
