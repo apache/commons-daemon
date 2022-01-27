@@ -38,7 +38,7 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.2.5" date="2021-MM-DD" description="Bug fix release">
+    <release version="1.2.5" date="2022-MM-DD" description="Bug fix release">
       <!-- FIX -->
       <action issue="DAEMON-430" type="fix" dev="jfclere">
         Procrun --StopTimeout can be used to define the time that procrun waits for service to exit,
