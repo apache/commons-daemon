@@ -54,6 +54,7 @@ __APXBEGIN_DECLS
 #define APXLOG_LEVEL_WARN   3
 #define APXLOG_LEVEL_ERROR  4
 
+#define __func__            __FUNCTION__
 #define APXLOG_MARK_INFO    NULL, APXLOG_LEVEL_INFO,  TRUE,  __FILE__, __LINE__, __func__, ""
 #define APXLOG_MARK_WARN    NULL, APXLOG_LEVEL_WARN,  TRUE,  __FILE__, __LINE__, __func__, ""
 #define APXLOG_MARK_ERROR   NULL, APXLOG_LEVEL_ERROR, TRUE,  __FILE__, __LINE__, __func__, ""
