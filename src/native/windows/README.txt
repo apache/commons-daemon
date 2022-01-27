@@ -29,8 +29,9 @@ Studio.
 Release builds are build with Mladen Turk's (mturk) Custom Microsoft Compiler
 Toolkit Compilation. This can be obtained from:
 https://github.com/mturk/cmsc
-Hash: cb6be932c8c95a46262a64a89e68aae620dfdcee
-Compile as per <cmsc-root>/tools/README.txt
+Version: 15.0.44
+
+Later versions of CMSC should also work.
 
 A detailed description of the full environment used for recent release builds is
 provided at:
@@ -40,7 +41,7 @@ The steps to produce the Windows binaries is then:
 
 1. cd $GIT_CLONE_DIR\src\native\windows\apps\prunmgr
 
-2. $CMSC_ROOT\setenv.bat /x86
+2. $CMSC_ROOT\setenv.bat x86
 
 3. nmake -f Makefile
 
@@ -48,7 +49,7 @@ The steps to produce the Windows binaries is then:
 
 5. nmake -f Makefile
 
-6. $CMCS_ROOT\setenv.bat /x64
+6. $CMCS_ROOT\setenv.bat x64
 
 7. nmake -f Makefile
 
