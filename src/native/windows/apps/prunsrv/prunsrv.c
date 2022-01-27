@@ -1930,8 +1930,8 @@ void __cdecl main(int argc, char **argv)
     AplZeroMemory(&gStdwrap, sizeof(APX_STDWRAP));
     gStartPath = lpCmdline->szExePath;
     gStdwrap.szLogPath = SO_LOGPATH;
-    /* In debug mode allways use console */
-    if (lpCmdline->dwCmdIndex != 1) {
+    /* Only redirect when running as a service */
+    if (lpCmdline->dwCmdIndex == 2) {
         gStdwrap.szStdOutFilename = SO_STDOUTPUT;
         gStdwrap.szStdErrFilename = SO_STDERROR;
     }

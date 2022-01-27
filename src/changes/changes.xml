@@ -80,7 +80,12 @@
       </action>      
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Procrun. Add logging when failing to set the options of a service.
-      </action>      
+      </action>
+      <action issue="DAEMON-437" type="fix" dev="markt">
+        Procrun. Only redirect stderr and stdout to files for the running
+        service. Output from commands executed on the command line will not be
+        redirected.
+      </action>   
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump actions/cache from v2 to v2.1.7 #24, #30, #36.
