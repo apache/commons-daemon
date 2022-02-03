@@ -638,8 +638,10 @@ static BOOL saveConfiguration(LPAPXCMDLINE lpCmdline)
                                    PRG_REGROOT,
                                    lpCmdline->szApplication,
                                    APXREG_SOFTWARE | APXREG_SERVICE);
-    if (IS_INVALID_HANDLE(hRegistry))
+    if (IS_INVALID_HANDLE(hRegistry)) {
+        apxLogWrite(APXLOG_MARK_WARN "Can't save configuration: Invalid registry handle.");
         return FALSE;
+    }
     /* TODO: Use array size */
     while (_options[i].szName) {
         /* Skip the service params */
