@@ -16,6 +16,7 @@
 
 #include "apxwin.h"
 #include "private.h"
+#include <tlhelp32.h>
 
 #define CHILD_RUNNING               0x0001
 #define CHILD_INITIALIZED           0x0002
@@ -299,6 +300,62 @@ cleanup:
 
     return rv;
 }
+/* Terminate child processes if any
+ * dwProcessId : the parent process
+ * dryrun : Don't kill, just list process in debug output file.
+ */
+static BOOL __apxProcessTerminateChild(DWORD dwProcessId, BOOL dryrun)
+{
+    HANDLE hProcessSnap;
+    PROCESSENTRY32 pe32;
+
+    apxLogWrite(APXLOG_MARK_DEBUG "TerminateChild 0x%08X (%d)", dwProcessId, dwProcessId );
+    // Take a snapshot of all processes in the system.
+    hProcessSnap = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
+    if(hProcessSnap == INVALID_HANDLE_VALUE) {
+        apxLogWrite(APXLOG_MARK_DEBUG "CreateToolhelp32Snapshot (of processes) failed");
+        return(FALSE);
+    }
+
+    // Set the size of the structure before using it.
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+
+    // Retrieve information about the first process,
+    // and return if unsuccessful
+    if( !Process32First(hProcessSnap, &pe32 )) {
+        apxLogWrite(APXLOG_MARK_DEBUG "Process32First failed");
+        CloseHandle(hProcessSnap);          // clean the snapshot object
+        return(FALSE);
+    }
+
+    // Now walk the snapshot of processes, and
+    // display information about each process in turn
+    do {
+        if (pe32.th32ParentProcessID == dwProcessId) {
+            apxLogWrite(APXLOG_MARK_DEBUG "PROCESS NAME:  %S", pe32.szExeFile);
+
+            apxLogWrite(APXLOG_MARK_DEBUG "Process ID        = 0x%08X", pe32.th32ProcessID);
+            apxLogWrite(APXLOG_MARK_DEBUG "Thread count      = %d",   pe32.cntThreads);
+            apxLogWrite(APXLOG_MARK_DEBUG "Parent process ID = 0x%08X", pe32.th32ParentProcessID);
+            apxLogWrite(APXLOG_MARK_DEBUG "Priority base     = %d", pe32.pcPriClassBase);
+            if (!dryrun) {
+                HANDLE hProcess;
+                hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
+                if(hProcess != NULL) {
+                   TerminateProcess(hProcess, CHILD_TERMINATE_CODE);
+                   apxLogWrite(APXLOG_MARK_DEBUG "Process ID: 0x%08X (%d) Terminated!", pe32.th32ProcessID, pe32.th32ProcessID);
+                   CloseHandle(hProcess);
+                } else {
+                   apxLogWrite(APXLOG_MARK_DEBUG "Process ID: 0x%08X (%d) Termination failed!", pe32.th32ProcessID, pe32.th32ProcessID);
+                }
+            }
+       }
+
+    } while(Process32Next(hProcessSnap, &pe32));
+  
+    CloseHandle(hProcessSnap);
+    return(TRUE);
+}
 
 /* Close the process.
  * Create the remote thread and call the ExitProcess
@@ -316,13 +373,16 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
     lpProc = APXHANDLE_DATA(hProcess);
     CHECK_IF_ACTIVE(lpProc);
 
+    __apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, TRUE);
     /* Try to close the child's stdin first */
     SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
     /* Wait 1 sec for child process to
      * recognize that the stdin has been closed.
      */
-    if (WaitForSingleObject(lpProc->stProcInfo.hProcess, 1000) == WAIT_OBJECT_0)
+    if (WaitForSingleObject(lpProc->stProcInfo.hProcess, 1000) == WAIT_OBJECT_0) {
+        apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose Gone(input)");
         goto cleanup;
+    }
 
     CHECK_IF_ACTIVE(lpProc);
 
@@ -345,18 +405,33 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
         if (!IS_INVALID_HANDLE(hRemote)) {
             if (WaitForSingleObject(lpProc->stProcInfo.hProcess,
                     2000) == WAIT_OBJECT_0) {
+                DWORD status;
+                if (!GetExitCodeProcess(lpProc->stProcInfo.hProcess, &status) ||
+                                (status != STILL_ACTIVE)) {
+                     apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose Gone(thread exit)");
+                     // We are here when the service starts something like wildfly via standalone.sh and wildfly doesn't terminate cleanly, 
+                     __apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, FALSE);
+                }
+
 
             }
             else {
+		apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose thread exit failed, terminate!");
                 TerminateProcess(lpProc->stProcInfo.hProcess, CHILD_TERMINATE_CODE);
+                // __apxProcessTerminateChild ?
             }
             CloseHandle(hRemote);
-        }
+        } else {
+            apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose thread exit not usuable...");
+	}
         CloseHandle(hDup);
+        apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose Done?");
         goto cleanup;
     }
 
+    apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose terminate!");
     TerminateProcess(lpProc->stProcInfo.hProcess, CHILD_TERMINATE_CODE);
+    // __apxProcessTerminateChild ?
 
 cleanup:
      /* Close the process handle */
@@ -379,9 +454,11 @@ static BOOL __apxProcessCallback(APXHANDLE hObject, UINT uMsg,
         	/* Avoid processing the WM_CLOSE message multiple times */
         	if (lpProc->stProcInfo.hProcess == NULL) break;
             if (lpProc->dwChildStatus & CHILD_RUNNING) {
+                apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessCallback: CHILD_RUNNING");
                 __apxProcessClose(hObject);
                 /* Wait for all worker threads to exit */
                 WaitForMultipleObjects(3, lpProc->hWorkerThreads, TRUE, INFINITE);
+                apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessCallback: CHILD_RUNNING DONE!");
             }
             SAFE_CLOSE_HANDLE(lpProc->stProcInfo.hProcess);
 
@@ -715,12 +792,14 @@ apxProcessWait(APXHANDLE hProcess, DWORD dwMilliseconds, BOOL bKill)
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return WAIT_ABANDONED;
 
+    apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait..");
     lpProc = APXHANDLE_DATA(hProcess);
 
     if (lpProc->dwChildStatus & CHILD_RUNNING) {
         DWORD rv = WaitForMultipleObjects(3, lpProc->hWorkerThreads,
                                           TRUE, dwMilliseconds);
         if (rv == WAIT_TIMEOUT && bKill) {
+            apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait.. killing???");
             __apxProcessCallback(hProcess, WM_CLOSE, 0, 0);
         }
         return rv;

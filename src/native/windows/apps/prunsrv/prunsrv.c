@@ -1538,6 +1538,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
         case SERVICE_CONTROL_SHUTDOWN:
             apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signalled.");
         case SERVICE_CONTROL_STOP:
+            apxLogWrite(APXLOG_MARK_INFO "Service SERVICE_CONTROL_STOP signalled.");
             if (SO_STOPTIMEOUT > 0) {
                 reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 1000);
             }
@@ -1552,6 +1553,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
             CloseHandle(stopThread);
             return;
         case SERVICE_CONTROL_INTERROGATE:
+            apxLogWrite(APXLOG_MARK_INFO "Service SERVICE_CONTROL_INTERROGATE signalled.");
             reportServiceStatusE(APXLOG_LEVEL_TRACE,
                                 _service_status.dwCurrentState,
                                 _service_status.dwWin32ExitCode,
