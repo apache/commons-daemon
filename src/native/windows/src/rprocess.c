@@ -792,14 +792,14 @@ apxProcessWait(APXHANDLE hProcess, DWORD dwMilliseconds, BOOL bKill)
     if (hProcess->dwType != APXHANDLE_TYPE_PROCESS)
         return WAIT_ABANDONED;
 
-    apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait..");
+    apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait.");
     lpProc = APXHANDLE_DATA(hProcess);
 
     if (lpProc->dwChildStatus & CHILD_RUNNING) {
         DWORD rv = WaitForMultipleObjects(3, lpProc->hWorkerThreads,
                                           TRUE, dwMilliseconds);
         if (rv == WAIT_TIMEOUT && bKill) {
-            apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait.. killing???");
+            apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait. killing???");
             __apxProcessCallback(hProcess, WM_CLOSE, 0, 0);
         }
         return rv;
