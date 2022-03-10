@@ -228,15 +228,11 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
             return this.directory;
         }
 
-        public void log(final String name)
-        throws IOException {
-            final OutputStream file=new FileOutputStream(name,true);
-            final PrintStream out=new PrintStream(file);
-            final SimpleDateFormat fmt=new SimpleDateFormat();
-
-            out.println(fmt.format(new Date()));
-            out.close();
-            file.close();
+        public void log(final String name) throws IOException {
+            try (final OutputStream file = new FileOutputStream(name, true); 
+                 final PrintStream out = new PrintStream(file)) {
+                out.println(new SimpleDateFormat().format(new Date()));
+            }
         }
 
         public void handle(final InputStream in, final OutputStream os) {
