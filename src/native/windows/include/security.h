@@ -28,7 +28,7 @@ __APXBEGIN_DECLS
 #define STAT_SYSTEM_WITH_DOMAIN L"NT AUTHORITY\\System"
 
 DWORD
-apxLogGrantFileAccessToUser(
+apxSecurityGrantFileAccessToUser(
     LPCWSTR szPath,
     LPCWSTR szUser);
 
