@@ -163,7 +163,7 @@ public final class DaemonLoader
             }
 
             /* Check methods */
-            Class<?>[] myclass = new Class[1];
+            final Class<?>[] myclass = new Class[1];
             if (isdaemon) {
                 myclass[0] = DaemonContext.class;
             }
