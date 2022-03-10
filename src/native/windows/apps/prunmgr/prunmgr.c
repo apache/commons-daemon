@@ -24,6 +24,7 @@
 /* Force the JNI vprintf functions */
 #define _DEBUG_JNI  1
 #include "apxwin.h"
+#include "security.h"
 #include "prunmgr.h"
 
 LPAPXGUISTORE _gui_store  = NULL;
@@ -985,6 +986,7 @@ INT_PTR CALLBACK __loggingProperty(HWND hDlg,
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_WARN);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_INFO);
                 ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_DEBUG);
+                ComboBox_AddStringW(GetDlgItem(hDlg, IDC_PPLGLEVEL), LOGL_TRACE);
                 if ((b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE,
                                                _s_log, L"Level")) != NULL) {
                     if (!lstrcmpiW(b, LOGL_ERROR))
@@ -993,8 +995,10 @@ INT_PTR CALLBACK __loggingProperty(HWND hDlg,
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 1);
                     else if (!lstrcmpiW(b, LOGL_INFO))
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 2);
-                    else
+                    else if (!lstrcmpiW(b, LOGL_DEBUG))
                         ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 3);
+                    else
+                        ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_PPLGLEVEL), 4);
                     apxFree(b);
                 }
                 else

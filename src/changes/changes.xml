@@ -71,6 +71,10 @@
         Procrun. Ensure that the user configured to run the service is also
         granted access to the log file directory.
       </action>
+      <action type="fix" dev="markt">
+        Procrun. Ensure Trace is included in the logging levels exposed in the
+        GUI.
+      </action>
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
