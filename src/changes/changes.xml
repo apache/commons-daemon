@@ -62,6 +62,11 @@
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
         Procrun. Log the prunsrv function names at the Trace level.
       </action>
+      <action issue="DAEMON-437" type="fix" dev="markt">
+        Procrun. Only redirect stderr and stdout to files for the running
+        service. Output from commands executed on the command line will not be
+        redirected.
+      </action>   
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
@@ -81,11 +86,6 @@
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Procrun. Add logging when failing to set the options of a service.
       </action>
-      <action issue="DAEMON-437" type="fix" dev="markt">
-        Procrun. Only redirect stderr and stdout to files for the running
-        service. Output from commands executed on the command line will not be
-        redirected.
-      </action>   
       <!-- -UPDATE -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump actions/cache from v2 to v2.1.7 #24, #30, #36.
