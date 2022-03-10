@@ -43,6 +43,7 @@ OBJECTS = \
 	$(WORKDIR)\mclib.obj \
 	$(WORKDIR)\registry.obj \
 	$(WORKDIR)\rprocess.obj \
+	$(WORKDIR)\security.obj \
 	$(WORKDIR)\service.obj \
 	$(WORKDIR)\utils.obj \
 	$(WORKDIR)\prunsrv.obj

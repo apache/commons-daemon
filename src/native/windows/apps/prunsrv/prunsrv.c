@@ -796,6 +796,8 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         LPCWSTR sd = NULL;
         LPCWSTR su = NULL;
         LPCWSTR sp = NULL;
+        DWORD dwResult;
+
         if (ST_DESCRIPTION & APXCMDOPT_FOUND) {
             sd = SO_DESCRIPTION;
             apxLogWrite(APXLOG_MARK_DEBUG "Setting service description '%S'.",
@@ -812,6 +814,11 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
                         SO_SPASSWORD);
         }
         apxServiceSetNames(hService, NULL, NULL, sd, su, sp);
+        dwResult = apxSecurityGrantFileAccessToUser(SO_LOGPATH, su);
+        if (dwResult) {
+            apxLogWrite(APXLOG_MARK_WARN "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
+                        su, SO_LOGPATH, dwResult);
+        }
     }
     apxCloseHandle(hService);
     if (rv) {
@@ -978,6 +985,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
     }
     else {
         DWORD dwStart = SERVICE_NO_CHANGE;
+        DWORD dwResult;
         BOOL  bDelayedStart = FALSE;
         DWORD dwType  = SERVICE_NO_CHANGE;
         LPCWSTR su = NULL;
@@ -998,6 +1006,11 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
                                        SO_DESCRIPTION,
                                        su,
                                        sp));
+        dwResult = apxSecurityGrantFileAccessToUser(SO_LOGPATH, su);
+        if (dwResult) {
+            apxLogWrite(APXLOG_MARK_WARN "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
+                        su, SO_LOGPATH, dwResult);
+        }
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
             if (!lstrcmpiW(SO_STARTUP, PRSRV_DELAYED)) {

@@ -107,6 +107,7 @@ typedef _W64 int            intptr_t;
 #include "console.h"
 #include "rprocess.h"
 #include "registry.h"
+#include "security.h"
 #include "service.h"
 #include "javajni.h"
 #include "gui.h"

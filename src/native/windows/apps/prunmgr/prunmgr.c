@@ -42,10 +42,6 @@ LPAPXGUISTORE _gui_store  = NULL;
 #define STAT_DISABLED       TEXT("Disabled")
 #define STAT_NONE           TEXT("")
 
-#define STAT_SERVICE        L"NT AUTHORITY\\LocalService"
-#define STAT_NET_SERVICE    L"NT AUTHORITY\\NetworkService"
-#define STAT_SYSTEM         L"LocalSystem"
-
 #define LOGL_ERROR          L"Error"
 #define LOGL_INFO           L"Info"
 #define LOGL_WARN           L"Warn"
@@ -338,6 +334,9 @@ BOOL __generalLogonSave(HWND hDlg)
     WCHAR szU[SIZ_RESLEN];
     WCHAR szP[SIZ_RESLEN];
     WCHAR szC[SIZ_RESLEN];
+    WCHAR szB[SIZ_DESLEN];
+    HWND hDlgLogging = NULL;
+    DWORD dwResult;
 
     if (!(TST_BIT_FLAG(_propertyChanged, 2)))
         return TRUE;
@@ -348,17 +347,47 @@ BOOL __generalLogonSave(HWND hDlg)
     GetDlgItemTextW(hDlg, IDC_PPSLUSER,  szU, SIZ_RESMAX);
     GetDlgItemTextW(hDlg, IDC_PPSLPASS,  szP, SIZ_RESMAX);
     GetDlgItemTextW(hDlg, IDC_PPSLCPASS, szC, SIZ_RESMAX);
+    
+    // Logging page will only be accessible if previously viewed
+    hDlgLogging = PropSheet_IndexToHwnd(GetParent(hDlg), 2);
+    if (hDlgLogging) {
+        GetDlgItemTextW(hDlgLogging, IDC_PPLGPATH,  szB, SIZ_DESMAX);
+    } else {
+        LPWSTR b;
+        // Logging page not viewed so value in registry must be current.
+        b = apxRegistryGetStringW(hRegserv, APXREG_PARAMSOFTWARE, _s_log, L"Path");
+        lstrlcpyW(szB, SIZ_DESLEN, b);
+        apxFree(b);        
+    }
 
     if (lstrlenW(szU) == 0 || lstrcmpiW(szU, STAT_SERVICE) == 0) {
         apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SERVICE, L"");
+        dwResult = apxSecurityGrantFileAccessToUser(szB, STAT_SERVICE);
+        if (dwResult) {
+            apxDisplayError(TRUE, NULL, 0,
+                    "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
+                    STAT_SERVICE, szB, dwResult);
+        }
         lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SERVICE);
     }
     else if (lstrcmpiW(szU, STAT_NET_SERVICE) == 0) {
         apxServiceSetNames(hService, NULL, NULL, NULL, STAT_NET_SERVICE, L"");
+        dwResult = apxSecurityGrantFileAccessToUser(szB, STAT_NET_SERVICE);
+        if (dwResult) {
+            apxDisplayError(TRUE, NULL, 0,
+                    "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
+                    STAT_NET_SERVICE, szB, dwResult);
+        }
         lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_NET_SERVICE);
     }
     else if (lstrcmpiW(szU, STAT_SYSTEM) == 0) {
         apxServiceSetNames(hService, NULL, NULL, NULL, STAT_SYSTEM, L"");
+        dwResult = apxSecurityGrantFileAccessToUser(szB, STAT_SYSTEM);
+        if (dwResult) {
+            apxDisplayError(TRUE, NULL, 0,
+                    "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
+                    STAT_SYSTEM, szB, dwResult);
+        }
         lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SYSTEM);
         if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED) {
             apxServiceSetOptions(hService,
@@ -373,6 +402,12 @@ BOOL __generalLogonSave(HWND hDlg)
     } else {
         if (szP[0] != L' ' &&  szC[0] != L' ' && !lstrcmpW(szP, szC)) {
             apxServiceSetNames(hService, NULL, NULL, NULL, szU, szP);
+            dwResult = apxSecurityGrantFileAccessToUser(szB, szU);
+            if (dwResult) {
+                apxDisplayError(TRUE, NULL, 0,
+                        "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
+                        szU, szB, dwResult);
+            }
             lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, szU);
         }
         else {

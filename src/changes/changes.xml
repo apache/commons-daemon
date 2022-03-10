@@ -66,7 +66,11 @@
         Procrun. Only redirect stderr and stdout to files for the running
         service. Output from commands executed on the command line will not be
         redirected.
-      </action>   
+      </action>
+      <action issue="DAEMON-437" type="fix" dev="markt">
+        Procrun. Ensure that the user configured to run the service is also
+        granted access to the log file directory.
+      </action>
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
