@@ -725,6 +725,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
 {
     APXHANDLE hService;
     BOOL  rv;
+    BOOL  bDelayedStart = FALSE;
     DWORD dwStart = SERVICE_DEMAND_START;
     DWORD dwType  = SERVICE_WIN32_OWN_PROCESS;
     WCHAR szImage[SIZ_HUGLEN];
@@ -737,9 +738,14 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         return FALSE;
     }
     /* Check the startup mode */
-    if ((ST_STARTUP & APXCMDOPT_FOUND) &&
-        lstrcmpiW(SO_STARTUP, PRSRV_AUTO) == 0)
-        dwStart = SERVICE_AUTO_START;
+    if (ST_STARTUP & APXCMDOPT_FOUND) {
+    	if (lstrcmpiW(SO_STARTUP, PRSRV_AUTO) == 0) {
+    		dwStart = SERVICE_AUTO_START;
+    	} else if (lstrcmpiW(SO_STARTUP, PRSRV_DELAYED) == 0) {
+    		dwStart = SERVICE_AUTO_START;
+    		bDelayedStart = TRUE;
+    	}
+    }
     /* Check the service type */
     if ((ST_TYPE & APXCMDOPT_FOUND) &&
         lstrcmpiW(SO_TYPE, STYPE_INTERACTIVE) == 0) {
@@ -791,6 +797,16 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
                           SO_DEPENDSON,      /* --DependendsOn */
                           dwType,
                           dwStart);
+    /* Configure as delayed start */
+    if (rv & bDelayedStart) {
+    	if (!apxServiceSetOptions(hService,
+                                  dwType,
+                                  dwStart,
+                                  bDelayedStart,
+                                  SERVICE_NO_CHANGE)) {
+            apxLogWrite(APXLOG_MARK_WARN "Failed to configure service for delayed startup");
+        }
+    }
     /* Set the --Description */
     if (rv) {
         LPCWSTR sd = NULL;
@@ -1014,7 +1030,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
             if (!lstrcmpiW(SO_STARTUP, PRSRV_DELAYED)) {
-                dwStart = SERVICE_AUTO_START;
+                dwStart = SERVICE_DEMAND_START;
                 bDelayedStart = TRUE;
             }
             else if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))

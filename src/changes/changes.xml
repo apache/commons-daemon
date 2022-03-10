@@ -75,6 +75,10 @@
         Procrun. Ensure Trace is included in the logging levels exposed in the
         GUI.
       </action>
+      <action issue="DAEMON-439" type="fix" dev="markt">
+        Procrun. Support --Startup=delayed for service installaion as well as
+        service update.
+      </action>
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="John Patrick">
         Enable Dependabot #20.
