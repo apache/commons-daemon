@@ -187,15 +187,4 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>jdk12-plus-no-java6</id>
-      <activation>
-        <jdk>[1.12,)</jdk>
-      </activation>
-      <properties>
-        <commons.daemon.javaversion>1.7</commons.daemon.javaversion>
-      </properties>
-    </profile>
-  </profiles>
 </project>
