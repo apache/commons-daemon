@@ -40,7 +40,7 @@
   <body>
     <release version="1.3.1" date="TBD" description="Bug fix release">
     </release>
-    <release version="1.3.0" date="2022-03-18" description="Bug fix release">
+    <release version="1.3.0" date="2022-03-18" description="Feature and bug fix release">
       <!-- FIX -->
       <action issue="DAEMON-430" type="fix" dev="jfclere">
         Procrun. --StopTimeout can be used to define the time that procrun waits for service to exit,
