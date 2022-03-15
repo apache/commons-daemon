@@ -31,7 +31,7 @@
 #define JSVC_MINOR_VERSION      3
 
 /** patch level */
-#define JSVC_PATCH_VERSION      0
+#define JSVC_PATCH_VERSION      1
 
 /**
  *  This symbol is defined for internal, "development" copies of JSVC.
