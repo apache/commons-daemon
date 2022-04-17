@@ -91,53 +91,55 @@ public class DaemonWrapper implements Daemon
             // Parse our arguments and remove them
             // from the final argument array we are
             // passing to our child.
+            arguments:
             for (i = 0; i < args.length; i++) {
                 if (args[i].equals("--")) {
                     // Done with argument processing
                     break;
                 }
-                if (args[i].equals("-daemon-properties")) {
-                    if (++i == args.length) {
-                        throw new IllegalArgumentException(args[i - 1]);
-                    }
-                    configFileName = args[i];
-                }
-                else if (args[i].equals("-start")) {
-                    if (++i == args.length) {
-                        throw new IllegalArgumentException(args[i - 1]);
-                    }
-                    startup.setClassName(args[i]);
-                }
-                else if (args[i].equals("-start-method")) {
-                    if (++i == args.length) {
-                        throw new IllegalArgumentException(args[i - 1]);
-                    }
-                    startup.setMethodName(args[i]);
-                }
-                else if (args[i].equals("-stop")) {
-                    if (++i == args.length) {
-                        throw new IllegalArgumentException(args[i - 1]);
-                    }
-                    shutdown.setClassName(args[i]);
-                }
-                else if (args[i].equals("-stop-method")) {
-                    if (++i == args.length) {
-                        throw new IllegalArgumentException(args[i - 1]);
-                    }
-                    shutdown.setMethodName(args[i]);
-                }
-                else if (args[i].equals("-stop-argument")) {
-                    if (++i == args.length) {
-                        throw new IllegalArgumentException(args[i - 1]);
-                    }
-                    final String[] aa = new String[1];
-                    aa[0] = args[i];
-                    shutdown.addArguments(aa);
-                }
-                else {
-                    // This is not our option.
-                    // Everything else will be forwarded to the main
-                    break;
+                switch (args[i]) {
+                    case "-daemon-properties":
+                        if (++i == args.length) {
+                            throw new IllegalArgumentException(args[i - 1]);
+                        }
+                        configFileName = args[i];
+                        break;
+                    case "-start":
+                        if (++i == args.length) {
+                            throw new IllegalArgumentException(args[i - 1]);
+                        }
+                        startup.setClassName(args[i]);
+                        break;
+                    case "-start-method":
+                        if (++i == args.length) {
+                            throw new IllegalArgumentException(args[i - 1]);
+                        }
+                        startup.setMethodName(args[i]);
+                        break;
+                    case "-stop":
+                        if (++i == args.length) {
+                            throw new IllegalArgumentException(args[i - 1]);
+                        }
+                        shutdown.setClassName(args[i]);
+                        break;
+                    case "-stop-method":
+                        if (++i == args.length) {
+                            throw new IllegalArgumentException(args[i - 1]);
+                        }
+                        shutdown.setMethodName(args[i]);
+                        break;
+                    case "-stop-argument":
+                        if (++i == args.length) {
+                            throw new IllegalArgumentException(args[i - 1]);
+                        }
+                        final String[] aa = new String[1];
+                        aa[0] = args[i];
+                        shutdown.addArguments(aa);
+                        break;
+                    default:
+                        // This is not our option.
+                        // Everything else will be forwarded to the main
+                        break arguments;
                 }
             }
             if (args.length > i) {
