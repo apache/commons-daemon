@@ -269,8 +269,10 @@ void apxLogLevelSetW(HANDLE  hFile,
 
     if (IS_INVALID_HANDLE(lf))
         lf = _st_sys_loghandle;
-    if (IS_INVALID_HANDLE(lf))
-        return;
+    if (IS_INVALID_HANDLE(lf)) {
+        lf = &_st_sys_errhandle;
+        lf->hFile = GetStdHandle(STD_ERROR_HANDLE);
+    }
     if (szLevel) {
         if (!lstrcmpiW(szLevel, L"error"))
             lf->dwLogLevel = APXLOG_LEVEL_ERROR;
