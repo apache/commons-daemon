@@ -712,6 +712,7 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
 
     if (IS_INVALID_HANDLE(lpService->hService)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
+        SetLastError(0);
         return FALSE;
     }
     else {

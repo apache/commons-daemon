@@ -52,6 +52,10 @@
         Procrun. Only configure the logging to to be written to a file when
         running as a service.
       </action>
+      <action issue="DAEMON-441" type="fix" dev="markt">
+        Procrun. Clear logged error on service installation failure to prevent
+        the error polluting subsequent log messages.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot, Gary Gregory">
         Bump actions/cache from 2.1.7 to 3.0.2 #41.
