@@ -833,7 +833,9 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
         dwResult = apxSecurityGrantFileAccessToUser(SO_LOGPATH, su);
         if (dwResult) {
             apxLogWrite(APXLOG_MARK_WARN "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
-                        su, SO_LOGPATH, dwResult);
+                        su ? su : L"<default>",
+                        SO_LOGPATH ? SO_LOGPATH : L"<default>",
+                        dwResult);
         }
     }
     apxCloseHandle(hService);
