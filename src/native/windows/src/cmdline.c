@@ -275,10 +275,16 @@ void apxCmdlineLoadEnvVars(
         lstrlcatW(szEnv, 64, lpCmdline->lpOptions[i].szName);
         l = GetEnvironmentVariableW(szEnv, szVar, SIZ_HUGMAX);
         if (l == 0 || l >= SIZ_HUGMAX) {
-            if (l == 0 && GetLastError() != ERROR_ENVVAR_NOT_FOUND) {
-                apxLogWrite(APXLOG_MARK_ERROR "Error geting environment variable %S",
-                            szEnv);
-                return;
+            if (l == 0) {
+                if (GetLastError() == ERROR_ENVVAR_NOT_FOUND) {
+                    // Explicitly clear the error else it will be logged the
+                    // next time a log message is written
+                    SetLastError(0);
+                } else {
+                    apxLogWrite(APXLOG_MARK_ERROR "Error getting environment variable %S",
+                                szEnv);
+                    return;
+                }
             }
             ++i;
             continue;

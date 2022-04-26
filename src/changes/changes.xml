@@ -44,6 +44,10 @@
         Procrun. Take account of LogLevel setting when logging to standard error
         so the user can opt to see messages at Info level and below.
       </action>
+      <action issue="DAEMON-441" type="fix" dev="markt">
+        Procrun. Clear expected errors when checking for environment variables
+        to prevent the expected errors from polluting subsequent log messages.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot, Gary Gregory">
         Bump actions/cache from 2.1.7 to 3.0.2 #41.
