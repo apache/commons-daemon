@@ -56,6 +56,10 @@
         Procrun. Clear logged error on service installation failure to prevent
         the error polluting subsequent log messages.
       </action>
+      <action issue="DAEMON-441" type="fix" dev="markt">
+        Procrun. When configuring permissions for the logging path, use the
+        default path if no explicit logging path is specified.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot, Gary Gregory">
         Bump actions/cache from 2.1.7 to 3.0.2 #41.

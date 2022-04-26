@@ -33,8 +33,15 @@ apxSecurityGrantFileAccessToUser(
     PSECURITY_DESCRIPTOR pSD;
     EXPLICIT_ACCESS ea;
 
-    lstrlcpyW(sPath, SIZ_PATHLEN, szPath);
-
+    if (szPath) { 
+        lstrlcpyW(sPath, SIZ_PATHLEN, szPath);
+    } else {
+        dwResult = GetSystemDirectoryW(sPath, MAX_PATH);
+        if (dwResult) {
+            return dwResult;
+        }
+        lstrlcatW(sPath, MAX_PATH, LOG_PATH_DEFAULT);
+    }
     if (szUser) {
         /* The API used to set file permissions doesn't always recognised the
          * same users as the API used to configured services. We do any
