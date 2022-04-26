@@ -1949,12 +1949,18 @@ void __cdecl main(int argc, char **argv)
         }
     }
 
-    apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
-    apxLogLevelSetW(NULL, SO_LOGLEVEL);
-    apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun log initialized.");
-    if (SO_LOGROTATE)
-        apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
-
+    /* Only configure logging to a file when running as a service */
+    if (lpCmdline->dwCmdIndex == 2) {
+        apxLogOpen(gPool, SO_LOGPATH, SO_LOGPREFIX, SO_LOGROTATE);
+        apxLogLevelSetW(NULL, SO_LOGLEVEL);
+        apxLogWrite(APXLOG_MARK_DEBUG "Apache Commons Daemon procrun log initialized.");
+        if (SO_LOGROTATE) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Log will rotate each %d seconds.", SO_LOGROTATE);
+        }
+    } else {
+        /* Not running as a service, just set the log level */
+        apxLogLevelSetW(NULL, SO_LOGLEVEL);
+    }
     apxLogWrite(APXLOG_MARK_INFO "Apache Commons Daemon procrun (%s %d-bit) started.",
                 PRG_VERSION, PRG_BITS);
 

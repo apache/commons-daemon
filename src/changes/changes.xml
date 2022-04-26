@@ -48,6 +48,10 @@
         Procrun. Clear expected errors when checking for environment variables
         to prevent the expected errors from polluting subsequent log messages.
       </action>
+      <action issue="DAEMON-441" type="fix" dev="markt">
+        Procrun. Only configure the logging to to be written to a file when
+        running as a service.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot, Gary Gregory">
         Bump actions/cache from 2.1.7 to 3.0.2 #41.
