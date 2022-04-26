@@ -23,6 +23,8 @@
 
 __APXBEGIN_DECLS
 
+static LPCWSTR  LOG_PATH_DEFAULT    = L"\\LogFiles\\Apache";
+
 #define APX_LOGLOCK(file)                           \
     APXMACRO_BEGIN                                  \
         DWORD _lmax = 0;                            \

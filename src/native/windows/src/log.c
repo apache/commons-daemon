@@ -115,7 +115,7 @@ LPWSTR apxLogFile(
     if (!szPath) {
         if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
             return INVALID_HANDLE_VALUE;
-        lstrlcatW(sPath, MAX_PATH, L"\\LogFiles\\Apache");
+        lstrlcatW(sPath, MAX_PATH, LOG_PATH_DEFAULT);
     }
     else {
         lstrlcpyW(sPath, MAX_PATH, szPath);
