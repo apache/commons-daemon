@@ -17,6 +17,7 @@
 #include "apxwin.h"
 #include "private.h"
 #include <stdio.h>
+#include <strsafe.h>
 
 #define LINE_SEP    "\r\n"
 #define LOGF_EXT    L".%04d-%02d-%02d.log"
@@ -64,7 +65,9 @@ static void logRotate(apx_logfile_st *lf, LPSYSTEMTIME t)
     /* Rotate time */
     lf->sysTime = *t;
     if (lf->dwRotate < 86400)
-        wsprintfW(sName, L"\\%s"  LOGF_EXR,
+        StringCchPrintf(sName,
+                  SIZ_PATHLEN,
+                  L"\\%s"  LOGF_EXR,
                   lf->szPrefix,
                   lf->sysTime.wYear,
                   lf->sysTime.wMonth,
@@ -73,7 +76,9 @@ static void logRotate(apx_logfile_st *lf, LPSYSTEMTIME t)
                   lf->sysTime.wMinute,
                   lf->sysTime.wSecond);
     else
-        wsprintfW(sName, L"\\%s"  LOGF_EXT,
+        StringCchPrintf(sName,
+                  SIZ_PATHLEN,
+                  L"\\%s"  LOGF_EXT,
                   lf->szPrefix,
                   lf->sysTime.wYear,
                   lf->sysTime.wMonth,
@@ -126,7 +131,8 @@ LPWSTR apxLogFile(
         szName   = L"";
     if (bTimeStamp) {
         if (dwRotate != 0 && dwRotate < 86400)
-            wsprintfW(sName,
+            StringCchPrintf(sName,
+                  SIZ_PATHLEN,
                   L"\\%s%s" LOGF_EXR,
                   szPrefix,
                   szName,
@@ -137,7 +143,8 @@ LPWSTR apxLogFile(
                   0,
                   0);
         else
-            wsprintfW(sName,
+            StringCchPrintf(sName,
+                      SIZ_PATHLEN,
                       L"\\%s%s" LOGF_EXT,
                       szPrefix,
                       szName,
@@ -146,7 +153,8 @@ LPWSTR apxLogFile(
                       sysTime.wDay);
     }
     else {
-        wsprintfW(sName,
+        StringCchPrintf(sName,
+                  SIZ_PATHLEN,
                   L"\\%s%s",
                   szPrefix,
                   szName);
@@ -202,7 +210,9 @@ HANDLE apxLogOpen(
     if (!szPrefix)
         szPrefix = L"commons-daemon";
     if (dwRotate != 0 && dwRotate < 86400)
-        wsprintfW(sName, L"\\%s"  LOGF_EXR,
+        StringCchPrintf(sName,
+                  SIZ_PATHLEN,
+                  L"\\%s"  LOGF_EXR,
                   szPrefix,
                   sysTime.wYear,
                   sysTime.wMonth,
@@ -211,7 +221,9 @@ HANDLE apxLogOpen(
                   0,
                   0);
     else
-        wsprintfW(sName, L"\\%s"  LOGF_EXT,
+        StringCchPrintf(sName,
+                  SIZ_PATHLEN,
+                  L"\\%s"  LOGF_EXT,
                   szPrefix,
                   sysTime.wYear,
                   sysTime.wMonth,
@@ -318,7 +330,7 @@ apxLogWrite(
     ...)
 {
     va_list args;
-    CHAR    buffer[1024+32] = "";
+    CHAR    buffer[LOG_MSG_MAX_LEN] = "";
     LPSTR   szBp;
     int     len = 0;
     LPCSTR  file = szFile;
@@ -354,10 +366,10 @@ apxLogWrite(
     szBp = buffer;
     if (!szFormat) {
         if (dwMessageId == 0) {
-            lstrcpyA(szBp, "Unknown error code");
+            StringCchCopyA(szBp, LOG_MSG_MAX_LEN, "Unknown error code");
             if (dwLevel == APXLOG_LEVEL_ERROR) {
                 szBp += 18;
-                wsprintfA(szBp, " occured in (%s:%d) ", file, dwLine);
+                StringCchPrintfA(szBp, LOG_MSG_MAX_LEN -18, " occurred in (%s:%d) ", file, dwLine);
             }
         }
         else
@@ -365,7 +377,7 @@ apxLogWrite(
     }
     else {
         va_start(args, szFormat);
-        wvsprintfA(szBp, szFormat, args);
+        StringCchVPrintfA(szBp, LOG_MSG_MAX_LEN, szFormat, args);
         va_end(args);
     }
     len = lstrlenA(buffer);
@@ -385,7 +397,8 @@ apxLogWrite(
                 logRotate(lf, &t);
             }
             if (bTimeStamp) {
-                wsprintfA(sb, "[%d-%02d-%02d %02d:%02d:%02d] ",
+                StringCchPrintfA(sb, SIZ_PATHLEN,
+                          "[%d-%02d-%02d %02d:%02d:%02d] ",
                           t.wYear, t.wMonth, t.wDay,
                           t.wHour, t.wMinute, t.wSecond);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
@@ -395,17 +408,17 @@ apxLogWrite(
 
             if (szFunction && lf->dwLogLevel <= APXLOG_LEVEL_TRACE) {
                 /* add function name in TRACE mode. */
-                wsprintfA(sb, "(%10s:%-4d:%-27s) ", file, dwLine, szFunction);
+                StringCchPrintfA(sb, SIZ_PATHLEN, "(%10s:%-4d:%-27s) ", file, dwLine, szFunction);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             } else if (file && lf->dwLogLevel <= APXLOG_LEVEL_DEBUG) {
                 /* add file and line in DEBUG mode. */
-                wsprintfA(sb, "(%10s:%-4d) ", file, dwLine);
+                StringCchPrintfA(sb, SIZ_PATHLEN, "(%10s:%-4d) ", file, dwLine);
                 WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
             }
 
 
             /* add thread ID to log output */
-            wsprintfA(sb, "[%5d] ", GetCurrentThreadId());
+            StringCchPrintfA(sb, SIZ_PATHLEN, "[%5d] ", GetCurrentThreadId());
             WriteFile(lf->hFile, sb, lstrlenA(sb), &wr, NULL);
 
             if (len)
@@ -491,12 +504,12 @@ apxDisplayError(
     }
     if (szFormat) {
         va_start(args, szFormat);
-        wvsprintfA(buffer, szFormat, args);
+        StringCchVPrintfA(buffer, SIZ_HUGLEN, szFormat, args);
         va_end(args);
         if (f && *f) {
             CHAR sb[SIZ_PATHLEN];
-            wsprintfA(sb, "%s (%d)", f, dwLine);
-            lstrcatA(sysbuf, sb);
+            StringCchPrintfA(sb, SIZ_PATHLEN, "%s (%d)", f, dwLine);
+            StringCchCatA(sysbuf, SIZ_HUGLEN, sb);
         }
         lstrlcatA(sysbuf, SIZ_HUGLEN, LINE_SEP);
         lstrlcatA(sysbuf, SIZ_HUGLEN, buffer);

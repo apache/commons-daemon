@@ -545,8 +545,10 @@ will add the new value(s) to any existing value(s).
     <tr>
     <td>--LogLevel</td>
     <td>Info</td>
-    <td>Defines the logging level and can be either <b>Error</b>,
-        <b>Info</b>, <b>Warn</b>, <b>Debug</b>, or <b>Trace</b>. (Case insensitive).
+    <td>Defines the logging level and can be either <b>Error</b>, <b>Warn</b>
+        <b>Info</b>, <b>Debug</b>, or <b>Trace</b>. (Case insensitive). Note
+        that for all log entires, the maximum length of the message component of
+        the log entry is 4096 characters.
     </td>
     </tr>
     <tr>

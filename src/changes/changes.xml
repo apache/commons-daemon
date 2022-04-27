@@ -65,6 +65,10 @@
         path, explicitly state when default values are being used rather than
         logging blank values.
       </action>
+      <action issue="DAEMON-442" type="fix" dev="markt">
+        Procrun. Increase the size limit on the message component of log entries
+        to 4096 characters.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot, Gary Gregory">
         Bump actions/cache from 2.1.7 to 3.0.2 #41.
