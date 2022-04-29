@@ -723,6 +723,8 @@ static BOOL printConfig(LPAPXCMDLINE lpCmdline)
 /* Common error reporting */
 static void logGrantFileAccessFail(LPCWSTR szUser, LPCWSTR szPath, DWORD dwError)
 {
+    int     len = 0;
+    CHAR    errmsg[SIZ_HUGLEN];
     WCHAR sPath[SIZ_PATHLEN];
 
     /* 
@@ -740,8 +742,20 @@ static void logGrantFileAccessFail(LPCWSTR szUser, LPCWSTR szPath, DWORD dwError
         lstrlcpyW(sPath, MAX_PATH, szPath);
     }
 
-    apxLogWrite(APXLOG_MARK_WARN "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d'",
-                (szUser ? szUser : DEFAULT_SERVICE_USER), sPath, dwError);
+    errmsg[0] = '\0';
+    if (dwError != ERROR_SUCCESS) {
+        len = apxGetMessage(dwError, errmsg, SIZ_DESLEN);
+        errmsg[len] = '\0';
+        if (len > 0) {
+            if (errmsg[len - 1] == '\n')
+                errmsg[--len] = '\0';
+            if (len > 0 && errmsg[len - 1] == '\r')
+                errmsg[--len] = '\0';
+        }
+    }
+
+    apxLogWrite(APXLOG_MARK_WARN "Failed to grant service user '%S' write permissions to log path '%S' due to error '%d: %s'",
+                (szUser ? szUser : DEFAULT_SERVICE_USER), sPath, dwError, errmsg);
 }
 
 /* Operations */
