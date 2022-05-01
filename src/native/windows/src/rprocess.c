@@ -373,6 +373,7 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
     lpProc = APXHANDLE_DATA(hProcess);
     CHECK_IF_ACTIVE(lpProc);
 
+    /* dry run to get debug information */
     __apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, TRUE);
     /* Try to close the child's stdin first */
     SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
@@ -409,7 +410,9 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
                 if (!GetExitCodeProcess(lpProc->stProcInfo.hProcess, &status) ||
                                 (status != STILL_ACTIVE)) {
                      apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessClose Gone(thread exit)");
-                     // We are here when the service starts something like wildfly via standalone.sh and wildfly doesn't terminate cleanly, 
+                     /* We are here when the service starts something like wildfly via standalone.sh and wildfly doesn't terminate cleanly, 
+                      * dry run is FALSE: we kill all the process of the process tree
+                      */
                      __apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, FALSE);
                 }
 
