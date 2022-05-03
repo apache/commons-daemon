@@ -69,6 +69,10 @@
         Procrun. Increase the size limit on the message component of log entries
         to 4096 characters.
       </action>
+      <action type="fix" due-to="jfclere" dev="markt">
+        Procrun. Ensure child processes are cleaned up if the service does not
+        stop cleanly. #39
+      </action>
       <action type="fix" due-to="Arturo Bernal" dev="markt">
         Refactor multiple if statements to use switch. #45
       </action>
