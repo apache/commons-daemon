@@ -19,6 +19,7 @@ package org.apache.commons.daemon.support;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.text.ParseException;
@@ -84,29 +85,18 @@ public final class DaemonConfiguration
      */
     public boolean load(String fileName)
     {
-        boolean ok = false;
-        FileInputStream inputStream = null;
-        try {
-            if (fileName == null) {
-                fileName = DEFAULT_CONFIG;
-            }
-            inputStream = new FileInputStream(fileName);
+        if (fileName == null) {
+            fileName = DEFAULT_CONFIG;
+        }
+        
+        try (InputStream inputStream = new FileInputStream(fileName)) {
             configurationProperties.clear();
             configurationProperties.load(inputStream);
-            ok = true;
-        }
-        catch (final IOException ex) {
+            return true;
+        } catch (final IOException ex) {
             // Error reading properties file
-        } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (final IOException ex) {
-                // ignore
-            }
+            return false;
         }
-        return ok;
     }
 
     private String expandProperty(final String propValue)
