@@ -103,6 +103,7 @@ public final class DaemonConfiguration
                     file.close();
                 }
             } catch (final IOException ex) {
+                // ignore
             }
         }
         return ok;
