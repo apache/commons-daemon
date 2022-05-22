@@ -152,12 +152,14 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     }
 
     private void checkForReload() {
-      if (this.softReloadSignalled) {
-        System.err.println("SimpleDaemon: picked up reload, waiting for connections to finish...");
-        while (! this.handlers.isEmpty()) {}
-        System.err.println("SimpleDaemon: all connections have finished, pretending to reload");
-        this.softReloadSignalled = false;
-      }
+        if (this.softReloadSignalled) {
+            System.err.println("SimpleDaemon: picked up reload, waiting for connections to finish...");
+            while (!this.handlers.isEmpty()) {
+                // noop
+            }
+            System.err.println("SimpleDaemon: all connections have finished, pretending to reload");
+            this.softReloadSignalled = false;
+        }
     }
 
     protected void addHandler(final Handler handler) {
