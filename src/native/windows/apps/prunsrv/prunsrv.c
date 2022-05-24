@@ -1618,7 +1618,6 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
             CloseHandle(stopThread);
             return;
         case SERVICE_CONTROL_INTERROGATE:
-            apxLogWrite(APXLOG_MARK_INFO "Service SERVICE_CONTROL_INTERROGATE signalled.");
             reportServiceStatusE(APXLOG_LEVEL_TRACE,
                                 _service_status.dwCurrentState,
                                 _service_status.dwWin32ExitCode,
