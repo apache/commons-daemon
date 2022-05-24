@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
+
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 
@@ -266,14 +268,12 @@ public class DaemonWrapper implements Daemon
             }
 
             // Get the ClassLoader loading this class
-            final ClassLoader cl = DaemonWrapper.class.getClassLoader();
-            if (cl == null) {
-                throw new NullPointerException("Cannot retrieve ClassLoader instance");
-            }
+            final ClassLoader classLoader = DaemonWrapper.class.getClassLoader();
+            Objects.requireNonNull(classLoader, "classLoader");
             final Class<?>[] ca = new Class[1];
-            ca[0]      = args.getClass();
+            ca[0] = args.getClass();
             // Find the required class
-            main = cl.loadClass(name);
+            main = classLoader.loadClass(name);
             if (main == null) {
                 throw new ClassNotFoundException(name);
             }

@@ -23,6 +23,7 @@ import org.apache.commons.daemon.DaemonInitException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * Used by jsvc for Daemon management.
@@ -59,14 +60,11 @@ public final class DaemonLoader
                            System.getProperty("commons.daemon.process.parent") + ")");
     }
 
-    public static boolean check(final String cn)
+    public static boolean check(final String className)
     {
         try {
             /* Check the class name */
-            if (cn == null) {
-                throw new NullPointerException("Null class name specified");
-            }
-
+            Objects.requireNonNull(className, "className");
             /* Get the ClassLoader loading this class */
             final ClassLoader cl = DaemonLoader.class.getClassLoader();
             if (cl == null) {
@@ -75,11 +73,11 @@ public final class DaemonLoader
             }
 
             /* Find the required class */
-            final Class<?> c = cl.loadClass(cn);
+            final Class<?> c = cl.loadClass(className);
 
             /* This should _never_ happen, but double-checking doesn't harm */
             if (c == null) {
-                throw new ClassNotFoundException(cn);
+                throw new ClassNotFoundException(className);
             }
 
             /* Create a new instance of the daemon */
@@ -122,9 +120,7 @@ public final class DaemonLoader
             }
 
             /* Check the class name */
-            if (className == null) {
-                throw new NullPointerException("Null class name specified");
-            }
+            Objects.requireNonNull(className, "className");
 
             /* Get the ClassLoader loading this class */
             final ClassLoader cl = DaemonLoader.class.getClassLoader();
