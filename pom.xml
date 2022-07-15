@@ -194,7 +194,7 @@
         <artifactId>commons-release-plugin</artifactId>
         <executions>
           <execution>
-            <id>detatch-distributions</id>
+            <id>detach-distributions</id>
             <phase>deploy</phase>
             <goals>
               <goal>detach-distributions</goal>

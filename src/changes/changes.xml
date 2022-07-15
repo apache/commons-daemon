@@ -42,7 +42,7 @@
       <!-- Fix -->
       <action type="fix" dev="markt">
         Procrun. Remove noisy INFO log message that triggered logging once per
-        minute while the service was ruinning.
+        minute while the service was running.
       </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">
@@ -60,7 +60,7 @@
         to prevent the expected errors from polluting subsequent log messages.
       </action>
       <action issue="DAEMON-441" type="fix" dev="markt">
-        Procrun. Only configure the logging to to be written to a file when
+        Procrun. Only configure the logging to be written to a file when
         running as a service.
       </action>
       <action issue="DAEMON-441" type="fix" dev="markt">
@@ -139,7 +139,7 @@
         GUI.
       </action>
       <action issue="DAEMON-439" type="fix" dev="markt">
-        Procrun. Support --Startup=delayed for service installaion as well as
+        Procrun. Support --Startup=delayed for service installation as well as
         service update.
       </action>
       <!-- ADD -->
@@ -279,7 +279,7 @@
       </action> 
       <action issue="DAEMON-407" type="fix" dev="markt">
         Procrun. Correct a regression in the fix for DAEMON-391 that caused the
-        GUI to mix-up the WARN and INFO logging levels. 
+        GUI to mix up the WARN and INFO logging levels.
       </action>
       <action issue="DAEMON-404" type="fix" dev="markt">
         Procrun. Expand the search for a valid Java runtime library to include
@@ -384,11 +384,11 @@
         jsvc. Include the full path to the jsvc executable in the debug log.
       </action>
       <action issue="DAEMON-397" type="add" dev="markt" due-to="Petr Hadraba">
-        jsvc. Improve search for libjli.dylib on MacOS when using custom built
+        jsvc. Improve search for libjli.dylib on macOS when using custom-built
         OpenJDK binaries.
       </action>
       <action type="fix" dev="markt" due-to="ggregory">
-        Procun. Improve log messages for interactions with the Windows service.
+        Procrun. Improve log messages for interactions with the Windows service.
       </action>
       <action type="fix" dev="markt" due-to="YunQiang Su">
         jsvc. Improve mips detection.

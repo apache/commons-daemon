@@ -7,7 +7,7 @@ SimpleDaemon
 
 SimpleDaemon demonstrates the feature of the daemon offered by
 Apache Commons Daemon.
-To run it adapt the SimpleDaemon.sh file and connect to it using:
+To run it, adapt the SimpleDaemon.sh file and connect to it using:
 telnet localhost 1200
 Additional information in ../native/unix/INSTALL.txt
 
@@ -23,7 +23,7 @@ services support under Win NT/2000/XP.
 It uses Apache Commons Collections:
 https://commons.apache.org/collections/
 To use it you need at least commons-collections-1.0
-Check in build.xml that the property commons-collections.jar correspond to thei
+Check in build.xml that the property commons-collections.jar correspond to the
 location of your commons-collections.jar file.
 
 You have to create a file named startfile that uses a property format:
@@ -35,7 +35,7 @@ router1=/home/Standard/router/router pop3 pop3.example.net
 router2=/home/Standard/router/smtp smtp.example.net
 socks5=/usr/local/bin/socks5 -f
 
-To run it adapt the ServiceDaemon.sh file.
+To run it, adapt the ServiceDaemon.sh file.
 
 AloneService
 ------------

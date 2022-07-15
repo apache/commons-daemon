@@ -45,7 +45,7 @@
 </p>
 <p>
       A server application written in Java might have to perform several tasks
-      before being able to shutdown the Virtual Machine process. For example
+      before being able to shut down the Virtual Machine process. For example
       in the case of a Servlet container, before the VM process is shut down,
       sessions might need to be serialized to disk, and web applications need
       to be destroyed.
@@ -75,7 +75,7 @@
 <p>
       Most multi-user operating systems already have a way in which server
       applications are started and stopped. Under Unix based operating systems
-      non interactive server applications are called <em>daemons</em> and are
+      non-interactive server applications are called <em>daemons</em> and are
       controlled by the operating system with a set of specified
       <em>signals</em>. Under Windows such programs are called <em>services</em>
       and are controlled by appropriate calls to specific functions defined in
