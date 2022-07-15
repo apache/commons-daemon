@@ -404,7 +404,7 @@ static void printVersion(void)
                      L"<URL:https://issues.apache.org/jira/browse/DAEMON>.");
 }
 
-/* Displays comamnd line parameters. */
+/* Displays command line parameters. */
 static void dumpCmdline()
 {
     int i = 0;

@@ -83,12 +83,12 @@ struct APXREGISTRY {
     HKEY    hServKey;   /* service key */
     HKEY    hUserKey;   /* user key */
     HKEY    hCurrKey;   /* Current opened key */
-    LPVOID  pCurrVal;   /* Current value, overwitten on a next call */
+    LPVOID  pCurrVal;   /* Current value, overwritten on a next call */
     HKEY    hRparamKey; /* root\\Parameters */
     HKEY    hSparamKey; /* service\\Parameters */
     HKEY    hUparamKey; /* service\\Parameters */
     REGSAM  samOptions;
-    /** list enty for opened subkeys  */
+    /** list entry for opened subkeys  */
     TAILQ_HEAD(_lSubkeys, APXREGSUBKEY) lSubkeys;
 
 };

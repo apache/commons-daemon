@@ -255,10 +255,10 @@ void apxCmdlineFree(
 
 /*
  * Environment variables parsing
- * Each variable is prfixed with PR_
+ * Each variable is prefixed with PR_
  * for example 'set PR_JVM=auto' has a same meaning as providing '--Jvm auto'
  * on the command line.
- * Multistring variables are added to the present conf.
+ * Multi-string variables are added to the present conf.
  */
 void apxCmdlineLoadEnvVars(
     LPAPXCMDLINE lpCmdline)

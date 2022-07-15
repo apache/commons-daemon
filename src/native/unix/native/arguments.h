@@ -46,13 +46,13 @@ typedef struct {
     char **args;
     /** Number of class command line arguments. */
     int anum;
-    /** Wether to detach from parent process or not. */
+    /** Whether to detach from parent process or not. */
     bool dtch;
-    /** Wether to print the VM version number or not. */
+    /** Whether to print the VM version number or not. */
     bool vers;
     /** Show the VM version and continue. */
     bool vershow;
-    /** Wether to display the help page or not. */
+    /** Whether to display the help page or not. */
     bool help;
     /** Only check environment without running the service. */
     bool chck;

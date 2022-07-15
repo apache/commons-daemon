@@ -229,7 +229,7 @@ static BOOL __apxHandleCallback(APXHANDLE hObject, UINT uMsg,
         if (dwState == WAIT_TIMEOUT)
             TerminateThread(hObject->hEventThread, 0);
         SAFE_CLOSE_HANDLE(hObject->hEventThread);
-        /* Reset the evant flag */
+        /* Reset the event flag */
         hObject->dwFlags &= ~APXHANDLE_HAS_EVENT;
     }
     return rv;
@@ -519,7 +519,7 @@ apxCloseHandle(APXHANDLE hObject)
         hObject->dwFlags &= ~APXHANDLE_HAS_EVENT;
     }
 
-    /* finaly remove the object from the pool's object list */
+    /* finally remove the object from the pool's object list */
     if (!IS_INVALID_HANDLE(hObject->hPool)) {
         lpPool = APXHANDLE_DATA(hObject->hPool);
         APXHANDLE_SPINLOCK(hObject->hPool);

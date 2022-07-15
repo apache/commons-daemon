@@ -184,7 +184,7 @@ public final class DaemonPermission extends Permission
     public DaemonPermission(final String target)
         throws IllegalArgumentException
     {
-        // Setup the target name of this permission object.
+        // Set up the target name of this permission object.
         super(target);
 
         // Check if the permission target name was specified
@@ -259,7 +259,7 @@ public final class DaemonPermission extends Permission
     /**
      * Checks if a specified object equals {@code DaemonPermission}.
      *
-     * @return <b>true</b> or <b>false</b> wether the specified object equals
+     * @return <b>true</b> or <b>false</b> whether the specified object equals
      *         this {@code DaemonPermission} instance or not.
      */
     @Override
@@ -285,7 +285,7 @@ public final class DaemonPermission extends Permission
      * Checks if this {@code DaemonPermission} implies another
      * {@code Permission}.
      *
-     * @return <b>true</b> or <b>false</b> wether the specified permission
+     * @return <b>true</b> or <b>false</b> whether the specified permission
      *         is implied by this {@code DaemonPermission} instance or
      *         not.
      */
@@ -392,7 +392,7 @@ public final class DaemonPermission extends Permission
         return mask;
     }
 
-    /** Creates a actions list for a given control permission mask. */
+    /** Creates an actions list for a given control permission mask. */
     private String createControlActions(final int mask)
     {
         final StringBuilder buf = new StringBuilder();

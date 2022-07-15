@@ -84,7 +84,7 @@ static LPCWSTR  _s_stop         = L"Stop";
 static LPCWSTR _commands[] = {
     L"ES",      /* 1 Manage Service (default)*/
     L"MS",      /* 2 Monitor Service */
-    L"MR",      /* 3 Monitor Service and start if not runing */
+    L"MR",      /* 3 Monitor Service and start if not running */
     L"MQ",      /* 4 Quit all running Monitor applications */
     NULL
 };
@@ -92,7 +92,7 @@ static LPCWSTR _commands[] = {
 static LPCWSTR _altcmds[] = {
     L"manage",      /* 1 Manage Service (default)*/
     L"monitor",     /* 2 Monitor Service */
-    L"start",       /* 3 Monitor Service and start if not runing */
+    L"start",       /* 3 Monitor Service and start if not running */
     L"quit",        /* 4 Quit all running Monitor applications */
     NULL
 };
