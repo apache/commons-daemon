@@ -237,7 +237,7 @@ JvmOptions:
 -Dtwo=2
 </source>
 <br/>
-Only multi-valued parameters support this; they are indicated in the table below by <b><code>++</code></b>.
+Only multivalued parameters support this; they are indicated in the table below by <b><code>++</code></b>.
 <br></br>
 If <b><code>++</code></b> is used for a parameter that does not support multiple values,
 then it is treated the same as <b><code>--</code></b>. No error is reported.
@@ -292,7 +292,7 @@ JvmOptions:
 When updating a service (//US or update command), using <b><code>--</code></b> 
 will replace any existing parameter with the new setting.
 <br/>
-For multi-valued parameters, using the <b><code>++</code></b> option qualifier 
+For multivalued parameters, using the <b><code>++</code></b> option qualifier
 will add the new value(s) to any existing value(s).
 </p>
 <p>
@@ -547,7 +547,7 @@ will add the new value(s) to any existing value(s).
     <td>Info</td>
     <td>Defines the logging level and can be either <b>Error</b>, <b>Warn</b>
         <b>Info</b>, <b>Debug</b>, or <b>Trace</b>. (Case insensitive). Note
-        that for all log entires, the maximum length of the message component of
+        that for all log entries, the maximum length of the message component of
         the log entry is 4096 characters.
     </td>
     </tr>

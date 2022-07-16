@@ -33,7 +33,7 @@ autoconf: Undefined macros:
 ***BUG in Autoconf--please report*** AC_PATH
 ***BUG in Autoconf--please report*** AC_PATH
 </source>
-Your version of autoconf is to old, upgrade your autoconf and retry.
+Your version of autoconf is too old, upgrade your autoconf and retry.
 Or run support/buildconf.sh in another machine and copy the daemon tree in
 the machine where you want to compile jsvc.
 </p>
