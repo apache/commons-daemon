@@ -39,7 +39,7 @@ typedef struct stAPXCONSOLE_LAYOUT {
     COLORREF clrText;
     /** Selected text background color */
     COLORREF clrSelectBackground;
-    /** Selected rext color */
+    /** Selected text color */
     COLORREF clrSelectText;
     /** Character size */
     POINT    ptCharSize;
@@ -49,7 +49,7 @@ typedef struct stAPXCONSOLE_LAYOUT {
     INT      nFontSize;
     /** Caret size */
     POINT    ptCaretSize;
-    /** Caret Bilnk time in ms */
+    /** Caret blink time in ms */
     UINT     nCaretBlinkTime;
     /** Typeface name of the font (32 char max including the null terminator) */
     TCHAR   szFontName[32];

@@ -355,7 +355,7 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         return FALSE;
     }
 
-    /* Real voodo ... */
+    /* Real voodoo ... */
     return TRUE;
 }
 
@@ -693,7 +693,7 @@ static LPSTR __apxEvalClasspath(APXHANDLE hPool, LPCSTR szCp)
         else
             pGcp = __apxStrnCatA(hPool, NULL, JAVA_CLASSPATH, NULL);
         if (end > 0 && pPtr[end - 1] == '*') {
-            /* Last path elemet ends with star
+            /* Last path element ends with star
              * Do a globbing.
              */
             pGcp = __apxEvalPathPart(hPool, pGcp, pPtr);

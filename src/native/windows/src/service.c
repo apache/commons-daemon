@@ -565,7 +565,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
                 break;
         }
     }
-    /* signal that we are done with controling the service */
+    /* signal that we are done with controlling the service */
     if (fnControlCallback)
         (*fnControlCallback)(lpCbData, uMsg, (WPARAM)3, (LPARAM)0);
     /* Check if we are in the desired state */
@@ -603,7 +603,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
     return FALSE;
 }
 
-/* Wait one second and check that the service has stopped, returns TRUE if stopped FASE otherwise */
+/* Wait one second and check that the service has stopped, returns TRUE if stopped FALSE otherwise */
 BOOL
 apxServiceCheckStop(APXHANDLE hService)
 {

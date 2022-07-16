@@ -842,7 +842,7 @@ static LPWSTR __apxStrQuote(LPWSTR lpDest, LPCWSTR szSrc)
     LPWSTR p;
     BOOL   space = FALSE, quote = FALSE;
 
-    /* Find if string has embeded spaces, add quotes only if no quotes found
+    /* Find if string has embedded spaces, add quotes only if no quotes found
      */
     for (p = (LPWSTR)szSrc; *p; p++) {
         if (*p == L' ' || *p == '\t') {

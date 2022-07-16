@@ -126,7 +126,7 @@ BOOL        apxHandleSendMessage(APXHANDLE hObject, UINT uMsg,
                                  WPARAM wParam, LPARAM lParam);
 
 /** Post the message to the handle 
- *  function returns imediately.
+ *  function returns immediately.
  */
 BOOL        apxHandlePostMessage(APXHANDLE hObject, UINT uMsg,
                                  WPARAM wParam, LPARAM lParam);

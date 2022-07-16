@@ -45,7 +45,7 @@ bool dso_unlink(dso_handle libr)
         return false;
 }
 
-/* Get the address for a specifed symbol */
+/* Get the address for a specified symbol */
 void *dso_symbol(dso_handle hdl, const char *nam)
 {
     return dlsym(hdl, nam);

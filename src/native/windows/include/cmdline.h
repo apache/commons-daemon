@@ -40,7 +40,7 @@ struct APXCMDLINEOPT {
     LPWSTR          szName;         /* Long Argument Name */
     LPWSTR          szRegistry;     /* Registry Association */
     LPWSTR          szSubkey;       /* Registry Association */
-    DWORD           dwType;         /* Argument type (string, number, multistring */
+    DWORD           dwType;         /* Argument type (string, number, multi-string */
     LPWSTR          szValue;        /* Return string value  */
     DWORD           dwValue;        /* Return numeric value or present if NIL */
 };

@@ -12,7 +12,7 @@ When building from Git you need to build the "configure" program with:
 
 Once the configure script is generated, run it (remember to specify
 either the --with-java=<dir> parameter or set the JAVA_HOME environment
-to point to your JDK installation. For example:
+to point to your JDK installation). For example:
 
   ./configure --with-java=/usr/java
 
@@ -30,7 +30,7 @@ machine dependant include file (jni_md.h). If that's the case use the
 within JDK include directory containing jni_md.h file.
 
 
-If your operating system is supported, configure will go thru cleanly,
+If your operating system is supported, configure will go through cleanly,
 otherwise it will report an error (please send us the details of your
 OS/JDK, or a patch against the sources).
 

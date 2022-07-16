@@ -19,13 +19,13 @@
 #include <unistd.h>
 #include <time.h>
 
-/* Wether debug is enabled or not */
+/* Whether debug is enabled or not */
 bool log_debug_flag = false;
 
-/* Wether SYSLOG logging (for stderr) is enable or not. */
+/* Whether SYSLOG logging (for stderr) is enable or not. */
 bool log_stderr_syslog_flag = false;
 
-/* Wether SYSLOG logging (for stdout) is enable or not. */
+/* Whether SYSLOG logging (for stdout) is enable or not. */
 bool log_stdout_syslog_flag = false;
 
 /* The name of the jsvc binary. */

@@ -96,7 +96,7 @@ bool dso_unlink(dso_handle libr)
     return (true);
 }
 
-/* Get the address for a specifed symbol */
+/* Get the address for a specified symbol */
 void *dso_symbol(dso_handle hdl, const char *nam)
 {
     NSSymbol sym = NULL;

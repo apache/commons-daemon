@@ -62,8 +62,8 @@ int SetTerm(void (*func) (void))
 
     /*
      * event cannot be inherited.
-     * the event is reseted to nonsignaled after the waiting thread is released.
-     * the start state is resetted.
+     * the event is reset to nonsignaled after the waiting thread is released.
+     * the start state is reset.
      */
 
     /* Initialize the new security descriptor. */

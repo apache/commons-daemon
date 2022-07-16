@@ -214,7 +214,7 @@ struct stAPXHANDLE {
     DWORD               hEventThreadId;
     /** private local heap */
     HANDLE              hHeap;
-    /** list enty for pool  */
+    /** list entry for pool  */
     TAILQ_ENTRY(stAPXHANDLE)  queue;
     /** small userdata pointer  */
     union   {

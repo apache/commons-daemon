@@ -21,14 +21,14 @@
 extern "C" {
 #endif
 /**
- * Wether debugging is enabled or not.
+ * Whether debugging is enabled or not.
  */
 extern bool log_debug_flag;
 
-/* Wether SYSLOG logging (for stderr) is enable or not. */
+/* Whether SYSLOG logging (for stderr) is enable or not. */
 extern bool log_stderr_syslog_flag;
 
-/* Wether SYSLOG logging (for stdout) is enable or not. */
+/* Whether SYSLOG logging (for stdout) is enable or not. */
 extern bool log_stdout_syslog_flag;
 
 /**

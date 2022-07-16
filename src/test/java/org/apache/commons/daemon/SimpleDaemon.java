@@ -263,7 +263,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
                         case -1:
                             return;
 
-                        /* Attempt to shutdown */
+                        /* Attempt to shut down */
                         case '1':
                             out.println("Attempting a shutdown...");
                             try {
