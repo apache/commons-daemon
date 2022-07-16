@@ -45,7 +45,7 @@
         minute while the service was running.
       </action>
       <action type="fix" dev="ggregory" due-to="Marc Wrobel">
-        Fix typos in Javadoc and comments #51
+        Fix typos in Javadoc and comments #50, #51.
       </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">
