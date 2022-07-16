@@ -44,6 +44,9 @@
         Procrun. Remove noisy INFO log message that triggered logging once per
         minute while the service was ruinning.
       </action>
+      <action type="fix" dev="ggregory" due-to="Marc Wrobel">
+        Fix typos in Javadoc and comments #51
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump actions/cache from 3.0.3 to 3.0.5.
