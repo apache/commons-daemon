@@ -49,7 +49,7 @@
       </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">
-        Bump actions/cache from 3.0.3 to 3.0.7.
+        Bump actions/cache from 3.0.3 to 3.0.8.
       </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump spotbugs-maven-plugin from 4.6.0.0 to 4.7.1.1 #48, #52.
