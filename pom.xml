@@ -143,7 +143,7 @@
   </properties>
 
   <build>
-  <defaultGoal>clean verify apache-rat:check japicmp:cmp javadoc:javadoc</defaultGoal>
+  <defaultGoal>clean verify apache-rat:check japicmp:cmp pmd:cpd-check javadoc:javadoc</defaultGoal>
     <pluginManagement>
       <plugins>
         <plugin>
