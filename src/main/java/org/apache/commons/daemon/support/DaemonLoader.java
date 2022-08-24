@@ -154,7 +154,7 @@ public final class DaemonLoader
                 final Class<?> dclass = cl.loadClass("org.apache.commons.daemon.Daemon");
                 isdaemon = dclass.isAssignableFrom(c);
             }
-            catch (final Exception cnfex) {
+            catch (final Exception ignored) {
                 // Swallow if Daemon not found.
             }
 
@@ -175,7 +175,7 @@ public final class DaemonLoader
 
             try {
                 signal = c.getMethod("signal");
-            } catch (final NoSuchMethodException e) {
+            } catch (final NoSuchMethodException ignored) {
                 // Signalling will be disabled.
             }
 
