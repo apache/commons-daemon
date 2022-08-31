@@ -45,7 +45,7 @@ Apache Commons Daemon
 
 [![Travis-CI Status](https://travis-ci.org/apache/commons-daemon.svg)](https://travis-ci.org/apache/commons-daemon)
 [![GitHub Actions Status](https://github.com/apache/commons-daemon/workflows/Java%20CI/badge.svg)](https://github.com/apache/commons-daemon/actions)
-[![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg)](https://coveralls.io/r/apache/commons-daemon)
+[![Coverage Status](https://codecov.io/gh/apache/commons-daemon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-daemon/branch/master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
 [![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.3.1.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.3.1)
 [![CodeQL](https://github.com/apache/commons-daemon/workflows/CodeQL/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis.yml?query=workflow%3ACodeQL)
