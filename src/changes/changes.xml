@@ -55,7 +55,7 @@
         Bump actions/checkout from 3 to 3.0.2.
       </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
-        Bump spotbugs-maven-plugin from 4.6.0.0 to 4.7.1.1 #48, #52.
+        Bump spotbugs-maven-plugin from 4.6.0.0 to 4.7.2.0 #48, #52, #53.
       </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump jacoco-maven-plugin from 0.8.7 to 0.8.8.
