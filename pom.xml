@@ -138,7 +138,7 @@
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
     <commons.jacoco.version>0.8.8</commons.jacoco.version>
-    <commons.japicmp.version>0.15.4</commons.japicmp.version>
+    <commons.japicmp.version>0.16.0</commons.japicmp.version>
     <commons.spotbugs.version>4.7.2.0</commons.spotbugs.version>
   </properties>
 
