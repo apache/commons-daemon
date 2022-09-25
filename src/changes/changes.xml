@@ -54,6 +54,9 @@
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump actions/checkout from 3 to 3.0.2.
       </action>
+      <action type="update" dev="ggregory" due-to="Dependabot">
+        Bump commons-parent from 53 to 54 #55.
+      </action>
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump spotbugs-maven-plugin from 4.6.0.0 to 4.7.2.0 #48, #52, #53.
       </action>
