@@ -113,7 +113,7 @@
         Bump actions/cache from 2.1.7 to 3.0.3 #41.
       </action>
       <action type="update" dev="ggregory" due-to="Dependabot">
-        Bump actions/setup-java from 2 to 3 #43.
+        Bump actions/setup-java from 2 to 3.5.1 #43.
       </action>
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump spotbugs-maven-plugin from 4.5.3.0 to 4.6.0.0 #42.
