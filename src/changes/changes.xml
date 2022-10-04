@@ -51,6 +51,11 @@
         Procrun. The DependsOn parameter is no longer ignored when updating the
         service configuration.
       </action>
+      <action issue="DAEMOM-448" type="fix" dev="markt">
+        Procrun. Fix crash and provide an error level log message when the user
+        attempts to start the service without configuring a JVM and none is
+        available via the registry.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">
         Bump actions/cache from 3.0.3 to 3.0.8.

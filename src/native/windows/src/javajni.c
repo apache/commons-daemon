@@ -264,6 +264,11 @@ static BOOL __apxLoadJvmDll(APXHANDLE hPool, LPCWSTR szJvmDllPath, LPCWSTR szJav
         }
     }
 
+    if (!dllJvmPath) {
+        apxLogWrite(APXLOG_MARK_ERROR "No JVM configured or found in registry. Unable to start service.");
+        return FALSE;
+    }
+
     /* Suppress the not found system popup message */
     errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
