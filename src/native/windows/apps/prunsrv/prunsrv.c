@@ -838,6 +838,7 @@ static BOOL docmdInstallService(LPAPXCMDLINE lpCmdline)
     /* Configure as delayed start */
     if (rv & bDelayedStart) {
     	if (!apxServiceSetOptions(hService,
+    	                          NULL,
                                   dwType,
                                   dwStart,
                                   bDelayedStart,
@@ -1079,6 +1080,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
                 dwType = SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS;
         }
         rv = (rv && apxServiceSetOptions(hService,
+                                         SO_DEPENDSON,
                                          dwType,
                                          dwStart,
                                          bDelayedStart,

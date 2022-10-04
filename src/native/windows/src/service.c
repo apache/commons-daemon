@@ -280,6 +280,7 @@ apxServiceSetNames(APXHANDLE hService,
 
 BOOL
 apxServiceSetOptions(APXHANDLE hService,
+    LPCWSTR lpDependencies,
     DWORD dwServiceType,
     DWORD dwStartType,
     BOOL bDelayedStart,
@@ -305,10 +306,19 @@ apxServiceSetOptions(APXHANDLE hService,
         return FALSE;
     }
 
+    /* Add the mandatory dependencies */
+    if (lpDependencies) {
+        lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
+                                           L"Tcpip\0Afd\0", NULL);
+    } else {
+        lpDependencies = L"Tcpip\0Afd\0";
+    }
+
     if (!ChangeServiceConfig(lpService->hService, dwServiceType,
                                    dwStartType, dwErrorControl,
-                                   NULL, NULL, NULL, NULL, NULL,
-                                   NULL, NULL)) {
+                                   NULL, NULL, NULL,
+                                   lpDependencies,
+                                   NULL, NULL, NULL)) {
         apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to change the configuration parameters.");
     	return FALSE;
     }

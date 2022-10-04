@@ -322,7 +322,7 @@ BOOL __generalPropertySave(HWND hDlg)
     else if (i == 3)
         dwStartType = SERVICE_DISABLED;
     apxServiceSetNames(hService, NULL, szN, szD, NULL, NULL);
-    apxServiceSetOptions(hService, SERVICE_NO_CHANGE, dwStartType, bDelayedStart, SERVICE_NO_CHANGE);
+    apxServiceSetOptions(hService, NULL, SERVICE_NO_CHANGE, dwStartType, bDelayedStart, SERVICE_NO_CHANGE);
 
     if (!(TST_BIT_FLAG(_propertyChanged, 2)))
         PostMessage(_gui_store->hMainWnd, WM_COMMAND, MAKEWPARAM(IDMS_REFRESH, 0), 0);
@@ -391,12 +391,12 @@ BOOL __generalLogonSave(HWND hDlg)
         }
         lstrlcpyW(_currentEntry->szObjectName, SIZ_RESLEN, STAT_SYSTEM);
         if (IsDlgButtonChecked(hDlg, IDC_PPSLID) == BST_CHECKED) {
-            apxServiceSetOptions(hService,
+            apxServiceSetOptions(hService, NULL,
                 _currentEntry->stServiceStatus.dwServiceType | SERVICE_INTERACTIVE_PROCESS,
                 SERVICE_NO_CHANGE, FALSE, SERVICE_NO_CHANGE);
         }
         else {
-            apxServiceSetOptions(hService,
+            apxServiceSetOptions(hService, NULL,
                 _currentEntry->stServiceStatus.dwServiceType & ~SERVICE_INTERACTIVE_PROCESS,
                 SERVICE_NO_CHANGE, FALSE, SERVICE_NO_CHANGE);
         }

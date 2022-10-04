@@ -41,9 +41,9 @@ BOOL        apxServiceSetNames(APXHANDLE hService, LPCWSTR szImagePath,
                                LPCWSTR szDisplayName, LPCWSTR szDescription,
                                LPCWSTR szUsername, LPCWSTR szPassword);
 
-BOOL        apxServiceSetOptions(APXHANDLE hService, DWORD dwServiceType,
-								 DWORD dwStartType, BOOL bDelayedStart,
-								 DWORD dwErrorControl);
+BOOL        apxServiceSetOptions(APXHANDLE hService, LPCWSTR lpDependencies,
+                                 DWORD dwServiceType, DWORD dwStartType,
+                                 BOOL bDelayedStart, DWORD dwErrorControl);
 
 BOOL        apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
                               LPAPXFNCALLBACK fnControlCallback,
