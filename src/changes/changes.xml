@@ -48,7 +48,7 @@
         Fix typos in Javadoc and comments #50, #51.
       </action>
       <action issue="DAEMOM-446" type="fix" dev="markt">
-        Procrun. The DependdON parameter is no longer ignored when updating the
+        Procrun. The DependsOn parameter is no longer ignored when updating the
         service configuration.
       </action>
       <!-- UPDATES -->
