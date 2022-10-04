@@ -309,14 +309,14 @@ apxServiceSetOptions(APXHANDLE hService,
                                    dwStartType, dwErrorControl,
                                    NULL, NULL, NULL, NULL, NULL,
                                    NULL, NULL)) {
-        apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to changes the configuration parameters.");
+        apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to change the configuration parameters.");
     	return FALSE;
     }
 
     if (dwStartType == SERVICE_AUTO_START) {
     	sDelayedInfo.fDelayedAutostart = bDelayedStart;
         if (!ChangeServiceConfig2A(lpService->hService, SERVICE_CONFIG_DELAYED_AUTO_START_INFO, &sDelayedInfo)) {
-            apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to changes the optional configuration parameters.");
+            apxLogWrite(APXLOG_MARK_WARN "Can't set options for service: Failed to change the optional configuration parameters.");
             return FALSE;
         }
     }
