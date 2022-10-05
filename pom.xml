@@ -169,7 +169,7 @@
   </profiles>
   
   <build>
-  <defaultGoal>clean verify apache-rat:check japicmp:cmp pmd:check pmd:cpd-check javadoc:javadoc</defaultGoal>
+    <defaultGoal>clean verify apache-rat:check japicmp:cmp pmd:check pmd:cpd-check javadoc:javadoc</defaultGoal>
     <pluginManagement>
       <plugins>
         <plugin>
