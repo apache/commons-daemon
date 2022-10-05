@@ -45,10 +45,9 @@ Apache Commons Daemon
 
 [![Travis-CI Status](https://travis-ci.org/apache/commons-daemon.svg)](https://travis-ci.org/apache/commons-daemon)
 [![GitHub Actions Status](https://github.com/apache/commons-daemon/workflows/Java%20CI/badge.svg)](https://github.com/apache/commons-daemon/actions)
-[![Coverage Status](https://codecov.io/gh/apache/commons-daemon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-daemon/branch/master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg?gav=true)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/?gav=true)
-[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.3.1.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.3.1)
-[![CodeQL](https://github.com/apache/commons-daemon/workflows/CodeQL/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis.yml?query=workflow%3ACodeQL)
+[![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg)](https://coveralls.io/r/apache/commons-daemon)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
+[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.3.2.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.3.2)
 
 Apache Commons Daemon software is a set of utilities and Java support
     classes for running Java applications as server processes. These are
@@ -72,7 +71,7 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
   <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
-  <version>1.3.1</version>
+  <version>1.3.2</version>
 </dependency>
 ```
 
@@ -84,7 +83,7 @@ There are some guidelines which will make applying PRs easier for us:
 + No tabs! Please use spaces for indentation.
 + Respect the code style.
 + Create minimal diffs - disable on save actions like reformat source code or organize imports. If you feel the source code should be reformatted create a separate PR for this change.
-+ Provide JUnit tests for your changes and make sure your changes don't break any existing tests by running ```mvn```.
++ Provide JUnit tests for your changes and make sure your changes don't break any existing tests by running ```mvn clean test```.
 
 If you plan to contribute on a regular basis, please consider filing a [contributor license agreement](https://www.apache.org/licenses/#clas).
 You can learn more about contributing via GitHub in our [contribution guidelines](CONTRIBUTING.md).
