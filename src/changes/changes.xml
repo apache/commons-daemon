@@ -146,12 +146,12 @@
       </action>
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
         Procrun. Log at Trace instead of Debug when a service reports its state from the prunsrv app.
-        This avoids the Debug log filling up as it adds two events per minute. 
+        This avoids the Debug log filling up as it adds two events per minute.
         You can then stay in Debug logging to capture register, start, stop, and unregister Debug events.
       </action>
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
         Procrun. Miscellaneous logging improvements.
-      </action>      
+      </action>
       <action type="fix" dev="ggregory" due-to="Gary Gregory">
         Procrun. Log the prunsrv function names at the Trace level.
       </action>
@@ -187,7 +187,7 @@
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Procrun. Add logging when failing to obtain a service's description from the registry.
-      </action>      
+      </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Procrun. Add logging when failing to set the options of a service.
       </action>
@@ -244,7 +244,7 @@
         interact with the desktop. Provide a better error message if this option
         is used with an invalid user, install the service with the option
         enabled if requested and correctly save the setting if it is enabled in
-        the GUI. 
+        the GUI.
       </action>
       <action issue="DAEMON-410" type="fix" dev="markt" due-to="Richard Morrell">
         jsvc. Update the list of paths searched for libjvm.so to include the
@@ -254,9 +254,9 @@
         Procrun. Add additional debug logging for Java start mode.
       </action>
       <action type="fix" dev="markt" due-to="Ray Wang">
-        jsvc. Remove incorrect definition 'supported_os' which defined in 
-        psupport.m4 file to fix jsvc build error on s390, arm, aarch64, 
-        mipsel and mips. 
+        jsvc. Remove incorrect definition 'supported_os' which defined in
+        psupport.m4 file to fix jsvc build error on s390, arm, aarch64,
+        mipsel and mips.
       </action>
       <action type="add" dev="ggregory">
         Procrun. More debug logging in prunsrv.c and javajni.c.
@@ -270,7 +270,7 @@
       <action issue="DAEMON-422" type="add" dev="markt">
         Procrun. Add a new command, print, that outputs the command to
         (re-)configure the service with the current settings. This is intended
-        to be used to save settings such as before an upgrade. 
+        to be used to save settings such as before an upgrade.
       </action>
     </release>
     <release version="1.2.2" date="2019-10-04" description="Bug fix release">
@@ -296,7 +296,7 @@
         builds.
       </action>
       <action type="add" dev="ggregory">
-         More startup on Windows logging in javajni.c. #14. 
+         More startup on Windows logging in javajni.c. #14.
       </action>
     </release>
     <release version="1.2.1" date="2019-09-09" description="Bug fix release">
@@ -306,7 +306,7 @@
       <action issue="DAEMON-401" type="fix" dev="markt" due-to="Norimasa Yamamoto">
         Procrun. Correct a regression in the previous fix for this issue that
         caused 32-bit services to crash on start-up.
-      </action> 
+      </action>
       <action issue="DAEMON-407" type="fix" dev="markt">
         Procrun. Correct a regression in the fix for DAEMON-391 that caused the
         GUI to mix up the WARN and INFO logging levels.
@@ -341,7 +341,7 @@
       <action issue="DAEMON-391" type="fix" dev="markt" due-to="Thorsten Schöning">
         Procrun. Correct the level name used in the GUI for WARN so that changes
         made via the GUI are recognised. Order the log levels in the drop-down
-        from ERROR to DEBUG. 
+        from ERROR to DEBUG.
       </action>
       <action issue="DAEMON-393" type="fix" dev="ggregory" due-to="Daniel Hofmann">
         Procrun. Correct reversed code comments for JRE and JDK locations in the
@@ -369,12 +369,12 @@
       </action>
       <action type="add" dev="markt">
         Harden the Windows binaries against DLL hijacking in the directory where
-        the binaries are located. 
+        the binaries are located.
       </action>
       <action issue="DAEMON-401" type="fix" dev="markt" due-to="Jonathan Gallimore">
         Procrun. Ensure that environment variables set via prunsrv are visible
         to native libraries that depend on the Universal CRT.
-      </action> 
+      </action>
       <action type="add" dev="markt">
         Procrun. Add 'NT Authority\LocalService' and
         'NT Authority\NetworkService' as options to the Log On user interface.
@@ -447,7 +447,7 @@
       </action>
       <action issue="DAEMON-343" type="fix" dev="markt">
         Update config.guess and config.sub to add support, amongst others, for
-        the 64-bit PowerPC Little-Endian architecture. 
+        the 64-bit PowerPC Little-Endian architecture.
       </action>
       <action issue="DAEMON-332" type="fix" dev="markt">
         Ensure that the PID file on Windows, if used, is readable by other
@@ -465,7 +465,7 @@
         service.
       </action>
       <action issue="DAEMON-370" type="update" dev="ggregory" due-to="Amey Jadiye">
-      	Move attributions from @author in Javadocs to POM.
+        Move attributions from @author in Javadocs to POM.
       </action>
       <action issue="DAEMON-373" type="fix" dev="markt">
         Enable jsvc to start when running on Java 9.
@@ -479,7 +479,7 @@
         jsvc does not attempt to restart the JVM.
       </action>
       <action issue="DAEMON-318" type="fix" dev="markt" due-to="Markus Schneider">
-        Ensure that the child process is started with the correct umask. 
+        Ensure that the child process is started with the correct umask.
       </action>
       <action issue="DAEMON-309" type="fix" dev="markt">
         Correct conflicting information for the behavior of Procrun when using
@@ -488,7 +488,7 @@
       <action issue="DAEMON-372" type="fix" dev="markt" due-to="Sérgio Ozaki">
         Ensure that, when using Procrun in java or exe mode, the service process
         waits for the stop process to complete before starting clean-up to avoid
-        a crash in the stop process. 
+        a crash in the stop process.
       </action>
       <action issue="DAEMON-310" type="fix" dev="markt" due-to="John Wehle">
         Enable jsvc to find the jvm when running on AIX.
@@ -498,7 +498,7 @@
         recovery options will apply.
       </action>
       <action issue="DAEMON-312" type="fix" dev="markt">
-        Ensure that the //MQ command closes the prunmgr process even if the 
+        Ensure that the //MQ command closes the prunmgr process even if the
         configuration dialog is open when the //MQ command is used.
       </action>
       <action issue="DAEMON-311" type="fix" dev="markt">
@@ -528,11 +528,11 @@
       </action>
       <action type="add" dev="markt">
         Add support to Procrun for separate JVM options for use when running on
-        Java 9 and above. 
+        Java 9 and above.
       </action>
       <action issue="DAEMON-377" type="fix" dev="markt" due-to="Rustam Abdullaev">
         Fix race conditions in PID file handling in jsvc.
-      </action> 
+      </action>
     </release>
   </body>
 </document>
