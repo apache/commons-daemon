@@ -142,6 +142,32 @@
     <commons.spotbugs.version>4.7.2.0</commons.spotbugs.version>
   </properties>
 
+  <profiles>
+    <!-- Customise the default ASF Commons release profile -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <!--
+            Disable the default detach-distributions goal.
+            Project specific configuration is provided below.
+          -->
+          <plugin>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-release-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- Spelling error is deliberate to match parent pom -->
+                <id>detatch-distributions</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  
   <build>
   <defaultGoal>clean verify apache-rat:check japicmp:cmp pmd:check pmd:cpd-check javadoc:javadoc</defaultGoal>
     <pluginManagement>
