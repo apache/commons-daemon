@@ -300,14 +300,79 @@ cleanup:
 
     return rv;
 }
+/* Check if the process is already in the process list */
+static  BOOL __apxProcessisNotinTree(DWORD *treeProcessId, DWORD curProcessId, int n) {
+    int i;
+    for (i=0; i<n; i++) {
+        if (treeProcessId[i] == curProcessId) {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+/* Add the process to the process list */
+static  BOOL __apxProcessaddToTree(DWORD *treeProcessId, DWORD curProcessId, int n) {
+    int i;
+    for (i=0; i<n; i++) {
+        if (treeProcessId[i] == 0) {
+            treeProcessId[i] = curProcessId;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+/* Build a process list to kill or list for debugging */
+static  BOOL __apxProcessGetTree(DWORD dwProcessId, HANDLE hProcessSnap,  DWORD *treeProcessId, int maxProcessId) {
+    for (;;) {
+        BOOL add = FALSE;
+        PROCESSENTRY32 pe32;
+        // Set the size of the structure before using it.
+        pe32.dwSize = sizeof(PROCESSENTRY32);
+        // Retrieve information about the first process,
+        // and return if unsuccessful
+        if(!Process32First(hProcessSnap, &pe32 )) {
+            apxLogWrite(APXLOG_MARK_DEBUG "Process32First failed time for %d", dwProcessId);
+            CloseHandle(hProcessSnap);          // clean the snapshot object
+            return(FALSE);
+        }
+        for (;;) {
+            if (pe32.th32ParentProcessID == dwProcessId) {
+                if (__apxProcessisNotinTree(treeProcessId,  pe32.th32ProcessID, maxProcessId)) {
+                    apxLogWrite(APXLOG_MARK_DEBUG "PROCESS NAME:  %S", pe32.szExeFile);
+
+                    apxLogWrite(APXLOG_MARK_DEBUG "Process ID        = 0x%08X (%d)", pe32.th32ProcessID,  pe32.th32ProcessID);
+                    apxLogWrite(APXLOG_MARK_DEBUG "Thread count      = %d",   pe32.cntThreads);
+                    apxLogWrite(APXLOG_MARK_DEBUG "Parent process ID = 0x%08X (%d)", pe32.th32ParentProcessID, pe32.th32ParentProcessID);
+                    apxLogWrite(APXLOG_MARK_DEBUG "Priority base     = %d", pe32.pcPriClassBase);
+                    __apxProcessGetTree( pe32.th32ProcessID, hProcessSnap,  treeProcessId, maxProcessId);
+                    __apxProcessaddToTree(treeProcessId,  pe32.th32ProcessID, maxProcessId);
+                    add = TRUE;
+                    break; /* restart the loop */
+                }
+           }
+           if (!Process32Next(hProcessSnap, &pe32)) {
+               break; /* done */
+           }
+        }
+	if (!add) {
+           break;
+        }
+    }
+    return(TRUE);
+}
 /* Terminate child processes if any
  * dwProcessId : the parent process
  * dryrun : Don't kill, just list process in debug output file.
  */
-static BOOL __apxProcessTerminateChild(DWORD dwProcessId, BOOL dryrun)
+BOOL apxProcessTerminateChild(DWORD dwProcessId, BOOL dryrun)
 {
     HANDLE hProcessSnap;
-    PROCESSENTRY32 pe32;
+    DWORD treeProcessId[32];
+    int maxProcessId = 32;
+    int i;
+    for (i=0; i<maxProcessId; i++) {
+       treeProcessId[i] = 0;
+    }
 
     apxLogWrite(APXLOG_MARK_DEBUG "TerminateChild 0x%08X (%d)", dwProcessId, dwProcessId );
     // Take a snapshot of all processes in the system.
@@ -317,45 +382,38 @@ static BOOL __apxProcessTerminateChild(DWORD dwProcessId, BOOL dryrun)
         return(FALSE);
     }
 
-    // Set the size of the structure before using it.
-    pe32.dwSize = sizeof(PROCESSENTRY32);
-
-    // Retrieve information about the first process,
-    // and return if unsuccessful
-    if( !Process32First(hProcessSnap, &pe32 )) {
-        apxLogWrite(APXLOG_MARK_DEBUG "Process32First failed");
+    // Read recursily all the child process id.
+    // display information about each process in turn if debug.
+    if (!__apxProcessGetTree(dwProcessId, hProcessSnap,  treeProcessId, maxProcessId)) {
+        apxLogWrite(APXLOG_MARK_DEBUG "__apxProcessGetTree failed");
         CloseHandle(hProcessSnap);          // clean the snapshot object
         return(FALSE);
     }
 
-    // Now walk the snapshot of processes, and
+    // kill all the processes we have discover.
+     
     // display information about each process in turn
-    do {
-        if (pe32.th32ParentProcessID == dwProcessId) {
-            apxLogWrite(APXLOG_MARK_DEBUG "PROCESS NAME:  %S", pe32.szExeFile);
-
-            apxLogWrite(APXLOG_MARK_DEBUG "Process ID        = 0x%08X", pe32.th32ProcessID);
-            apxLogWrite(APXLOG_MARK_DEBUG "Thread count      = %d",   pe32.cntThreads);
-            apxLogWrite(APXLOG_MARK_DEBUG "Parent process ID = 0x%08X", pe32.th32ParentProcessID);
-            apxLogWrite(APXLOG_MARK_DEBUG "Priority base     = %d", pe32.pcPriClassBase);
-            if (!dryrun) {
-                HANDLE hProcess;
-                hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID);
-                if(hProcess != NULL) {
-                   TerminateProcess(hProcess, CHILD_TERMINATE_CODE);
-                   apxLogWrite(APXLOG_MARK_DEBUG "Process ID: 0x%08X (%d) Terminated!", pe32.th32ProcessID, pe32.th32ProcessID);
-                   CloseHandle(hProcess);
-                } else {
-                   apxLogWrite(APXLOG_MARK_DEBUG "Process ID: 0x%08X (%d) Termination failed!", pe32.th32ProcessID, pe32.th32ProcessID);
-                }
-            }
+    if (!dryrun) {
+        HANDLE hProcess;
+        for (i=0; i<maxProcessId; i++) {
+           if (treeProcessId[i] == 0) {
+              break; /* Done */
+           }
+           hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, treeProcessId[i]);
+           if(hProcess != NULL) {
+              TerminateProcess(hProcess, CHILD_TERMINATE_CODE);
+              apxLogWrite(APXLOG_MARK_DEBUG "Process ID: 0x%08X (%d) Terminated!", treeProcessId[i], treeProcessId[i]);
+              CloseHandle(hProcess);
+           } else {
+              apxLogWrite(APXLOG_MARK_DEBUG "Process ID: 0x%08X (%d) Termination failed!",  treeProcessId[i], treeProcessId[i]);
+           }
        }
+    }
 
-    } while(Process32Next(hProcessSnap, &pe32));
-  
     CloseHandle(hProcessSnap);
     return(TRUE);
 }
+
 
 /* Close the process.
  * Create the remote thread and call the ExitProcess
@@ -374,7 +432,7 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
     CHECK_IF_ACTIVE(lpProc);
 
     /* dry run to get debug information */
-    __apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, TRUE);
+    apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, TRUE);
     /* Try to close the child's stdin first */
     SAFE_CLOSE_HANDLE(lpProc->hChildInpWr);
     /* Wait 1 sec for child process to
@@ -413,7 +471,7 @@ static BOOL __apxProcessClose(APXHANDLE hProcess)
                      /* We are here when the service starts something like wildfly via standalone.sh and wildfly doesn't terminate cleanly, 
                       * dry run is FALSE: we kill all the process of the process tree
                       */
-                     __apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, FALSE);
+                     apxProcessTerminateChild(lpProc->stProcInfo.dwProcessId, FALSE);
                 }
 
 
@@ -804,6 +862,8 @@ apxProcessWait(APXHANDLE hProcess, DWORD dwMilliseconds, BOOL bKill)
         if (rv == WAIT_TIMEOUT && bKill) {
             apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait. killing???");
             __apxProcessCallback(hProcess, WM_CLOSE, 0, 0);
+            apxLogWrite(APXLOG_MARK_DEBUG "apxProcessWait. killing??? after WM_CLOSE");
+            apxProcessTerminateChild(GetCurrentProcessId(), TRUE); 
         }
         return rv;
     }
