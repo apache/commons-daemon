@@ -45,6 +45,8 @@ DWORD       apxProcessWait(APXHANDLE hProcess, DWORD dwMilliseconds,
 BOOL        apxProcessRunning(APXHANDLE hProcess);
 DWORD       apxProcessGetPid(APXHANDLE hProcess);
 
+BOOL apxProcessTerminateChild(DWORD dwProcessId, BOOL dryrun);
+
 
 __APXEND_DECLS
 

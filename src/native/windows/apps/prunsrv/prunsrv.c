@@ -229,6 +229,8 @@ static BOOL                  _jni_shutdown = FALSE;
 static BOOL                  _java_startup  = FALSE;
 /* Java used for shutdown    */
 static BOOL                  _java_shutdown = FALSE;
+/* We have request to shutdown the exe running */
+static BOOL                  _exe_shutdown = FALSE;
 /* Global variables and objects */
 static APXHANDLE    gPool;
 static APXHANDLE    gWorker;
@@ -1606,6 +1608,7 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
             apxLogWrite(APXLOG_MARK_INFO "Service SHUTDOWN signalled.");
         case SERVICE_CONTROL_STOP:
             apxLogWrite(APXLOG_MARK_INFO "Service SERVICE_CONTROL_STOP signalled.");
+            _exe_shutdown = TRUE;
             if (SO_STOPTIMEOUT > 0) {
                 reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 1000);
             }
@@ -1834,7 +1837,17 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         /* Set console handler to capture CTRL events */
         SetConsoleCtrlHandler((PHANDLER_ROUTINE)console_handler, TRUE);
 
-        apxHandleWait(gWorker, INFINITE, FALSE);
+        if (SO_STOPTIMEOUT) {
+            /* we have a stop timeout */
+	    do {
+                /* wait 2 seconds */
+                apxHandleWait(gWorker, 2000, FALSE);
+            } while (!_exe_shutdown);
+            apxLogWrite(APXLOG_MARK_DEBUG "waiting %d sec... shutdown: %d", SO_STOPTIMEOUT, _exe_shutdown);
+            apxHandleWait(gWorker, SO_STOPTIMEOUT*1000, FALSE);
+	} else {
+             apxHandleWait(gWorker, INFINITE, FALSE);
+	}
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
     }
     else {
@@ -1856,6 +1869,8 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting 1 minute for all threads to exit.");
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         apxDestroyJvm(ONE_MINUTE);
+        /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
+        apxProcessTerminateChild( GetCurrentProcessId(), FALSE); /* FALSE kills! */
     }
     else {
         /* We came here without shutdown event
