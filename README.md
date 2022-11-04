@@ -43,7 +43,6 @@
 Apache Commons Daemon
 ===================
 
-[![Travis-CI Status](https://travis-ci.org/apache/commons-daemon.svg)](https://travis-ci.org/apache/commons-daemon)
 [![GitHub Actions Status](https://github.com/apache/commons-daemon/workflows/Java%20CI/badge.svg)](https://github.com/apache/commons-daemon/actions)
 [![Coverage Status](https://coveralls.io/repos/apache/commons-daemon/badge.svg)](https://coveralls.io/r/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
