@@ -39,6 +39,10 @@
   </properties>
   <body>
     <release version="1.3.3" date="tbd" description="Bug fix release">
+      <!-- Fix -->
+      <action issue="DAEMON-450" type="fix" dev="markt" due-to="Norimasa Yamamoto">
+        Procrun. Fix creation of duplicate ACL entries on some Windows platforms.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot">Bump actions/cache from 3.0.8 to 3.0.11 #60.</action>
       <action type="update" dev="ggregory" due-to="Dependabot">Bump actions/checkout from 3.0.2 to 3.1.0 #59.</action>
