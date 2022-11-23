@@ -38,7 +38,7 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.3.3" date="tbd" description="Bug fix release">
+    <release version="1.3.3" date="2022-11-28" description="Bug fix release">
       <!-- Fix -->
       <action issue="DAEMON-450" type="fix" dev="markt" due-to="Norimasa Yamamoto">
         Procrun. Fix creation of duplicate ACL entries on some Windows platforms.
