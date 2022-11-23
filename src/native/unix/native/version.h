@@ -37,7 +37,7 @@
  *  This symbol is defined for internal, "development" copies of JSVC.
  *  This symbol will be #undef'd for releases.
  */
-#define JSVC_IS_DEV_VERSION     1
+#define JSVC_IS_DEV_VERSION     0
 
 /** Properly quote a value as a string in the C preprocessor */
 #define JSVC_STRINGIFY(n) JSVC_STRINGIFY_HELPER(n)
