@@ -29,8 +29,8 @@ apxSecurityGrantFileAccessToUser(
     WCHAR sUser[SIZ_RESLEN];
     DWORD dwResult;
     PACL pOldDACL;
-    PACL pNewDACL;
-    PSECURITY_DESCRIPTOR pSD;
+    PACL pNewDACL = NULL;
+    PSECURITY_DESCRIPTOR pSD = NULL;
     EXPLICIT_ACCESS ea;
 
     if (szPath) { 
