@@ -39,6 +39,7 @@
   </properties>
   <body>
     <release version="1.3.4" date="TBD" description="Bug fix release">
+      <action type="update" dev="ggregory" due-to="Dependabot">Bump commons-parent from 54 to 55 #71.</action>
     </release>
     <release version="1.3.3" date="2022-11-29" description="Bug fix release">
       <!-- Fix -->
