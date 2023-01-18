@@ -316,7 +316,7 @@ Note: The controller process uses signals to stop the controlled process.
 
 <subsection name="Downgrading user">
 <p>
-On Linux <code>setuid()</code>/<code>setgid()</code> + capabilities are used. On other unix <code>setgid</code>/<code>initgroups</code> are used.
+On Linux <code>setuid()</code>/<code>setgid()</code> + capabilities are used. On other Unix <code>setgid</code>/<code>initgroups</code> are used.
 
 We have something like:
 <source>
