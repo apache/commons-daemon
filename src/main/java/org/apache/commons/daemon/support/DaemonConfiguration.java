@@ -44,7 +44,6 @@ import java.text.ParseException;
  * In case of {@code $${foo}} this will be unescaped and resulting
  * value will be {@code ${foo}}.
  * </p>
- *
  */
 public final class DaemonConfiguration
 {
