@@ -86,7 +86,7 @@ public class AloneService {
            System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getProperty(name));
            try {
                proc[i] = Runtime.getRuntime().exec(prop.getProperty(name));
-           } catch(Exception ex) {
+           } catch (Exception ex) {
                System.err.println("Exception: " + ex);
            }
            /* Start threads to read from Error and Out streams */
@@ -110,7 +110,7 @@ public class AloneService {
             proc[i].destroy();
             try {
                 proc[i].waitFor();
-            } catch(InterruptedException ex) {
+            } catch (InterruptedException ex) {
                 System.err.println("ServiceDaemon: exception while stopping:" +
                                     ex);
             }
