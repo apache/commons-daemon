@@ -1105,13 +1105,18 @@ apxJavaStart(LPAPXJAVA_THREADARGS pArgs)
     lpJava = APXHANDLE_DATA(pArgs->hJava);
     if (!lpJava)
         return FALSE;
+    if (pArgs->dwSs) {
+        /* dwSS is measured in Kb, szStackSize in bytes */
+        lpJava->szStackSize = (SIZE_T) (pArgs->dwSs * 1024);
+    }
     lpJava->dwWorkerStatus = 0;
     lpJava->hWorkerInit    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerSync    = CreateEvent(NULL, FALSE, FALSE, NULL);
     lpJava->hWorkerThread  = CreateThread(NULL,
                                           lpJava->szStackSize,
                                           __apxJavaWorkerThread,
-                                          pArgs, CREATE_SUSPENDED,
+                                          pArgs,
+                                          CREATE_SUSPENDED + STACK_SIZE_PARAM_IS_A_RESERVATION,
                                           &lpJava->iWorkerThread);
     if (IS_INVALID_HANDLE(lpJava->hWorkerThread)) {
         apxLogWrite(APXLOG_MARK_SYSERR);
