@@ -161,7 +161,7 @@ LPWSTR apxLogFile(
     }
     sRet = apxPoolAlloc(hPool, (SIZ_PATHLEN) * sizeof(WCHAR));
     /* Set default level to info */
-    CreateDirectoryW(sPath, NULL);
+    SHCreateDirectoryExW(NULL, sPath, NULL);
 
     lstrlcpyW(sRet, SIZ_PATHMAX, sPath);
     lstrlcatW(sRet, SIZ_PATHMAX, sName);
@@ -194,13 +194,13 @@ HANDLE apxLogOpen(
         if (GetSystemDirectoryW(sPath, MAX_PATH) == 0)
             return INVALID_HANDLE_VALUE;
         lstrlcatW(sPath, MAX_PATH, L"\\LogFiles");
-        if (!CreateDirectoryW(sPath, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
-            if (!CreateDirectoryW(sPath, NULL))
+        if (!SHCreateDirectoryExW(NULL, sPath, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
+            if (!SHCreateDirectoryExW(NULL, sPath, NULL))
                 return INVALID_HANDLE_VALUE;
         }
         lstrlcatW(sPath, MAX_PATH, L"\\Apache");
-        if (!CreateDirectoryW(sPath, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
-            if (!CreateDirectoryW(sPath, NULL))
+        if (!SHCreateDirectoryExW(NULL, sPath, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
+            if (!SHCreateDirectoryExW(NULL, sPath, NULL))
                 return INVALID_HANDLE_VALUE;
         }
     }
@@ -232,7 +232,7 @@ HANDLE apxLogOpen(
         return INVALID_HANDLE_VALUE;
     /* Set default level to info */
     h->dwLogLevel = APXLOG_LEVEL_INFO;
-    CreateDirectoryW(sPath, NULL);
+    SHCreateDirectoryExW(NULL, sPath, NULL);
 
     h->sysTime = sysTime;
     lstrlcpyW(h->szPath, MAX_PATH, sPath);

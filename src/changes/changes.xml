@@ -46,6 +46,11 @@
         Procrun. Configured stack size now applies to the main thread when
         running in JVM mode.
       </action>
+      <action issue="DAEMON-452" type="fix" dev="markt">
+        Procrun. If the specified log directory does not exist, attempt to
+        create any missing parent directories, as well as the specified
+        directory, when the service starts.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump commons-parent from 54 to 55 #71.
