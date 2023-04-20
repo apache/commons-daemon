@@ -113,8 +113,8 @@ static APXCMDLINEOPT _options[] = {
 /* 4  */    { L"ServicePassword",   L"ServicePassword", NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 /* 5  */    { L"Startup",           L"Startup",         NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
 /* 6  */    { L"Type",              L"Type",            NULL,           APXCMDOPT_STR | APXCMDOPT_SRV, NULL, 0},
+/* 7  */    { L"DependsOn",         L"DependOnService", NULL,           APXCMDOPT_MSZ | APXCMDOPT_SRV, NULL, 0},
 
-/* 7  */    { L"DependsOn",         L"DependsOn",       NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
 /* 8  */    { L"Environment",       L"Environment",     NULL,           APXCMDOPT_MSZ | APXCMDOPT_REG, NULL, 0},
 /* 9  */    { L"User",              L"User",            NULL,           APXCMDOPT_STR | APXCMDOPT_REG, NULL, 0},
 /* 10 */    { L"Password",          L"Password",        NULL,           APXCMDOPT_BIN | APXCMDOPT_REG, NULL, 0},

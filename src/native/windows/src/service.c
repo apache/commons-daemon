@@ -306,12 +306,6 @@ apxServiceSetOptions(APXHANDLE hService,
         return FALSE;
     }
 
-    if (lpDependencies) {
-        /* Add the mandatory dependencies to the explicitly configured dependencies */
-        lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
-                                           L"Tcpip\0Afd\0", NULL);
-    }
-
     if (!ChangeServiceConfig(lpService->hService, dwServiceType,
                                    dwStartType, dwErrorControl,
                                    NULL, NULL, NULL,
@@ -692,11 +686,34 @@ apxServiceInstall(APXHANDLE hService, LPCWSTR szServiceName,
     lpService->stServiceEntry.lpConfig = NULL;
     AplZeroMemory(&lpService->stServiceEntry, sizeof(APXSERVENTRY));
 
-    if (lpDependencies)
-        lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
-                                           L"Tcpip\0Afd\0", NULL);
-    else
+    if (lpDependencies) {
+        /* Only add Tcpip and Afd if not already present. */
+        BOOL needTcpip = TRUE;
+        BOOL needAfd = TRUE;
+        LPCWSTR p = lpDependencies;
+        while (*p && (needTcpip || needAfd)) {
+            if (lstrcmpiW(p, L"Tcpip") == 0) {
+                needTcpip = FALSE;
+            }
+            if (lstrcmpiW(p, L"Afd") == 0) {
+                needAfd = FALSE;
+            }
+            while (*p) {
+                p++;
+            }
+            p++;
+        }
+        if (needTcpip) {
+            lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
+                                               L"Tcpip\0", NULL);
+        }
+        if (needAfd) {
+            lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
+                                               L"Afd\0", NULL);
+        }
+    } else {
         lpDependencies = L"Tcpip\0Afd\0";
+    }
 
     if ((dwServiceType & SERVICE_INTERACTIVE_PROCESS) == SERVICE_INTERACTIVE_PROCESS) {
         // Caller is responsible for checking the user is set appropriately

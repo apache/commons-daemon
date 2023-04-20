@@ -331,8 +331,15 @@ will add the new value(s) to any existing value(s).
     <tr>
     <td>++DependsOn</td>
     <td></td>
-    <td>List of services that this service depends on. Dependent services
-        are separated using either <b>#</b> or <b>;</b> characters</td>
+    <td>List of services that this service depends on. Services are separated
+        using either <b>#</b> or <b>;</b> characters</td>
+        <br />
+        <b>Note:</b> At installation, additional dependencies will be created
+        on the services <i>Tcpip</i> and <i>Afd</i> if not explicitly
+        specified. These additional dependencies will not be created
+        automatically when updating the service configuration with
+        <i>--DependsOn</i> and must be explicitly defined if required in that
+        case.
     </tr>
     <tr>
     <td>++Environment</td>

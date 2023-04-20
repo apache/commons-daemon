@@ -51,6 +51,10 @@
         create any missing parent directories, as well as the specified
         directory, when the service starts.
       </action>
+      <action issue="DAEMON-458" type="fix" dev="markt">
+        Procrun. Allow Windows service dependencies to be managed by Procrun or
+        by 'sc config ...'.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump commons-parent from 54 to 55 #71.
