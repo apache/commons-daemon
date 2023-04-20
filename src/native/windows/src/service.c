@@ -306,12 +306,10 @@ apxServiceSetOptions(APXHANDLE hService,
         return FALSE;
     }
 
-    /* Add the mandatory dependencies */
     if (lpDependencies) {
+        /* Add the mandatory dependencies to the explicitly configured dependencies */
         lpDependencies = apxMultiSzCombine(NULL, lpDependencies,
                                            L"Tcpip\0Afd\0", NULL);
-    } else {
-        lpDependencies = L"Tcpip\0Afd\0";
     }
 
     if (!ChangeServiceConfig(lpService->hService, dwServiceType,
