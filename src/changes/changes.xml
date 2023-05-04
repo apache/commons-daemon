@@ -55,6 +55,10 @@
         Procrun. Allow Windows service dependencies to be managed by Procrun or
         by 'sc config ...'.
       </action>
+      <action issue="DAEMON-459" type="fix" dev="markt" due-to="Klaus Malorny">
+        jsvc. Fix DaemonController.reload() only working the first time it is
+        called.
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump commons-parent from 54 to 57 #71, #91.

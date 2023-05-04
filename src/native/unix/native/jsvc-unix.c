@@ -910,7 +910,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
     sigaction(SIGUSR2, &act, NULL);
     sigaction(SIGTERM, &act, NULL);
     sigaction(SIGINT, &act, NULL);
-
+    controlled = getpid ();
     log_debug("Waiting for a signal to be delivered");
     create_tmp_file(args);
     while (!stopping) {
