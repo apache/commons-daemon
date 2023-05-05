@@ -59,6 +59,10 @@
         jsvc. Fix DaemonController.reload() only working the first time it is
         called.
       </action>
+      <action type="fix" dev="markt" due-to="Eastdong">
+        jsvc. Remove incorrent definition 'supported_os' which defined in 
+        psupport.m4 file to fix jsvc build error on riscv64. 
+      </action>
       <!-- UPDATES -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump commons-parent from 54 to 57 #71, #91.
