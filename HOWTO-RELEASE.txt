@@ -24,8 +24,7 @@ Review open PRs on GitHub.
 Update to latest commons-parent and fix any issues.
 
 Use Java 8.
-Do not use Apache Maven 3.8.2 onwards due to
-    https://issues.apache.org/jira/browse/MNG-7316
+Use Maven 3.8.7 onwards
 
 If you haven't already, add your public PGP key to KEYS.
 
