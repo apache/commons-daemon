@@ -7,7 +7,12 @@ options, but a trivial build is simply;
 
 Windows X64 Build
 
+  For MVS under "C:\Program Files (x86)":
   "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  
+  For MVS under "C:\Program Files":
+  "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+  
   nmake CPU=X64
 
 Windows X86 Build
