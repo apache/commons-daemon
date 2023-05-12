@@ -40,7 +40,12 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.3.4" date="2023-05-10" description="Bug fix release">
+    <release version="1.3.5" date="TBD" description="Bug fix release">
+      <!-- Fix -->
+      <!-- Add -->
+      <!-- Updates -->
+    </release>
+    <release version="1.3.4" date="2023-05-12" description="Bug fix release">
       <!-- Fix -->
       <action issue="DAEMON-451" type="fix" dev="markt" due-to="kkolinko">
         Procrun. Configured stack size now applies to the main thread when
