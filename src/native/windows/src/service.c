@@ -469,7 +469,7 @@ apxServiceControl(APXHANDLE hService, DWORD dwControl, UINT uMsg,
         default:
             break;
     }
-    /* user defined controls */
+    /* user-defined controls */
     if (dwControl > 127 && dwControl < 224) {
         /* 128 ... 159  start signals
          * 160 ... 191  stop signals
