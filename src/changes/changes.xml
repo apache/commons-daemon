@@ -42,6 +42,9 @@
   <body>
     <release version="1.3.5" date="TBD" description="Bug fix release">
       <!-- Fix -->
+      <action dev="ggregory" type="fix" due-to="step-security-bot, Gary Gregory">
+        [StepSecurity] ci: Harden GitHub Actions #95.
+      </action>
       <!-- Add -->
       <!-- Updates -->
       <action type="update" dev="ggregory" due-to="Dependabot">
