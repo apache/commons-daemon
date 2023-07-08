@@ -124,9 +124,9 @@ public class SimpleApplication implements Runnable {
 
         System.err.println("SimpleApplication: started acceptor loop");
         try {
-            while(!this.stopping) {
-                Socket socket=this.server.accept();
-                Handler handler=new Handler(socket,this);
+            while (!this.stopping) {
+                Socket socket = this.server.accept();
+                Handler handler = new Handler(socket, this);
                 handler.setConnectionNumber(number++);
                 handler.setDirectoryName(this.directory);
                 new Thread(handler).start();
@@ -198,18 +198,16 @@ public class SimpleApplication implements Runnable {
         @Override
         public void run() {
             this.parent.addHandler(this);
-            System.err.println("SimpleApplication: connection "+this.number+
-                               " opened from "+this.socket.getInetAddress());
+            System.err.println("SimpleApplication: connection " + this.number + " opened from " + this.socket.getInetAddress());
             try {
-                InputStream in=this.socket.getInputStream();
-                OutputStream out=this.socket.getOutputStream();
-                handle(in,out);
+                InputStream in = this.socket.getInputStream();
+                OutputStream out = this.socket.getOutputStream();
+                handle(in, out);
                 this.socket.close();
             } catch (IOException e) {
                 e.printStackTrace(System.err);
             }
-            System.err.println("SimpleApplication: connection "+this.number+
-                               " closed");
+            System.err.println("SimpleApplication: connection " + this.number + " closed");
             this.parent.removeHandler(this);
         }
 
@@ -237,11 +235,10 @@ public class SimpleApplication implements Runnable {
             return(this.directory);
         }
 
-        public void createFile(String name)
-        throws IOException {
-            OutputStream file=new FileOutputStream(name,true);
-            PrintStream out=new PrintStream(file);
-            SimpleDateFormat fmt=new SimpleDateFormat();
+        public void createFile(String name) throws IOException {
+            OutputStream file = new FileOutputStream(name, true);
+            PrintStream out = new PrintStream(file);
+            SimpleDateFormat fmt = new SimpleDateFormat();
 
             out.println(fmt.format(new Date()));
             out.close();

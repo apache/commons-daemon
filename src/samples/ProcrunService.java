@@ -191,8 +191,8 @@ public class ProcrunService implements Runnable {
         if (waitParam != null) {
             wait = Integer.valueOf(waitParam).intValue();
         }
-        log("Starting the thread, wait(seconds): "+wait);
-        thrd = new Thread(new ProcrunService(wait*MS_PER_SEC,file));
+        log("Starting the thread, wait(seconds): " + wait);
+        thrd = new Thread(new ProcrunService(wait * MS_PER_SEC, file));
         thrd.start();
     }
 
