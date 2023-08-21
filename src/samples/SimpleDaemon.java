@@ -36,11 +36,11 @@ import org.apache.commons.daemon.DaemonInitException;
 
 public class SimpleDaemon implements Daemon, Runnable {
 
-    private ServerSocket server=null;
-    private Thread thread=null;
-    private DaemonController controller=null;
-    private volatile boolean stopping=false;
-    private String directory=null;
+    private ServerSocket server;
+    private Thread thread;
+    private DaemonController controller;
+    private volatile boolean stopping;
+    private String directory;
     private final Vector<Handler> handlers;
 
     public static native void toto();
@@ -63,30 +63,30 @@ public class SimpleDaemon implements Daemon, Runnable {
      */
     @Override
     public void init(DaemonContext context)
-    throws Exception {
-        System.err.println("SimpleDaemon: instance "+this.hashCode()+
-                           " init");
+            throws Exception {
+        System.err.println("SimpleDaemon: instance " + this.hashCode() + " init");
 
-        int port=1200;
+        int port = 1200;
 
         String[] a = context.getArguments();
         try {
-            if ( a.length > 0)
-                port=Integer.parseInt(a[0]);
-        }
-        catch (NumberFormatException ex) {
+            if (a.length > 0)
+                port = Integer.parseInt(a[0]);
+        } catch (NumberFormatException ex) {
             throw new DaemonInitException("parsing port", ex);
         }
-        if (a.length>1) this.directory=a[1];
-        else this.directory="/tmp";
+        if (a.length > 1)
+            this.directory = a[1];
+        else
+            this.directory = "/tmp";
 
         /* Dump a message */
-        System.err.println("SimpleDaemon: loading on port "+port);
+        System.err.println("SimpleDaemon: loading on port " + port);
 
         /* Set up this simple daemon */
-        this.controller=context.getController();
-        this.server=new ServerSocket(port);
-        this.thread=new Thread(this);
+        this.controller = context.getController();
+        this.server = new ServerSocket(port);
+        this.thread = new Thread(this);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class SimpleDaemon implements Daemon, Runnable {
         System.err.println("SimpleDaemon: stopping");
 
         /* Close the ServerSocket. This will make our thread to terminate */
-        this.stopping=true;
+        this.stopping = true;
         this.server.close();
 
         /* Wait for the main thread to exit and dump a message */
@@ -166,15 +166,15 @@ public class SimpleDaemon implements Daemon, Runnable {
 
         private final DaemonController controller;
         private final SimpleDaemon parent;
-        private String directory=null; // Only set before thread is started
+        private String directory; // Only set before thread is started
         private final Socket socket;
-        private int number=0; // Only set before thread is started
+        private int number; // Only set before thread is started
 
         public Handler(Socket s, SimpleDaemon p, DaemonController c) {
             super();
-            this.socket=s;
-            this.parent=p;
-            this.controller=c;
+            this.socket = s;
+            this.parent = p;
+            this.controller = c;
         }
 
         @Override
@@ -210,7 +210,7 @@ public class SimpleDaemon implements Daemon, Runnable {
         }
 
         public void setDirectoryName(String directory) {
-            this.directory=directory;
+            this.directory = directory;
         }
 
         public String getDirectoryName() {
@@ -231,24 +231,24 @@ public class SimpleDaemon implements Daemon, Runnable {
         throws IOException {
             File file = new File(name);
             boolean ok = file.mkdirs();
-            if(! ok)
+            if (!ok)
                 throw new IOException("mkdirs for "+name+" failed");
             createFile(name);
         }
 
         public void handle(InputStream in, OutputStream os) {
-            PrintStream out=null;
+            PrintStream out = null;
             try {
-                out=new PrintStream(os, true, "US-ASCII");
+                out = new PrintStream(os, true, "US-ASCII");
             } catch (UnsupportedEncodingException ex) {
-              out=new PrintStream(os, true);
+              out = new PrintStream(os, true);
             }
 
             while(true) {
                 try {
                     /* If we don't have data in the System InputStream, we want
                        to ask to the user for an option. */
-                    if (in.available()==0) {
+                    if (in.available() == 0) {
                         out.println();
                         out.println("Please select one of the following:");
                         out.println("    1) Shutdown");
@@ -261,7 +261,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                     }
 
                     /* Read an option from the client */
-                    int x=in.read();
+                    int x = in.read();
 
                     switch (x) {
                         /* If the socket was closed, we simply return */
