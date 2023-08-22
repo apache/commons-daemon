@@ -249,7 +249,7 @@ public class SimpleApplication implements Runnable {
         throws IOException {
             File file = new File(name);
             boolean ok = file.mkdirs();
-            if(! ok)
+            if (!ok)
                 throw new IOException("mkdirs for "+name+" failed");
             createFile(name);
         }
