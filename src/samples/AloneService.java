@@ -28,9 +28,9 @@ import java.util.Properties;
 public class AloneService {
 
     private Properties prop = null;
-    private Process proc[] = null;
-    private ServiceDaemonReadThread readout[] = null;
-    private ServiceDaemonReadThread readerr[] = null;
+    private Process[] proc = null;
+    private ServiceDaemonReadThread[] readout = null;
+    private ServiceDaemonReadThread[] readerr = null;
 
     @Override
     protected void finalize() {
