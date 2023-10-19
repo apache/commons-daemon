@@ -58,9 +58,9 @@ public class ProcrunService implements Runnable {
         stopFile = file;
     }
 
-    private static File tmpFile(String filename) {
+    private static File tmpFile(String fileName) {
         return new File(System.getProperty("java.io.tmpdir"),
-                filename != null ? filename : "ProcrunService.tmp");
+                fileName != null ? fileName : "ProcrunService.tmp");
     }
 
     private static void usage(){
