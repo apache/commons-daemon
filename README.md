@@ -43,12 +43,12 @@
 Apache Commons Daemon
 ===================
 
-[![GitHub Actions Status](https://github.com/apache/commons-daemon/workflows/Java%20CI/badge.svg)](https://github.com/apache/commons-daemon/actions)
+[![Java CI](https://github.com/apache/commons-daemon/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/maven.yml)
 [![Coverage Status](https://codecov.io/gh/apache/commons-daemon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
 [![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.3.3.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.3.3)
-[![CodeQL](https://github.com/apache/commons-daemon/workflows/CodeQL%20CPP/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-cpp.yml?query=workflow%3ACodeQL)
-[![CodeQL](https://github.com/apache/commons-daemon/workflows/CodeQL%20Java/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-java.yml?query=workflow%3ACodeQL)
+[![CodeQL CPP](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-cpp.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-cpp.yml)
+[![CodeQL Java](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-java.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-java.yml)
 
 Apache Commons Daemon software is a set of utilities and Java support
     classes for running Java applications as server processes. These are
