@@ -28,7 +28,7 @@ import org.apache.commons.daemon.DaemonContext;
 
 public class ServiceDaemon implements Daemon {
 
-    private Properties prop = null;
+    private Properties prop;
     private Process[] proc = null;
     private ServiceDaemonReadThread[] readout = null;
     private ServiceDaemonReadThread[] readerr = null;

@@ -27,7 +27,7 @@ import java.util.Properties;
  */
 public class AloneService {
 
-    private Properties prop = null;
+    private Properties prop;
     private Process[] proc = null;
     private ServiceDaemonReadThread[] readout = null;
     private ServiceDaemonReadThread[] readerr = null;
