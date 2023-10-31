@@ -65,7 +65,7 @@ public final class DaemonLoader
         try {
             /* Check the class name */
             Objects.requireNonNull(className, "className");
-            /* Get the ClassLoader loading this class */
+            /* Gets the ClassLoader loading this class */
             final ClassLoader cl = DaemonLoader.class.getClassLoader();
             if (cl == null) {
                 System.err.println("Cannot retrieve ClassLoader instance");
@@ -122,7 +122,7 @@ public final class DaemonLoader
             /* Check the class name */
             Objects.requireNonNull(className, "className");
 
-            /* Get the ClassLoader loading this class */
+            /* Gets the ClassLoader loading this class */
             final ClassLoader cl = DaemonLoader.class.getClassLoader();
             if (cl == null) {
                 System.err.println("Cannot retrieve ClassLoader instance");
