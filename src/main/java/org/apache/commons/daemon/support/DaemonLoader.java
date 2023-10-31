@@ -230,18 +230,17 @@ public final class DaemonLoader
     public static boolean start()
     {
         try {
-            /* Attempt to start the daemon */
+            // Attempt to start the daemon
             start.invoke(daemon);
 
-            /* Set the availability flag in the controller */
+            // Set the availability flag in the controller
             if (controller != null) {
                 controller.setAvailable(true);
             }
 
         } catch (final Throwable t) {
-            /* In case we encounter ANY error, we dump the stack trace and
-             * return false (load, start and stop won't be called).
-             */
+            // In case we encounter ANY error, we dump the stack trace and
+            // return false (load, start and stop won't be called).
             t.printStackTrace(System.err);
             return false;
         }
@@ -251,7 +250,7 @@ public final class DaemonLoader
     public static boolean stop()
     {
         try {
-            /* Set the availability flag in the controller */
+            // Set the availability flag in the controller
             if (controller != null) {
                 controller.setAvailable(false);
             }
@@ -260,9 +259,8 @@ public final class DaemonLoader
             stop.invoke(daemon);
         }
         catch (final Throwable t) {
-            /* In case we encounter ANY error, we dump the stack trace and
-             * return false (load, start and stop won't be called).
-             */
+            // In case we encounter ANY error, we dump the stack trace and
+            // return false (load, start and stop won't be called).
             t.printStackTrace(System.err);
             return false;
         }
@@ -278,9 +276,8 @@ public final class DaemonLoader
             daemon = null;
             controller = null;
         } catch (final Throwable t) {
-            /* In case we encounter ANY error, we dump the stack trace and
-             * return false (load, start and stop won't be called).
-             */
+            // In case we encounter ANY error, we dump the stack trace and
+            // return false (load, start and stop won't be called).
             t.printStackTrace(System.err);
             return false;
         }

@@ -51,21 +51,21 @@ public class ServiceDaemon implements Daemon {
     @Override
     public void init(DaemonContext context)
     throws Exception {
-        /* Set the err */
+        // Set the err
         System.setErr(new PrintStream(new FileOutputStream(new File("ServiceDaemon.err")), true));
         System.err.println("ServiceDaemon: instance "+this.hashCode()+
                            " init");
 
-        /* read the properties file */
+        // read the properties file
         prop = new Properties();
         try {
             prop.load(new FileInputStream("startfile"));
         }
         catch (Exception e) {
             // Cannot find startfile.properties.
-            // XXX: Should we print something?
+            // TODO: Should we print something?
         }
-        /* create an array to store the processes */
+        // create an array to store the processes
         int processCount = prop.size();
         System.err.println("ServiceDaemon: init for " + processCount + " processes");
         proc = new Process[processCount];
@@ -82,10 +82,10 @@ public class ServiceDaemon implements Daemon {
 
     @Override
     public void start() {
-        /* Dump a message */
+        // Dump a message
         System.err.println("ServiceDaemon: starting");
 
-        /* Start */
+        // Start
         int i=0;
         for (Enumeration<Object> e = prop.keys(); e.hasMoreElements() ;) {
             String name = (String) e.nextElement();
@@ -95,7 +95,7 @@ public class ServiceDaemon implements Daemon {
             } catch (Exception ex) {
                System.err.println("Exception: " + ex);
            }
-           /* Start threads to read from Error and Out streams */
+           // Start threads to read from Error and Out streams
            readerr[i] =
                new ServiceDaemonReadThread(proc[i].getErrorStream());
            readout[i] =
@@ -109,7 +109,7 @@ public class ServiceDaemon implements Daemon {
     @Override
     public void stop()
     throws IOException, InterruptedException {
-        /* Dump a message */
+        // Dump a message
         System.err.println("ServiceDaemon: stopping");
 
         for (int i=0;i<proc.length;i++) {

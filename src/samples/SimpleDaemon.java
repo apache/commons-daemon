@@ -80,10 +80,10 @@ public class SimpleDaemon implements Daemon, Runnable {
         else
             this.directory = "/tmp";
 
-        /* Dump a message */
+        // Dump a message
         System.err.println("SimpleDaemon: loading on port " + port);
 
-        /* Set up this simple daemon */
+        // Set up this simple daemon
         this.controller = context.getController();
         this.server = new ServerSocket(port);
         this.thread = new Thread(this);
@@ -91,24 +91,24 @@ public class SimpleDaemon implements Daemon, Runnable {
 
     @Override
     public void start() {
-        /* Dump a message */
+        // Dump a message
         System.err.println("SimpleDaemon: starting");
 
-        /* Start */
+        // Start
         this.thread.start();
     }
 
     @Override
     public void stop()
     throws IOException, InterruptedException {
-        /* Dump a message */
+        // Dump a message
         System.err.println("SimpleDaemon: stopping");
 
-        /* Close the ServerSocket. This will make our thread to terminate */
+        // Close the ServerSocket. This will make our thread to terminate
         this.stopping = true;
         this.server.close();
 
-        /* Wait for the main thread to exit and dump a message */
+        // Wait for the main thread to exit and dump a message
         this.thread.join(5000);
         System.err.println("SimpleDaemon: stopped");
     }
@@ -133,12 +133,12 @@ public class SimpleDaemon implements Daemon, Runnable {
                 new Thread(handler).start();
             }
         } catch (IOException e) {
-            /* Don't dump any error message if we are stopping. A IOException
-               is generated when the ServerSocket is closed in stop() */
+            // Don't dump any error message if we are stopping. A IOException
+            // is generated when the ServerSocket is closed in stop()
             if (!this.stopping) e.printStackTrace(System.err);
         }
 
-        /* Terminate all handlers that at this point are still open */
+        // Terminate all handlers that at this point are still open
         Enumeration<Handler> openhandlers = this.handlers.elements();
         while (openhandlers.hasMoreElements()) {
             Handler handler = openhandlers.nextElement();
@@ -246,8 +246,8 @@ public class SimpleDaemon implements Daemon, Runnable {
 
             while(true) {
                 try {
-                    /* If we don't have data in the System InputStream, we want
-                       to ask to the user for an option. */
+                    // If we don't have data in the System InputStream, we want
+                    // to ask to the user for an option.
                     if (in.available() == 0) {
                         out.println();
                         out.println("Please select one of the following:");
@@ -260,15 +260,15 @@ public class SimpleDaemon implements Daemon, Runnable {
                         out.print("Your choice: ");
                     }
 
-                    /* Read an option from the client */
+                    // Read an option from the client
                     int x = in.read();
 
                     switch (x) {
-                        /* If the socket was closed, we simply return */
+                        // If the socket was closed, we simply return
                         case -1:
                             return;
 
-                        /* Attempt to shutdown */
+                        // Attempt to shutdown
                         case '1':
                             out.println("Attempting a shutdown...");
                             try {
@@ -280,7 +280,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                             }
                             break;
 
-                        /* Attempt to reload */
+                        // Attempt to reload
                         case '2':
                             out.println("Attempting a reload...");
                             try {
@@ -292,7 +292,7 @@ public class SimpleDaemon implements Daemon, Runnable {
                             }
                             break;
 
-                        /* Create a file */
+                        // Create a file
                         case '3':
                             String name=this.getDirectoryName()+
                                         "/SimpleDaemon."+
@@ -306,18 +306,18 @@ public class SimpleDaemon implements Daemon, Runnable {
                             }
                             break;
 
-                        /* Disconnect */
+                        // Disconnect
                         case '4':
                             out.println("Disconnecting...");
                             return;
 
-                        /* Crash JVM in a native call: It need an so file ;-) */
+                        // Crash JVM in a native call: It need an so file ;-)
                         case '5':
                             System.load(System.getProperty("native.library", "./Native.so"));
                             toto();
                             break;
 
-                        /* Create a directory (PR 30177 with 1.4.x and 1.5.0 */
+                        // Create a directory (PR 30177 with 1.4.x and 1.5.0
                         case '6':
                             String name1=this.getDirectoryName()+
                                         "/a/b/c/d/e"+
@@ -333,19 +333,19 @@ public class SimpleDaemon implements Daemon, Runnable {
                             break;
 
 
-                        /* Discard any carriage return / newline characters */
+                        // Discard any carriage return / newline characters
                         case '\r':
                         case '\n':
                             break;
 
-                        /* We got something that we weren't supposed to get */
+                        // We got something that we weren't supposed to get
                         default:
                             out.println("Unknown option '"+(char)x+"'");
                             break;
 
                     }
 
-                /* If we get an IOException we return (disconnect) */
+                // If we get an IOException we return (disconnect)
                 } catch (IOException e) {
                     System.err.println("SimpleDaemon: IOException in "+
                                        "connection "+

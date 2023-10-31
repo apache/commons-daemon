@@ -46,12 +46,12 @@ public class AloneService {
      * @throws Exception If the daemon cannot be initialized
      */
     public void init(String[] arguments) throws Exception {
-        /* Set the err */
+        // Set the err
         System.setErr(new PrintStream(new FileOutputStream("/ServiceDaemon.err", true)));
         System.err.println("ServiceDaemon: instance "+this.hashCode()+
                            " init");
 
-        /* read the properties file */
+        // read the properties file
         prop = new Properties();
         try {
             prop.load(new FileInputStream("startfile"));
@@ -76,10 +76,10 @@ public class AloneService {
     }
 
     public void start() {
-        /* Dump a message */
+        // Dump a message
         System.err.println("ServiceDaemon: starting");
 
-        /* Start */
+        // Start
         int i=0;
         for (Enumeration<Object> e = prop.keys(); e.hasMoreElements() ;) {
            String name = (String) e.nextElement();
@@ -89,7 +89,7 @@ public class AloneService {
            } catch (Exception ex) {
                System.err.println("Exception: " + ex);
            }
-           /* Start threads to read from Error and Out streams */
+           // Start threads to read from Error and Out streams
            readerr[i] =
                new ServiceDaemonReadThread(proc[i].getErrorStream());
            readout[i] =
@@ -101,7 +101,7 @@ public class AloneService {
     }
 
     public void stop() {
-        /* Dump a message */
+        // Dump a message
         System.err.println("ServiceDaemon: stopping");
 
         for (int i=0;i<proc.length;i++) {
