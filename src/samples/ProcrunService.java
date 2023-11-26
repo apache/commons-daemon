@@ -34,7 +34,7 @@ import java.net.SocketException;
  * Sample service implementation for use with Windows Procrun.
  * <p>
  * Use the main() method for running as a Java (external) service.
- * Use the start() and stop() methods for running as a jvm (in-process) service
+ * Use the start() and stop() methods for running as a JVM (in-process) service
  */
 public class ProcrunService implements Runnable {
 
@@ -170,7 +170,7 @@ public class ProcrunService implements Runnable {
     }
 
     /**
-     * Start the jvm version of the service, and waits for it to complete.
+     * Start the JVM version of the service, and waits for it to complete.
      *
      * @param args optional, arg[0] = timeout (seconds)
      */
