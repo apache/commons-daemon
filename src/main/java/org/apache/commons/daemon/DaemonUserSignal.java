@@ -19,7 +19,7 @@ package org.apache.commons.daemon;
 
 /**
  * Tags a Daemon as supporting some kind of
- * signalling method that allows the java application to
+ * signalling method that allows the Java application to
  * perform a custom action.
  * <p>
  * User must implement a signal method that will be called from

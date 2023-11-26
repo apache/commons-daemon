@@ -35,7 +35,7 @@ public interface DaemonContext
      * @return An array of {@link String} arguments supplied by the environment
      *         corresponding to the array of arguments given in the
      *         {@code public static void main()} method used as an entry
-     *         point to most other java programs.
+     *         point to most other Java programs.
      */
     String[] getArguments();
 
