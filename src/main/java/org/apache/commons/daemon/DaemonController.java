@@ -17,7 +17,6 @@
 
 package org.apache.commons.daemon;
 
-
 /**
  * Defines methods needed by the DaemonLoader.
  */

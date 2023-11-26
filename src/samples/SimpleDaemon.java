@@ -332,7 +332,6 @@ public class SimpleDaemon implements Daemon, Runnable {
                             }
                             break;
 
-
                         // Discard any carriage return / newline characters
                         case '\r':
                         case '\n':

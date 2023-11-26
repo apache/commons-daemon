@@ -69,7 +69,6 @@ public class SimpleApplication implements Runnable {
             System.err.println("SimpleApplication: arg " + i +
                     " = " + args[i]);
 
-
         }
         if (args.length > 0 && !args[0].isEmpty())
             port=Integer.parseInt(args[0]);

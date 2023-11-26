@@ -58,7 +58,6 @@ public final class DaemonConfiguration
     private   final static String BTOKEN                = "${";
     private   final static String ETOKEN                = "}";
 
-
     private final Properties configurationProperties;
     private final Properties systemProperties;
 
