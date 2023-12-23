@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -239,7 +240,7 @@ public class SimpleDaemon implements Daemon, Runnable {
         public void handle(InputStream in, OutputStream os) {
             PrintStream out = null;
             try {
-                out = new PrintStream(os, true, "US-ASCII");
+                out = new PrintStream(os, true, StandardCharsets.US_ASCII.name());
             } catch (UnsupportedEncodingException ex) {
               out = new PrintStream(os, true);
             }
