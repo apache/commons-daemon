@@ -373,16 +373,16 @@ public final class DaemonPermission extends Permission
                        MASK_CONTROL_SHUTDOWN | MASK_CONTROL_RELOAD;
             }
             if (CONTROL_START.equalsIgnoreCase(val)) {
-                mask = mask | MASK_CONTROL_START;
+                mask |= MASK_CONTROL_START;
             }
             else if (CONTROL_STOP.equalsIgnoreCase(val)) {
-                mask = mask | MASK_CONTROL_STOP;
+                mask |= MASK_CONTROL_STOP;
             }
             else if (CONTROL_SHUTDOWN.equalsIgnoreCase(val)) {
-                mask = mask | MASK_CONTROL_SHUTDOWN;
+                mask |= MASK_CONTROL_SHUTDOWN;
             }
             else if (CONTROL_RELOAD.equalsIgnoreCase(val)) {
-                mask = mask | MASK_CONTROL_RELOAD;
+                mask |= MASK_CONTROL_RELOAD;
             }
             else {
                 throw new IllegalArgumentException("Invalid action name \"" +
