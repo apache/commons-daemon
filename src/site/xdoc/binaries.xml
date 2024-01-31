@@ -27,7 +27,7 @@
 <section name="What to download?">
 <p>
 In the directory
-<a href="http://www.apache.org/dist/commons/daemon/binaries/">binaries</a>
+<a href="http://downloads.apache.org/commons/daemon/binaries/">binaries</a>
 you will find subdirectories containing archives
 corresponding to your operating system. Only the Windows builds are provided as a zip file.
 </p>
