@@ -46,7 +46,7 @@ Apache Commons Daemon
 [![Java CI](https://github.com/apache/commons-daemon/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/maven.yml)
 [![Coverage Status](https://codecov.io/gh/apache/commons-daemon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/)
-[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.3.3.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.3.3)
+[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.3.4.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.3.4)
 [![CodeQL CPP](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-cpp.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-cpp.yml)
 [![CodeQL Java](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-java.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis-java.yml)
 
