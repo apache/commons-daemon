@@ -40,7 +40,7 @@ public interface Daemon
      *   constructor.
      * </p>
      * <p>
-     *   Under certain operating systems (typically Unix based operating
+     *   Under certain operating systems (typically UNIX based operating
      *   systems) and if the native invocation framework is configured to do
      *   so, this method might be called with <i>super-user</i> privileges.
      * </p>
