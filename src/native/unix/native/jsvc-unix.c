@@ -901,7 +901,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
 
     /* Install signal handlers */
     memset(&act, '\0', sizeof(act));
-    act.sa_handler = handler;
+    act.sa_sigaction = handler;
     sigemptyset(&act.sa_mask);
     act.sa_flags = SA_RESTART | SA_NOCLDSTOP;
 
