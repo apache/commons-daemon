@@ -137,8 +137,16 @@
     <commons.jira.id>DAEMON</commons.jira.id>
     <commons.jira.pid>12310468</commons.jira.pid>
     <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
+    <commons.jacoco.haltOnFailure>true</commons.jacoco.haltOnFailure>
+    <!-- JaCoCo: Don't make code coverage worse than: -->
+    <commons.jacoco.haltOnFailure>true</commons.jacoco.haltOnFailure>
+    <commons.jacoco.classRatio>0.12</commons.jacoco.classRatio>
+    <commons.jacoco.instructionRatio>0.00</commons.jacoco.instructionRatio>
+    <commons.jacoco.methodRatio>0.01</commons.jacoco.methodRatio>
+    <commons.jacoco.branchRatio>0.00</commons.jacoco.branchRatio>
+    <commons.jacoco.lineRatio>0.00</commons.jacoco.lineRatio>
+    <commons.jacoco.complexityRatio>0.00</commons.jacoco.complexityRatio>
   </properties>
-
   <profiles>
     <!-- Customise the default ASF Commons release profile -->
     <profile>
