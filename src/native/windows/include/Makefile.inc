@@ -28,15 +28,6 @@
 #                           It will default to the
 #                           PROCESSOR_ARCHITECTURE/ARCHITEW6432 environment variables
 #                           or failing that it will default to X86.
-#                 WINVER    Compile for specified Windows version
-#                           WINXP   for Windows XP and up (default)
-#                           WIN2003 for Windows 2003 and up
-#                           VISTA   for Windows Vista and up
-#                           WIN7    for Windows 7 and up
-#                           Deprecated targets (may not even compile):
-#                               WINNT   for Windows 2000 and up
-#                               NT4     for Windows NT4 and up
-#                               WIN9X   for Windows 95, 98 and Me
 #                 BUILD     Build version
 #                           RETAIL or RELEASE (default)
 #                           DEBUG
@@ -137,27 +128,9 @@ TARGET=EXE
 !ENDIF
 !ENDIF
 
-!IF !DEFINED(WINVER) || "$(WINVER)" == ""
-WINVER=WINXP
-!ENDIF
-
-
-!IF "$(WINVER)" == "WINXP"
-NMAKE_WINVER = 0x0501
-_WIN32_IE = 0x0600
-!ELSEIF "$(WINVER)" == "WIN2003"
-NMAKE_WINVER = 0x0502
-_WIN32_IE = 0x0600
-!ELSEIF "$(WINVER)" == "VISTA"
-NMAKE_WINVER = 0x0600
-_WIN32_IE = 0x0700
-!ELSEIF "$(WINVER)" == "WIN7"
-NMAKE_WINVER = 0x0601
-_WIN32_IE = 0x0800
-!ELSE
-NMAKE_WINVER = $(WINVER)
-_WIN32_IE = 0x0800
-!ENDIF
+WINVER=WIN10
+NMAKE_WINVER = 0x0A00
+_WIN32_IE = 0x0A00
 
 NMAKE_WINNT = -D_WINNT -D_WIN32_WINNT=$(NMAKE_WINVER) -DWINVER=$(NMAKE_WINVER) -D_WIN32_IE=$(_WIN32_IE)
 
