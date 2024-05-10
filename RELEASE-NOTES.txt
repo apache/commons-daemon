@@ -27,6 +27,9 @@ New Features
 ------------
 
  - The minimum Java version has been increased to Java 8
+ 
+ - The minimum supported Windows versions have been increased to Windows 10 and
+   Windows Server 2016.
 
 
 Bug Fixes
