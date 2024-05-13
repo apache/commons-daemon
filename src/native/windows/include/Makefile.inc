@@ -42,6 +42,7 @@
 #           EXTRA_LIBS      Added to the common LIBS
 #           EXTRA_LFLAGS    Added to the common LFLAGS
 #           EXTRA_RCFLAGS   Added to the common RCFLAGS
+#           STATIC_CRT      Enables a hybrid CRT technique
 #
 # Compiler tools environment variables:
 #                 CC        C compiler  (defaults to cl.exe)
@@ -227,6 +228,9 @@ COMMON_LFLAGS = /NOLOGO
 OPT_LFLAGS = /INCREMENTAL:NO /DEBUG
 !IF "$(BUILD)" == "RELEASE"
 OPT_LFLAGS = $(OPT_LFLAGS) /OPT:REF
+!IF DEFINED(STATIC_CRT) && "$(STATIC_CRT)" == "Hybrid"
+OPT_LFLAGS = $(OPT_LFLAGS) /NODEFAULTLIB:libucrt.lib /DEFAULTLIB:ucrt.lib
+!ENDIF
 !ENDIF
 
 !IF "$(TARGET)" == "EXE"

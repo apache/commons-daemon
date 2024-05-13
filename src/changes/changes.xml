@@ -46,6 +46,9 @@
         [StepSecurity] ci: Harden GitHub Actions #95.
       </action>
       <!-- Add -->
+      <action type="add" dev="markt">
+        Add support for hybrid CRT builds.
+      </action>
       <!-- Updates -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump commons-parent from 57 to 69 #155.
