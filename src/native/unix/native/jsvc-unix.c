@@ -86,7 +86,7 @@ static int lockf(int fildes, int function, off_t size)
 
 #endif
 
-static void handler(int sig)
+static void handler(int sig, siginfo_t * sip, void *ucp)
 {
     switch (sig) {
         case SIGTERM:
@@ -901,7 +901,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
 
     /* Install signal handlers */
     memset(&act, '\0', sizeof(act));
-    act.sa_handler = handler;
+    act.sa_sigaction = handler;
     sigemptyset(&act.sa_mask);
     act.sa_flags = SA_RESTART | SA_NOCLDSTOP;
 
@@ -1308,7 +1308,7 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid, gid_t gid)
      * These will be replaced in the child process.
      */
     memset(&act, '\0', sizeof(act));
-    act.sa_handler = controller;
+    act.sa_sigaction = controller;
     sigemptyset(&act.sa_mask);
     act.sa_flags = SA_RESTART | SA_NOCLDSTOP | SA_SIGINFO;
 
