@@ -48,6 +48,10 @@
       <action issue="DAEMON-429" dev="markt" type="fix">
         Procrun. Enable Control Flow Guard for Windows binaries.
       </action>
+      <action issue="DAEMON-461" dev="markt" type="fix">
+        Procrun. Better label for command used to start service shown in
+        Prunmgr.exe. 
+      </action>
       <!-- Add -->
       <action type="add" dev="markt">
         Procrun. Add support for hybrid CRT builds.
