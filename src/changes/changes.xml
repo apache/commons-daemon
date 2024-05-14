@@ -56,6 +56,9 @@
       <action type="add" dev="markt">
         Procrun. Add support for hybrid CRT builds.
       </action>
+      <action type="add" dev="markt" due-to="huajingyun">
+        jsvc. Add support for LoongArch64 support #92.
+      </action>
       <!-- Updates -->
       <action type="update" dev="ggregory" due-to="Dependabot">
         Bump commons-parent from 57 to 69 #155.
