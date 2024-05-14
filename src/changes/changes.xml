@@ -45,9 +45,12 @@
       <action dev="ggregory" type="fix" due-to="step-security-bot, Gary Gregory">
         [StepSecurity] ci: Harden GitHub Actions #95.
       </action>
+      <action issue="DAEMON-429" dev="markt" type="fix">
+        Procrun. Enable Control Flow Guard for Windows binaries.
+      </action>
       <!-- Add -->
       <action type="add" dev="markt">
-        Add support for hybrid CRT builds.
+        Procrun. Add support for hybrid CRT builds.
       </action>
       <!-- Updates -->
       <action type="update" dev="ggregory" due-to="Dependabot">
@@ -58,8 +61,8 @@
         8.
       </action>
       <action type="update" dev="markt">
-        The minimum Windows versions supported are now Windows 10 and Windows
-        Server 2016.
+        Procrun. The minimum Windows versions supported are now Windows 10 and
+        Windows Server 2016.
       </action>
     </release>
     <release version="1.3.4" date="2023-05-12" description="Bug fix release">
