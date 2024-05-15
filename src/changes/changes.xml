@@ -52,6 +52,9 @@
         Procrun. Better label for command used to start service shown in
         Prunmgr.exe. 
       </action>
+      <action dev="markt" type="fix">
+        jsvc. Fix warnings when running support/buildconf.sh
+      </action>
       <!-- Add -->
       <action type="add" dev="markt">
         Procrun. Add support for hybrid CRT builds.
