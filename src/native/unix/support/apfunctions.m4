@@ -26,7 +26,7 @@ AC_DEFUN(AP_CANONICAL_HOST_CHECK,[
        test x"$ac_cv_host_system_type" != x"$host" ; }
   then
     AC_MSG_RESULT([$ac_cv_host_system_type])
-    AC_MSG_ERROR([remove the \"$cache_file\" file and re-run configure])
+    AC_MSG_ERROR([remove the "$cache_file" file and re-run configure])
   else
     AC_MSG_RESULT(ok)
     ac_cv_host_system_type="$host"
