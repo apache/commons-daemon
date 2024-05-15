@@ -77,6 +77,9 @@
         Procrun. The minimum Windows versions supported are now Windows 10 and
         Windows Server 2016.
       </action>
+      <action type="update" dev="markt">
+        Bump commons-parent from 69 to 70.
+      </action>
     </release>
     <release version="1.3.4" date="2023-05-12" description="Bug fix release">
       <!-- Fix -->
