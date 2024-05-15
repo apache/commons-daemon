@@ -55,6 +55,9 @@
       <action dev="markt" type="fix">
         jsvc. Fix warnings when running support/buildconf.sh
       </action>
+      <action issue="DAEMON-463" dev="markt" type="fix" due-to="michaelo">
+        jsvc. Fix compilation issue with newer compilers.
+      </action>
       <!-- Add -->
       <action type="add" dev="markt">
         Procrun. Add support for hybrid CRT builds.

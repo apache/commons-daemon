@@ -1308,7 +1308,7 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid, gid_t gid)
      * These will be replaced in the child process.
      */
     memset(&act, '\0', sizeof(act));
-    act.sa_handler = controller;
+    act.sa_sigaction = controller;
     sigemptyset(&act.sa_mask);
     act.sa_flags = SA_RESTART | SA_NOCLDSTOP | SA_SIGINFO;
 
