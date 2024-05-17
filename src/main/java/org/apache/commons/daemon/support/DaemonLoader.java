@@ -370,7 +370,7 @@ public final class DaemonLoader
                         msg = exception.toString();
                     }
                 }
-                DaemonLoader.failed(msg);
+                failed(msg);
             }
         }
 
