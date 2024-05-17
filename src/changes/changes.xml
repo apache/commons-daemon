@@ -40,7 +40,7 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.4.0" date="TBD" description="Bug fix release">
+    <release version="1.4.0" date="2024-05-24" description="Bug fix release">
       <!-- Fix -->
       <action dev="ggregory" type="fix" due-to="step-security-bot, Gary Gregory">
         [StepSecurity] ci: Harden GitHub Actions #95.
