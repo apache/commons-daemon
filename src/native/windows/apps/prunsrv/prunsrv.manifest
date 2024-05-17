@@ -25,10 +25,6 @@
 </dependency>
 <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
 <security>
-<!-- Windows UAC support -->
-<requestedPrivileges>
-<requestedExecutionLevel level="requireAdministrator" uiAccess="false"></requestedExecutionLevel>
-</requestedPrivileges>
 </security>
 </trustInfo>
 </assembly>

@@ -58,6 +58,10 @@
       <action issue="DAEMON-463" dev="markt" type="fix" due-to="michaelo">
         jsvc. Fix compilation issue with newer compilers.
       </action>
+      <action dev="markt" type="fix">
+        Procrun. Refactor UAC support so that elevation is only requested for
+        actions that require administrator privileges.
+      </action>
       <!-- Add -->
       <action type="add" dev="markt">
         Procrun. Add support for hybrid CRT builds.
