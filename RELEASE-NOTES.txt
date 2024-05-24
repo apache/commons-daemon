@@ -15,7 +15,7 @@
   limitations under the License.
 ================================================================================
 
-                   Apache Commons Daemon 1.4.0
+                   Apache Commons Daemon 1.4.1
                          Release Notes
 
 This document contains the release notes for this version of the
