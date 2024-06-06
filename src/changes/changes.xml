@@ -41,6 +41,9 @@
   </properties>
   <body>
     <release version="1.4.1" date="tbd" description="Bug fix release">
+      <action dev="michaelo" type="fix">
+        Fix several issues around Java OS and header files location detection.
+      </action>
     </release>
     <release version="1.4.0" date="2024-05-24" description="Bug fix release">
       <!-- Fix -->

@@ -57,9 +57,9 @@ AC_DEFUN([AP_FIND_JAVA_OS],[
   AC_ARG_WITH(os-type,[  --with-os-type[=SUBDIR]   Location of JDK os-type subdirectory.],
   [
     tempval=$withval
-    if test ! -d "$JAVA_HOME/$tempval"
+    if test ! -d "$JAVA_HOME/$JAVA_INC/$tempval"
     then
-      AC_MSG_ERROR(Not a directory: ${JAVA_HOME}/${tempval})
+      AC_MSG_ERROR(Not a directory: ${JAVA_HOME}/$JAVA_INC/${tempval})
     fi
     JAVA_OS=$tempval
   ],
@@ -80,7 +80,7 @@ AC_DEFUN([AP_FIND_JAVA_OS],[
         fi
       done
       if test "x$JAVA_OS" = "xNONE"; then
-        AC_MSG_RESULT(Cannot find jni_md.h in ${JAVA_HOME}/${OS})
+        AC_MSG_RESULT(Cannot find jni_md.h in ${JAVA_HOME}/${JAVA_INC}/\${OS})
         AC_MSG_ERROR(You should retry --with-os-type=SUBDIR)
       fi
     fi
