@@ -13,6 +13,8 @@
 /src/native/unix/native/*.o
 /src/native/unix/native/Makefile
 /src/native/unix/native/libservice.a
+/src/native/unix/support/config.guess
+/src/native/unix/support/config.sub
 /src/native/windows/apps/prunmgr/*_GUI_RELEASE
 /src/native/windows/apps/prunsrv/*_RELEASE
 /target/

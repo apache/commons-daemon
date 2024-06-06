@@ -19,7 +19,7 @@
 rm -rf autom4te.cache
 
 if test -f configure.in ; then
-  autoconf
+  autoreconf -fi
   if test $? -ne 0 ; then
     echo "$0: cannot generate configure script"
   else
