@@ -1839,15 +1839,15 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
         if (SO_STOPTIMEOUT) {
             /* we have a stop timeout */
-	    do {
+            do {
                 /* wait 2 seconds */
                 apxHandleWait(gWorker, 2000, FALSE);
             } while (!_exe_shutdown);
             apxLogWrite(APXLOG_MARK_DEBUG "waiting %d sec... shutdown: %d", SO_STOPTIMEOUT, _exe_shutdown);
             apxHandleWait(gWorker, SO_STOPTIMEOUT*1000, FALSE);
-	} else {
-             apxHandleWait(gWorker, INFINITE, FALSE);
-	}
+        } else {
+            apxHandleWait(gWorker, INFINITE, FALSE);
+        }
         apxLogWrite(APXLOG_MARK_DEBUG "Worker finished.");
     }
     else {
