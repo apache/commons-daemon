@@ -47,7 +47,6 @@ Apache Commons Daemon
 [![Coverage Status](https://codecov.io/gh/apache/commons-daemon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-daemon)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg?gav=true)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/?gav=true)
 [![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.4.0.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.4.0)
-[![CodeQL](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/apache/commons-daemon/badge)](https://api.securityscorecards.dev/projects/github.com/apache/commons-daemon)
 
 Apache Commons Daemon software is a set of utilities and Java support
