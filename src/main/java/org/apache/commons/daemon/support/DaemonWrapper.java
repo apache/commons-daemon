@@ -188,7 +188,7 @@ public class DaemonWrapper implements Daemon
     public void destroy()
     {
         // Nothing for the moment
-        System.err.println("DaemonWrapper: instance " + this.hashCode() + " destroy");
+        System.err.println("DaemonWrapper: instance " + hashCode() + " destroy");
     }
 
     // Internal class for wrapping the start/stop methods
