@@ -221,7 +221,7 @@ public final class DaemonPermission extends Permission
 
         // Create the appropriate mask if this is a control permission.
         if (this.type == TYPE_CONTROL) {
-            this.mask = this.createControlMask(actions);
+            this.mask = createControlMask(actions);
         }
     }
 
@@ -239,7 +239,7 @@ public final class DaemonPermission extends Permission
     public String getActions()
     {
         if (this.type == TYPE_CONTROL) {
-            return this.createControlActions(this.mask);
+            return createControlActions(this.mask);
         }
         return "";
     }
@@ -252,7 +252,7 @@ public final class DaemonPermission extends Permission
     @Override
     public int hashCode()
     {
-        this.setupDescription();
+        setupDescription();
         return this.desc.hashCode();
     }
 
@@ -317,7 +317,7 @@ public final class DaemonPermission extends Permission
     @Override
     public String toString()
     {
-        this.setupDescription();
+        setupDescription();
         return this.desc;
     }
 
@@ -346,7 +346,7 @@ public final class DaemonPermission extends Permission
             break;
         }
         buf.append(':');
-        buf.append(this.getActions());
+        buf.append(getActions());
         buf.append(']');
 
         this.desc = buf.toString();
