@@ -86,7 +86,7 @@ public final class DaemonConfiguration
         if (fileName == null) {
             fileName = DEFAULT_CONFIG;
         }
-        
+
         try (InputStream inputStream = new FileInputStream(fileName)) {
             configurationProperties.clear();
             configurationProperties.load(inputStream);
