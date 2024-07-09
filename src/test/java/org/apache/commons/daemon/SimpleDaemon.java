@@ -35,13 +35,13 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
     private boolean softReloadSignalled;
 
     public SimpleDaemon() {
-        System.err.println("SimpleDaemon: instance " + this.hashCode() + " created");
+        System.err.println("SimpleDaemon: instance " + hashCode() + " created");
         this.handlers = new Vector<>();
     }
 
     @Override
     protected void finalize() {
-        System.err.println("SimpleDaemon: instance " + this.hashCode() + " garbage collected");
+        System.err.println("SimpleDaemon: instance " + hashCode() + " garbage collected");
     }
 
     /**
@@ -49,7 +49,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
      */
     @Override
     public void init(final DaemonContext context) throws Exception {
-        System.err.println("SimpleDaemon: instance " + this.hashCode() + " init");
+        System.err.println("SimpleDaemon: instance " + hashCode() + " init");
 
         int port = 1200;
 
@@ -98,7 +98,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
     @Override
     public void destroy() {
-        System.err.println("SimpleDaemon: instance " + this.hashCode() + " destroy");
+        System.err.println("SimpleDaemon: instance " + hashCode() + " destroy");
     }
 
     @Override
@@ -282,9 +282,9 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
                     /* Disconnect */
                     case '3':
-                        final String name = this.getDirectoryName() + "/SimpleDaemon." + this.getConnectionNumber() + ".tmp";
+                        final String name = getDirectoryName() + "/SimpleDaemon." + getConnectionNumber() + ".tmp";
                         try {
-                            this.log(name);
+                            log(name);
                             out.println("File '" + name + "' created");
                         } catch (final IOException e) {
                             e.printStackTrace(out);
@@ -314,7 +314,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
                     /* If we get an IOException we return (disconnect) */
                 } catch (final IOException e) {
-                    System.err.println("SimpleDaemon: IOException in " + "connection " + this.getConnectionNumber());
+                    System.err.println("SimpleDaemon: IOException in " + "connection " + getConnectionNumber());
                     return;
                 }
             }
