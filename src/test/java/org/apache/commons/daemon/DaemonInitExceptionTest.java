@@ -27,7 +27,7 @@ public class DaemonInitExceptionTest {
 
     @Test
     public void test() {
-        final IOException e = new IOException(); 
+        final IOException e = new IOException();
         assertEquals(e, new DaemonInitException("Test", e).getCause());
     }
 
