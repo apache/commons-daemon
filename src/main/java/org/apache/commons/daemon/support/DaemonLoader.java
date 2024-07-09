@@ -295,7 +295,7 @@ public final class DaemonLoader
 
         private Controller()
         {
-            this.setAvailable(false);
+            setAvailable(false);
         }
 
         private boolean isAvailable()
@@ -317,10 +317,10 @@ public final class DaemonLoader
             throws IllegalStateException
         {
             synchronized (this) {
-                if (!this.isAvailable()) {
+                if (!isAvailable()) {
                     throw new IllegalStateException();
                 }
-                this.setAvailable(false);
+                setAvailable(false);
                 DaemonLoader.shutdown(false);
             }
         }
@@ -330,10 +330,10 @@ public final class DaemonLoader
             throws IllegalStateException
         {
             synchronized (this) {
-                if (!this.isAvailable()) {
+                if (!isAvailable()) {
                     throw new IllegalStateException();
                 }
-                this.setAvailable(false);
+                setAvailable(false);
                 DaemonLoader.shutdown(true);
             }
         }
@@ -360,7 +360,7 @@ public final class DaemonLoader
         public void fail(final String message, final Exception exception)
         {
             synchronized (this) {
-                this.setAvailable(false);
+                setAvailable(false);
                 String msg = message;
                 if (exception != null) {
                     if (msg != null) {
