@@ -60,6 +60,12 @@ public final class DaemonLoader
                            System.getProperty("commons.daemon.process.parent") + ")");
     }
 
+    /**
+     * Checks whether the given class name can be instantiated with a zero-argument constructor.
+     *
+     * @param className The class name.
+     * @return true if the given class name can be instantiated, false otherwise.
+     */
     public static boolean check(final String className)
     {
         try {
