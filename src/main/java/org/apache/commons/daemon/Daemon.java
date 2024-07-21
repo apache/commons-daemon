@@ -42,12 +42,12 @@ public interface Daemon
      * <p>
      *   Under certain operating systems (typically UNIX based operating
      *   systems) and if the native invocation framework is configured to do
-     *   so, this method might be called with <i>super-user</i> privileges.
+     *   so, this method might be called with <em>super-user</em> privileges.
      * </p>
      * <p>
      *   For example, it might be wise to create {@code ServerSocket}
      *   instances within the scope of this method, and perform all operations
-     *   requiring <i>super-user</i> privileges in the underlying operating
+     *   requiring <em>super-user</em> privileges in the underlying operating
      *   system.
      * </p>
      * <p>
