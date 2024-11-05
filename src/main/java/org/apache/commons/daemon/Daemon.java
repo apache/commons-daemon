@@ -100,7 +100,7 @@ public interface Daemon
      * Frees any resources allocated by this daemon such as file
      * descriptors or sockets. This method gets called by the container
      * after stop() has been called, before the JVM exits. The Daemon
-     * can not be restarted after this method has been called without a
+     * cannot be restarted after this method has been called without a
      * new call to the init() method.
      */
     void destroy();
