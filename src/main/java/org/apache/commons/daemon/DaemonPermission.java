@@ -175,7 +175,7 @@ public final class DaemonPermission extends Permission
      * permission name.
      * <p>
      * This constructor will create a new {@code DaemonPermission}
-     * instance that <b>will not</b> grant any permission to the caller.
+     * instance that <strong>will not</strong> grant any permission to the caller.
      *
      * @param target The target name of this permission.
      * @throws IllegalArgumentException If the specified target name is not
@@ -259,7 +259,7 @@ public final class DaemonPermission extends Permission
     /**
      * Checks if a specified object equals {@code DaemonPermission}.
      *
-     * @return <b>true</b> or <b>false</b> whether the specified object equals
+     * @return <strong>true</strong> or <strong>false</strong> whether the specified object equals
      *         this {@code DaemonPermission} instance or not.
      */
     @Override
@@ -285,7 +285,7 @@ public final class DaemonPermission extends Permission
      * Checks if this {@code DaemonPermission} implies another
      * {@code Permission}.
      *
-     * @return <b>true</b> or <b>false</b> whether the specified permission
+     * @return <strong>true</strong> or <strong>false</strong> whether the specified permission
      *         is implied by this {@code DaemonPermission} instance or
      *         not.
      */
