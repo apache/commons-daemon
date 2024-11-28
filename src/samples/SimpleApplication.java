@@ -58,7 +58,6 @@ public class SimpleApplication implements Runnable {
      * Main method
      *
      * @param args Optional port and directory configuration
-     *
      * @throws Exception If the daemon cannot be set up
      */
     public static void main(String[] args) throws Exception {

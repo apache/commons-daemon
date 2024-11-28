@@ -41,7 +41,6 @@ public class AloneService {
      * init and destroy were added in jakarta-tomcat-daemon.
      *
      * @param arguments Unused
-     *
      * @throws Exception If the daemon cannot be initialized
      */
     public void init(String[] arguments) throws Exception {
