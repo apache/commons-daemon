@@ -1839,9 +1839,17 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
         if (SO_STOPTIMEOUT) {
             /* we have a stop timeout */
+            BOOL bLoopWarningIssued = FALSE;
             do {
                 /* wait 2 seconds */
-                apxHandleWait(gWorker, 2000, FALSE);
+                DWORD rv = apxHandleWait(gWorker, 2000, FALSE);
+                if (rv == WAIT_OBJECT_0 && !_exe_shutdown) {
+                    if (!bLoopWarningIssued) {
+                        apxLogWrite(APXLOG_MARK_WARN "Start method returned before stop method was called. This should not happen. Using loop with a fixed sleep of 2 seconds waiting for stop method to be called.");
+                        bLoopWarningIssued = TRUE;
+                    }
+                    Sleep(2000);
+                }
             } while (!_exe_shutdown);
             apxLogWrite(APXLOG_MARK_DEBUG "waiting %d sec... shutdown: %d", SO_STOPTIMEOUT, _exe_shutdown);
             apxHandleWait(gWorker, SO_STOPTIMEOUT*1000, FALSE);

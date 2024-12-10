@@ -45,6 +45,12 @@
       <action dev="michaelo" type="fix">
         Fix several issues around Java OS and header files location detection.
       </action>
+      <!-- Add -->
+      <action issue="DAEMON-460" dev="markt" type="add">
+        Add protection to avoid high CPU usage for applications running in JVM
+        mode that do not wait for the stop method to be called before the start
+        method returns.
+      </action>
       <!-- UPDATE -->
       <action dev="ggregory" type="update" due-to="Dependabot">
         Bump org.apache.commons:commons-parent from 71 to 78 #189, #196, #198, #204, #207, #210, #216.
