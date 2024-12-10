@@ -45,6 +45,10 @@
       <action dev="michaelo" type="fix">
         Fix several issues around Java OS and header files location detection.
       </action>
+      <action dev="markt" type="fix">
+        Correct several log messages where an incorrect placeholder led to
+        truncation of the inserted values.
+      </action>
       <!-- Add -->
       <action issue="DAEMON-460" dev="markt" type="add">
         Add protection to avoid high CPU usage for applications running in JVM
