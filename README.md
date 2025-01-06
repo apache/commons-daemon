@@ -44,8 +44,9 @@ Apache Commons Daemon
 ===================
 
 [![Java CI](https://github.com/apache/commons-daemon/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/maven.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/commons-daemon/commons-daemon?label=Maven%20Central)](https://search.maven.org/artifact/commons-daemon/commons-daemon)
-[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.4.0.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.4.0)
+[![Coverage Status](https://codecov.io/gh/apache/commons-daemon/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-daemon)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/badge.svg?gav=true)](https://maven-badges.herokuapp.com/maven-central/commons-daemon/commons-daemon/?gav=true)
+[![Javadocs](https://javadoc.io/badge/commons-daemon/commons-daemon/1.4.1.svg)](https://javadoc.io/doc/commons-daemon/commons-daemon/1.4.1)
 [![CodeQL](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/apache/commons-daemon/actions/workflows/codeql-analysis.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/apache/commons-daemon/badge)](https://api.securityscorecards.dev/projects/github.com/apache/commons-daemon)
 
@@ -71,7 +72,7 @@ Alternatively, you can pull it from  the central Maven repositories:
 <dependency>
   <groupId>commons-daemon</groupId>
   <artifactId>commons-daemon</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
 </dependency>
 ```
 
