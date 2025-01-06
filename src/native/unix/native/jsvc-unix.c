@@ -850,7 +850,7 @@ static int child(arg_data *args, home_data *data, uid_t uid, gid_t gid)
     /* Check wether we need to dump the VM version */
     if (args->vers == true) {
         log_error("jsvc (Apache Commons Daemon) " JSVC_VERSION_STRING);
-        log_error("Copyright (c) 1999-2024 Apache Software Foundation.");
+        log_error("Copyright (c) 1999-2025 Apache Software Foundation.");
         if (java_version() != true) {
             return -1;
         }

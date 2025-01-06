@@ -401,7 +401,7 @@ static void printVersion(void)
 {
     fwprintf(stderr, L"Apache Commons Daemon Service Runner version %S/Win%d (%S)\n",
             PRG_VERSION, PRG_BITS, __DATE__);
-    fwprintf(stderr, L"Copyright (c) 2000-2024 The Apache Software Foundation.\n\n"
+    fwprintf(stderr, L"Copyright (c) 2000-2025 The Apache Software Foundation.\n\n"
                      L"For bug reporting instructions, please see:\n"
                      L"<URL:https://issues.apache.org/jira/browse/DAEMON>.");
 }
