@@ -47,6 +47,9 @@ public class DaemonWrapper implements Daemon
     private final Invoker             startup;
     private final Invoker             shutdown;
 
+    /**
+     * Constructs a new initialized instance.
+     */
     public DaemonWrapper()
     {
         config   = new DaemonConfiguration();

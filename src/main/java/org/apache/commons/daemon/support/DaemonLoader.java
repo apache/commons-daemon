@@ -41,6 +41,9 @@ public final class DaemonLoader
     private static Method destroy; //@GuardedBy("this")
     private static Method signal; //@GuardedBy("this")
 
+    /**
+     * Prints version information to {@link System#err}.
+     */
     public static void version()
     {
         System.err.println("java version \"" +
@@ -101,6 +104,11 @@ public final class DaemonLoader
         return true;
     }
 
+    /**
+     * Invokes the wrapped {@code signal} method.
+     *
+     * @return whether the call succeeded.
+     */
     public static boolean signal()
     {
         try {
@@ -116,6 +124,13 @@ public final class DaemonLoader
         return false;
     }
 
+    /**
+     * Loads the given class by name, initializing wrapper methods.
+     *
+     * @param className The class name to load.
+     * @param args arguments for the context.
+     * @return whether the operation succeeded.
+     */
     public static boolean load(final String className, String[] args)
     {
         try {
@@ -174,7 +189,6 @@ public final class DaemonLoader
             }
 
             init    = c.getMethod("init", myclass);
-
             start   = c.getMethod("start");
             stop    = c.getMethod("stop");
             destroy = c.getMethod("destroy");
@@ -182,7 +196,7 @@ public final class DaemonLoader
             try {
                 signal = c.getMethod("signal");
             } catch (final NoSuchMethodException ignored) {
-                // Signalling will be disabled.
+                // Signaling will be disabled.
             }
 
             /* Create a new instance of the daemon */
@@ -233,17 +247,20 @@ public final class DaemonLoader
         return true;
     }
 
+    /**
+     * Invokes the wrapped {@code start} method.
+     *
+     * @return whether the call succeeded.
+     */
     public static boolean start()
     {
         try {
             // Attempt to start the daemon
             start.invoke(daemon);
-
             // Set the availability flag in the controller
             if (controller != null) {
                 controller.setAvailable(true);
             }
-
         } catch (final Throwable t) {
             // In case we encounter ANY error, we dump the stack trace and
             // return false (load, start and stop won't be called).
@@ -253,6 +270,11 @@ public final class DaemonLoader
         return true;
     }
 
+    /**
+     * Invokes the wrapped {@code stop} method.
+     *
+     * @return whether the call succeeded.
+     */
     public static boolean stop()
     {
         try {
@@ -260,7 +282,6 @@ public final class DaemonLoader
             if (controller != null) {
                 controller.setAvailable(false);
             }
-
             /* Attempt to stop the daemon */
             stop.invoke(daemon);
         }
@@ -273,12 +294,16 @@ public final class DaemonLoader
         return true;
     }
 
+    /**
+     * Invokes the wrapped {@code destroy} method.
+     *
+     * @return whether the call succeeded.
+     */
     public static boolean destroy()
     {
         try {
             /* Attempt to stop the daemon */
             destroy.invoke(daemon);
-
             daemon = null;
             controller = null;
         } catch (final Throwable t) {
@@ -293,6 +318,9 @@ public final class DaemonLoader
     private static native void shutdown(boolean reload);
     private static native void failed(String message);
 
+    /**
+     * A DaemonController that acts on the the global {@link DaemonLoader} state.
+     */
     public static class Controller
         implements DaemonController
     {
@@ -382,6 +410,9 @@ public final class DaemonLoader
 
     }
 
+    /**
+     * A concrete {@link DaemonContext} that acts as a simple value container.
+     */
     public static class Context
         implements DaemonContext
     {
@@ -396,6 +427,11 @@ public final class DaemonLoader
             return daemonController;
         }
 
+        /**
+         * Sets the daemon controller.
+         *
+         * @param controller the daemon controller.
+         */
         public void setController(final DaemonController controller)
         {
             this.daemonController = controller;
@@ -407,7 +443,12 @@ public final class DaemonLoader
             return args;
         }
 
-        public void setArguments(final String[]args)
+        /**
+         * Sets arguments. Note that this implementation doesn't currently make a defensive copy.
+         *
+         * @param args arguments.
+         */
+        public void setArguments(final String[] args)
         {
             this.args = args;
         }
