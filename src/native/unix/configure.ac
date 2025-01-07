@@ -28,7 +28,7 @@ AC_PREREQ(2.53)
 sinclude(./support/apfunctions.m4)dnl
 sinclude(./support/apjava.m4)dnl
 sinclude(./support/apsupport.m4)dnl
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 AC_CONFIG_AUX_DIR(./support)
 
 dnl Generate ./config.nice for reproducing runs of configure
