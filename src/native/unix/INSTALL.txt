@@ -25,7 +25,7 @@ or
 Note: On Mac OS X <dir> is /System/Library/Frameworks/JavaVM.framework/Home.
 
 Depending on your JDK layout, configure might fail to find the JNI
-machine dependant include file (jni_md.h). If that's the case use the
+machine dependent include file (jni_md.h). If that's the case use the
 --with-os-type=<subdir> parameter where subdir points to the directory
 within JDK include directory containing jni_md.h file.
 
