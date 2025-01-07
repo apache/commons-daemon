@@ -18,7 +18,7 @@
 # The cache of automake always brings problems when changing *.m4 files.
 rm -rf autom4te.cache
 
-if test -f configure.in ; then
+if test -f configure.ac ; then
   autoreconf -fi
   if test $? -ne 0 ; then
     echo "$0: cannot generate configure script"
@@ -26,5 +26,5 @@ if test -f configure.in ; then
     echo "$0: configure script generated successfully"
   fi
 else
-  echo "$0: cannot find source file configure.in"
+  echo "$0: cannot find source file configure.ac"
 fi
