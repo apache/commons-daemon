@@ -3,7 +3,7 @@ system you will need:
 
   An ANSI-C compliant compiler (GCC is good)
   A Java Platform 2 compliant SDK
-  GNU AutoConf (when building from Git).
+  GNU Automake (when building from Git).
 
 When building from Git you need to build the "configure" program with:
 
