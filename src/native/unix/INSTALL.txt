@@ -2,7 +2,7 @@ To build the service libraries and binary under an UNIX operating
 system you will need:
 
   An ANSI-C compliant compiler (GCC is good)
-  A Java Platform 2 compliant SDK
+  Java 8 or later JDK
   GNU Automake (when building from Git).
 
 When building from Git you need to build the "configure" program with:
