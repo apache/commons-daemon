@@ -15,12 +15,12 @@ dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
 dnl
 
-AC_DEFUN(AP_MSG_HEADER,[
+AC_DEFUN([AP_MSG_HEADER],[
   printf "*** %s ***\n" "$1" 1>&2
   AC_PROVIDE([$0])
 ])
 
-AC_DEFUN(AP_CANONICAL_HOST_CHECK,[
+AC_DEFUN([AP_CANONICAL_HOST_CHECK],[
   AC_MSG_CHECKING([cached host system type])
   if { test x"${ac_cv_host_system_type+set}" = x"set"  &&
        test x"$ac_cv_host_system_type" != x"$host" ; }

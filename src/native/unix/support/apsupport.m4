@@ -15,7 +15,7 @@ dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
 dnl
 
-AC_DEFUN(AP_SUPPORTED_HOST,[
+AC_DEFUN([AP_SUPPORTED_HOST],[
   AC_MSG_CHECKING([C flags dependant on host system type])
 
   case $host_os in
