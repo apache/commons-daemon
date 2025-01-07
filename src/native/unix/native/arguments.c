@@ -450,35 +450,29 @@ static arg_data *parse(int argc, char *argv[])
 
 static const char *IsYesNo(bool par)
 {
-    switch (par) {
-        case false:
-            return "No";
-        case true:
-            return "Yes";
+    if (par) {
+        return "Yes";
+    } else {
+        return "No";
     }
-    return "[Error]";
 }
 
 static const char *IsTrueFalse(bool par)
 {
-    switch (par) {
-        case false:
-            return "False";
-        case true:
-            return "True";
+    if (par) {
+        return "True";
+    } else {
+        return "False";
     }
-    return "[Error]";
 }
 
 static const char *IsEnabledDisabled(bool par)
 {
-    switch (par) {
-        case true:
-            return "Enabled";
-        case false:
-            return "Disabled";
+    if (par) {
+        return "Enabled";
+    } else {
+        return "Disabled";
     }
-    return "[Error]";
 }
 
 /* Main entry point: parse command line arguments and dump them */
