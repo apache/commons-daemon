@@ -316,7 +316,7 @@ BOOL __generalPropertySave(HWND hDlg)
         bDelayedStart = TRUE;
     }
     else if (i == 1)
-            dwStartType = SERVICE_AUTO_START;
+        dwStartType = SERVICE_AUTO_START;
     else if (i == 2)
         dwStartType = SERVICE_DEMAND_START;
     else if (i == 3)
