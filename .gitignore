@@ -20,3 +20,4 @@
 /target/
 **/.vs/
 /commons-daemon.iml
+**/.DS_Store
