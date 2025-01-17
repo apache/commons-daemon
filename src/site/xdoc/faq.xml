@@ -16,8 +16,9 @@
  limitations under the License.
 -->
 
-<document>
-
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 https://maven.apache.org/xsd/xdoc-2.0.xsd">
  <properties>
   <title>Daemon : FAQ</title>
   <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
@@ -69,6 +70,7 @@ jsvc.exec error: syscall failed in set_caps
 jsvc.exec error: Service exit with a return value of 4
 </source>
 CONFIG_SECURITY_CAPABILITIES in missing in your kernel try the following in the kernel sources:
+</p>
 <ul>
 <li>
 Configure the kernel with "Default Linux Capabilities" and reboot
@@ -81,7 +83,6 @@ modprobe capability
 </source>
 </li>
 </ul>
-</p>
 </section>
 
 <section name="Cygwin configuration problems">

@@ -15,9 +15,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-<document>
-
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 https://maven.apache.org/xsd/xdoc-2.0.xsd">
  <properties>
   <title>Daemon : Java based daemons or services</title>
   <author email="jfrederic.clere@fujitsu-siemens.con">Jean-Frederic Clere</author>
@@ -31,14 +31,14 @@
       opposed to just applets and client applications. The major disadvantage of
       the Java platform is that still today the only portable way to
       start a Java application relies on a single point of entry: the
-      <CODE><EM CLASS="key">public static void</EM>
-      main(<EM CLASS="ref">String</EM>[])</CODE> method.
+      <code><em class="key">public static void</em>
+      main(<em class="ref">String</em>[])</code> method.
 </p>
 <p>
       Having a single-point of entry is a valid solution for client
       applications, where interactively a user can command to the application
       to quit (which can terminate the Virtual Machine process at calling the
-      <CODE><EM CLASS="ref">System</EM>.exit(<EM CLASS="key">int</EM>)</CODE>
+      <code><em class="ref">System</em>.exit(<em class="key">int</em>)</code>
       method), but in those cases where the application is not interactive
       (server applications) there is currently no portable way to notify
       the Virtual Machine of its imminent shutdown.
@@ -52,12 +52,13 @@
 </p>
 <p>
       One common solution to this problem is to create (for example) a
-      <CODE><EM CLASS="ref">ServerSocket</EM></CODE> and wait for a particular
+      <code><em class="ref">ServerSocket</em></code> and wait for a particular
       message to be issued. When the message is received, all operations
       required to shut down the server applications are performed and at the
-      end the <CODE><EM CLASS="ref">System</EM>.exit</CODE> method is called
+      end the <code><em class="ref">System</em>.exit</code> method is called
       to terminate the Virtual Machine process. This method however, has
       several disadvantages and risks:
+</p>
       <ul>
       <li>
       In case of a system-wide shutdown, the Virtual Machine process may be
@@ -71,7 +72,6 @@
       implemented in the operating system.
       </li>
       </ul>
-</p>
 <p>
       Most multi-user operating systems already have a way in which server
       applications are started and stopped. Under Unix based operating systems
