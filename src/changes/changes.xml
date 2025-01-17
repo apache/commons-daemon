@@ -40,6 +40,11 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
+    <release version="1.4.2" date="YYYY-MM-DD" description="This is a maintenance release. Java 8 or later is required.">
+      <!-- FIX -->
+      <!-- ADD -->
+      <!-- UPDATE -->
+    </release>
     <release version="1.4.1" date="2025-01-13" description="Bug fix release">
       <!-- FIX -->
       <action dev="michaelo" type="fix">
