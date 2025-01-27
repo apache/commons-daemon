@@ -148,7 +148,7 @@
     <commons.jacoco.complexityRatio>0.00</commons.jacoco.complexityRatio>
   </properties>
   <profiles>
-    <!-- Customise the default ASF Commons release profile -->
+    <!-- Customize the default ASF Commons release profile -->
     <profile>
       <id>release</id>
       <build>
