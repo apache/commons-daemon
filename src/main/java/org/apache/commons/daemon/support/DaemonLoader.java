@@ -17,13 +17,13 @@
 
 package org.apache.commons.daemon.support;
 
-import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonController;
-import org.apache.commons.daemon.DaemonInitException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
+
+import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonController;
+import org.apache.commons.daemon.DaemonInitException;
 
 /**
  * Used by jsvc for Daemon management.
@@ -41,6 +41,13 @@ public final class DaemonLoader
     private static Method destroy; //@GuardedBy("this")
     private static Method signal; //@GuardedBy("this")
 
+    /**
+     * Constructs a new instance.
+     */
+    public DaemonLoader() {
+        // empty
+    }
+    
     /**
      * Prints version information to {@link System#err}.
      */
@@ -413,13 +420,19 @@ public final class DaemonLoader
     /**
      * A concrete {@link DaemonContext} that acts as a simple value container.
      */
-    public static class Context
-        implements DaemonContext
+    public static class Context implements DaemonContext
     {
 
         private DaemonController daemonController;
 
         private String[] args;
+
+        /**
+         * Constructs a new instance.
+         */
+        public Context() {
+            // empty
+        }
 
         @Override
         public DaemonController getController()
