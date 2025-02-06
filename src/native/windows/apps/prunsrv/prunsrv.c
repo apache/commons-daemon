@@ -43,6 +43,8 @@
 #define STDERR_FILENO 2
 #define ONE_MINUTE    (60 * 1000)
 #define ONE_MINUTE_SEC 60
+#define TIMEFORSERVICEMANAGER 15
+#define MILLITIMEFORSERVICEMANAGER 15000
 
 #ifdef _WIN64
 #define KREG_WOW6432  KEY_WOW64_32KEY
@@ -959,9 +961,9 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
             }
             if (timeout) {
                 /* the SO_STOPTIMEOUT applies to the stop command and to the time service needs to stop */
-                /* We also add 15 seconds for the service logic */
+                /* We also add TIMEFORSERVICEMANAGER seconds for the service logic */
                 int i;
-                for (i = 0; i < (timeout*2+15); i++) {
+                for (i = 0; i < (timeout*2+TIMEFORSERVICEMANAGER); i++) {
                     /* apxServiceCheckStop waits 1000 ms */
                     rv = apxServiceCheckStop(hService);
                     apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck returns %d.", rv);
@@ -1620,11 +1622,11 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
             _exe_shutdown = TRUE;
             /* What hint value should we give 2*TIMEOUT+15 in seconds from docmdStopService() and tests */
             if (SO_STOPTIMEOUT) {
-                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 2000 + 15000);
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 2000 + MILLITIMEFORSERVICEMANAGER);
             }
             else {
                 /* Use 1 minutes default */
-                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE * 2 + 15000);
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE * 2 + MILLITIMEFORSERVICEMANAGER);
             }
             /* Stop the service asynchronously */
             stopThread = CreateThread(NULL, 0,
