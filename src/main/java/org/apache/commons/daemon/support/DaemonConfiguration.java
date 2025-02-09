@@ -50,13 +50,13 @@ public final class DaemonConfiguration
     /**
      * Default configuration file name.
      */
-    protected final static String DEFAULT_CONFIG        = "daemon.properties";
+    protected static final String DEFAULT_CONFIG        = "daemon.properties";
     /**
      * Property prefix
      */
-    protected final static String PREFIX                = "daemon.";
-    private   final static String BTOKEN                = "${";
-    private   final static String ETOKEN                = "}";
+    protected static final String PREFIX                = "daemon.";
+    private   static final String BTOKEN                = "${";
+    private   static final String ETOKEN                = "}";
 
     private final Properties configurationProperties;
     private final Properties systemProperties;

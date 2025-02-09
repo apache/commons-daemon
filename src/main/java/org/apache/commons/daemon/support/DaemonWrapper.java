@@ -35,12 +35,12 @@ import org.apache.commons.daemon.DaemonContext;
 public class DaemonWrapper implements Daemon
 {
 
-    private final static String ARGS            = "args";
-    private final static String START_CLASS     = "start";
-    private final static String START_METHOD    = "start.method";
-    private final static String STOP_CLASS      = "stop";
-    private final static String STOP_METHOD     = "stop.method";
-    private final static String STOP_ARGS       = "stop.args";
+    private static final String ARGS            = "args";
+    private static final String START_CLASS     = "start";
+    private static final String START_METHOD    = "start.method";
+    private static final String STOP_CLASS      = "stop";
+    private static final String STOP_METHOD     = "stop.method";
+    private static final String STOP_ARGS       = "stop.args";
     private String              configFileName;
     private final DaemonConfiguration config;
 
