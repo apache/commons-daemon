@@ -26,7 +26,7 @@ public class DaemonInitException extends Exception {
     /**
      * Constructs a new exception with the given message.
      *
-     * @param message the detail message accessible with {@link #getMessage()} .
+     * @param message the detail message accessible with {@link #getMessage()}.
      */
     public DaemonInitException(final String message) {
         super(message);
@@ -35,7 +35,7 @@ public class DaemonInitException extends Exception {
     /**
      * Constructs a new exception with the given detail and cause.
      *
-     * @param message the detail message accessible with {@link #getMessage()} .
+     * @param message the detail message accessible with {@link #getMessage()}.
      * @param cause the cause accessible with {@link #getCause()}.
      */
     public DaemonInitException(final String message, final Throwable cause) {
