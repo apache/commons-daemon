@@ -99,7 +99,7 @@ typedef _W64 int            intptr_t;
 #define SIZ_HUGLEN         8192
 #define SIZ_HUGMAX         (SIZ_HUGLEN -1)
 #define SIZ_PATHLEN        4096
-#define SIZ_PATHMAX        4095
+#define SIZ_PATHMAX        (SIZ_PATHLEN -1)
 
 #include "handles.h"
 #include "log.h"
