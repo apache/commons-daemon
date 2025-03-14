@@ -635,7 +635,7 @@ you need to create a class with the appropriate method(s).
 For example:
 <source>
 class MyClass;
-// N.B. error handling not shown
+// Error handling not shown
 static void main(String [] args){
     String mode = args[0];
     if ("start".equals(mode){
@@ -656,7 +656,7 @@ is start or stop.
 Alternatively, you can use different method names for the service start and stop functions:
 <source>
 class MyClass;
-// N.B. error handling not shown
+// Error handling not shown
 static void start(String [] args){
         // process service start function
     }

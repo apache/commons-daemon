@@ -31,7 +31,7 @@ import org.apache.commons.daemon.DaemonInitException;
 public final class DaemonLoader
 {
 
-    // N.B. These static mutable variables need to be accessed using synch.
+    // These static mutable variables need to be accessed using synch.
     private static Controller controller; //@GuardedBy("this")
     private static Object daemon; //@GuardedBy("this")
     /* Methods to call */
