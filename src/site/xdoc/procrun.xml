@@ -530,9 +530,12 @@ will add the new value(s) to any existing value(s).
     </tr>
     <tr>
     <td>--StopTimeout</td>
-    <td>No Timeout</td>
-    <td>Defines the timeout in seconds that procrun waits for service to
-        exit gracefully.</td>
+    <td>60 seconds</td>
+    <td>Defines the timeout in seconds that procrun waits for service
+        to receive the stop command and exit gracefully.
+        Note that after twice the timeout and 15 seconds the service
+        processes will be killed by procrun. Negative values are
+        replaced by the registry value of WaitToKillServiceTimeout.</td>
     </tr>
     <tr>
     <td>--LogPath</td>
