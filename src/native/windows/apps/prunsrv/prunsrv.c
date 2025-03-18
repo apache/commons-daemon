@@ -261,6 +261,8 @@ static BOOL   gSignalValid   = TRUE;
 static APXJAVA_THREADARGS gRargs;
 static APXJAVA_THREADARGS gSargs;
 
+static DWORD stopStarted = 0; /* Not stop not started */
+
 DWORD WINAPI eventThread(LPVOID lpParam)
 {
     DWORD dwRotateCnt = SO_LOGROTATE;
@@ -955,21 +957,19 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
         if (!rv) {
             /* Wait for the timeout if any */
             int  timeout     = SO_STOPTIMEOUT;
-            if (timeout == 0) {
+            int i;
+            if (timeout <= 0) {
                 /* waiting for ever doesn't look OK here */
                 timeout = ONE_MINUTE_SEC;
             }
-            if (timeout) {
-                /* the SO_STOPTIMEOUT applies to the stop command and to the time service needs to stop */
-                /* We also add TIMEFORSERVICEMANAGER seconds for the service logic */
-                int i;
-                for (i = 0; i < (timeout*2+TIMEFORSERVICEMANAGER); i++) {
-                    /* apxServiceCheckStop waits 1000 ms */
-                    rv = apxServiceCheckStop(hService);
-                    apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck returns %d.", rv);
-                    if (rv)
-                        break;
-                }
+            /* the SO_STOPTIMEOUT applies to the stop command and to the time service needs to stop */
+            /* We also add TIMEFORSERVICEMANAGER seconds for the service logic */
+            for (i = 0; i < timeout; i++) {
+                /* apxServiceCheckStop waits 1000 ms */
+                rv = apxServiceCheckStop(hService);
+                apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck returns %d.", rv);
+                if (rv)
+                    break;
             }
         }
         if (rv)
@@ -1233,8 +1233,19 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
     BOOL   wait_to_die = FALSE;
     DWORD  timeout     = SO_STOPTIMEOUT * 1000;
     DWORD  dwCtrlType  = (DWORD)((BYTE *)lpParameter - (BYTE *)0);
+    DWORD  now = 0;
+    DWORD  waited = 0;
 
     apxLogWrite(APXLOG_MARK_INFO "Stopping service...");
+    stopStarted = GetTickCount();
+    if (dwCtrlType == SERVICE_CONTROL_SHUTDOWN)
+        timeout = MIN(timeout, apxGetMaxServiceTimeout(gPool));
+    if (!timeout) {
+        /* Use 1 minutes default */
+        timeout = ONE_MINUTE_SEC;
+    }
+    /* give a hint for shutdown time */
+    reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, timeout);
 
     if (IS_INVALID_HANDLE(gWorker)) {
         apxLogWrite(APXLOG_MARK_INFO "Worker is not defined.");
@@ -1277,16 +1288,14 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         }
         else {
             if (lstrcmpA(_jni_sclass, "java/lang/System") == 0) {
-                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
+                /* report progress */
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, timeout);
                 apxLogWrite(APXLOG_MARK_DEBUG "Forcing Java JNI System.exit() worker to finish...");
                 return 0;
             }
             else {
                 apxLogWrite(APXLOG_MARK_DEBUG "Waiting for Java JNI stop worker to finish for %s:%s...", _jni_sclass, _jni_smethod);
-                if (!timeout)
-                    apxJavaWait(hWorker, INFINITE, FALSE);
-                else
-                    apxJavaWait(hWorker, timeout, FALSE);
+                apxJavaWait(hWorker, timeout, FALSE);
                 apxLogWrite(APXLOG_MARK_DEBUG "Java JNI stop worker finished.");
             }
         }
@@ -1359,10 +1368,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
             goto cleanup;
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting for stop worker to finish...");
-            if (!timeout)
-                apxHandleWait(hWorker, INFINITE, FALSE);
-            else
-                apxHandleWait(hWorker, timeout, FALSE);
+            apxHandleWait(hWorker, timeout, FALSE);
             apxLogWrite(APXLOG_MARK_DEBUG "Stop worker finished.");
         }
         wait_to_die = TRUE;
@@ -1383,15 +1389,24 @@ cleanup:
         CloseHandle(gSignalThread);
         gSignalEvent = NULL;
     }
-    if (wait_to_die && !timeout)
-        timeout = 300 * 1000;   /* Use the 5 minute default shutdown */
 
-    if (dwCtrlType == SERVICE_CONTROL_SHUTDOWN)
-        timeout = MIN(timeout, apxGetMaxServiceTimeout(gPool));
-    if (timeout)
-        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, timeout);
-    else
-        reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE_SEC);
+    /* We already waited */
+    now = GetTickCount();
+    if (now >= stopStarted)
+        waited = now - stopStarted;
+    else {
+        /* we have wrapped to zero */
+        waited = (0xFFFFFFFF - stopStarted) + now;
+    }
+    if (timeout > waited) {
+        timeout = timeout - waited;
+    } else {
+        /* something is wrong, the timeout is too small */
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting more than the specified timeout (%d)", timeout);
+    }
+        
+    /* renew the hint message */
+    reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, timeout);
 
     if (timeout) {
         FILETIME fts, fte;
@@ -1620,13 +1635,14 @@ void WINAPI service_ctrl_handler(DWORD dwCtrlCode)
         case SERVICE_CONTROL_STOP:
             apxLogWrite(APXLOG_MARK_INFO "Service SERVICE_CONTROL_STOP signalled.");
             _exe_shutdown = TRUE;
-            /* What hint value should we give 2*TIMEOUT+15 in seconds from docmdStopService() and tests */
+            stopStarted = GetTickCount();
+            /* hint for shutdown time */
             if (SO_STOPTIMEOUT) {
-                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 2000 + MILLITIMEFORSERVICEMANAGER);
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, SO_STOPTIMEOUT * 1000);
             }
             else {
                 /* Use 1 minutes default */
-                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE * 2 + MILLITIMEFORSERVICEMANAGER);
+                reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
             }
             /* Stop the service asynchronously */
             stopThread = CreateThread(NULL, 0,
@@ -1860,6 +1876,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
 
         if (SO_STOPTIMEOUT) {
             /* we wait for ever for the service to be done, printing a debug message every 2 seconds */
+            /* we also warn in case the service doesn't stop before the stop timeout */
             BOOL bLoopWarningIssued = FALSE;
             DWORD count = 0;
             do {
@@ -1878,7 +1895,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                     }
                 }
                 if (rv == WAIT_OBJECT_0)
-                    apxLogWrite(APXLOG_MARK_DEBUG "Worker has crashed or stopped!");
+                    apxLogWrite(APXLOG_MARK_WARN "Worker has crashed or stopped!");
                 else
                     apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
             } while (!_exe_shutdown);
@@ -1910,10 +1927,8 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         if (!apxDestroyJvm(ONE_MINUTE)) {
             /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
+            int count = ONE_MINUTE_SEC; /* wait ONE_MINUTE like the apxDestroyJvm() */
             apxLogWrite(APXLOG_MARK_DEBUG "Not using JAVA apxDestroyJvm did nothing");
-            DWORD count = SO_STOPTIMEOUT;
-            if (!count)
-                count = ONE_MINUTE_SEC;
             do {
                 if (!apxProcessTerminateChild( GetCurrentProcessId(), TRUE)) {
                     Sleep(1000);
