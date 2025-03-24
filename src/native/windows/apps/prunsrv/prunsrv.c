@@ -294,6 +294,21 @@ DWORD WINAPI eventThread(LPVOID lpParam)
     UNREFERENCED_PARAMETER(lpParam);
 }
 
+/* Calculate how much time we already spent stopping the service */
+static DWORD waitedSinceStopCmd()
+{
+    DWORD  now = 0;
+    DWORD  waited = 0;
+    now = GetTickCount();
+    if (now >= stopStarted)
+        waited = now - stopStarted;
+    else {
+        /* we have wrapped to zero */
+        waited = (0xFFFFFFFF - stopStarted) + now;
+    }
+    return waited;
+}
+
 /* redirect console stdout/stderr to files
  * so that Java messages can get logged
  * If stderrfile is not specified it will
@@ -1233,7 +1248,6 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
     BOOL   wait_to_die = FALSE;
     DWORD  timeout     = SO_STOPTIMEOUT * 1000;
     DWORD  dwCtrlType  = (DWORD)((BYTE *)lpParameter - (BYTE *)0);
-    DWORD  now = 0;
     DWORD  waited = 0;
 
     apxLogWrite(APXLOG_MARK_INFO "Stopping service...");
@@ -1391,13 +1405,7 @@ cleanup:
     }
 
     /* We already waited */
-    now = GetTickCount();
-    if (now >= stopStarted)
-        waited = now - stopStarted;
-    else {
-        /* we have wrapped to zero */
-        waited = (0xFFFFFFFF - stopStarted) + now;
-    }
+    waited = waitedSinceStopCmd();
     if (timeout > waited) {
         timeout = timeout - waited;
     } else {
@@ -1912,6 +1920,9 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         goto cleanup;
     }
     if (gShutdownEvent) {
+        int waited = waitedSinceStopCmd();
+        int timeout = SO_STOPTIMEOUT;
+        BOOL btimeoutelapsed = FALSE;
 
         /* Ensure that shutdown thread exits before us */
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting for ShutdownEvent.");
@@ -1921,16 +1932,32 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         CloseHandle(gShutdownEvent);
         gShutdownEvent = NULL;
 
+        /* calculate the next timeout */
+        if (timeout <= 0)
+            timeout = ONE_MINUTE_SEC;
+        if (timeout > waited) {
+            timeout = timeout - waited;
+        } else {
+            /* something is wrong, the timeout is too small */
+            apxLogWrite(APXLOG_MARK_DEBUG "Waiting more than the specified timeout (%d)", timeout);
+            timeout = ONE_MINUTE;
+            btimeoutelapsed = TRUE;
+        }
+
         /* This will cause to wait for all threads to exit
          */
-        apxLogWrite(APXLOG_MARK_DEBUG "Waiting 1 minute for all threads to exit.");
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting %d milli seconds for all threads to exit.", timeout);
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
-        if (!apxDestroyJvm(ONE_MINUTE)) {
+        if (!apxDestroyJvm(timeout)) {
             /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
-            int count = ONE_MINUTE_SEC; /* wait ONE_MINUTE like the apxDestroyJvm() */
+            int count = timeout; /* wait timeout like the apxDestroyJvm() */
+                
             apxLogWrite(APXLOG_MARK_DEBUG "Not using JAVA apxDestroyJvm did nothing");
             do {
                 if (!apxProcessTerminateChild( GetCurrentProcessId(), TRUE)) {
+                    /* Just print the children processes once for debugging */
+                    if (btimeoutelapsed)
+                        break;
                     Sleep(1000);
                     count = count - 1;
                 } else {
