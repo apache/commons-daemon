@@ -960,6 +960,7 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
         return FALSE;
     }
 
+    stopStarted = GetTickCount();
     SetLastError(ERROR_SUCCESS);
     /* Open the service */
     if (apxServiceOpen(hService, lpCmdline->szApplication,
@@ -971,15 +972,29 @@ static BOOL docmdStopService(LPAPXCMDLINE lpCmdline)
                                NULL);
         if (!rv) {
             /* Wait for the timeout if any */
-            int  timeout     = SO_STOPTIMEOUT;
+            int timeout     = SO_STOPTIMEOUT;
+            int waited      = waitedSinceStopCmd();
             int i;
             if (timeout <= 0) {
                 /* waiting for ever doesn't look OK here */
                 timeout = ONE_MINUTE_SEC;
             }
+            apxLogWrite(APXLOG_MARK_DEBUG "docmdStopService Waited %d timeout %d", waited, timeout*1000);
+            if (timeout*1000 > waited) {
+                /*
+                 * it took waited to send the command, the service starts
+                 * counting the timeout once it receives the STOP command
+                 * that is probably after waited but that depends on the
+                 * box we are using, we add 1 second just to be sure.
+                 */
+                timeout = timeout*1000 + waited + 1000;
+            } else {
+                apxLogWrite(APXLOG_MARK_DEBUG "docmdStopService timeout %d too small.", timeout*1000);
+                timeout = 1000; /* we might wait 1 s too much but we check if we have already stopped */
+            }
+            apxLogWrite(APXLOG_MARK_DEBUG "docmdStopService estimated timeout %d milliseconds.", timeout);
             /* the SO_STOPTIMEOUT applies to the stop command and to the time service needs to stop */
-            /* We also add TIMEFORSERVICEMANAGER seconds for the service logic */
-            for (i = 0; i < timeout; i++) {
+            for (i = 0; i < timeout; i=i+1000) {
                 /* apxServiceCheckStop waits 1000 ms */
                 rv = apxServiceCheckStop(hService);
                 apxLogWrite(APXLOG_MARK_DEBUG "apxServiceCheck returns %d.", rv);
@@ -1256,8 +1271,9 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         timeout = MIN(timeout, apxGetMaxServiceTimeout(gPool));
     if (!timeout) {
         /* Use 1 minutes default */
-        timeout = ONE_MINUTE_SEC;
+        timeout = ONE_MINUTE;
     }
+    apxLogWrite(APXLOG_MARK_INFO "Stopping service...timeout %d", timeout);
     /* give a hint for shutdown time */
     reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, timeout);
 
@@ -1404,8 +1420,9 @@ cleanup:
         gSignalEvent = NULL;
     }
 
-    /* We already waited */
+    /* We already waited here timeout is msec */
     waited = waitedSinceStopCmd();
+    apxLogWrite(APXLOG_MARK_DEBUG "Waited %d timeout (%d)", waited, timeout);
     if (timeout > waited) {
         timeout = timeout - waited;
     } else {
@@ -1886,8 +1903,10 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
             /* we wait for ever for the service to be done, printing a debug message every 2 seconds */
             /* we also warn in case the service doesn't stop before the stop timeout */
             BOOL bLoopWarningIssued = FALSE;
-            DWORD count = 0;
+            int waited = 0;
+            int timeout = SO_STOPTIMEOUT;
             do {
+                DWORD count = 0;
                 /* wait 2 seconds */
                 DWORD rv = apxHandleWait(gWorker, 2000, FALSE);
                 if (rv == WAIT_OBJECT_0 && !_exe_shutdown) {
@@ -1895,6 +1914,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                         apxLogWrite(APXLOG_MARK_WARN "Start method returned before stop method was called. This should not happen. Using loop with a fixed sleep of 2 seconds waiting for stop method to be called.");
                         bLoopWarningIssued = TRUE;
                     }
+                    /* XXXX apart error are we getting there??? */
                     Sleep(2000);
                     count = count + 2;
                     if (count >= SO_STOPTIMEOUT) {
@@ -1907,8 +1927,16 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 else
                     apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
             } while (!_exe_shutdown);
-            apxLogWrite(APXLOG_MARK_DEBUG "waiting %d sec... shutdown: %d", SO_STOPTIMEOUT, _exe_shutdown);
-            apxHandleWait(gWorker, SO_STOPTIMEOUT*1000, FALSE);
+
+            /* calculate remaing timeout */
+            waited = waitedSinceStopCmd();
+            if (timeout*1000 > waited) {
+                timeout = timeout*1000 - waited;
+            } else {
+                timeout = 1000; /* 1000 ms in the worse case */
+            }
+            apxLogWrite(APXLOG_MARK_DEBUG "waiting %d milliseconds... shutdown: %d", timeout, _exe_shutdown);
+            apxHandleWait(gWorker, timeout, FALSE);
         } else {
             apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
             apxHandleWait(gWorker, INFINITE, FALSE);
@@ -1932,38 +1960,39 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         CloseHandle(gShutdownEvent);
         gShutdownEvent = NULL;
 
-        /* calculate the next timeout */
+        /* calculate the next timeout  here timeout is sec */
         if (timeout <= 0)
             timeout = ONE_MINUTE_SEC;
-        if (timeout > waited) {
-            timeout = timeout - waited;
+        apxLogWrite(APXLOG_MARK_DEBUG "Waited %d timeout (%d)", waited, timeout*1000);
+        if (timeout*1000 > waited) {
+            timeout = timeout*1000 - waited;
         } else {
             /* something is wrong, the timeout is too small */
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting more than the specified timeout (%d)", timeout);
-            timeout = ONE_MINUTE;
+            timeout = ONE_MINUTE + waited;
             btimeoutelapsed = TRUE;
         }
 
         /* This will cause to wait for all threads to exit
          */
-        apxLogWrite(APXLOG_MARK_DEBUG "Waiting %d milli seconds for all threads to exit.", timeout);
+        apxLogWrite(APXLOG_MARK_DEBUG "Waiting %d milliseconds for all threads to exit.", timeout);
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         if (!apxDestroyJvm(timeout)) {
             /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
-            int count = timeout; /* wait timeout like the apxDestroyJvm() */
-                
             apxLogWrite(APXLOG_MARK_DEBUG "Not using JAVA apxDestroyJvm did nothing");
-            do {
+            for (;;) {
                 if (!apxProcessTerminateChild( GetCurrentProcessId(), TRUE)) {
                     /* Just print the children processes once for debugging */
                     if (btimeoutelapsed)
                         break;
+                    waited = waitedSinceStopCmd();
+                    if (waited >= timeout)
+                        break; /* Done */
                     Sleep(1000);
-                    count = count - 1;
                 } else {
                     break;
                 }
-            } while (count);
+            }
         }
         apxProcessTerminateChild( GetCurrentProcessId(), FALSE); /* FALSE kills! */
     }
