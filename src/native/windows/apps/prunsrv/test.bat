@@ -1,4 +1,5 @@
 @ECHO OFF
+SETLOCAL ENABLEEXTENSIONS
 SET mypath=%cd%
 FOR /F "tokens=3 USEBACKQ" %%A IN (`ATTRIB /s prunsrv.exe`) DO (
   SET myserv=%%A
@@ -18,24 +19,26 @@ if %errorlevel% neq 0 (
 )
 call :mybanner deleting
 %myserv% //DS//TestService
-if %errorlevel% neq 0 (
-  echo "delete failed"
+if %errorlevel% equ 9 (
+  echo "delete failed, not installed"
+) else (
+  if %errorlevel% neq 0 (
+    echo "delete failed"
+    exit 1
+  )
 )
 echo "cleaned"
 
-
 rem install service with notimeout and no wait
 echo ""
-echo "install service with notimeout and no wait"
-ECHO %myserv%
-ECHO %myjar%
-ECHO %mypath%
+call :mybanner "install service with notimeout and no wait"
 echo ""
-%myserv% //IS//TestService --Description="JFC tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto
+%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto
 if %errorlevel% neq 0 (
   echo "install failed"
   exit 1
 )
+
 call :startservice
 call :testservice
 call :mybanner stopping
@@ -63,35 +66,35 @@ call :deleteservice
 
 rem install service with timeout 10 and 60 sec wait
 echo ""
-echo "install service with timeout 10 and 60 sec wait"
-ECHO %myserv%
-ECHO %myjar%
-ECHO %mypath%
+call :mybanner "install service with timeout 10 and 60 sec wait"
 echo ""
-%myserv% //IS//TestService --Description="JFC tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 2" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
+%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 2" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
 if %errorlevel% neq 0 (
   echo "install failed"
   exit 1
 )
 call :startservice
 call :testservice
+call :mybanner "stopping timeout 10 and wait 60"
 %myserv% //SS//TestService
 if %errorlevel% neq 0 (
   echo "timeout 10 and wait 60 failed"
   exit 1
 )
+
+echo ""
+%myserv% //PS//TestService
+echo ""
+
 call :deleteservice
 
 
 rem install service with timeout 10 and 60+60 sec wait
 rem the client will take 60 sec to stop the server
 echo ""
-echo "install service with timeout 10 and 60+60 sec wait"
-ECHO %myserv%
-ECHO %myjar%
-ECHO %mypath%
+call :mybanner "install service with timeout 10 and 60+60 sec wait"
 echo ""
-%myserv% //IS//TestService --Description="JFC tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 3" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
+%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 3" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
 if %errorlevel% neq 0 (
   echo "install failed"
   exit 1
@@ -101,13 +104,50 @@ call :testservice
 call :mybanner stopping
 %myserv% //SS//TestService
 if %errorlevel% equ 0 (
-  echo "timeout 10 and wait 60 should have failed"
+  echo "timeout 10 and wait 60+60 should have failed"
+  exit 1
+)
+
+rem the service is still running wait for it.
+call :waituntilstop
+if %errorlevel% neq 0 (
+  echo "Not stopped"
+  exit 1
+)
+
+call :mybanner deleting
+%myserv% //DS//TestService
+if %errorlevel% equ 9 (
+  echo "delete failed, not installed"
+) else (
+  if %errorlevel% neq 0 (
+    echo "delete failed"
+    echo "%errorlevel%"
+    exit 1
+  )
+)
+
+rem java service tests, basically use java as exe
+echo ""
+call :mybanner "install java service with timeout 10 and 60 sec wait"
+echo ""
+%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=Java --StartPath=%mypath% --Classpath=%myjar% --StartClass=org.apache.commons.daemon.ProcrunDaemon --StartMethod=main --StopMode=Java --StopPath=%mypath% --StopClass=org.apache.commons.daemon.ProcrunDaemon --StopMethod=main ++StopParams="2" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
+if %errorlevel% neq 0 (
+  echo "install failed"
+  exit 1
+)
+call :startservice
+call :testservice
+call :mybanner stopping
+%myserv% //SS//TestService
+if %errorlevel% neq 0 (
+  echo "java service tests timeout 10 and wait 60 failed"
   exit 1
 )
 call :deleteservice
 
-call :mybanner Done!!!
-exit 0
+call :mybanner "test.bat Done!!!"
+goto :EOF
 
 rem functions
 
@@ -145,9 +185,23 @@ if %errorlevel% neq 0 (
 EXIT /B 0
 
 :testservice
+call :mybanner testing
 java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 0
 if %errorlevel% neq 0 (
-  echo "Java part of the srvice doesn't answer"
+  echo "Java part of the service doesn't answer"
   exit 1
 )
 EXIT /B 0
+
+:waituntilstop
+SETLOCAL EnableDelayedExpansion
+for /l %%x in (1, 1, 100) do (
+  echo "testing service %%x"
+  java -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1
+  > nul find "Exception" client.txt && (
+    echo "exception"
+    exit /b 0
+  )
+  timeout /t 10 > nul
+)
+exit /b 1
