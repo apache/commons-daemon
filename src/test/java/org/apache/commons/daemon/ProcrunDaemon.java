@@ -122,7 +122,7 @@ class ProcrunDaemon {
 		connection.close();
 	} catch(Exception ex) {
 		System.out.println(ex);
-		System.exit(-1);	
+		System.exit(1);	
 	}
 	System.exit(0);
   }
