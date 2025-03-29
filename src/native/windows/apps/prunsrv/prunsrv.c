@@ -1979,7 +1979,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         if (!apxDestroyJvm(timeout)) {
             /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
-            apxLogWrite(APXLOG_MARK_DEBUG "Not using JAVA apxDestroyJvm did nothing");
+            apxLogWrite(APXLOG_MARK_DEBUG "Not using JVM apxDestroyJvm did nothing");
             for (;;) {
                 if (!apxProcessTerminateChild( GetCurrentProcessId(), TRUE)) {
                     /* Just print the children processes once for debugging */
