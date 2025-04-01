@@ -1282,6 +1282,7 @@ static DWORD WINAPI serviceStop(LPVOID lpParameter)
         return TRUE;    /* Nothing to do */
     }
     if (_jni_shutdown) {
+        apxLogWrite(APXLOG_MARK_INFO "Stopping service...timeout %d _jni_shutdown", timeout);
         if (!IS_VALID_STRING(SO_STARTPATH) && IS_VALID_STRING(SO_STOPPATH)) {
             /* If the Working path is specified change the current directory
              * but only if the start path wasn't specified already.
@@ -1969,7 +1970,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         } else {
             /* something is wrong, the timeout is too small */
             apxLogWrite(APXLOG_MARK_DEBUG "Waiting more than the specified timeout (%d)", timeout);
-            timeout = ONE_MINUTE + waited;
+            timeout = ONE_MINUTE;
             btimeoutelapsed = TRUE;
         }
 
@@ -1979,7 +1980,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE);
         if (!apxDestroyJvm(timeout)) {
             /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
-            apxLogWrite(APXLOG_MARK_DEBUG "Not using JVM apxDestroyJvm did nothing");
+            apxLogWrite(APXLOG_MARK_DEBUG "apxDestroyJvm did nothing or failed");
             for (;;) {
                 if (!apxProcessTerminateChild( GetCurrentProcessId(), TRUE)) {
                     /* Just print the children processes once for debugging */

@@ -30,9 +30,14 @@ rem limitations under the License.
 
 rem ---------------------------------------------------------------------------
 rem Test script for procrun
-rem
+rem to run it you need:
+rem 1 - the commons-daemon-*-tests.jar
+rem 2 - procrun.exe in a subdirectory (usually something like WIN10_X64_EXE_RELEASE\prunsrv.exe)
+rem 3 - use cmd/c test.bat in the command Prompt (cmd)
+rem the test are OK once test.bat Done!!! is displayed at the test of the bat script.
 
 SETLOCAL ENABLEEXTENSIONS
+SETLOCAL EnableDelayedExpansion
 SET mypath=%cd%
 FOR /F "tokens=3 USEBACKQ" %%A IN (`ATTRIB /s prunsrv.exe`) DO (
   SET myserv=%%A
@@ -114,27 +119,21 @@ if %errorlevel% neq 0 (
   echo "timeout 10 and wait 60 failed"
   exit 1
 )
-
-echo ""
-%myserv% //PS//TestService
-echo ""
-
 call :deleteservice
-
 
 rem install service with timeout 10 and 60+60 sec wait
 rem the client will take 60 sec to stop the server
 echo ""
 call :mybanner "install service with timeout 10 and 60+60 sec wait"
 echo ""
-%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 3" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
+%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 4" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout 10
 if %errorlevel% neq 0 (
-  echo "install failed"
+  echo "install service with timeout 10 and 60+60 sec wait failed"
   exit 1
 )
 call :startservice
 call :testservice
-call :mybanner stopping
+call :mybanner "stopping service with timeout 10 and 60+60 sec wait"
 %myserv% //SS//TestService
 if %errorlevel% equ 0 (
   echo "timeout 10 and wait 60+60 should have failed"
@@ -142,6 +141,7 @@ if %errorlevel% equ 0 (
 )
 
 rem the service is still running wait for it.
+rem procrun kills the child processes
 call :waituntilstop
 if %errorlevel% neq 0 (
   echo "Not stopped"
@@ -169,6 +169,7 @@ if %errorlevel% neq 0 (
   echo "install failed"
   exit 1
 )
+
 call :startservice
 call :testservice
 call :mybanner stopping
@@ -179,16 +180,48 @@ if %errorlevel% neq 0 (
 )
 call :deleteservice
 
+rem install jvm service with notimeout and no wait
+echo ""
+echo "install jvm service with notimeout and no wait"
+echo ""
+%myserv% //IS//TestService --Description="Procrun jvm tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=jvm --StartPath=%mypath% --StartClass=org.apache.commons.daemon.ProcrunDaemon --StartMethod=start ++StartParams=procstart --StopMode=jvm --StopClass=org.apache.commons.daemon.ProcrunDaemon --StopMethod=stop ++StopParams 1 --Classpath=%myjar% --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto
+if %errorlevel% neq 0 (
+  echo "install failed"
+  exit 1
+)
+call :startservice
+call :testservice
+call :mybanner stopping
+%myserv% //SS//TestService
+if %errorlevel% neq 0 (
+  echo "jvm service tests notimeout and no wait failed"
+  exit 1
+)
+call :deleteservice
+
+rem install jvm service with 10 timeout and 60 wait
+echo ""
+echo "install jvm service with 10 timeout and 60 wait"
+echo ""
+%myserv% //IS//TestService --Description="Procrun jvm tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=jvm --StartPath=%mypath% --StartClass=org.apache.commons.daemon.ProcrunDaemon --StartMethod=start ++StartParams=procstart --StopMode=jvm --StopClass=org.apache.commons.daemon.ProcrunDaemon --StopMethod=stop ++StopParams 3 --Classpath=%myjar% --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto --StopTimeout=10
+if %errorlevel% neq 0 (
+  echo "install failed"
+  exit 1
+)
+call :startservice
+call :testservice
+call :mybanner stopping
+%myserv% //SS//TestService
+if %errorlevel% neq 0 (
+  echo "jvm service tests 10 imeout and 60 wait failed"
+  exit 1
+)
+call :deleteservice
+
 call :mybanner "test.bat Done!!!"
 goto :EOF
 
 rem functions
-
-:mybanner
-echo "*****************************************************"
-echo  "%~1"
-echo "*****************************************************"
-EXIT /B 0
 
 :startservice
 call :mybanner starting
@@ -224,10 +257,10 @@ if %errorlevel% neq 0 (
   echo "Java part of the service doesn't answer"
   exit 1
 )
+echo "testing Done"
 EXIT /B 0
 
 :waituntilstop
-SETLOCAL EnableDelayedExpansion
 for /l %%x in (1, 1, 100) do (
   echo "testing service %%x"
   java -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1
@@ -238,3 +271,9 @@ for /l %%x in (1, 1, 100) do (
   timeout /t 10 > nul
 )
 exit /b 1
+
+:mybanner
+echo "*****************************************************"
+echo  "%~1"
+echo "*****************************************************"
+EXIT /B 0
