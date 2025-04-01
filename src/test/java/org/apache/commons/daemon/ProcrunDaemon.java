@@ -103,7 +103,7 @@ class ProcrunDaemon {
   /* The client processes the command and sends it to server */
   public static void client(String string) {
 	System.out.println(string);
-        if (string.charAt(0) == '3') {
+        if (string.charAt(0) == '3' || string.charAt(0) == '4') {
 		/* Wait 60 seconds in the client, then sends the command to the server */
 		Runtime runtime = Runtime.getRuntime();
 		try {
@@ -111,7 +111,10 @@ class ProcrunDaemon {
 		} catch(Exception ex) {
 			System.out.println(ex);
 		}
-		string = "1";
+		if (string.charAt(0) == '3')
+			string = "1";
+		else if (string.charAt(0) == '4')
+			string = "2"; /* The server will wait 60 seconds after the stop command */
         }
 	try {
 		Socket connection = new Socket("127.0.0.1", 4444);
@@ -148,4 +151,57 @@ class ProcrunDaemon {
         }
   }
 
+  /* For the jvm mode */
+  private static volatile Thread thrd; // start and stop are called from different threads
+  public static void start(String[] argv) {
+	try {
+		System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("jvm.txt")), true));
+	} catch (Exception ex) {
+		System.out.println(ex);
+		System.exit(1);	
+	}
+        if (argv.length != 0) {
+		System.out.println("start: " + argv[0]);
+        } else {
+		System.out.println("start no argv");
+        }
+	thrd = new Thread() {
+		public void run() {
+			server();
+		}
+	};
+	thrd.start();
+        while(thrd.isAlive()){
+            try {
+                thrd.join();
+            } catch (InterruptedException ie){
+		System.out.println(ie);
+            }
+        }
+	System.out.println("start Thread finished");
+  }
+  public static void stop(String[] argv) {
+        if (argv.length != 0) {
+		System.out.println("stop: " + argv[0]);
+		String string = argv[0];
+        	if (string.charAt(0) == '3' || string.charAt(0) == '4') {
+			/* Wait 60 seconds in the stop */
+			Runtime runtime = Runtime.getRuntime();
+			try {
+				Thread.currentThread().sleep(60000);
+			} catch(Exception ex) {
+				System.out.println(ex);
+			}
+		}
+        } else {
+		System.out.println("stop no argv");
+        }
+	/* just stop the thread! */
+	if (thrd != null) {
+		System.out.println("stop: interrupt Thread");
+		thrd.interrupt();
+	} else {
+		System.out.println("stop: Oops no Thread");
+	}
+  }
 }
