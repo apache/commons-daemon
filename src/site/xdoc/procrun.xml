@@ -387,8 +387,8 @@ will add the new value(s) to any existing value(s).
     <tr>
     <td>--JavaHome</td>
     <td>JAVA_HOME</td>
-    <td>Set a different JAVA_HOME than defined by JAVA_HOME environment
-        variable</td>
+    <td>Set a different <strong>JAVA_HOME</strong> than defined by the <strong>JAVA_HOME</strong> environment
+        variable.</td>
     </tr>
     <tr>
     <td>--Jvm</td>
