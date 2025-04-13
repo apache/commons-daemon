@@ -7,7 +7,7 @@ options, but a trivial build is simply:
 
 All builds
 
-Set the JAVA_HOME environment variable to point to a Java 8 (or later) SDK.
+Set the JAVA_HOME environment variable to point to a Java 8 (or later) JDK.
 
 Windows X64 Build
 
