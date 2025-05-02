@@ -44,6 +44,9 @@
       <!-- FIX -->
       <action type="fix" dev="ggregory" due-to="Gary Gregory">Remove -nouses directive from maven-bundle-plugin. OSGi package imports now state 'uses' definitions for package imports, this doesn't affect JPMS (from org.apache.commons:commons-parent:80).</action>
       <!-- ADD -->
+      <action issue="DAEMON-471" dev="michaelo" type="add">
+        Add support for --enable-native-access Java startup option in jsvc
+      </action>
       <!-- UPDATE -->
       <action dev="ggregory" type="update" due-to="Gary Gregory, Dependabot">Bump org.apache.commons:commons-parent from 78 to 83 #253, #255.</action>
     </release>
