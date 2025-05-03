@@ -207,6 +207,8 @@ Where options include:
         Java 9 --patch-module option. Passed as it is to JVM
     --illegal-access=&lt;value&gt;
         Java 9 --illegal-access option. Passed as it is to JVM. Refer java help for possible values.
+    --enable-preview
+        Java 11 --enable-preview option. Passed as it is to JVM
     --enable-native-access=&lt;module name&gt;
         Java 21 --enable-native-access option. Passed as it is to JVM
 </source>
