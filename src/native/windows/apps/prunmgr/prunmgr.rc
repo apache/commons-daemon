@@ -228,7 +228,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_APPLICATION     RSTR_PSM
-    IDS_APPVERSION      "Version 1.4.1"
+    IDS_APPVERSION      "Version 1.5.0"
     IDS_APPFULLNAME     RSTR_PSM " Version " PRG_VERSION
     IDS_APPCOPYRIGHT    "Copyright (c) 2000-2025 The Apache Software Foundation"
     IDS_APPDESCRIPTION  "Apache Commons Daemon Service Management Tool"
