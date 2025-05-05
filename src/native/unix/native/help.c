@@ -124,7 +124,7 @@ void help(home_data *data)
     printf("    --enable-preview\n");
     printf("        Java 11 --enable-preview option. Passed as it is to JVM\n");
     printf("    --enable-native-access=<module name>\n");
-    printf("        Java 21 --enable-native-access option. Passed as it is to JVM\n");
+    printf("        Java 17 --enable-native-access option. Passed as it is to JVM\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
     printf("Copyright (c) 1999-2025 Apache Software Foundation.\n");
 

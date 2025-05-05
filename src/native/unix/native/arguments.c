@@ -426,7 +426,7 @@ static arg_data *parse(int argc, char *argv[])
         else if (!strncmp(argv[x], "--enable-preview", 16)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
-        /* Java 21 specific options */
+        /* Java 17 specific options */
         else if (!strncmp(argv[x], "--enable-native-access=", 23)) {
             args->opts[args->onum++] = strdup(argv[x]);
         }
