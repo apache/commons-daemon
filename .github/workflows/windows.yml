@@ -1,0 +1,86 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Windows
+
+on:
+  push:
+    branches: [ "winbuild" ]
+    paths-ignore:
+      - 'src/docs/**'
+      - 'src/main/java/**'
+  pull_request:
+    branches: [ "winbuild" ]
+    paths-ignore:
+      - 'src/docs/**'
+      - 'src/main/java/**'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Default
+            triplet: x64-windows
+            arch: x64
+            build-type: Debug
+            generator: "Ninja"
+
+    runs-on: windows-latest
+    timeout-minutes: 30
+    name: ${{ matrix.name }}
+    env: 
+      VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: winbuild
+      - name: Test JAVA_HOME
+        shell: cmd
+        run: |
+            echo rem SPDX-License-Identifier: Apache-2.0> set_java_home.bat
+            echo set JAVA_HOME=%JAVA_HOME_21_X64%>> set_java_home.bat
+            call .\set_java_home.bat
+            echo "JAVA_HOME: %JAVA_HOME%"
+      - name: Build prunsrv
+        shell: cmd
+        run: |
+            echo on
+            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            cd src/native/windows/apps/prunsrv
+            echo "Building prunsrv for ${{ matrix.arch }}"
+            nmake BUILD_CPU=${{ matrix.arch }}
+      - name: Build prunmgr
+        shell: cmd
+        run: |
+            echo on
+            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            cd src/native/windows/apps/prunmgr
+            echo "Building prunmgr for ${{ matrix.arch }}"
+            nmake BUILD_CPU=${{ matrix.arch }}
+      - name: Build jar
+        shell: cmd
+        run: |
+            call .\set_java_home.bat
+            echo "JAVA_HOME: %JAVA_HOME%"
+            mvn --batch-mode --no-transfer-progress install
+      - name: Test
+        shell: cmd
+        run: |
+            call .\set_java_home.bat
+            echo "JAVA_HOME: %JAVA_HOME%"
+            cd src/native/windows/apps/prunsrv/test/scripts
+            test.bat
