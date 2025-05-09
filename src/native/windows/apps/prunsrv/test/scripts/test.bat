@@ -53,7 +53,7 @@ echo "cleaned"
 
 rem install service with notimeout and no wait
 echo ""
-call mybanner "install service with notimeout and no wait"
+call mybanner "install service with no timeout and use no waitiing in the test program"
 echo ""
 %myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto
 if %errorlevel% neq 0 (
@@ -87,7 +87,7 @@ echo "Stop an exited service..."
 call stopservice
 call deleteservice
 
-rem install service with timeout 10 and 60 sec wait
+rem install service with timeout 10 and use 60 sec wait in the test program
 echo ""
 call mybanner "install service with timeout 10 and 60 sec wait"
 echo ""
@@ -107,7 +107,7 @@ if %errorlevel% neq 0 (
 )
 call deleteservice
 
-rem install service with timeout 10 and 60+60 sec wait
+rem install service with timeout 10 and use 60+60 sec wait program (block the stop command for 60 sec and simulate another 60 sec wait before stopping.
 rem the client will take 60 sec to stop the server
 echo ""
 call mybanner "install service with timeout 10 and 60+60 sec wait"
