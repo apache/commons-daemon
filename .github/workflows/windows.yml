@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: winbuild
+          ref: master
       - name: Test JAVA_HOME
         shell: cmd
         run: |
