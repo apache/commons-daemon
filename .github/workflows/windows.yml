@@ -17,12 +17,12 @@ name: Windows
 
 on:
   push:
-    branches: [ "winbuild" ]
+    branches: [ "master" ]
     paths-ignore:
       - 'src/docs/**'
       - 'src/main/java/**'
   pull_request:
-    branches: [ "winbuild" ]
+    branches: [ "master" ]
     paths-ignore:
       - 'src/docs/**'
       - 'src/main/java/**'
