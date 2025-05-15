@@ -486,8 +486,10 @@ apxDestroyJvm(DWORD dwTimeout)
         CloseHandle(hWaiter);
         return rv;
     }
-    else
+    else {
+        apxLogWrite(APXLOG_MARK_DEBUG "apxDestroyJvm No JVM so Done");
         return FALSE;
+    }
 }
 
 static BOOL __apxIsJava9()
