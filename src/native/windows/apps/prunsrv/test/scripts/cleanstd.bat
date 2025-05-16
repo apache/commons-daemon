@@ -14,26 +14,16 @@ rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
-SET result=0
-SETLOCAL ENABLEDELAYEDEXPANSION
-for /l %%x in (1, 1, 100) do (
-  echo "testing service %%x"
-  java -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1 > nul 2>&1
-  findstr Exception client.txt > nul 2>&1
-  IF !ERRORLEVEL! EQU 0 (
-    echo "Found"
-    SET result=1
-    goto :EndLoop
-  ) ELSE (
-    echo "NOT Found"
-  )
-  timeout /t 10 > nul
-)
+rem the files:
+rem rw-r--r-- 1 Administrator None      0 Apr 28 00:55 testservice-stderr.2025-04-28.log
+rem rw-r--r-- 1 Administrator None      0 Apr 28 00:55 testservice-stdout.2025-04-28.log
+rem needs to be removed between tests.
 
-:EndLoop
-ENDLOCAL
-echo "Done result: %result%"
-IF %result% EQU 0 (
-  exit /b 0
-)
-exit /b 1
+SET "full_date=%date:~4,10%"
+SET "month=%full_date:~0,2%"
+SET "day=%full_date:~3,2%"
+SET "year=%full_date:~6,4%"
+
+del "testservice-stdout.%year%-%month%-%day%.log" 2>nul
+
+del "testservice-stderr.%year%-%month%-%day%.log" 2>nul
