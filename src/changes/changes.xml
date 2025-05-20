@@ -50,7 +50,7 @@
       <action type="add" dev="michaelo" issue="DAEMON-471">Add support for --enable-native-access Java startup option in jsvc.</action>
       <action type="add" dev="ggregory" due-to="Jean-Frederic Clere, Gary Gregory, Mark Thomas">Add tests for prunsrv on Windows #260.</action>
       <!-- UPDATE -->
-      <action type="update" dev="ggregory" due-to="Gary Gregory, Dependabot">Bump org.apache.commons:commons-parent from 78 to 83 #253, #255.</action>
+      <action type="update" dev="ggregory" due-to="Gary Gregory, Dependabot">Bump org.apache.commons:commons-parent from 78 to 84 #253, #255.</action>
     </release>
     <release version="1.4.1" date="2025-01-13" description="Bug fix release">
       <!-- FIX -->
