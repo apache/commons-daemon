@@ -49,7 +49,70 @@ if %errorlevel% equ 9 (
     exit 1
   )
 )
+call cleanstd
 echo "cleaned"
+
+rem install the service to test DAEMON-383
+echo ""
+call mybanner "install java service test DAEMON-383"
+echo ""
+%myserv% //IS//TestService --Description="Procrun tests" --DisplayName="Test Service" --Install=%myserv% --StartMode=exe --StartPath=%mypath% --StartImage=cmd.exe ++StartParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon" --StopMode=exe --StopPath=%mypath% --StopImage=cmd.exe ++StopParams="/c java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 1" --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto
+if %errorlevel% neq 0 (
+  echo "install failed"
+  exit 1
+)
+
+call startservice
+call testservice
+
+rem ask the service to write in stdoout and stderr
+java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 5
+java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 6
+
+rem the files:
+rem rw-r--r-- 1 Administrator None      0 Apr 28 00:55 testservice-stderr.2025-04-28.log
+rem rw-r--r-- 1 Administrator None      0 Apr 28 00:55 testservice-stdout.2025-04-28.log
+rem should NOT be empty
+call isemptystd.bat
+
+call mybanner stopping
+%myserv% //SS//TestService
+if %errorlevel% neq 0 (
+  echo "No timeout No wait stop failed"
+  %myserv% //PS//TestService
+  exit 1
+)
+call deleteservice
+call cleanstd
+
+echo ""
+call mybanner "install jvm service test DAEMON-383"
+echo ""
+%myserv% //IS//TestService --Description="Procrun jvm tests" --DisplayName="Test Service" --Install=%myserv% --JavaHome %JAVA_HOME% --StartMode=jvm --StartPath=%mypath% --StartClass=org.apache.commons.daemon.ProcrunDaemon --StartMethod=start ++StartParams=procstart --StopMode=jvm --StopClass=org.apache.commons.daemon.ProcrunDaemon --StopMethod=stop ++StopParams 1 --Classpath=%myjar% --LogPath=%mypath% --LogLevel=Debug --StdOutput=auto --StdError=auto
+if %errorlevel% neq 0 (
+  echo "install failed"
+  exit 1
+)
+
+call startservice
+call testservice
+
+rem ask the service to write in stdoout and stderr
+java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 5
+java  -cp %myjar% org.apache.commons.daemon.ProcrunDaemon 6
+
+rem check out stdout and stderr files
+call isemptystd.bat
+
+call mybanner stopping
+%myserv% //SS//TestService
+if %errorlevel% neq 0 (
+  echo "No timeout No wait stop failed"
+  %myserv% //PS//TestService
+  exit 1
+)
+call deleteservice
+call cleanstd
 
 rem install service with notimeout and no wait
 echo ""

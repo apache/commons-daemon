@@ -322,8 +322,14 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
     if (GetConsoleWindow() == NULL) {
         HWND hc;
         AllocConsole();
-        if ((hc = GetConsoleWindow()) != NULL)
+        if ((hc = GetConsoleWindow()) != NULL) {
+            FILE* fout = 0;
+            FILE* ferr = 0;
+            freopen_s(&fout, "CONOUT$", "w", stdout);
+            freopen_s(&ferr, "CONOUT$", "w", stderr);
             ShowWindow(hc, SW_HIDE);
+            apxLogWrite(APXLOG_MARK_INFO "redirectStdStreams() stdout and stderr reassigned");
+        }
     }
     /* redirect to file or console */
     if (lpWrapper->szStdOutFilename) {
@@ -347,9 +353,11 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
         if ((lpWrapper->fpStdOutFile = _wfsopen(lpWrapper->szStdOutFilename,
                                                L"a",
                                                _SH_DENYNO))) {
-            _dup2(_fileno(lpWrapper->fpStdOutFile), 1);
-            *stdout = *lpWrapper->fpStdOutFile;
+            int ret = _dup2(_fileno(lpWrapper->fpStdOutFile), (_fileno)(stdout));
+            if (ret == -1)
+                apxLogWrite(APXLOG_MARK_ERROR "redirectStdStreams() _dup2 failed on stdout");
             setvbuf(stdout, NULL, _IONBF, 0);
+            setvbuf(lpWrapper->fpStdOutFile, NULL, _IONBF, 0);
         }
         else {
             lpWrapper->szStdOutFilename = NULL;
@@ -373,18 +381,23 @@ static BOOL redirectStdStreams(APX_STDWRAP *lpWrapper, LPAPXCMDLINE lpCmdline)
         if ((lpWrapper->fpStdErrFile = _wfsopen(lpWrapper->szStdErrFilename,
                                                L"a",
                                                _SH_DENYNO))) {
-            _dup2(_fileno(lpWrapper->fpStdErrFile), 2);
-            *stderr = *lpWrapper->fpStdErrFile;
+            int ret = _dup2(_fileno(lpWrapper->fpStdErrFile), (_fileno)(stderr));
+            if (ret == -1)
+                apxLogWrite(APXLOG_MARK_ERROR "redirectStdStreams() _dup2 failed to stderr");
             setvbuf(stderr, NULL, _IONBF, 0);
+            setvbuf(lpWrapper->fpStdErrFile, NULL, _IONBF, 0);
         }
         else {
             lpWrapper->szStdOutFilename = NULL;
         }
     }
     else if (lpWrapper->fpStdOutFile) {
-        _dup2(_fileno(lpWrapper->fpStdOutFile), 2);
-        *stderr = *lpWrapper->fpStdOutFile;
+         /* redirect stderr to stdout file */
+         int ret = _dup2(_fileno(lpWrapper->fpStdOutFile), (_fileno)(stderr));
+         if (ret == -1)
+             apxLogWrite(APXLOG_MARK_ERROR "redirectStdStreams() _dup2 failed to stderr (redirect)");
          setvbuf(stderr, NULL, _IONBF, 0);
+         setvbuf(lpWrapper->fpStdOutFile, NULL, _IONBF, 0);
     }
     return TRUE;
 }
@@ -2219,6 +2232,8 @@ void __cdecl main(int argc, char **argv)
                         "Apache Commons Daemon procrun stderr initialized.\n",
                         t.wYear, t.wMonth, t.wDay,
                         t.wHour, t.wMinute, t.wSecond);
+        fflush(stdout);
+	fflush(stderr);
     }
 
     if (lpCmdline->dwCmdIndex > 2 && lpCmdline->dwCmdIndex < 8) {
