@@ -84,3 +84,7 @@ jobs:
             echo "JAVA_HOME: %JAVA_HOME%"
             cd src/native/windows/apps/prunsrv/test/scripts
             test.bat
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: src/native/windows/apps/prunsrv/*/prunsrv.exe
