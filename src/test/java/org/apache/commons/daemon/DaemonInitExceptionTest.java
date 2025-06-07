@@ -23,10 +23,10 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-public class DaemonInitExceptionTest {
+class DaemonInitExceptionTest {
 
     @Test
-    public void test() {
+    void test() {
         final IOException e = new IOException();
         assertEquals(e, new DaemonInitException("Test", e).getCause());
     }
