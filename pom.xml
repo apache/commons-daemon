@@ -50,6 +50,10 @@
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-daemon.git</developerConnection>
     <url>https://gitbox.apache.org/repos/asf?p=commons-daemon.git</url>
   </scm>
+  <ciManagement>
+    <system>GitHub</system>
+    <url>https://github.com/apache/commons-daemon/actions</url>
+  </ciManagement>
 
   <developers>
     <developer>
