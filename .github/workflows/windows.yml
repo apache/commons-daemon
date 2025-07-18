@@ -65,7 +65,7 @@ jobs:
             call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
             cd src/native/windows/apps/prunsrv
             echo "Building prunsrv for ${{ matrix.arch }}"
-            nmake BUILD_CPU=${{ matrix.arch }}
+            nmake BUILD_CPU=${{ matrix.arch }} STATIC_CRT=1 WINVER=0x0A00
       - name: Build prunmgr
         shell: cmd
         run: |
@@ -73,7 +73,7 @@ jobs:
             call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
             cd src/native/windows/apps/prunmgr
             echo "Building prunmgr for ${{ matrix.arch }}"
-            nmake BUILD_CPU=${{ matrix.arch }}
+            nmake BUILD_CPU=${{ matrix.arch }} STATIC_CRT=1 WINVER=0x0A00
       - name: Build jar
         shell: cmd
         run: |
