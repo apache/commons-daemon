@@ -48,12 +48,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: master
-      - name: Test JAVA_HOME
+      - name: Set JAVA_HOME and compiler/linker options
         shell: cmd
         run: |
-            echo rem SPDX-License-Identifier: Apache-2.0> set_java_home.bat
-            echo set JAVA_HOME=%JAVA_HOME_21_X64%>> set_java_home.bat
-            call .\set_java_home.bat
+            echo rem SPDX-License-Identifier: Apache-2.0> set_build_env.bat
+            echo set JAVA_HOME=%JAVA_HOME_21_X64%>> set_build_env.bat
+            echo set EXTRA_LFLAGS="/NODEFAULTLIB:libucrt.lib /DEFAULTLIB:ucrt.lib /HIGHENTROPYVA">> set_build_env.bat
+            echo set EXTRA_CFLAGS="/GS">> set_build_env.bat
+            echo set EXTRA_RCFLAGS="/nologo /d _WINNT /d WINVER=0x0A00 /d _WIN32_WINNT=0x0A00">> set_build_env.bat
+            call .\set_build_env.bat
             echo "JAVA_HOME: %JAVA_HOME%"
       - name: Build prunsrv
         shell: cmd
@@ -74,13 +77,13 @@ jobs:
       - name: Build jar
         shell: cmd
         run: |
-            call .\set_java_home.bat
+            call .\set_build_env.bat
             echo "JAVA_HOME: %JAVA_HOME%"
             mvn --batch-mode --no-transfer-progress install
       - name: Test
         shell: cmd
         run: |
-            call .\set_java_home.bat
+            call .\set_build_env.bat
             echo "JAVA_HOME: %JAVA_HOME%"
             cd src/native/windows/apps/prunsrv/test/scripts
             test.bat
