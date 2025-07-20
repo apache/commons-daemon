@@ -320,7 +320,7 @@ public class SimpleApplication implements Runnable {
 
                     // Create a directory (PR 30177 with 1.4.x and 1.5.0
                     case '5':
-                        String name1 = this.getDirectoryName() + "/a/b/c/d/e" + "/SimpleApplication." + this.getConnectionNumber() + ".tmp";
+                        String name1 = this.getDirectoryName() + "/a/b/c/d/e/SimpleApplication." + this.getConnectionNumber() + ".tmp";
                         try {
                             this.createDir(name1);
                             out.println("File '" + name1 + "' created");
@@ -343,7 +343,7 @@ public class SimpleApplication implements Runnable {
 
                     // If we get an IOException we return (disconnect)
                 } catch (IOException e) {
-                    System.err.println("SimpleApplication: IOException in " + "connection " + this.getConnectionNumber());
+                    System.err.println("SimpleApplication: IOException in connection " + this.getConnectionNumber());
                     return;
                 }
             }

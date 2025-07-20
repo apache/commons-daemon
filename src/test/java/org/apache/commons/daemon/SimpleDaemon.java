@@ -314,7 +314,7 @@ public class SimpleDaemon implements Daemon, Runnable, DaemonUserSignal {
 
                     /* If we get an IOException we return (disconnect) */
                 } catch (final IOException e) {
-                    System.err.println("SimpleDaemon: IOException in " + "connection " + getConnectionNumber());
+                    System.err.println("SimpleDaemon: IOException in connection " + getConnectionNumber());
                     return;
                 }
             }
