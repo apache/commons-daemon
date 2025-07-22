@@ -17,12 +17,11 @@ name: Windows
 
 on:
   push:
-    branches: [ "master" ]
     paths-ignore:
       - 'src/docs/**'
       - 'src/main/java/**'
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
     paths-ignore:
       - 'src/docs/**'
       - 'src/main/java/**'
