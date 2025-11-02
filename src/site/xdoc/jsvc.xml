@@ -33,7 +33,7 @@
       (e.g. bind to a port &lt; 1024), and then switch identity to a non-privileged user.
       <br/>
       It can run on Win32 via the Cygwin emulation layer (see
-      <a href="http://www.cygwin.com/"> Cygwin</a> for more information),
+      <a href="https://www.cygwin.com/"> Cygwin</a> for more information),
       however Win32 users may prefer to use <a href="procrun.html"> procrun</a>
       instead, which allows the application to run as a Windows Service.
 </p>
@@ -41,7 +41,7 @@
       The sources are located in the src/native/unix subdirectory.
 </p>
 <p>
-      In the future <a href="http://apr.apache.org/"> APR </a> may be used
+      In the future <a href="https://apr.apache.org/"> APR </a> may be used
       to provide more portable platform support.
 </p>
 </section>
