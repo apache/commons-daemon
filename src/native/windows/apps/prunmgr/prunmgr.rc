@@ -23,24 +23,24 @@
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
 IDI_ICONSTOP         ICON                   "../../resources/procruns.ico"
 IDI_ICONRUN          ICON                   "../../resources/procrunr.ico"
-IDR_LICENSE          RTF                    "../../resources/license.rtf"
+IDR_LICENSE          RTF                    "../../../../../license.txt"
 BMP_COMMONS          BITMAP                 "../../resources/commons.bmp"
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunmgr.manifest"
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 337, 225
+IDD_ABOUTBOX DIALOGEX 0, 0, 297, 225
 STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "Apache Service Manager"
 FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "&OK",IDOK,285,182,50,14
+    DEFPUSHBUTTON   "&OK",IDOK,245,182,50,14
     CONTROL         "",IDC_LICENSE,"RichEdit20A",ES_MULTILINE |
-                    ES_READONLY | WS_BORDER | WS_VSCROLL,0,63,335,115
+                    ES_READONLY | WS_BORDER | WS_VSCROLL,0,63,295,115
     CONTROL         "BMP_COMMONS",IDC_STATIC,"Static",SS_BITMAP|0x00000040L,0,0,153,62
-    LTEXT           " ",IDC_ABOUTAPP,2,182,270,12
-    LTEXT           "Copyright (c) 2000-2025 The Apache Software Foundation.",IDC_STATIC,2,192,270,12
-    LTEXT           "https://commons.apache.org",IDC_STATIC,2,202,270,12
-    PUSHBUTTON      "&System Info",IAB_SYSINF,285,202,50,14
+    LTEXT           " ",IDC_ABOUTAPP,2,182,240,12
+    LTEXT           "Copyright (c) 2000-2025 The Apache Software Foundation.",IDC_STATIC,2,192,240,12
+    LTEXT           "https://commons.apache.org",IDC_STATIC,2,202,240,12
+    PUSHBUTTON      "&System Info",IAB_SYSINF,245,202,50,14
 END
 
 IDD_PROGRESS DIALOGEX 0, 0, 322, 92
