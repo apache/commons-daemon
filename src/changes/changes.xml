@@ -46,7 +46,7 @@
       <action type="fix" dev="michaelo">Document --enable-preview</action>
       <action type="fix" dev="michaelo">Fix first appearance of --enable-native-access</action>
       <action type="fix" issue="DAEMON-468" dev="ggregory" due-to="Jean-Frederic Clere, Mark Thomas, Sebb, Gary Gregory">Fix timeout handling in procrun #238.</action>
-      <action type="fix" issue="DAEMON-472" dev="markt">Replace RTF version of license heaader with plain text version of full license in about box for Procrun monitor application.</action>
+      <action type="fix" issue="DAEMON-472" dev="markt">Replace RTF version of license header with plain text version of full license in about box for Procrun monitor application.</action>
       <!-- ADD -->
       <action type="add" dev="michaelo" issue="DAEMON-471">Add support for --enable-native-access Java startup option in jsvc.</action>
       <action type="add" dev="ggregory" due-to="Jean-Frederic Clere, Gary Gregory, Mark Thomas">Add tests for prunsrv on Windows #260.</action>
