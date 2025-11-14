@@ -53,6 +53,7 @@
       <action type="add" dev="ggregory" due-to="Jean-Frederic Clere, Gary Gregory, Mark Thomas">Add tests for prunsrv on Windows #260.</action>
       <!-- UPDATE -->
       <action type="update" dev="ggregory" due-to="Gary Gregory, Dependabot">Bump org.apache.commons:commons-parent from 78 to 91 #253, #255, #287.</action>
+      <action type="update" dev="markt">Update to use new ASF logo</action>
     </release>
     <release version="1.4.1" date="2025-01-13" description="Bug fix release">
       <!-- FIX -->
