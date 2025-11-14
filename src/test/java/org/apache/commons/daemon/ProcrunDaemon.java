@@ -72,7 +72,7 @@ class ProcrunDaemon {
                 } else if (buf[0] == '2') {
                     System.out.println("2");
                     try {
-                        Thread.currentThread().sleep(60000);
+                        Thread.sleep(60000);
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
@@ -116,9 +116,8 @@ class ProcrunDaemon {
         System.out.println(string);
         if (string.charAt(0) == '3' || string.charAt(0) == '4') {
             /* Wait 60 seconds in the client, then sends the command to the server */
-            Runtime runtime = Runtime.getRuntime();
             try {
-                Thread.currentThread().sleep(60000);
+                Thread.sleep(60000);
             } catch (Exception ex) {
                 System.out.println(ex);
             }
@@ -182,6 +181,7 @@ class ProcrunDaemon {
             System.out.println("start no argv");
         }
         thrd = new Thread() {
+            @Override
             public void run() {
                 server();
             }
@@ -203,9 +203,8 @@ class ProcrunDaemon {
             String string = argv[0];
             if (string.charAt(0) == '3' || string.charAt(0) == '4') {
                 /* Wait 60 seconds in the stop */
-                Runtime runtime = Runtime.getRuntime();
                 try {
-                    Thread.currentThread().sleep(60000);
+                    Thread.sleep(60000);
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
