@@ -1922,11 +1922,12 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 /* wait 2 seconds */
                 DWORD rv = apxHandleWait(gWorker, 2000, FALSE);
                 if (rv == WAIT_OBJECT_0 && _exe_shutdown) {
-                    /* Normal exit. NO-OP */
-                } else if (rv != WAIT_OBJECT_0 && !_exe_shutdown) {
+                    /* Normal exit. NO-OP. */
+                } else if (rv == WAIT_TIMEOUT && !_exe_shutdown) {
                     /* Normal running. */
                     apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
                 } else if (rv == WAIT_OBJECT_0 && !_exe_shutdown) {
+					/* Exit before stop was called, */
                     if (_jni_startup) {
                         /* JNI mode not being used correctly */
                         if (!bLoopWarningIssued) {
@@ -1942,7 +1943,10 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 } else if (rv != WAIT_OBJECT_0 && _exe_shutdown) {
                     /* Stop has been called but service worker has not yet stopped. */
                     /* do ... while loop will exit and stop timeout will be processed. */
-                }
+                } else if (rv == WAIT_ABANDONED || rv == WAIT_FAILED) {
+                    apxLogWrite(APXLOG_MARK_ERROR "Service '%S' has terminated abnormally.", _service_name);
+					break;
+				}
             } while (!_exe_shutdown);
 
             /* calculate remaing timeout */
