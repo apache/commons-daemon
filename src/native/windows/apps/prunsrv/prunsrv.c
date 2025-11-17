@@ -1921,23 +1921,28 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 DWORD count = 0;
                 /* wait 2 seconds */
                 DWORD rv = apxHandleWait(gWorker, 2000, FALSE);
-                if (rv == WAIT_OBJECT_0 && !_exe_shutdown) {
-                    if (!bLoopWarningIssued) {
-                        apxLogWrite(APXLOG_MARK_WARN "Start method returned before stop method was called. This should not happen. Using loop with a fixed sleep of 2 seconds waiting for stop method to be called.");
-                        bLoopWarningIssued = TRUE;
-                    }
-                    /* XXXX apart error are we getting there??? */
-                    Sleep(2000);
-                    count = count + 2;
-                    if (count >= SO_STOPTIMEOUT) {
-                        apxLogWrite(APXLOG_MARK_WARN "waited %d sec, Timeout reached!" , count);
+                if (rv == WAIT_OBJECT_0 && _exe_shutdown) {
+                    /* Normal exit. NO-OP */
+                } else if (rv != WAIT_OBJECT_0 && !_exe_shutdown)) {
+                    /* Normal running. */
+                    apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
+                } else if (rv == WAIT_OBJECT_0 && !_exe_shutdown) {
+                    if (_jni_started) {
+                        /* JNI mode not being used correctly */
+                        if (!bLoopWarningIssued) {
+                            apxLogWrite(APXLOG_MARK_WARN "Start method returned before stop method was called. This should not happen. Using loop with a fixed sleep of 2 seconds waiting for stop method to be called.");
+                            bLoopWarningIssued = TRUE;
+                        }
+                        Sleep(2000);
+                    } else {
+                        /* Non-JNI mode has crashed */
+                        apxLogWrite(APXLOG_MARK_ERROR "Service '%S' has terminated abnormally.", _service_name);
                         break;
                     }
+                } else if (rv != WAIT_OBJECT_0 && _exe_shutdown)) {
+                    /* Stop has been called but service worker has not yet stopped. */
+                    /* do ... while loop will exit and stop timeout will be processed. */
                 }
-                if (rv == WAIT_OBJECT_0)
-                    apxLogWrite(APXLOG_MARK_WARN "Worker has crashed or stopped!");
-                else
-                    apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
             } while (!_exe_shutdown);
 
             /* calculate remaing timeout */
