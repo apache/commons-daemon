@@ -33,25 +33,23 @@ class ProcrunDaemon {
      */
     public static void server() {
         System.out.println("TestServ");
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(4444, 2);
+        try (ServerSocket serverSocket = new ServerSocket(4444, 2)) {
+            /* Wait for clients */
+            for (;;) {
+                Socket clientSocket = null;
+                try {
+                    clientSocket = serverSocket.accept();
+                    ProcessClient(clientSocket);
+                } catch (IOException e) {
+                    System.out.println("Accept or Client failed: 4444");
+                    System.exit(-1);
+                }
+            }
         } catch (IOException e) {
             System.out.println("Could not listen on port: 4444");
             System.exit(-1);
         }
 
-        /* Wait fo clients */
-        for (;;) {
-            Socket clientSocket = null;
-            try {
-                clientSocket = serverSocket.accept();
-                ProcessClient(clientSocket);
-            } catch (IOException e) {
-                System.out.println("Accept or Client failed: 4444");
-                System.exit(-1);
-            }
-        }
     }
 
     public static void ProcessClient(Socket clientSocket) {

@@ -83,7 +83,7 @@ public class AloneService {
            String name = (String) e.nextElement();
            System.err.println("ServiceDaemon: starting: " + name + " : " + prop.getProperty(name));
            try {
-               proc[i] = Runtime.getRuntime().exec(prop.getProperty(name));
+               proc[i] = Runtime.getRuntime().exec(new String[] {prop.getProperty(name)});
            } catch (Exception ex) {
                System.err.println("Exception: " + ex);
            }
