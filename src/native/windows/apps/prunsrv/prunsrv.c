@@ -1923,11 +1923,11 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                 DWORD rv = apxHandleWait(gWorker, 2000, FALSE);
                 if (rv == WAIT_OBJECT_0 && _exe_shutdown) {
                     /* Normal exit. NO-OP */
-                } else if (rv != WAIT_OBJECT_0 && !_exe_shutdown)) {
+                } else if (rv != WAIT_OBJECT_0 && !_exe_shutdown) {
                     /* Normal running. */
                     apxLogWrite(APXLOG_MARK_DEBUG "waiting until Worker is done...");
                 } else if (rv == WAIT_OBJECT_0 && !_exe_shutdown) {
-                    if (_jni_started) {
+                    if (_jni_startup) {
                         /* JNI mode not being used correctly */
                         if (!bLoopWarningIssued) {
                             apxLogWrite(APXLOG_MARK_WARN "Start method returned before stop method was called. This should not happen. Using loop with a fixed sleep of 2 seconds waiting for stop method to be called.");
@@ -1939,7 +1939,7 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
                         apxLogWrite(APXLOG_MARK_ERROR "Service '%S' has terminated abnormally.", _service_name);
                         break;
                     }
-                } else if (rv != WAIT_OBJECT_0 && _exe_shutdown)) {
+                } else if (rv != WAIT_OBJECT_0 && _exe_shutdown) {
                     /* Stop has been called but service worker has not yet stopped. */
                     /* do ... while loop will exit and stop timeout will be processed. */
                 }
