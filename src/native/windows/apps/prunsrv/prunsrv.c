@@ -1126,7 +1126,7 @@ static BOOL docmdUpdateService(LPAPXCMDLINE lpCmdline)
         /* Update the --Startup mode */
         if (ST_STARTUP & APXCMDOPT_FOUND) {
             if (!lstrcmpiW(SO_STARTUP, PRSRV_DELAYED)) {
-                dwStart = SERVICE_DEMAND_START;
+                dwStart = SERVICE_AUTO_START;
                 bDelayedStart = TRUE;
             }
             else if (!lstrcmpiW(SO_STARTUP, PRSRV_AUTO))
