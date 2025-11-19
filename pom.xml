@@ -195,6 +195,8 @@
               <exclude>src/native/unix/config.nice</exclude>
               <exclude>src/native/unix/config.status</exclude>
               <exclude>src/native/unix/config.log</exclude>
+              <!-- autoconf cache - not included in release -->
+              <exclude>src/native/unix/autom4te.cache/**</exclude>
             </excludes>
           </configuration>
         </plugin>
