@@ -40,16 +40,19 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
+    <release version="1.5.1" date="TBD" description="Bug fix release">
+      <action type="fix" dev="markt">jsvc. Fix compilation warnings.</action>
+    </release>
     <release version="1.5.0" date="2025-11-26" description="This is a maintenance release. Java 8 or later is required.">
       <!-- FIX -->
       <action type="fix" dev="ggregory" due-to="Gary Gregory">Remove -nouses directive from maven-bundle-plugin. OSGi package imports now state 'uses' definitions for package imports, this doesn't affect JPMS (from org.apache.commons:commons-parent:80).</action>
       <action type="fix" dev="michaelo">Document --enable-preview</action>
       <action type="fix" dev="michaelo">Fix first appearance of --enable-native-access</action>
-      <action type="fix" issue="DAEMON-398" dev="jfclere">Fix redirection issues on some OS versions by using recommended method to redirect stdout and stderr</action>
-      <action type="fix" issue="DAEMON-439" dev="markt">Fix updating of startup mode to 'Automatic (delayed)' being incorrectly processed as an update to 'Manual'</action>
-      <action type="fix" issue="DAEMON-468" dev="ggregory" due-to="Jean-Frederic Clere, Mark Thomas, Sebb, Gary Gregory">Fix timeout handling in procrun #238.</action>
-      <action type="fix" issue="DAEMON-472" dev="markt">Replace RTF version of license header with plain text version of full license in about box for Procrun monitor application.</action>
-      <action type="fix" issue="DAEMON-475" dev="markt">Service should be marked as stopped if the service worker crashes.</action>
+      <action type="fix" issue="DAEMON-398" dev="jfclere">Procrun. Fix redirection issues on some OS versions by using recommended method to redirect stdout and stderr</action>
+      <action type="fix" issue="DAEMON-439" dev="markt">Procrun. Fix updating of startup mode to 'Automatic (delayed)' being incorrectly processed as an update to 'Manual'</action>
+      <action type="fix" issue="DAEMON-468" dev="ggregory" due-to="Jean-Frederic Clere, Mark Thomas, Sebb, Gary Gregory">Procrun. Fix timeout handling #238.</action>
+      <action type="fix" issue="DAEMON-472" dev="markt">Procrun. Replace RTF version of license header with plain text version of full license in about box for monitor application.</action>
+      <action type="fix" issue="DAEMON-475" dev="markt">Procrun. Service should be marked as stopped if the service worker crashes.</action>
       <!-- ADD -->
       <action type="add" dev="michaelo" issue="DAEMON-471">Add support for --enable-native-access Java startup option in jsvc.</action>
       <action type="add" dev="ggregory" due-to="Jean-Frederic Clere, Gary Gregory, Mark Thomas">Add tests for prunsrv on Windows #260.</action>
