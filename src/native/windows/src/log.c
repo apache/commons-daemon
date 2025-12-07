@@ -356,9 +356,9 @@ apxLogWrite(
     APX_LOGENTER();
     if (file && (lf->dwLogLevel <= APXLOG_LEVEL_DEBUG || dwLevel == APXLOG_LEVEL_ERROR)) {
         file = (szFile + lstrlenA(szFile) - 1);
-        while(file != szFile && '\\' != *file && '/' != *file)
+        while (file != szFile && '\\' != *file && '/' != *file)
             file--;
-        if(file != szFile)
+        if (file != szFile)
             file++;
     }
     else
