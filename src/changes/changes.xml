@@ -41,7 +41,11 @@
   </properties>
   <body>
     <release version="1.5.1" date="TBD" description="Bug fix release">
+      <!-- FIX -->
       <action type="fix" dev="markt">jsvc. Fix compilation warnings.</action>
+      <!-- ADD -->
+      <action type="add" dev="markt">Procun. Build binaries for Windows using the static hybrid CRT strategy by default.</action>
+      <!-- UPDATE -->
     </release>
     <release version="1.5.0" date="2025-11-26" description="This is a maintenance release. Java 8 or later is required.">
       <!-- FIX -->

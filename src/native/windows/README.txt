@@ -38,16 +38,17 @@ places the binary in the correct location for a release build):
 
   nmake CPU=X86 PREFIX=c:\desired\path\of\daemon install
 
-Use the 'Hybrid CRT' technique so the resulting binaries work on a clean Windows
-installation with no additional dependencies:
+To disable the 'Static Hybrid CRT' build strategy and prevent the the resulting
+binaries from working on a clean Windows installation with no additional
+dependencies:
 
-  nmake CPU=X86 STATIC_CRT=Hybrid
+  nmake CPU=X86 NO_STATIC_CRT=true
   
   
 Release Builds
 ==============
 
-Release builds must use STATIC_CRT=Hybrid.
+Release builds must not disable the static hybrid CRT build strategy.
 
 It is not necessary to build a 64-bit version of prunmgr since the 32-bit
 version works with both 32-bit and 64-bit services.
