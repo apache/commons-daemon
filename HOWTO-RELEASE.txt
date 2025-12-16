@@ -89,7 +89,7 @@ sh support/buildconf.sh
 Native build
 ------------
 
-Build and sign the Windows binaries.
+Build and sign the Windows binaries. See src/native/windows/README.txt
 Place the signed Windows binaries in:
 target/prunsrv.exe
 target/prunmgr.exe

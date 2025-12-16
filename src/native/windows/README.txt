@@ -52,3 +52,12 @@ Release builds must not disable the static hybrid CRT build strategy.
 
 It is not necessary to build a 64-bit version of prunmgr since the 32-bit
 version works with both 32-bit and 64-bit services.
+
+
+Code signing
+============
+
+The Windows binaries are signed using the ASF's code signing service. For
+details of the service and instructions on how new release managers can request
+access to the service see:
+https://infra.apache.org/code-signing-access.html
