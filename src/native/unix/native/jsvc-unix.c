@@ -566,7 +566,6 @@ static int mkdir2(const char *name, int perms)
 static int check_pid(arg_data *args)
 {
     int fd;
-    FILE *pidf;
     char buff[80];
     pid_t pidn = getpid();
     int i, pid;
@@ -608,11 +607,11 @@ retry:
                 return 122;
             }
         }
-        lseek(fd, SEEK_SET, 0);
-        pidf = fdopen(fd, "r+");
-        fprintf(pidf, "%d\n", (int)getpid());
-        fflush(pidf);
-        fclose(pidf);
+        i = snprintf(buff, sizeof(buff), "%d\n", (int)getpid());
+        lseek(fd, 0, SEEK_SET);
+        ftruncate(fd, 0);
+        write(fd, buff, i);
+        fsync(fd);
         if (lockf(fd, F_ULOCK, 0)) {
             log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
                     args->pidf, fd, errno);
@@ -673,7 +672,7 @@ static int get_pidf(arg_data *args, bool quiet)
     int i;
     char buff[80];
 
-    fd = open(args->pidf, O_RDONLY, 0);
+    fd = open(args->pidf, O_RDWR, 0);
     if (!quiet)
         log_debug("get_pidf: %d in %s", fd, args->pidf);
     if (fd < 0) {
@@ -778,7 +777,7 @@ static int wait_child(arg_data *args, int pid)
         }
 
         /* check if the pid file process exists */
-        fd = open(args->pidf, O_RDONLY);
+        fd = open(args->pidf, O_RDWR);
         if (fd < 0 && havejvm) {
             /* something has gone wrong the JVM has stopped */
             return 1;
