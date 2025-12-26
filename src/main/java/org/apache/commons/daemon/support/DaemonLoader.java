@@ -326,7 +326,7 @@ public final class DaemonLoader
     private static native void failed(String message);
 
     /**
-     * A DaemonController that acts on the the global {@link DaemonLoader} state.
+     * A DaemonController that acts on the global {@link DaemonLoader} state.
      */
     public static class Controller
         implements DaemonController
