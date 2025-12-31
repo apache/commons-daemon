@@ -170,6 +170,7 @@ public final class DaemonConfiguration
      * daemon.arg[1] = argument 2
      * daemon.arg[2] = argument 3
      * </pre>
+     *
      * @param name The name of the property array to get.
      * @throws ParseException if the property is wrongly formatted.
      * @return  Configuration property array including any expansion/replacement
