@@ -50,7 +50,7 @@ jobs:
     env: 
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: master
       - name: Test JAVA_HOME
