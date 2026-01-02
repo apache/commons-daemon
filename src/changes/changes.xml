@@ -40,6 +40,12 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
+    <release version="1.5.2" date="YYYY-MM-DD" description="Bug fix release">
+      <!-- FIX -->
+      <!-- ADD -->
+      <!-- UPDATE -->
+      <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 93 to 94.</action>
+    </release>
     <release version="1.5.1" date="2025-12-16" description="Bug fix release">
       <!-- FIX -->
       <action type="fix" dev="markt">jsvc. Fix compilation warnings.</action>
