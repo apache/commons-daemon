@@ -84,10 +84,6 @@ import java.util.StringTokenizer;
 public final class DaemonPermission extends Permission
 {
 
-    /* ====================================================================
-     * Constants.
-     */
-
     private static final long serialVersionUID = -8682149075879731987L;
 
     /**
@@ -155,10 +151,6 @@ public final class DaemonPermission extends Permission
      */
     protected static final String WILDCARD = "*";
 
-    /* ====================================================================
-     * Instance variables
-     */
-
     /** The type of this permission object. */
     private transient int type;
 
@@ -167,10 +159,6 @@ public final class DaemonPermission extends Permission
 
     /** The String representation of this permission object. */
     private transient String desc;
-
-    /* ====================================================================
-     * Constructors
-     */
 
     /**
      * Creates a new {@code DaemonPermission} instance with a specified
@@ -226,10 +214,6 @@ public final class DaemonPermission extends Permission
             this.mask = createControlMask(actions);
         }
     }
-
-    /* ====================================================================
-     * Public methods
-     */
 
     /**
      * Returns the list of actions permitted by this instance of
@@ -322,10 +306,6 @@ public final class DaemonPermission extends Permission
         setupDescription();
         return this.desc;
     }
-
-    /* ====================================================================
-     * Private methods
-     */
 
     /**
      * Creates a String description for this permission instance.
