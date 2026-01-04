@@ -47,10 +47,12 @@ import java.text.ParseException;
  */
 public final class DaemonConfiguration
 {
+
     /**
      * Default configuration file name.
      */
     protected static final String DEFAULT_CONFIG        = "daemon.properties";
+
     /**
      * Property prefix
      */

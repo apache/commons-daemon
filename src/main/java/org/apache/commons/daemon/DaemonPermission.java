@@ -161,8 +161,10 @@ public final class DaemonPermission extends Permission
 
     /** The type of this permission object. */
     private transient int type;
+
     /** The permission mask associated with this permission object. */
     private transient int mask;
+
     /** The String representation of this permission object. */
     private transient String desc;
 
