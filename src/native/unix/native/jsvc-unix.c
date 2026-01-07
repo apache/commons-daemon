@@ -608,7 +608,7 @@ retry:
                 return 122;
             }
         }
-        lseek(fd, SEEK_SET, 0);
+        lseek(fd, 0, SEEK_SET);
         pidf = fdopen(fd, "r+");
         fprintf(pidf, "%d\n", (int)getpid());
         fflush(pidf);
