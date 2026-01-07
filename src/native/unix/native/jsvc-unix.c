@@ -673,7 +673,7 @@ static int get_pidf(arg_data *args, bool quiet)
     int i;
     char buff[80];
 
-    fd = open(args->pidf, O_RDONLY, 0);
+    fd = open(args->pidf, O_RDWR, 0);
     if (!quiet)
         log_debug("get_pidf: %d in %s", fd, args->pidf);
     if (fd < 0) {
@@ -778,7 +778,7 @@ static int wait_child(arg_data *args, int pid)
         }
 
         /* check if the pid file process exists */
-        fd = open(args->pidf, O_RDONLY);
+        fd = open(args->pidf, O_RDWR);
         if (fd < 0 && havejvm) {
             /* something has gone wrong the JVM has stopped */
             return 1;
