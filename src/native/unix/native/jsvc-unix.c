@@ -589,7 +589,7 @@ retry:
     }
     else {
         if (lockf(fd, F_LOCK, 0)) {
-            log_error("check_pid: Failed to lock PID file [%s] with file descriptor [%d] for reading due to [%d]",
+            log_error("check_pid: Failed to lock PID file [%s] with file descriptor [%d] due to [%d]",
                     args->pidf, fd, errno);
             return -1;
         }
@@ -608,12 +608,18 @@ retry:
             }
         }
         lseek(fd, 0, SEEK_SET);
-        ftruncate(fd, 0);
+        if (ftruncate(fd, 0)) {
+            log_error("check_pid: Failed to truncate PID file [%s] with file descriptor [%d] due to [%d]",
+                    args->pidf, fd, errno);
+        }
         i = snprintf(buff, sizeof(buff), "%d\n", (int)getpid());
-        write(fd, buff, i);
+        if (write(fd, buff, i) == -1) {
+            log_error("check_pid: Failed to write new PID to PID file [%s] with file descriptor [%d] due to [%d]",
+                    args->pidf, fd, errno);
+        }
         fsync(fd);
         if (lockf(fd, F_ULOCK, 0)) {
-            log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
+            log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] due to [%d]",
                     args->pidf, fd, errno);
         }
         close(fd);
