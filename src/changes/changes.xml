@@ -42,7 +42,7 @@
   <body>
     <release version="1.5.2" date="YYYY-MM-DD" description="Bug fix release">
       <!-- FIX -->
-      <action type="fix" dev="markt" due-to="Alex Dupre and Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed a long standing bug around the use of lockf(3) and pid files.</action>
+      <action type="fix" dev="markt" due-to="Alex Dupre and Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed long standing bugs around the locking and unlocking of pid files. Also fix the locking/unlocking bugs.</action>
       <!-- ADD -->
       <!-- UPDATE -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 93 to 94.</action>

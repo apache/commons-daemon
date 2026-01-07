@@ -566,7 +566,6 @@ static int mkdir2(const char *name, int perms)
 static int check_pid(arg_data *args)
 {
     int fd;
-    FILE *pidf;
     char buff[80];
     pid_t pidn = getpid();
     int i, pid;
@@ -609,10 +608,10 @@ retry:
             }
         }
         lseek(fd, 0, SEEK_SET);
-        pidf = fdopen(fd, "r+");
-        fprintf(pidf, "%d\n", (int)getpid());
-        fflush(pidf);
-        fclose(pidf);
+        ftruncate(fd, 0);
+        i = snprintf(buff, sizeof(buff), "%d\n", (int)getpid());
+        write(fd, buff, i);
+        fsync(fd);
         if (lockf(fd, F_ULOCK, 0)) {
             log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
                     args->pidf, fd, errno);
