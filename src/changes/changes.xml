@@ -45,7 +45,7 @@
       <action type="fix" dev="markt" due-to="Alex Dupre and Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed long standing bugs around the locking and unlocking of pid files. Also fix the locking/unlocking bugs.</action>
       <!-- ADD -->
       <!-- UPDATE -->
-      <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 93 to 95.</action>
+      <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 93 to 96.</action>
     </release>
     <release version="1.5.1" date="2025-12-16" description="Bug fix release">
       <!-- FIX -->
