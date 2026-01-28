@@ -164,7 +164,7 @@ class ProcrunDaemon {
     }
 
     /* For the jvm mode */
-    private static volatile Thread thrd; // start and stop are called from different threads
+    private static volatile Thread thread; // start and stop are called from different threads
 
     public static void start(String[] argv) {
         try {
@@ -178,16 +178,16 @@ class ProcrunDaemon {
         } else {
             System.out.println("start no argv");
         }
-        thrd = new Thread() {
+        thread = new Thread() {
             @Override
             public void run() {
                 server();
             }
         };
-        thrd.start();
-        while (thrd.isAlive()) {
+        thread.start();
+        while (thread.isAlive()) {
             try {
-                thrd.join();
+                thread.join();
             } catch (InterruptedException ie) {
                 System.out.println(ie);
             }
@@ -211,9 +211,9 @@ class ProcrunDaemon {
             System.out.println("stop no argv");
         }
         /* just stop the thread! */
-        if (thrd != null) {
+        if (thread != null) {
             System.out.println("stop: interrupt Thread");
-            thrd.interrupt();
+            thread.interrupt();
         } else {
             System.out.println("stop: Oops no Thread");
         }
