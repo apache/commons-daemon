@@ -35,6 +35,7 @@ concurrency:
 jobs:
   build:
     strategy:
+      max-parallel: 20
       fail-fast: false
       matrix:
         include:
