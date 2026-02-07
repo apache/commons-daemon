@@ -46,6 +46,7 @@
       <!-- ADD -->
       <!-- UPDATE -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 93 to 96.</action>
+      <action type="update" dev="michaelo">jsvc. Consistently use strerror(3) for log output.</action>
     </release>
     <release version="1.5.1" date="2025-12-16" description="Bug fix release">
       <!-- FIX -->
