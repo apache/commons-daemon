@@ -589,8 +589,8 @@ retry:
     }
     else {
         if (lockf(fd, F_LOCK, 0)) {
-            log_error("check_pid: Failed to lock PID file [%s] with file descriptor [%d] due to [%d]",
-                    args->pidf, fd, errno);
+            log_error("check_pid: Failed to lock PID file [%s] with file descriptor [%d]: %s",
+                    args->pidf, fd, strerror(errno));
             return -1;
         }
         i = read(fd, buff, sizeof(buff));
@@ -600,8 +600,8 @@ retry:
             if (kill(pid, 0) == 0) {
                 log_error("Still running according to PID file %s, PID is %d", args->pidf, pid);
                 if (lockf(fd, F_ULOCK, 0)) {
-                    log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
-                            args->pidf, fd, errno);
+                    log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] after reading: %s",
+                            args->pidf, fd, strerror(errno));
                 }
                 close(fd);
                 return 122;
@@ -609,18 +609,18 @@ retry:
         }
         lseek(fd, 0, SEEK_SET);
         if (ftruncate(fd, 0)) {
-            log_error("check_pid: Failed to truncate PID file [%s] with file descriptor [%d] due to [%d]",
-                    args->pidf, fd, errno);
+            log_error("check_pid: Failed to truncate PID file [%s] with file descriptor [%d]: %s",
+                    args->pidf, fd, strerror(errno));
         }
         i = snprintf(buff, sizeof(buff), "%d\n", (int)getpid());
         if (write(fd, buff, i) == -1) {
-            log_error("check_pid: Failed to write new PID to PID file [%s] with file descriptor [%d] due to [%d]",
-                    args->pidf, fd, errno);
+            log_error("check_pid: Failed to write new PID to PID file [%s] with file descriptor [%d]: %s",
+                    args->pidf, fd, strerror(errno));
         }
         fsync(fd);
         if (lockf(fd, F_ULOCK, 0)) {
-            log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d] due to [%d]",
-                    args->pidf, fd, errno);
+            log_error("check_pid: Failed to unlock PID file [%s] with file descriptor [%d]: %s",
+                    args->pidf, fd, strerror(errno));
         }
         close(fd);
     }
@@ -641,8 +641,8 @@ static void remove_pid_file(arg_data *args, int pidn)
         return;
     }
     if (lockf(fd, F_LOCK, 0)) {
-        log_error("remove_pid_file: Failed to lock PID file [%s] with file descriptor [%d] for reading due to [%d]",
-                args->pidf, fd, errno);
+        log_error("remove_pid_file: Failed to lock PID file [%s] with file descriptor [%d] for reading: %s",
+                args->pidf, fd, strerror(errno));
         return;
     }
     i = read(fd, buff, sizeof(buff));
@@ -663,8 +663,8 @@ static void remove_pid_file(arg_data *args, int pidn)
              pidn, pid, args->pidf);
     }
     if (lockf(fd, F_ULOCK, 0)) {
-        log_error("remove_pid_file: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
-                args->pidf, fd, errno);
+        log_error("remove_pid_file: Failed to unlock PID file [%s] with file descriptor [%d] after reading: %s",
+                args->pidf, fd, strerror(errno));
     }
     close(fd);
 }
@@ -686,14 +686,14 @@ static int get_pidf(arg_data *args, bool quiet)
         return -1;
     }
     if (lockf(fd, F_LOCK, 0)) {
-        log_error("get_pidf: Failed to lock PID file [%s] with file descriptor [%d] for reading due to [%d]",
-                args->pidf, fd, errno);
+        log_error("get_pidf: Failed to lock PID file [%s] with file descriptor [%d] for reading: %s",
+                args->pidf, fd, strerror(errno));
         return -1;
     }
     i = read(fd, buff, sizeof(buff));
     if (lockf(fd, F_ULOCK, 0)) {
-        log_error("get_pidf: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
-                args->pidf, fd, errno);
+        log_error("get_pidf: Failed to unlock PID file [%s] with file descriptor [%d] after reading: %s",
+                args->pidf, fd, strerror(errno));
     }
     close(fd);
     if (i > 0) {
@@ -789,14 +789,14 @@ static int wait_child(arg_data *args, int pid)
             return 1;
         }
         if (lockf(fd, F_LOCK, 0)) {
-            log_error("wait_child: Failed to lock PID file [%s] with file descriptor [%d] for reading due to [%d]",
-                    args->pidf, fd, errno);
+            log_error("wait_child: Failed to lock PID file [%s] with file descriptor [%d] for reading: %s",
+                    args->pidf, fd, strerror(errno));
             return 1;
         }
         i = read(fd, buff, sizeof(buff));
         if (lockf(fd, F_ULOCK, 0)) {
-            log_error("wait_child: Failed to unlock PID file [%s] with file descriptor [%d] after reading due to [%d]",
-                    args->pidf, fd, errno);
+            log_error("wait_child: Failed to unlock PID file [%s] with file descriptor [%d] after reading: %s",
+                    args->pidf, fd, strerror(errno));
         }
         close(fd);
         if (i > 0) {
@@ -1098,7 +1098,7 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
 
     if (redirectstdin == true) {
         if (freopen("/dev/null", "r", stdin) == NULL) {
-            log_error("Failed to redirect stdin to /dev/null due to [%d]", errno);
+            log_error("Failed to redirect stdin to /dev/null: %s", strerror(errno));
         }
     }
 
@@ -1111,7 +1111,7 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
         return;
     if (strcmp(outfile, "SYSLOG") == 0) {
         if (freopen("/dev/null", "a", stdout) == NULL) {
-            log_error("Failed to redirect stdout to /dev/null due to [%d]", errno);
+            log_error("Failed to redirect stdout to /dev/null: %s", strerror(errno));
         }
         /* Send stdout to syslog through a logger process */
         if (pipe(out_pipe) == -1) {
@@ -1131,7 +1131,7 @@ static void set_output(char *outfile, char *errfile, bool redirectstdin, char *p
 
     if (strcmp(errfile, "SYSLOG") == 0) {
         if (freopen("/dev/null", "a", stderr) == NULL) {
-            log_error("Failed to redirect stderr to /dev/null due to [%d]", errno);
+            log_error("Failed to redirect stderr to /dev/null: %s", strerror(errno));
         }
         /* Send stderr to syslog through a logger process */
         if (pipe(err_pipe) == -1) {
