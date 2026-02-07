@@ -1374,6 +1374,11 @@ static int run_controller(arg_data *args, home_data *data, uid_t uid, gid_t gid)
            to the child, and wait for it to die */
         controlled = pid;
 
+#ifdef OS_FREEBSD
+        /* Rename controller process to include JVM child PID */
+        setproctitle("%s[%d]", args->procname, pid);
+#endif
+
 #ifdef OS_CYGWIN
         SetTerm(cygwincontroller);
 #endif

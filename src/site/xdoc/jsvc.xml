@@ -178,7 +178,7 @@ Where options include:
     -javaagent:&lt;jarpath&gt;[=&lt;options&gt;]
         load Java programming language agent, see java.lang.instrument
     -procname &lt;procname&gt;
-        use the specified process name (works only for Linux)
+        use the specified process name (works only for Linux and FreeBSD)
     -wait &lt;waittime&gt;
         wait waittime seconds for the service to start
         waittime should multiple of 10 (min=10)
