@@ -42,7 +42,8 @@
   <body>
     <release version="1.5.2" date="YYYY-MM-DD" description="Bug fix release">
       <!-- FIX -->
-      <action type="fix" dev="markt" due-to="Alex Dupre and Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed long standing bugs around the locking and unlocking of pid files. Also fix the locking/unlocking bugs.</action>
+      <action type="fix" dev="markt" due-to="Alex Dupre, Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed long standing bugs around the locking and unlocking of pid files. Also fix the locking/unlocking bugs.</action>
+      <action type="fix" dev="ggregory" issue="DAEMON-477" due-to="Alexander Pinčuk, Gary Gregory, Mark Thomas">Detaches from console when the service stops #307.</action>
       <!-- ADD -->
       <action dev="michaelo" type="add">
         jsvc. Use FreeBSD's setproctitle(3) to pass -procname similar to daemon(8).
