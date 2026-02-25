@@ -1999,8 +1999,17 @@ void WINAPI serviceMain(DWORD argc, LPTSTR *argv)
         apxLogWrite(APXLOG_MARK_DEBUG "Waiting %d milliseconds for all threads to exit.", timeout);
         reportServiceStatus(SERVICE_STOP_PENDING, NO_ERROR, ONE_MINUTE_AS_MILLIS);
         if (!apxDestroyJvm(timeout)) {
-            /* if we are not using JAVA apxDestroyJvm does nothing, check the chid processes in case they hang */
+            /* if we are not using JAVA apxDestroyJvm does nothing */
             apxLogWrite(APXLOG_MARK_DEBUG "apxDestroyJvm did nothing or failed");
+            /* detach service process from console */
+            if (GetConsoleWindow() != NULL) {
+                apxLogWrite(APXLOG_MARK_DEBUG "Detaching service from console");
+                if (FreeConsole())
+                    apxLogWrite(APXLOG_MARK_DEBUG "Service detached from console");
+                else
+                    apxLogWrite(APXLOG_MARK_ERROR "Failed to detach service from console");
+            }
+            /* check the chid processes in case they hang */
             for (;;) {
                 if (!apxProcessTerminateChild( GetCurrentProcessId(), TRUE)) {
                     /* Just print the children processes once for debugging */
