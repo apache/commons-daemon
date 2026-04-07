@@ -29,6 +29,16 @@ Windows X86 Build
   
   nmake CPU=X86
 
+Windows ARM64 Build
+
+  For MVS under "C:\Program Files (x86)":
+  "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
+
+  For MVS under "C:\Program Files":
+  "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
+
+  nmake CPU=ARM64
+
 
 Additional configuration
 ========================
