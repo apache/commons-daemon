@@ -65,7 +65,7 @@ jobs:
         shell: cmd
         run: |
             echo on
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
             cd src/native/windows/apps/prunsrv
             echo "Building prunsrv for ${{ matrix.arch }}"
             nmake BUILD_CPU=${{ matrix.arch }}
@@ -73,7 +73,7 @@ jobs:
         shell: cmd
         run: |
             echo on
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
             cd src/native/windows/apps/prunmgr
             echo "Building prunmgr for ${{ matrix.arch }}"
             nmake BUILD_CPU=${{ matrix.arch }}
