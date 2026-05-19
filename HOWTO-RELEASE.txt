@@ -94,6 +94,8 @@ Place the signed Windows binaries in:
 target/prunsrv.exe
 target/prunmgr.exe
 target/amd64/prunsrv.exe
+target/arm64/prunsrv.exe
+target/arm64/prunmgr.exe
 
 Note: `nmake -f Makefile install` will place these files in the correct
       locations but they will be unsigned

@@ -126,7 +126,7 @@ void help(home_data *data)
     printf("    --enable-native-access=<module name>\n");
     printf("        Java 17 --enable-native-access option. Passed as it is to JVM\n");
     printf("\njsvc (Apache Commons Daemon) " JSVC_VERSION_STRING "\n");
-    printf("Copyright (c) 1999-2025 Apache Software Foundation.\n");
+    printf("Copyright (c) 1999-2026 Apache Software Foundation.\n");
 
     printf("\n");
 }

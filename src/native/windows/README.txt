@@ -60,8 +60,8 @@ Release Builds
 
 Release builds must not disable the static hybrid CRT build strategy.
 
-It is not necessary to build a 64-bit version of prunmgr since the 32-bit
-version works with both 32-bit and 64-bit services.
+It is not necessary to build an X64 (64-bit AMD/Intel) version of prunmgr since
+the X86 (32-bit AMD/Intel) version works with both X64 and X86 services.
 
 
 Code signing

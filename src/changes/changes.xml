@@ -40,13 +40,16 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
-    <release version="1.5.2" date="YYYY-MM-DD" description="Bug fix release">
+    <release version="1.6.0" date="YYYY-MM-DD" description="This is a maintenace release. Adds support for Windows on ARM64.">
       <!-- FIX -->
       <action type="fix" dev="markt" due-to="Alex Dupre, Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed long standing bugs around the locking and unlocking of pid files. Also fix the locking/unlocking bugs.</action>
       <action type="fix" dev="ggregory" issue="DAEMON-477" due-to="Alexander Pinčuk, Gary Gregory, Mark Thomas">Detaches from console when the service stops #307.</action>
       <!-- ADD -->
-      <action dev="michaelo" type="add">
+      <action type="add" dev="michaelo">
         jsvc. Use FreeBSD's setproctitle(3) to pass -procname similar to daemon(8).
+      </action>
+      <action type="add" dev="markt" issue="DAEMON-462" due-to="Wolfgang Glas">
+        procrun. Add ARM64 support for Windows binaries.
       </action>
       <!-- UPDATE -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 93 to 99.</action>
