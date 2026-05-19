@@ -29,13 +29,13 @@ Windows X86 Build
   
   nmake CPU=X86
 
-Windows ARM64 Build
+Windows ARM64 Build (cross-platform: built on X64, runs on ARM64)
 
   For MVS under "C:\Program Files (x86)":
-  "C:\Program Files (x86)\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
+  "C:\Program Files (x86)\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsamd64_arm64.bat"
 
   For MVS under "C:\Program Files":
-  "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
+  "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsamd64_arm64.bat"
 
   nmake CPU=ARM64
 
