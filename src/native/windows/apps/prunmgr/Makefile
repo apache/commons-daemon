@@ -26,6 +26,8 @@ SRCDIR = .\..\..
 
 !IF "$(CPU)" == "X64"
 PREFIX = $(PREFIX)\amd64
+!ELSEIF "$(CPU)" == "ARM64"
+PREFIX = $(PREFIX)\arm64
 !ENDIF
 
 LFLAGS = $(LFLAGS) /version:1.0 /DYNAMICBASE /NXCOMPAT
