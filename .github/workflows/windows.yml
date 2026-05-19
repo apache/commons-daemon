@@ -43,12 +43,22 @@ jobs:
       matrix:
         include:
           - name: Default
+            image: windows-latest
             triplet: x64-windows
             arch: x64
+            java-arch: X64
             build-type: Debug
             generator: "Ninja"
 
-    runs-on: windows-latest
+          - name: Default on ARM
+            image: windows-11-arm
+            triplet: arm64-windows
+            arch: arm64
+            java-arch: AARCH64
+            build-type: Debug
+            generator: "Ninja"
+
+    runs-on: ${{ matrix.image }}
     timeout-minutes: 30
     name: ${{ matrix.name }}
     env: 
@@ -61,7 +71,7 @@ jobs:
         shell: cmd
         run: |
             echo rem SPDX-License-Identifier: Apache-2.0> set_java_home.bat
-            echo set JAVA_HOME=%JAVA_HOME_21_X64%>> set_java_home.bat
+            echo set JAVA_HOME=%JAVA_HOME_21_${{ matrix.java-arch }}%>> set_java_home.bat
             call .\set_java_home.bat
             echo "JAVA_HOME: %JAVA_HOME%"
       - name: Build prunsrv
@@ -95,5 +105,5 @@ jobs:
             test.bat
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: windows-artifact
+          name: windows-artifact-${{ matrix.arch }}
           path: src/native/windows/apps/prunsrv/*/prunsrv.exe
