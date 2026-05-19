@@ -12,30 +12,30 @@ Set the JAVA_HOME environment variable to point to a Java 8 (or later) JDK.
 Windows X64 Build
 
   For MVS under "C:\Program Files (x86)":
-  "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  "C:\Program Files (x86)\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat"
   
   For MVS under "C:\Program Files":
-  "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+  "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat"
   
   nmake CPU=X64
 
 Windows X86 Build
 
   For MVS under "C:\Program Files (x86)":
-  "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+  "C:\Program Files (x86)\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars32.bat"
   
   For MVS under "C:\Program Files":
-  "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars.bat"
+  "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars.bat"
   
   nmake CPU=X86
 
 Windows ARM64 Build
 
   For MVS under "C:\Program Files (x86)":
-  "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
+  "C:\Program Files (x86)\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
 
   For MVS under "C:\Program Files":
-  "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
+  "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsarm64.bat"
 
   nmake CPU=ARM64
 
