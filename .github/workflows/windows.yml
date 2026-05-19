@@ -78,7 +78,9 @@ jobs:
         shell: cmd
         run: |
             echo on
-            call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            where /R "C:\Program Files\Microsoft Visual Studio" VsDevCmd.bat > vs_setup_path
+            set /p SETUP_VS=< vs_setup_path
+            call "%SETUP_VS%" -arch=${{ matrix.arch }}
             cd src/native/windows/apps/prunsrv
             echo "Building prunsrv for ${{ matrix.arch }}"
             nmake BUILD_CPU=${{ matrix.arch }}
@@ -86,7 +88,9 @@ jobs:
         shell: cmd
         run: |
             echo on
-            call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            set /p SETUP_VS=< vs_setup_path
+            call "%SETUP_VS%" -arch=${{ matrix.arch }}
+            del vs_setup_path
             cd src/native/windows/apps/prunmgr
             echo "Building prunmgr for ${{ matrix.arch }}"
             nmake BUILD_CPU=${{ matrix.arch }}
