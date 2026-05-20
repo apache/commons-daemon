@@ -184,18 +184,20 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <!-- Free Software (see header) -->
-            <inputExclude>src/native/unix/configure</inputExclude>
-            <!-- GPL with applicable exception that allows ALv2 -->
-            <inputExclude>src/native/unix/support/config.guess</inputExclude>
-            <inputExclude>src/native/unix/support/config.sub</inputExclude>
-            <!-- Files created by Configure -->
-            <!-- Excluded from Git but may be present locally -->
-            <inputExclude>src/native/unix/config.nice</inputExclude>
-            <inputExclude>src/native/unix/config.status</inputExclude>
-            <inputExclude>src/native/unix/config.log</inputExclude>
-            <!-- autoconf cache - not included in release -->
-            <inputExclude>src/native/unix/autom4te.cache/**</inputExclude>
+            <inputExcludes>
+              <!-- Free Software (see header) -->
+              <inputExclude>src/native/unix/configure</inputExclude>
+              <!-- GPL with applicable exception that allows ALv2 -->
+              <inputExclude>src/native/unix/support/config.guess</inputExclude>
+              <inputExclude>src/native/unix/support/config.sub</inputExclude>
+              <!-- Files created by Configure -->
+              <!-- Excluded from Git but may be present locally -->
+              <inputExclude>src/native/unix/config.nice</inputExclude>
+              <inputExclude>src/native/unix/config.status</inputExclude>
+              <inputExclude>src/native/unix/config.log</inputExclude>
+              <!-- autoconf cache - not included in release -->
+              <inputExclude>src/native/unix/autom4te.cache/**</inputExclude>
+            </inputExcludes>
           </configuration>
         </plugin>
         <plugin>
