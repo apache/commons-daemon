@@ -33,7 +33,7 @@ Bug Fixes
 ---------
 
  - Please see the change log
-   https://commons.apache.org/proper/commons-daemon/changes-report.html
+   https://commons.apache.org/proper/commons-daemon/changes.html
 
 
 Feedback
