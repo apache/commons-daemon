@@ -23,7 +23,7 @@
 IDI_MAINICON         ICON                   "../../resources/procrunw.ico"
 IDI_ICONSTOP         ICON                   "../../resources/procruns.ico"
 IDI_ICONRUN          ICON                   "../../resources/procrunr.ico"
-IDR_LICENSE          RTF                    "../../../../../license.txt"
+IDR_LICENSE          RTF                    "../../resources/license.txt"
 BMP_COMMONS          BITMAP                 "../../resources/commons.bmp"
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "prunmgr.manifest"
