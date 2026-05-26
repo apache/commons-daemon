@@ -42,7 +42,7 @@ This will generate the file:  ./jsvc.
 It should be straightforward from here on. To check the allowed parameters
 for the jsvc binary simply do
 
-  ./native/jsvc -help
+  ./jsvc -help
 
 Note: On Linux the module capabilities should be loaded, when using -user root
 make sure you REALLY understand what capabilities does (for example for
