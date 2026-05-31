@@ -40,6 +40,10 @@
     <title>Apache Commons Daemon Release Notes</title>
   </properties>
   <body>
+    <release version="1.6.1" date="2026-06-03" description="Bug fix release">
+      <!-- FIX -->
+      <action type="fix" dev="markt" due-to="Michael Osipov">jsvc. Correct a packaging error in the 1.6.0 native source tarball for *nix systems.</action>
+    </release>
     <release version="1.6.0" date="2026-05-29" description="This is a maintenace release. Adds support for Windows on ARM64.">
       <!-- FIX -->
       <action type="fix" dev="markt" due-to="Alex Dupre, Michael Osipov">jsvc. Fix a regression in 1.5.1 that exposed long standing bugs around the locking and unlocking of pid files. Also fix the locking/unlocking bugs.</action>
