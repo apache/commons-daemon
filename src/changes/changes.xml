@@ -515,7 +515,7 @@
       </action>
       <action issue="DAEMON-391" type="fix" dev="markt" due-to="Thorsten Schöning">
         Procrun. Correct the level name used in the GUI for WARN so that changes
-        made via the GUI are recognised. Order the log levels in the drop-down
+        made via the GUI are recognized. Order the log levels in the drop-down
         from ERROR to DEBUG.
       </action>
       <action issue="DAEMON-393" type="fix" dev="ggregory" due-to="Daniel Hofmann">

@@ -43,10 +43,10 @@ apxSecurityGrantFileAccessToUser(
         lstrlcatW(sPath, MAX_PATH, LOG_PATH_DEFAULT);
     }
     if (szUser) {
-        /* The API used to set file permissions doesn't always recognised the
+        /* The API used to set file permissions doesn't always recognized the
          * same users as the API used to configured services. We do any
          * necessary conversion here. The known issues are:
-         * LocalSystem is not recognised. It needs to be converted to
+         * LocalSystem is not recognized. It needs to be converted to
          * "NT Authority\System"
          * User names for the local machine that use the ".\username" form need
          * to have the leading ".\" removed.
