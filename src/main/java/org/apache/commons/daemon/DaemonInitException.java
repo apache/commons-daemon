@@ -45,7 +45,7 @@ public class DaemonInitException extends Exception {
     /**
      * Gets the message with the cause as a postfix.
      *
-     * @return the message with the cause as a postfix.
+     * @return The message with the cause as a postfix.
      */
     public String getMessageWithCause() {
         final Throwable cause = getCause();

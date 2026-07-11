@@ -71,7 +71,7 @@ public class ProcrunService implements Runnable {
      *
      * @param args array of string arguments, may be empty
      * @param argnum which argument to extract
-     * @return the argument or null
+     * @return The argument or null
      */
     private static String getArg(String[] args, int argnum){
         if (args.length > argnum) {
