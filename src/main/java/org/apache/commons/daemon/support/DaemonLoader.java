@@ -443,7 +443,7 @@ public final class DaemonLoader
         /**
          * Sets the daemon controller.
          *
-         * @param controller the daemon controller.
+         * @param controller The daemon controller.
          */
         public void setController(final DaemonController controller)
         {
