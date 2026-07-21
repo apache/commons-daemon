@@ -43,7 +43,7 @@
     <release version="1.6.2" date="YYYY-MM-DD" description="Bug fix release">
       <!-- FIX -->
       <!-- UPDATE -->
-      <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 101 to 100.</action>
+      <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 101 to 103.</action>
     </release>
     <release version="1.6.1" date="2026-06-03" description="Bug fix release">
       <!-- FIX -->
