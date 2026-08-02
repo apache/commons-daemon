@@ -146,7 +146,7 @@ public class ProcrunService implements Runnable {
      * by the start service, and a deleted by the stop service.
      *
      * @param args [start [pause time] | stop]
-     * @throws IOException if there are problems creating or deleting the temporary file
+     * @throws IOException Thrown if there are problems creating or deleting the temporary file
      */
     public static void main(String[] args) throws IOException {
         final int argc = args.length;
