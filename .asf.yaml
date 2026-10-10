@@ -16,6 +16,8 @@
 github:
   description: "Apache Commons Daemon"
   homepage: https://commons.apache.org/daemon/
+  autolink_jira:
+    - DAEMON
 
   rulesets:
     - name: "Default Branch Protection"
