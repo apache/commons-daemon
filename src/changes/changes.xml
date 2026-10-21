@@ -42,6 +42,7 @@
   <body>
     <release version="1.6.2" date="YYYY-MM-DD" description="Bug fix release">
       <!-- FIX -->
+      <action type="fix" issue="DAEMON-479" due-to="Aryan Ganjoo">Make jsvc -check accept wrapped @ClassName services that DaemonLoader.load() supports.</action>
       <!-- UPDATE -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 101 to 106.</action>
     </release>
