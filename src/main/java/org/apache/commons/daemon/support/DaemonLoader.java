@@ -89,7 +89,17 @@ public final class DaemonLoader
             }
 
             /* Find the required class */
-            final Class<?> c = cl.loadClass(className);
+            final Class<?> c;
+            if (className.charAt(0) == '@') {
+                /* Wrapped class, see load(): verify the real class can be
+                 * found and check the DaemonWrapper that will host it.
+                 */
+                cl.loadClass(className.substring(1));
+                c = DaemonWrapper.class;
+            }
+            else {
+                c = cl.loadClass(className);
+            }
 
             /* This should _never_ happen, but double-checking doesn't harm */
             if (c == null) {
