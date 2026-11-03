@@ -42,6 +42,8 @@
   <body>
     <release version="1.6.2" date="YYYY-MM-DD" description="Bug fix release">
       <!-- FIX -->
+      <!-- ADD -->
+      <action type="add" dev="ggregory" due-to="Mohd Irshad, Gary Gregory">Add unit test for DaemonInitException.getMessageWithCause (#318).</action>
       <!-- UPDATE -->
       <action type="update" dev="ggregory" due-to="Gary Gregory">Bump org.apache.commons:commons-parent from 101 to 107.</action>
     </release>
