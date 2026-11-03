@@ -24,8 +24,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-/* Definitions for booleans */
-#ifdef OS_DARWIN
+/* Use standard booleans where available, including C23 keywords. */
+#if defined(OS_DARWIN) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #include <stdbool.h>
 #else
 typedef enum {
