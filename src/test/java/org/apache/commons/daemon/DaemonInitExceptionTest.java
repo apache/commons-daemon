@@ -31,4 +31,14 @@ class DaemonInitExceptionTest {
         assertEquals(e, new DaemonInitException("Test", e).getCause());
     }
 
+    @Test
+    void testGetMessageWithCause() {
+        final DaemonInitException exNoCause = new DaemonInitException("Init failed");
+        assertEquals("Init failed", exNoCause.getMessageWithCause());
+
+        final IOException cause = new IOException("Disk error");
+        final DaemonInitException exWithCause = new DaemonInitException("Init failed", cause);
+        assertEquals("Init failed: Disk error", exWithCause.getMessageWithCause());
+    }
+
 }

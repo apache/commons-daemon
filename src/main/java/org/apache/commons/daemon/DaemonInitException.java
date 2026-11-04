@@ -49,7 +49,8 @@ public class DaemonInitException extends Exception {
      */
     public String getMessageWithCause() {
         final Throwable cause = getCause();
-        return getMessage() + (cause == null ? "" : ": " + cause.getMessage());
+        final String message = String.valueOf(getMessage());
+        return cause == null ? message : message + ": " + cause.getMessage();
     }
 
 }
