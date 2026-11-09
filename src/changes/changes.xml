@@ -43,6 +43,7 @@
     <release version="1.6.2" date="YYYY-MM-DD" description="Bug fix release">
       <!-- FIX -->
       <action type="fix" dev="ggregory" due-to="Gary Gregory">Fix native build with C23 boolean keywords (#319).</action>
+      <action type="fix" issue="DAEMON-479" due-to="Aryan Ganjoo">Make jsvc -check accept wrapped @ClassName services that DaemonLoader.load() supports.</action>
       <!-- ADD -->
       <action type="add" dev="ggregory" due-to="Mohd Irshad, Gary Gregory">Add unit test for DaemonInitException.getMessageWithCause (#318).</action>
       <!-- UPDATE -->
