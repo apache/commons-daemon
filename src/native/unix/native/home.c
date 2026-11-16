@@ -44,6 +44,9 @@ static bool checkfile(char *path)
     return (false);
 }
 
+/* Maximum number of configured JVMs, excluding the NULL terminator. */
+#define MAX_JVMS 255
+
 /* Parse a VM configuration file */
 static bool parse(home_data *data)
 {
@@ -56,7 +59,12 @@ static bool parse(home_data *data)
         return (false);
     }
 
-    data->jvms = (home_jvm **)malloc(256 * sizeof(home_jvm *));
+    data->jvms = (home_jvm **)malloc((MAX_JVMS + 1) * sizeof(home_jvm *));
+    if (data->jvms == NULL) {
+        fclose(cfgf);
+        return (false);
+    }
+    data->jvms[0] = NULL;
 
     while ((ret = fgets(buf, 1024, cfgf)) != NULL) {
         char *tmp = strchr(ret, '#');
@@ -98,11 +106,13 @@ static bool parse(home_data *data)
                 k = replace(temp, 1024, orig, "$JAVA_HOME", data->path);
                 if (k != 0) {
                     log_error("Can't replace home in VM library (%d)", k);
+                    fclose(cfgf);
                     return (false);
                 }
                 k = replace(repl, 1024, temp, "$VM_NAME", ret);
                 if (k != 0) {
                     log_error("Can't replace name in VM library (%d)", k);
+                    fclose(cfgf);
                     return (false);
                 }
 
@@ -118,6 +128,13 @@ static bool parse(home_data *data)
                 log_debug("Cannot locate library for VM %s (skipping)", ret);
             }
             else {
+                /* Reserve the final slot for the NULL terminator. */
+                if (data->jnum >= MAX_JVMS) {
+                    log_error("Too many JVM definitions in %s (maximum %d)", data->cfgf, MAX_JVMS);
+                    free(libf);
+                    fclose(cfgf);
+                    return (false);
+                }
                 data->jvms[data->jnum] = (home_jvm *)malloc(sizeof(home_jvm));
                 data->jvms[data->jnum]->name = strdup(ret);
                 data->jvms[data->jnum]->libr = libf;
@@ -199,6 +216,16 @@ static home_data *build(char *path)
     /* If we got here, we most definitely found a jvm.cfg file */
     if (parse(data) == false) {
         log_error("Cannot parse VM configuration file %s", data->cfgf);
+        for (x = 0; x < data->jnum; x++) {
+            free(data->jvms[x]->name);
+            free(data->jvms[x]->libr);
+            free(data->jvms[x]);
+        }
+        free(data->jvms);
+        free(data->cfgf);
+        free(data->path);
+        free(data);
+        return (NULL);
     }
 
     return (data);

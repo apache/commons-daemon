@@ -51,6 +51,9 @@
                 <exclude>native/unix/native/*.o</exclude>
                 <exclude>native/unix/native/Makefile</exclude>
                 <exclude>native/unix/native/libservice.a</exclude>
+                <exclude>native/unix/tests/Makefile</exclude>
+                <exclude>native/unix/tests/test_home</exclude>
+                <exclude>native/unix/tests/test_home.dSYM/**</exclude>
                 <exclude>native/windows/apps/prunmgr/*_GUI_RELEASE/**</exclude>
                 <exclude>native/windows/apps/prunsrv/*_RELEASE/**</exclude>
                 <!-- Excluded here, because processed below -->
