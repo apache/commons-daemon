@@ -195,6 +195,9 @@
               <inputExclude>src/native/unix/config.nice</inputExclude>
               <inputExclude>src/native/unix/config.status</inputExclude>
               <inputExclude>src/native/unix/config.log</inputExclude>
+              <inputExclude>src/native/unix/tests/Makefile</inputExclude>
+              <inputExclude>src/native/unix/tests/test_home</inputExclude>
+              <inputExclude>src/native/unix/tests/test_home.dSYM/**</inputExclude>
               <!-- autoconf cache - not included in release -->
               <inputExclude>src/native/unix/autom4te.cache/**</inputExclude>
             </inputExcludes>

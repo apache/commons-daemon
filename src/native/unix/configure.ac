@@ -135,7 +135,7 @@ dnl -------------------------------------------------------------------------
 dnl Random programs we need to compile locally
 dnl -------------------------------------------------------------------------
 AP_MSG_HEADER([Writing output files])
-AC_CONFIG_FILES(Makefile Makedefs native/Makefile)
+AC_CONFIG_FILES(Makefile Makedefs native/Makefile tests/Makefile)
 AC_OUTPUT
 
 dnl -------------------------------------------------------------------------
