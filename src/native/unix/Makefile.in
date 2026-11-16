@@ -22,7 +22,11 @@ all: native/all
 native/all:
 	(cd native; $(MAKE)  all)
 
+check:
+	(cd tests; $(MAKE) check)
+
 clean:
+	(cd tests; $(MAKE) clean)
 	(cd native; $(MAKE)  clean)
 
 distclean: clean
@@ -31,6 +35,7 @@ distclean: clean
 	rm -f config.status
 	rm -f config.nice
 	rm -f native/Makefile
+	rm -f tests/Makefile
 	rm -f Makefile
 	rm -f Makedefs
 	rm -rf autom4te.cache

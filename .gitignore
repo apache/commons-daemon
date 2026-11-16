@@ -25,3 +25,7 @@
 # NetBeans files
 nb-configuration.xml
 nbactions.xml
+
+/src/native/unix/tests/Makefile
+/src/native/unix/tests/test_home
+/src/native/unix/tests/test_home.dSYM/
