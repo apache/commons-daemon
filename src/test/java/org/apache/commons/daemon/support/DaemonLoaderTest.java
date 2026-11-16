@@ -37,6 +37,47 @@ class DaemonLoaderTest {
         }
     }
 
+    /**
+     * A wrapped application with a private constructor.
+     */
+    public static class WrappedApplicationWithPrivateConstructor {
+
+        private WrappedApplicationWithPrivateConstructor() {
+            // empty
+        }
+
+        /**
+         * Runs the application.
+         *
+         * @param args The application arguments.
+         */
+        public static void main(final String[] args) {
+            // empty
+        }
+    }
+
+    /**
+     * A wrapped application whose constructor must not be invoked.
+     */
+    public static class WrappedApplicationWithThrowingConstructor {
+
+        /**
+         * Throws an exception if invoked.
+         */
+        public WrappedApplicationWithThrowingConstructor() {
+            throw new IllegalStateException("The application constructor must not be invoked.");
+        }
+
+        /**
+         * Runs the application.
+         *
+         * @param args The application arguments.
+         */
+        public static void main(final String[] args) {
+            // empty
+        }
+    }
+
     @Test
     void testCheckDaemonClass() {
         assertTrue(DaemonLoader.check(WrappedApplication.class.getName()));
@@ -44,9 +85,28 @@ class DaemonLoaderTest {
     }
 
     @Test
+    void testCheckEmptyClassName() {
+        assertFalse(DaemonLoader.check(""));
+    }
+
+    @Test
     void testCheckWrappedClass() {
         // jsvc -check @className must accept what DaemonLoader.load() accepts.
         assertTrue(DaemonLoader.check("@" + WrappedApplication.class.getName()));
         assertFalse(DaemonLoader.check("@org.apache.commons.daemon.DoesNotExist"));
+    }
+
+    @Test
+    void testCheckWrappedClassWithPrivateConstructor() {
+        final String className = WrappedApplicationWithPrivateConstructor.class.getName();
+        assertFalse(DaemonLoader.check(className));
+        assertTrue(DaemonLoader.check("@" + className));
+    }
+
+    @Test
+    void testCheckWrappedClassWithThrowingConstructor() {
+        final String className = WrappedApplicationWithThrowingConstructor.class.getName();
+        assertFalse(DaemonLoader.check(className));
+        assertTrue(DaemonLoader.check("@" + className));
     }
 }

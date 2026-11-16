@@ -71,10 +71,20 @@ public final class DaemonLoader
     }
 
     /**
-     * Checks whether the given class name can be instantiated with a zero-argument constructor.
+     * Checks whether a plain or wrapped class can be loaded and its daemon instance created.
      *
-     * @param className The class name.
-     * @return true if the given class name can be instantiated, false otherwise.
+     * <p>
+     * For a plain class name, loads the class and invokes its public zero-argument constructor.
+     * For a name prefixed with {@code @}, loads the application class and creates a {@link DaemonWrapper} instead of an application instance.
+     * </p>
+     *
+     * <p>
+     * This check does not invoke lifecycle methods or validate wrapper configuration, so success does not guarantee that the service can start.
+     * </p>
+     *
+     * @param className The class name, optionally prefixed with {@code @} to use {@link DaemonWrapper}.
+     * @return {@code true} if the class loads and the plain class or its wrapper can be instantiated; {@code false} otherwise, including for
+     *         {@code null} or an empty class name.
      */
     public static boolean check(final String className)
     {
